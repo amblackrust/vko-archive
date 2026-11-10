@@ -3,6 +3,14 @@
 
 from app.models.base import EMBEDDING_DIM, Base
 from app.models.branches import Branch
+from app.models.cabinet import (
+    Visitor,
+    VisitorFavorite,
+    VisitorSearch,
+    VisitorSelection,
+    VisitorSelectionItem,
+    VisitorSubscription,
+)
 from app.models.catalog import Case, Document, Fund, Inventory, document_categories, document_tags
 from app.models.content import FAQ, Category, LegalAct, MemorialDate, News, Page, PriceListItem, SiteSetting, Tag
 from app.models.enums import (
@@ -25,6 +33,12 @@ from app.models.system import AuditLog, Notification, WorkflowHistory
 from app.models.users import Permission, Role, RolePermission, User, UserRole
 
 __all__ = [
+    "Visitor",
+    "VisitorFavorite",
+    "VisitorSearch",
+    "VisitorSelection",
+    "VisitorSelectionItem",
+    "VisitorSubscription",
     "EMBEDDING_DIM",
     "FAQ",
     "AuditLog",
