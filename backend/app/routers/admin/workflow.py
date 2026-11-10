@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, Query, status
 
-from app.deps import ClientIp, CurrentUser, DbSession
+from app.deps import BackgroundUser, ClientIp, CurrentUser, DbSession
 from app.schemas.workflow import (
     HistoryEntry,
     NotificationList,
@@ -25,7 +25,7 @@ def run_transition(
         object_id=obj.id,
         workflow_status=obj.workflow_status.value,
         version=obj.version,
-        available_actions=workflow.available_actions(user, obj),
+        available_actions=workflow.available_actions(user, object_type, obj),
     )
 
 
@@ -38,7 +38,7 @@ def version_history(
 
 @router.get("/notifications", response_model=NotificationList)
 def list_notifications(
-    user: CurrentUser,
+    user: BackgroundUser,  # polled by the bell: must not keep the session alive
     session: DbSession,
     unread_only: bool = False,
     limit: int = Query(default=50, ge=1, le=200),

@@ -141,3 +141,28 @@ def test_foreign_notification_is_not_found(api, factory):
     note = factory.add(Notification(user_id=owner.id, kind="workflow.submit", message={"ru": "x"}))
     _as(api, factory.user(RoleCode.EDITOR))
     assert api.post(f"/api/admin/notifications/{note.id}/read").status_code == 404
+
+
+def test_transitions_require_module_permission(api, factory):
+    _, _, case = factory.catalog(factory.branch())
+    document = factory.document(case)
+    branch = factory.branch()
+
+    _as(api, factory.user(RoleCode.SITE_ADMIN))  # workflow.submit, but no catalog.edit
+    assert _transition(api, "document", document.id, "submit", 1).status_code == 403
+    _as(api, factory.user(RoleCode.EDITOR))  # no branches.edit
+    assert _transition(api, "branch", branch.id, "submit", 1).status_code == 403
+    archivist = factory.user(RoleCode.ARCHIVIST)  # no branch, catalog only
+    news = _news(factory, archivist)
+    _as(api, archivist)
+    assert _transition(api, "news", news.id, "submit", 1).status_code == 403
+    allowed = _transition(api, "document", document.id, "submit", 1)
+    assert allowed.status_code == 200 and allowed.json()["available_actions"] == []
+
+    denied = factory.session.scalars(
+        select(AuditLog).where(AuditLog.user_id == archivist.id, AuditLog.result == AuditResult.DENIED)
+    ).all()
+    assert [(row.action_type, row.object_id) for row in denied] == [("content.edit", str(news.id))]
+    for obj in (document, branch, news):
+        factory.session.refresh(obj)
+        assert obj.workflow_status == (WorkflowStatus.REVIEW if obj is document else WorkflowStatus.DRAFT)

@@ -40,6 +40,8 @@ def _service_error_handler(request: Request, exc: ServiceError) -> JSONResponse:
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    if settings.app_env != "development" and settings.jwt_secret is None:
+        raise RuntimeError("JWT_SECRET is required outside development (generate one with `make env`)")
     app = FastAPI(title="VKO State Archive API", version="0.1.0")
     app.add_middleware(
         CORSMiddleware,

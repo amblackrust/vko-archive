@@ -1,9 +1,12 @@
 from datetime import UTC, datetime, timedelta
 
+import pytest
 from sqlalchemy import select, text
+from starlette.requests import Request
 
-from app import security
+from app import main, security
 from app.config import get_settings
+from app.deps import BACKGROUND_HEADER, get_optional_user
 from app.models import AuditLog, User
 from app.models.enums import RoleCode
 from tests.admin.conftest import PASSWORD, login
@@ -51,23 +54,49 @@ def test_inactive_user_cannot_login(api, factory):
     assert response.status_code == 401
 
 
-def test_lockout_after_five_failures(api, factory):
+def test_lockout_after_five_failures_is_indistinguishable(api, factory):
     user = factory.user(RoleCode.EDITOR)
-    for _ in range(4):
-        assert api.post("/api/admin/auth/login", json={"email": user.email, "password": "bad-password"}).status_code == 401
-    fifth = api.post("/api/admin/auth/login", json={"email": user.email, "password": "bad-password"})
-    assert fifth.status_code == 429 and fifth.json() == {"detail": "account_locked"}
-    assert int(fifth.headers["Retry-After"]) == 15 * 60
-
-    # Even the right password is refused while locked.
-    locked = api.post("/api/admin/auth/login", json={"email": user.email, "password": PASSWORD})
-    assert locked.status_code == 429
-
+    unknown = {"email": "ghost@test.demo", "password": "bad-password"}
+    for _ in range(5):
+        response = api.post("/api/admin/auth/login", json={"email": user.email, "password": "bad-password"})
+        assert response.status_code == 401 and "Retry-After" not in response.headers
     factory.session.refresh(user)
     assert user.locked_until is not None
+
+    # Locked: even the right password gets the same answer as an unknown e-mail.
+    locked = api.post("/api/admin/auth/login", json={"email": user.email, "password": PASSWORD})
+    ghost = api.post("/api/admin/auth/login", json=unknown)
+    assert locked.status_code == ghost.status_code == 401
+    assert locked.json() == ghost.json() == {"detail": "invalid_credentials"}
+
     user.locked_until = datetime.now(UTC) - timedelta(seconds=1)
     factory.session.commit()
     login(api, user.email)
+
+
+def test_unknown_email_is_not_journaled_as_actor(api, factory):
+    typed = f"ghost-{datetime.now(UTC).timestamp()}@test.demo"
+    api.post("/api/admin/auth/login", json={"email": typed, "password": "bad-password"})
+    leaked = factory.session.execute(
+        text("SELECT count(*) FROM audit_logs WHERE coalesce(actor, '') LIKE :p OR details::text LIKE :p"),
+        {"p": f"%{typed}%"},
+    ).scalar()
+    assert leaked == 0
+
+
+def test_password_change_shares_lockout(api, factory):
+    user = factory.user(RoleCode.EDITOR)
+    login(api, user.email)
+    body = {"current_password": "bad-password", "new_password": "Another-Pass-42"}
+    for _ in range(4):
+        assert api.post("/api/admin/auth/password", json=body).status_code == 401
+    fifth = api.post("/api/admin/auth/password", json=body)
+    assert fifth.status_code == 429 and fifth.json() == {"detail": "account_locked"}
+    assert 15 * 60 <= int(fifth.headers["Retry-After"]) <= 15 * 60 + 1
+    right = api.post("/api/admin/auth/password", json={**body, "current_password": PASSWORD})
+    assert right.status_code == 429
+    api.cookies.clear()
+    assert api.post("/api/admin/auth/login", json={"email": user.email, "password": PASSWORD}).status_code == 401
 
 
 def test_csrf_required_on_unsafe_requests(api, factory):
@@ -77,6 +106,9 @@ def test_csrf_required_on_unsafe_requests(api, factory):
     assert api.post("/api/admin/notifications/read-all").json() == {"detail": "csrf_failed"}
     api.headers[security.CSRF_HEADER] = "forged"
     assert api.post("/api/admin/notifications/read-all").status_code == 403
+    # Non-ASCII header value: rejected, not a 500 (hmac.compare_digest on str would raise).
+    non_ascii = api.post("/api/admin/notifications/read-all", headers={security.CSRF_HEADER: "токен".encode()})
+    assert non_ascii.json() == {"detail": "csrf_failed"}
     api.headers[security.CSRF_HEADER] = csrf
     assert api.post("/api/admin/notifications/read-all").status_code == 204
 
@@ -102,6 +134,10 @@ def test_session_renewal_and_logout(api, factory):
     login(api, user.email)
     me = api.get("/api/admin/auth/me")
     assert any(c.startswith(f"{security.SESSION_COOKIE}=") for c in _set_cookie_headers(me))  # sliding renewal
+    # Background polling authenticates but does not extend the inactivity timeout.
+    assert not _set_cookie_headers(api.get("/api/admin/notifications"))
+    background = api.get("/api/admin/auth/me", headers={BACKGROUND_HEADER: "1"})
+    assert background.status_code == 200 and not _set_cookie_headers(background)
     assert api.post("/api/admin/auth/logout").status_code == 204
     assert api.get("/api/admin/auth/me").status_code == 401
 
@@ -151,3 +187,30 @@ def test_login_attempts_are_journaled_without_secrets(api, factory):
             {"p": f"%{needle}%"},
         ).scalar()
         assert leaked == 0
+
+
+def _request(method: str, token: str, csrf: str | None = None) -> Request:
+    headers = [(b"cookie", f"{security.SESSION_COOKIE}={token}".encode())]
+    if csrf is not None:
+        headers.append((security.CSRF_HEADER.lower().encode(), csrf.encode()))
+    return Request({"type": "http", "method": method, "headers": headers, "query_string": b""})
+
+
+def test_optional_user_checks_csrf_on_unsafe_methods(factory):
+    settings = get_settings()
+    user = factory.user(RoleCode.EDITOR)
+    token = security.create_session_token(settings, user_id=str(user.id), csrf="c" * 20, pwv=0)
+    s = factory.session
+    assert get_optional_user(_request("GET", token), s, settings).id == user.id
+    assert get_optional_user(_request("POST", token), s, settings) is None
+    assert get_optional_user(_request("POST", token, "forged"), s, settings) is None
+    assert get_optional_user(_request("POST", token, "c" * 20), s, settings).id == user.id
+    # No JWT_SECRET (development): anonymous instead of a 500.
+    assert get_optional_user(_request("GET", token), s, settings.model_copy(update={"jwt_secret": None})) is None
+
+
+def test_app_refuses_to_start_without_secret_outside_development(monkeypatch):
+    settings = get_settings().model_copy(update={"app_env": "production", "jwt_secret": None})
+    monkeypatch.setattr(main, "get_settings", lambda: settings)
+    with pytest.raises(RuntimeError, match="JWT_SECRET"):
+        main.create_app()

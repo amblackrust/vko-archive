@@ -44,6 +44,9 @@ ALL_PERMISSIONS = frozenset(f"{module}.{action}" for module, actions in PERMISSI
 SUPER_ONLY_ACTIONS = frozenset({"roles.manage"})
 # Public action with its own rule (docs/DECISIONS.md п.14).
 FILE_DOWNLOAD = "file.download"
+# Granting/revoking a role (obj = RoleChange). Not in the matrix: derived from users.manage
+# plus the anti-escalation rules in authorize().
+USERS_ASSIGN_ROLE = "users.assign_role"
 
 BRANCH_SCOPED_ROLES = frozenset({RoleCode.BRANCH_ADMIN.value, RoleCode.ARCHIVIST.value})
 
@@ -133,6 +136,14 @@ class FileTarget:
     owner_published: bool = False
 
 
+@dataclass(frozen=True)
+class RoleChange:
+    """Object for the "users.assign_role" check: `role` is granted to or revoked from `target`."""
+
+    target: User
+    role: Role
+
+
 def load_auth_user(session: Session, user: User) -> AuthUser:
     return AuthUser(
         id=user.id,
@@ -171,6 +182,8 @@ def object_branch_id(obj: Any) -> uuid.UUID | None:
         return document_branch_id(obj)
     if isinstance(obj, FileTarget):
         return document_branch_id(obj.document) if obj.document is not None else None
+    if isinstance(obj, RoleChange):
+        return obj.target.branch_id
     return getattr(obj, "branch_id", None)
 
 
@@ -202,8 +215,14 @@ def _can_download(user: AuthUser | None, target: Any) -> bool:
     return target.owner_published
 
 
-def _targets_super_admin(obj: Any) -> bool:
-    return isinstance(obj, User) and any(role.code == RoleCode.SUPER_ADMIN.value for role in obj.roles)
+def _is_super_admin(target: User) -> bool:
+    return any(role.code == RoleCode.SUPER_ADMIN.value for role in target.roles)
+
+
+def _target_user(obj: Any) -> User | None:
+    if isinstance(obj, RoleChange):
+        return obj.target
+    return obj if isinstance(obj, User) else None
 
 
 def authorize(user: AuthUser | None, action: str, obj: Any = None) -> bool:
@@ -214,12 +233,24 @@ def authorize(user: AuthUser | None, action: str, obj: Any = None) -> bool:
         return _can_download(user, obj)
     if user is None:
         return False
+    target = _target_user(obj) if action.startswith("users.") else None
+    # Nobody changes their own roles or status (block/deactivate), not even the super admin:
+    # a super admin could otherwise lock the archive out of its last super account.
+    if action in (USERS_ASSIGN_ROLE, "users.manage") and target is not None and target.id == user.id:
+        return False
+    if action == USERS_ASSIGN_ROLE and not isinstance(obj, RoleChange):
+        return False
     if user.is_super:
         return True
+    if action == USERS_ASSIGN_ROLE:
+        # Escalation guard: only the super admin grants or revokes super_admin.
+        if obj.role.code == RoleCode.SUPER_ADMIN.value:
+            return False
+        action = "users.manage"
     if action in SUPER_ONLY_ACTIONS or action not in user.permissions:
         return False
     # Site admins manage users except super admins (§5).
-    if action.startswith("users.") and _targets_super_admin(obj):
+    if target is not None and _is_super_admin(target):
         return False
     if obj is not None and user.branch_scoped:
         return user.branch_id is not None and object_branch_id(obj) == user.branch_id
@@ -232,7 +263,10 @@ def require(session: Session, user: AuthUser | None, action: str, obj: Any = Non
     file.download raises NotFound, so a hidden file is indistinguishable from a missing one."""
     if authorize(user, action, obj):
         return
-    target = obj.file if isinstance(obj, FileTarget) else obj
+    if action == FILE_DOWNLOAD and user is None:
+        # Anonymous misses on public files are routine (dead links, crawlers): not journaled.
+        raise NotFound()
+    target = obj.file if isinstance(obj, FileTarget) else obj.target if isinstance(obj, RoleChange) else obj
     session.rollback()
     audit.record(
         session,
