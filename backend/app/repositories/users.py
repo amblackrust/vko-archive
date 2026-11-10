@@ -14,8 +14,8 @@ def get_by_email(session: Session, email: str, *, for_update: bool = False) -> U
     return session.scalars(stmt).one_or_none()
 
 
-def get_by_id(session: Session, user_id: uuid.UUID) -> User | None:
-    return session.get(User, user_id)
+def get_by_id(session: Session, user_id: uuid.UUID, *, for_update: bool = False) -> User | None:
+    return session.get(User, user_id, with_for_update=for_update)
 
 
 def role_codes(session: Session, user_id: uuid.UUID) -> set[str]:

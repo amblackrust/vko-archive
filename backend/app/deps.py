@@ -9,7 +9,7 @@ from app.db import get_session
 from app.services import auth as auth_service
 from app.services.auth import AuthSession
 from app.services.authz import AuthUser
-from app.services.errors import NotAuthenticated
+from app.services.errors import CsrfFailed, NotAuthenticated
 
 DbSession = Annotated[Session, Depends(get_session)]
 AppSettings = Annotated[Settings, Depends(get_settings)]
@@ -40,18 +40,33 @@ def clear_session_cookies(response: Response, settings: Settings) -> None:
     response.delete_cookie(security.CSRF_COOKIE, path="/", secure=settings.session_cookie_secure, samesite="strict")
 
 
-def get_auth_session(request: Request, response: Response, session: DbSession, settings: AppSettings) -> AuthSession:
-    """Staff session from the cookie; checks CSRF on unsafe methods and renews the cookie
-    (sliding inactivity timeout)."""
-    auth = auth_service.authenticate(
+# Sent by the frontend on polling requests (notification bell, etc.). Such requests
+# authenticate but do not renew the session, so the inactivity timeout still fires.
+BACKGROUND_HEADER = "X-Background"
+
+
+def _authenticate(request: Request, session: Session, settings: Settings) -> AuthSession:
+    return auth_service.authenticate(
         session,
         settings,
         request.cookies.get(security.SESSION_COOKIE),
         method=request.method,
         csrf_header=request.headers.get(security.CSRF_HEADER),
     )
-    set_session_cookies(response, settings, auth)
+
+
+def get_auth_session(request: Request, response: Response, session: DbSession, settings: AppSettings) -> AuthSession:
+    """Staff session from the cookie; checks CSRF on unsafe methods and renews the cookie
+    (sliding inactivity timeout) unless the request is marked as background."""
+    auth = _authenticate(request, session, settings)
+    if request.headers.get(BACKGROUND_HEADER) != "1":
+        set_session_cookies(response, settings, auth)
     return auth
+
+
+def get_background_session(request: Request, session: DbSession, settings: AppSettings) -> AuthSession:
+    """Like get_auth_session but never renews: for endpoints that are only polled."""
+    return _authenticate(request, session, settings)
 
 
 CurrentSession = Annotated[AuthSession, Depends(get_auth_session)]
@@ -64,15 +79,24 @@ def get_current_user(auth: CurrentSession) -> AuthUser:
 CurrentUser = Annotated[AuthUser, Depends(get_current_user)]
 
 
+def get_background_user(auth: Annotated[AuthSession, Depends(get_background_session)]) -> AuthUser:
+    return auth.user
+
+
+BackgroundUser = Annotated[AuthUser, Depends(get_background_user)]
+
+
 def get_optional_user(request: Request, session: DbSession, settings: AppSettings) -> AuthUser | None:
     """For public endpoints (e.g. file download): the staff user if a valid session
-    cookie is present, otherwise None (anonymous). Read-only: no CSRF, no renewal."""
+    cookie is present, otherwise None (anonymous). No renewal. On unsafe methods the CSRF
+    header is checked; without it the request is served as anonymous (never with the
+    staff user's rights). Without JWT_SECRET (development only) everyone is anonymous."""
     token = request.cookies.get(security.SESSION_COOKIE)
-    if not token:
+    if not token or settings.jwt_secret is None:
         return None
     try:
-        return auth_service.authenticate(session, settings, token, method="GET", csrf_header=None).user
-    except NotAuthenticated:
+        return _authenticate(request, session, settings).user
+    except (NotAuthenticated, CsrfFailed):
         return None
 
 

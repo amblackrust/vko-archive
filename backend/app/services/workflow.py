@@ -72,16 +72,21 @@ class Transition:
     sources: frozenset[WorkflowStatus]
     target: WorkflowStatus
     permission: str
+    # Also required on the object's own module (f"{module}.{module_action}", branch-checked):
+    # submitting means vouching for the content -> edit; reviewers only need to see it -> view.
+    module_action: str
     comment_required: bool = False
 
 
 TRANSITIONS: dict[str, Transition] = {
-    "submit": Transition(frozenset({S.DRAFT, S.NEEDS_CHANGES}), S.REVIEW, "workflow.submit"),
-    "return": Transition(frozenset({S.REVIEW, S.APPROVED}), S.NEEDS_CHANGES, "workflow.review", comment_required=True),
-    "approve": Transition(frozenset({S.REVIEW}), S.APPROVED, "workflow.review"),
-    "publish": Transition(frozenset({S.APPROVED}), S.PUBLISHED, "workflow.publish"),
-    "archive": Transition(frozenset({S.PUBLISHED, S.APPROVED}), S.ARCHIVED, "workflow.archive"),
-    "restore": Transition(frozenset({S.ARCHIVED}), S.DRAFT, "workflow.archive"),
+    "submit": Transition(frozenset({S.DRAFT, S.NEEDS_CHANGES}), S.REVIEW, "workflow.submit", "edit"),
+    "return": Transition(
+        frozenset({S.REVIEW, S.APPROVED}), S.NEEDS_CHANGES, "workflow.review", "view", comment_required=True
+    ),
+    "approve": Transition(frozenset({S.REVIEW}), S.APPROVED, "workflow.review", "view"),
+    "publish": Transition(frozenset({S.APPROVED}), S.PUBLISHED, "workflow.publish", "view"),
+    "archive": Transition(frozenset({S.PUBLISHED, S.APPROVED}), S.ARCHIVED, "workflow.archive", "view"),
+    "restore": Transition(frozenset({S.ARCHIVED}), S.DRAFT, "workflow.archive", "view"),
 }
 
 # Who hears about a transition: reviewers on submit, the author and submitter otherwise.
@@ -206,8 +211,9 @@ def transition(
     rule = TRANSITIONS.get(action)
     if rule is None:
         raise InvalidInput("unknown_transition")
-    obj, _module = load_object(session, object_type, object_id)
+    obj, module = load_object(session, object_type, object_id)
     require(session, user, rule.permission, obj, ip=ip)
+    require(session, user, f"{module}.{rule.module_action}", obj, ip=ip)
     comment = (comment or "").strip() or None
     if rule.comment_required and not comment:
         raise InvalidInput("comment_required")
@@ -266,12 +272,15 @@ def history(session: Session, user: AuthUser, object_type: str, object_id: uuid.
     return entries
 
 
-def available_actions(user: AuthUser, obj: Any) -> list[str]:
+def available_actions(user: AuthUser, object_type: str, obj: Any) -> list[str]:
     """Transitions this user may run on obj now (for buttons in the admin UI)."""
+    _model, module = WORKFLOW_OBJECTS[object_type]
     return [
         name
         for name, rule in TRANSITIONS.items()
-        if obj.workflow_status in rule.sources and authorize(user, rule.permission, obj)
+        if obj.workflow_status in rule.sources
+        and authorize(user, rule.permission, obj)
+        and authorize(user, f"{module}.{rule.module_action}", obj)
     ]
 
 

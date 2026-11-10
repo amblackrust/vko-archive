@@ -1,17 +1,20 @@
 import uuid
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.models import AuditLog, DigitalFile
+from app.repositories import roles as roles_repo
 from app.models.enums import AuditResult, DescriptionStatus, FileAccess, RoleCode, WorkflowStatus
 from app.services.audit import REDACTED, sanitize
 from app.services.authz import (
     ALL_PERMISSIONS,
     DEFAULT_ROLE_PERMISSIONS,
     FILE_DOWNLOAD,
+    USERS_ASSIGN_ROLE,
     AuthUser,
     FileTarget,
+    RoleChange,
     authorize,
     object_branch_id,
     require,
@@ -48,6 +51,40 @@ def test_site_admin_cannot_manage_super_admins(factory):
     target_editor = factory.user(RoleCode.EDITOR)
     assert authorize(site_admin, "users.manage", target_editor)
     assert not authorize(site_admin, "users.manage", target_super)
+
+
+def test_role_assignment_cannot_escalate(factory):
+    def role(code: RoleCode):
+        return roles_repo.get_role(factory.session, code.value)
+
+    site_admin_user = factory.user(RoleCode.SITE_ADMIN)
+    site_admin = factory.auth(site_admin_user)
+    editor = factory.user(RoleCode.EDITOR)
+    target_super = factory.user(RoleCode.SUPER_ADMIN)
+
+    assert authorize(site_admin, USERS_ASSIGN_ROLE, RoleChange(editor, role(RoleCode.MODERATOR)))
+    # The original hole: the target is not (yet) a super admin, but the role is.
+    assert not authorize(site_admin, USERS_ASSIGN_ROLE, RoleChange(editor, role(RoleCode.SUPER_ADMIN)))
+    assert not authorize(site_admin, USERS_ASSIGN_ROLE, RoleChange(target_super, role(RoleCode.EDITOR)))
+    # Own roles and own status are off limits.
+    assert not authorize(site_admin, USERS_ASSIGN_ROLE, RoleChange(site_admin_user, role(RoleCode.EDITOR)))
+    assert not authorize(site_admin, "users.manage", site_admin_user)
+    assert not authorize(site_admin, USERS_ASSIGN_ROLE)  # needs a RoleChange
+    # Without users.manage nothing is assignable.
+    assert not authorize(factory.auth(factory.user(RoleCode.EDITOR)), USERS_ASSIGN_ROLE, RoleChange(editor, role(RoleCode.ANALYST)))
+
+    superadmin_user = factory.user(RoleCode.SUPER_ADMIN)
+    superadmin = factory.auth(superadmin_user)
+    assert authorize(superadmin, USERS_ASSIGN_ROLE, RoleChange(editor, role(RoleCode.SUPER_ADMIN)))
+    assert not authorize(superadmin, USERS_ASSIGN_ROLE, RoleChange(superadmin_user, role(RoleCode.SUPER_ADMIN)))
+    assert not authorize(superadmin, "users.manage", superadmin_user)
+
+    with pytest.raises(PermissionDenied):
+        require(factory.session, site_admin, USERS_ASSIGN_ROLE, RoleChange(editor, role(RoleCode.SUPER_ADMIN)))
+    row = factory.session.scalars(
+        select(AuditLog).where(AuditLog.user_id == site_admin.id, AuditLog.action_type == USERS_ASSIGN_ROLE)
+    ).one()
+    assert row.result == AuditResult.DENIED and row.object_id == str(editor.id)
 
 
 def test_branch_scope_uses_hierarchy(factory):
@@ -123,8 +160,11 @@ def test_require_journals_denial(factory):
     editor = factory.auth(factory.user(RoleCode.EDITOR))
     with pytest.raises(PermissionDenied):
         require(factory.session, editor, "audit.view", ip="10.0.0.1")
+    before = factory.session.scalar(select(func.count()).select_from(AuditLog))
     with pytest.raises(NotFound):
         require(factory.session, None, FILE_DOWNLOAD, None)
+    # Anonymous misses on public files are not journaled.
+    assert factory.session.scalar(select(func.count()).select_from(AuditLog)) == before
     row = factory.session.scalars(
         select(AuditLog).where(AuditLog.user_id == editor.id, AuditLog.action_type == "audit.view")
     ).one()
