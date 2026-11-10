@@ -88,3 +88,37 @@
     (уникальный индекс `lower(email)` вместо регистрозависимого), сервисы хранят email
     нормализованным (strip + lower); CHECK `date_from <= date_to`, `month 1..12`, `day 1..31`,
     `lat -90..90`, `lng -180..180`. PostgreSQL слушает только `127.0.0.1`.
+
+## 2026-11-10 — B12: авторизация, права, согласование, журнал
+
+17. **Сессия админки — JWT (HS256, PyJWT) в httpOnly + Secure + SameSite=Strict cookie `vko_session`.**
+    Ключ `JWT_SECRET` только из env (≥ 32 символов, плейсхолдер `change_me…` отклоняется;
+    `make env` генерирует случайный). Неактивность 30 мин = `exp`, токен перевыпускается на
+    каждом запросе (скользящее окно), но не дольше 12 ч от входа (`auth_time`). Смена пароля
+    инвалидирует остальные сессии (claim `pwv` = `password_changed_at`). Деактивация
+    пользователя действует сразу (пользователь читается из БД на каждом запросе).
+    Ограничение: logout очищает cookie, но не отзывает токен на сервере (нет таблицы сессий,
+    чтобы не трогать схему); украденный токен живёт ≤ 30 мин бездействия.
+18. **CSRF — токен внутри JWT** (claim `csrf`), фронт получает его в ответе login/`me` и в
+    читаемой cookie `vko_csrf` и шлёт в `X-CSRF-Token` на POST/PUT/PATCH/DELETE; сравнение
+    `hmac.compare_digest`. Плюс SameSite=Strict.
+19. **Пароли — argon2id (argon2-cffi)**, длина 10–256, неизвестный email проверяется против
+    фиктивного хеша (одинаковое время ответа). 5 неудач подряд → блок 15 мин (HTTP 429 +
+    Retry-After; это раскрывает существование учётки только после 5 попыток — допустимо).
+20. **Права — строки `module.action`** (каталог в `services/authz.PERMISSIONS`), матрица в БД
+    (`permissions`, `role_permissions`), по умолчанию — `DEFAULT_ROLE_PERMISSIONS`, применяется
+    только при создании роли. Главный админ обходит матрицу; `roles.manage` (правка матрицы)
+    вне матрицы — только главный админ, чтобы никто не выдал себе права и не запер его.
+    Филиальная область: если все роли пользователя из {branch_admin, archivist} и задан
+    branch_id (branch_admin — всегда), объект должен принадлежать его филиалу; филиал объекта
+    каталога выводится из иерархии case → inventory → fund.branch_id (`documents.branch_id`
+    синхронизируется при сохранении через `save_with_version`).
+21. **Отказ в доступе журналируется** (`result=denied`) отдельным коммитом после rollback
+    запроса. Для `file.download` отказ → 404 (DECISIONS п.14), для остального → 403.
+22. **Workflow:** submit (draft/needs_changes→review), return (review/approved→needs_changes,
+    комментарий обязателен), approve (review→approved), publish (approved→published),
+    archive (published/approved→archived), restore (archived→draft). Оптимистическая
+    блокировка `UPDATE … WHERE version=:v` → 409 `version_conflict`. История = снимки в
+    `workflow_history.snapshot`, diff считается между соседними снимками. Публикация не
+    меняет `file_access`/`digital_files.access`.
+23. **Миграция не понадобилась:** модели B01 покрыли все поля; номер `0004_*` не занят.

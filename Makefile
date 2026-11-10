@@ -17,8 +17,10 @@ env:
 	fi
 	@if [ ! -f backend/.env ]; then \
 		pw=$$(sed -n 's/^POSTGRES_PASSWORD=//p' .env) && \
-		sed "s/:change_me@/:$$pw@/" backend/.env.example > backend/.env && \
-		echo "created backend/.env (password taken from .env)"; \
+		jwt=$$(python3 -c 'import secrets; print(secrets.token_hex(32))') && \
+		sed -e "s/:change_me@/:$$pw@/" -e "s/^JWT_SECRET=change_me_jwt_secret$$/JWT_SECRET=$$jwt/" \
+			backend/.env.example > backend/.env && \
+		echo "created backend/.env (password taken from .env, random JWT_SECRET)"; \
 	fi
 	@if grep -q change_me .env backend/.env; then \
 		echo "error: .env or backend/.env still uses the example password change_me" >&2; exit 1; \
