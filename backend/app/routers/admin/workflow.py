@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, BackgroundTasks, Query, status
 
 from app.deps import BackgroundUser, ClientIp, CurrentUser, DbSession
 from app.schemas.workflow import (
@@ -10,16 +10,24 @@ from app.schemas.workflow import (
     TransitionRequest,
     TransitionResponse,
 )
-from app.services import workflow
+from app.services import indexing, workflow
 
 router = APIRouter(tags=["admin: workflow"])
 
 
 @router.post("/workflow/{object_type}/{object_id}/transitions", response_model=TransitionResponse)
 def run_transition(
-    object_type: str, object_id: uuid.UUID, body: TransitionRequest, user: CurrentUser, session: DbSession, ip: ClientIp
+    object_type: str,
+    object_id: uuid.UUID,
+    body: TransitionRequest,
+    user: CurrentUser,
+    session: DbSession,
+    ip: ClientIp,
+    background: BackgroundTasks,
 ) -> TransitionResponse:
     obj = workflow.transition(session, user, object_type, object_id, body.action, body.version, body.comment, ip=ip)
+    # Search vectors for the re-indexed rows are computed after the response.
+    background.add_task(indexing.embed_pending_background, session.get_bind())
     return TransitionResponse(
         object_type=object_type,
         object_id=obj.id,
