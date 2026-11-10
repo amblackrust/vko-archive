@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
+from app.logging_config import configure_logging, log_requests
 from app.routers import admin
 from app.routers.public import ai, branches, catalog, content, files, health, home, legal, search
 from app.services.errors import (
@@ -44,7 +45,9 @@ def create_app() -> FastAPI:
     settings = get_settings()
     if settings.app_env != "development" and settings.jwt_secret is None:
         raise RuntimeError("JWT_SECRET is required outside development (generate one with `make env`)")
+    configure_logging()
     app = FastAPI(title="VKO State Archive API", version="0.1.0")
+    app.middleware("http")(log_requests)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

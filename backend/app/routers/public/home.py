@@ -15,18 +15,25 @@ router = APIRouter(prefix="/home", tags=["home"])
 
 @router.get("/memorial-dates", response_model=MemorialDatesResponse)
 def memorial_dates(
-    session: DbSession, lang: Annotated[str, Query(pattern="^(kk|ru|en)$")] = "ru"
+    session: DbSession,
+    lang: Annotated[str, Query(pattern="^(kk|ru|en)$")] = "ru",
+    year: Annotated[int | None, Query(ge=2000, le=2100)] = None,
+    month: Annotated[int | None, Query(ge=1, le=12)] = None,
 ) -> MemorialDatesResponse:
-    """Published memorial dates of the current month (calendar year of the table), today's first."""
+    """Published memorial dates. Without year/month: the current month, today's first (main page).
+    With year (and optional month): that year's dates for the memorial calendar (T5.15)."""
     today = date.today()
+    current_month = year is None and month is None
+    if current_month:
+        year, month = today.year, today.month
+    year = year or today.year
+    filters = [MemorialDate.workflow_status == WorkflowStatus.PUBLISHED, MemorialDate.year == year]
+    if month is not None:
+        filters.append(MemorialDate.month == month)
     rows = session.scalars(
         select(MemorialDate)
-        .where(
-            MemorialDate.workflow_status == WorkflowStatus.PUBLISHED,
-            MemorialDate.year == today.year,
-            MemorialDate.month == today.month,
-        )
-        .order_by(MemorialDate.day.nulls_last(), MemorialDate.event_year)
+        .where(*filters)
+        .order_by(MemorialDate.month, MemorialDate.day.nulls_last(), MemorialDate.event_year)
     )
     items = []
     for row in rows:
@@ -34,7 +41,8 @@ def memorial_dates(
         if text:
             items.append(MemorialDateItem(
                 day=row.day, month=row.month, event_year=row.event_year, date_text=row.date_text,
-                text=text, text_lang=text_lang, is_today=row.day == today.day,
+                text=text, text_lang=text_lang, is_today=current_month and row.day == today.day,
             ))
-    items.sort(key=lambda i: not i.is_today)  # stable: today's first, then by day
-    return MemorialDatesResponse(year=today.year, month=today.month, items=items)
+    if current_month:
+        items.sort(key=lambda i: not i.is_today)  # stable: today's first, then by day
+    return MemorialDatesResponse(year=year, month=month, items=items)
