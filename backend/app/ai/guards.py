@@ -16,15 +16,30 @@ from dataclasses import dataclass
 
 _FLAGS = re.IGNORECASE | re.UNICODE
 
+# Only unambiguous markers of a non-archive task, with word boundaries: archive topics
+# (political repressions, hospitals, manuscripts, «программа съезда», «код фонда») must
+# pass. Borderline queries are left to the parser's `intent: off_topic`.
 _OFF_TOPIC = re.compile(
-    r"(\bкод\w*\b|\bpython\b|javascript|\bjava\b|\bc\+\+|\bsql\b|\bhtml\b|программ\w* на|скрипт|"
-    r"\bfunction\b|\bcode\b|\bscript\b|бағдарлама жаз|"
-    r"домашн\w* задан|реши\w*\b.{0,20}(задач|уравнен|пример)|уравнени|интеграл|\bhomework\b|\bsolve\b|"
-    r"есепті шығар|үй тапсырма|"
-    r"выбор\w*\b.{0,20}(президент|депутат)|за кого голос|политическ|\bpolitic|саяси|"
-    r"диагноз|лекарств|симптом|лечени|болит|таблетк|\bmedical\b|\bdiagnos|\bmedicine\b|ауырады|дәрі|"
-    r"рецепт\w* (блюд|торт|салат)|анекдот|гороскоп|\bjoke\b|стих\w* про|напиши (стих|сочинени|эссе)|"
-    r"курс (доллар|валют)|\bbitcoin\b|криптовалют)",
+    # programming
+    r"\b(python|javascript|typescript|java|sql|php|golang)\b|\bc(\+\+|#)(?!\w)|"
+    r"\b(напиши|написать|напишите)\s+(мне\s+)?(код|программу|скрипт|функцию)\b|"
+    r"\bwrite\s+(me\s+)?(a\s+|an\s+|some\s+|the\s+)?(code|program|script|function)\b|"
+    r"\b(бағдарлама|код)\s+жаз|"
+    # homework
+    r"\bреши\w*\b.{0,20}\b(задач|уравнени|пример)|\bдомашн\w*\s+задани|\bhomework\b|"
+    r"\bsolve\s+(this\s+|the\s+|an?\s+|my\s+)?(equation|problem|task|integral)|"
+    r"\bесеп\w*\s+шығар|\bүй\s+тапсырма|"
+    # politics: advice whom to vote for (political history is an archive topic)
+    r"\bза\s+кого\s+голосовать|\bwho\s+(should\s+i|to)\s+vote\b|\bкімге\s+дауыс\s+бер|"
+    # medical advice (hospitals, treatment of the wounded etc. are archive topics)
+    r"\b(как|чем)\s+(лечить|вылечить|лечиться)\b|"
+    r"\bкак\w*\s+(лекарств\w*|таблетк\w*)\s+(пить|выпить|принимать|купить|мне)\b|\bпоставь\w*\s+(мне\s+)?диагноз|"
+    r"\bwhat\s+(medicine|medication|pills?)\s+(should|can|do)\s+i\b|\bhow\s+(to|do\s+i|can\s+i)\s+(treat|cure)\b|"
+    r"\bқандай\s+дәрі\s+іш|\bқалай\s+емде|"
+    # entertainment and the like
+    r"\bнапиши\w*\s+(мне\s+)?(стих|сочинени|эссе|рассказ)|\bwrite\s+(me\s+)?(a\s+|an\s+)?(poem|essay|joke)|"
+    r"\btell\s+(me\s+)?a\s+joke|\bөлең\s+жаз|\bанекдот\w*|\bгороскоп\w*|"
+    r"\bрецепт\w*\s+(блюд|торт|салат)|\bbitcoin\b|\bкриптовалют",
     _FLAGS,
 )
 
@@ -34,7 +49,10 @@ _INJECTION = re.compile(
     r"\bignore\s+(all\s+|any\s+|the\s+|your\s+|previous\s+|prior\s+|above\s+)*(instructions?|rules|prompts?)|"
     r"\bdisregard\s+(all\s+|the\s+|your\s+|previous\s+)*(instructions?|rules)|"
     r"(нұсқаулық\w*|ережел\w*)\s*(ты|ді|ны|ні)?\s*(елеме|ұмыт)\w*|"
-    r"\b(ты|вы)\s+теперь\b|\byou\s+are\s+now\b|\bact\s+as\b|притворись|представь,? что ты|"
+    r"\b(ты|вы)\s+теперь\b|\byou\s+are\s+now\b|"
+    # «act as» only as a role command: at a sentence start or after «please/now/and».
+    r"(?:^|[.!?;:]\s*|\b(?:please|now|and)\s+)act\s+as\s+(?:an?|my|if)\b|\bpretend\s+(?:to\s+be|you\s+are)\b|"
+    r"притворись|представь,? что ты|"
     r"(покажи|раскрой|выведи|напиши)\s+(свой\s+|свои\s+|системн\w*\s+)*(промпт|инструкц\w*|правила)|"
     r"system\s*prompt|системн\w* промпт|developer mode|\bjailbreak\b",
     _FLAGS,

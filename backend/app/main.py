@@ -14,6 +14,7 @@ from app.services.errors import (
     NotAuthenticated,
     NotFound,
     PermissionDenied,
+    RateLimited,
     ServiceError,
 )
 
@@ -21,6 +22,7 @@ _ERROR_STATUS: dict[type[ServiceError], int] = {
     NotAuthenticated: status.HTTP_401_UNAUTHORIZED,
     InvalidCredentials: status.HTTP_401_UNAUTHORIZED,
     AccountLocked: status.HTTP_429_TOO_MANY_REQUESTS,
+    RateLimited: status.HTTP_429_TOO_MANY_REQUESTS,
     CsrfFailed: status.HTTP_403_FORBIDDEN,
     PermissionDenied: status.HTTP_403_FORBIDDEN,
     NotFound: status.HTTP_404_NOT_FOUND,
@@ -30,7 +32,7 @@ _ERROR_STATUS: dict[type[ServiceError], int] = {
 
 
 def _service_error_handler(request: Request, exc: ServiceError) -> JSONResponse:
-    headers = {"Retry-After": str(exc.retry_after_seconds)} if isinstance(exc, AccountLocked) else None
+    headers = {"Retry-After": str(exc.retry_after_seconds)} if isinstance(exc, (AccountLocked, RateLimited)) else None
     return JSONResponse(
         {"detail": exc.code},
         status_code=_ERROR_STATUS.get(type(exc), status.HTTP_400_BAD_REQUEST),

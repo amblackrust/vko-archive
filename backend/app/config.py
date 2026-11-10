@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     ollama_chat_timeout_seconds: float = 120.0
     ollama_parser_timeout_seconds: float = 60.0
     ollama_num_ctx: int = 8192
+    # Generation limits (DoS): tokens per answer, simultaneous generations per process
+    # (more → fast «busy» refusal), requests per IP per minute to /api/ai/parse and /answer*.
+    ollama_num_predict: int = 400
+    ai_max_concurrent_generations: int = 2
+    ai_rate_limit_per_minute: int = 10
     # The first embed call may load bge-m3 into memory (several seconds).
     ollama_embed_timeout_seconds: float = 30.0
     # /api/health is public: its Ollama probes are short and their result is cached.

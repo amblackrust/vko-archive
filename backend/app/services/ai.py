@@ -41,7 +41,8 @@ from app.schemas.ai import (
 )
 from app.schemas.search import SearchFilters, SearchItem
 from app.services import search as search_service
-from app.services import search_log
+from app.services import rate_limit, search_log
+from app.services.errors import RateLimited
 from app.services.indexing import DOC_TYPE_LABELS, strip_html
 
 logger = logging.getLogger(__name__)
@@ -99,6 +100,13 @@ def _i18n(value: dict[str, str] | None, lang: str) -> str:
         if value.get(lng):
             return value[lng]
     return ""
+
+
+def check_rate_limit(settings: Settings, ip: str | None) -> None:
+    """Per-IP limit on requests that may start a generation (DoS); 429 with Retry-After."""
+    retry_after = rate_limit.ai_limiter.hit(ip or "unknown", settings.ai_rate_limit_per_minute)
+    if retry_after is not None:
+        raise RateLimited(retry_after)
 
 
 def status(settings: Settings) -> AiStatus:
