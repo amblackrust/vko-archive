@@ -1,1 +1,13 @@
-{}
+{
+  "title": "About the archive",
+  "intro": "Official information about the State Archive of East Kazakhstan region: history, structure and contacts.",
+  "sections": {
+    "history": "History of the archive",
+    "structure": "Management and structure",
+    "branches": "Branches",
+    "legal": "Legal acts",
+    "compliance": "Compliance service",
+    "contacts": "Contacts"
+  },
+  "pending": "Main activities, mission and objectives, activity reports and the photo gallery will appear on the site after the materials are agreed with the archive."
+}

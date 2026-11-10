@@ -1,1 +1,44 @@
-{}
+{
+  "title": "Contacts",
+  "intro": "The head archive and its branches. Phone numbers and e-mail addresses are given as published by the archive.",
+  "address": "Address",
+  "director": "Director",
+  "phones": "Phones",
+  "email": "E-mail",
+  "hours": "Opening hours",
+  "readingRoomHours": "Reading room",
+  "social": "Follow us",
+  "links": {
+    "branches": "Branches and map",
+    "faq": "Questions and answers",
+    "readingRoom": "Reading room",
+    "privacy": "Privacy policy"
+  },
+  "unavailable": "Contact details are temporarily unavailable. Please try again later.",
+  "privacy": {
+    "title": "Privacy policy",
+    "notice": "Draft text for the prototype. The final version must be approved by the archive and reviewed by a lawyer.",
+    "sections": {
+      "data": {
+        "title": "What data is processed",
+        "text": "Browsing the catalogue, news and reference sections does not require registration. The site does not ask visitors for personal data in these sections."
+      },
+      "search": {
+        "title": "Search queries",
+        "text": "Search queries may be stored in anonymised form for statistics: without IP addresses and without visitor identifiers."
+      },
+      "cookies": {
+        "title": "Cookies and settings",
+        "text": "The site remembers the selected language and colour theme. Session cookies are used only by staff who sign in to the site management system."
+      },
+      "external": {
+        "title": "External links",
+        "text": "Visits to eGov.kz, e-Otinish, social networks and map services are governed by the policies of those resources."
+      },
+      "contact": {
+        "title": "Questions about data",
+        "text": "For questions about the processing of personal data, contact the archive using the details in the Contacts section."
+      }
+    }
+  }
+}
