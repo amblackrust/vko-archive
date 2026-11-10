@@ -1,0 +1,11 @@
+*:Zone.Identifier
+.serena/
+.env
+node_modules/
+.next/
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+backend/storage/masters/
+backend/storage/previews/
