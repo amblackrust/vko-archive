@@ -41,6 +41,7 @@ from app.schemas.ai import (
 )
 from app.schemas.search import SearchFilters, SearchItem
 from app.services import search as search_service
+from app.services import search_log
 from app.services.indexing import DOC_TYPE_LABELS, strip_html
 
 logger = logging.getLogger(__name__)
@@ -256,12 +257,14 @@ def _top_hits(session: Session, settings: Settings, filters: AppliedFilters, lan
         settings,
         SearchFilters(
             q=filters.q, lang=lang, types=filters.types, doc_type=filters.doc_type, period=filters.period,
-            per_group=rag.MAX_ITEMS,
+            per_group=rag.MAX_ITEMS, log=False,
         ),
     )
     hits = [item for group in response.groups for item in group.items]
     hits.sort(key=lambda item: -item.score)
-    return hits[: rag.MAX_ITEMS]
+    hits = hits[: rag.MAX_ITEMS]
+    search_log.log_search(session, query=filters.q, lang=lang, source="ai", results_count=len(hits))
+    return hits
 
 
 # --- prepared request -------------------------------------------------------------
