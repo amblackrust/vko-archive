@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, I18n, TimestampMixin, UUIDPkMixin, i18n_column
@@ -10,7 +10,7 @@ from app.models.base import Base, I18n, TimestampMixin, UUIDPkMixin, i18n_column
 class User(UUIDPkMixin, TimestampMixin, Base):
     __tablename__ = "users"
 
-    email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)  # argon2
     full_name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="true")
@@ -25,6 +25,10 @@ class User(UUIDPkMixin, TimestampMixin, Base):
     )
 
     roles: Mapped[list["Role"]] = relationship(secondary="user_roles", back_populates="users")
+
+
+# Case-insensitive email uniqueness; services must still store emails normalized (strip + lower).
+Index("uq_users_email_lower", func.lower(User.email), unique=True)
 
 
 class Role(UUIDPkMixin, TimestampMixin, Base):

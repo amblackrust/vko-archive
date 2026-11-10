@@ -5,7 +5,7 @@ from datetime import date as date_type
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, Numeric, String, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -90,6 +90,10 @@ class PriceListItem(ContentMixin, Base):
 
 class MemorialDate(ContentMixin, Base):
     __tablename__ = "memorial_dates"
+    __table_args__ = (
+        CheckConstraint("month BETWEEN 1 AND 12", name="month_range"),
+        CheckConstraint("day BETWEEN 1 AND 31", name="day_range"),
+    )
 
     year: Mapped[int] = mapped_column(Integer, nullable=False, index=True)  # calendar year (2022..2026)
     month: Mapped[int] = mapped_column(Integer, nullable=False)

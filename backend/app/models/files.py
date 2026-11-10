@@ -4,13 +4,15 @@ from sqlalchemy import BigInteger, Boolean, ForeignKey, Index, Integer, String, 
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, I18n, TimestampMixin, UUIDPkMixin, i18n_column, str_enum
-from app.models.enums import OcrStatus
+from app.models.enums import FileAccess, OcrStatus
 
 
 class DigitalFile(UUIDPkMixin, TimestampMixin, Base):
     """A stored file (master + preview). Paths are relative to the storage dir and
     must never be exposed in public API responses; files are served only through
-    GET /api/files/{id} after an access check on the owner."""
+    GET /api/files/{id} after an access check: the file's own `access` must allow it
+    AND, if the owner is a document, the document's `file_access` must allow it too
+    (see docs/DECISIONS.md, B01 review)."""
 
     __tablename__ = "digital_files"
     __table_args__ = (Index("ix_digital_files_owner", "owner_type", "owner_id"),)
@@ -36,5 +38,13 @@ class DigitalFile(UUIDPkMixin, TimestampMixin, Base):
         nullable=False,
         default=OcrStatus.NONE,
         server_default=OcrStatus.NONE.value,
+    )
+    # The file's own access level, independent of the owner: a file attached to a
+    # non-document owner (exhibit, news, ...) cannot inherit a document's restrictions.
+    access: Mapped[FileAccess] = mapped_column(
+        str_enum(FileAccess, "file_access"),
+        nullable=False,
+        default=FileAccess.NEEDS_REVIEW,
+        server_default=FileAccess.NEEDS_REVIEW.value,
     )
     is_demo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")

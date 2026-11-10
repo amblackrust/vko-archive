@@ -4,7 +4,7 @@ import uuid
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import Column, Date, ForeignKey, Index, Integer, Numeric, String, Table
+from sqlalchemy import CheckConstraint, Column, Date, ForeignKey, Index, Integer, Numeric, String, Table
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -75,6 +75,11 @@ class Person(ContentMixin, Base):
 
 class HistoricalEvent(ContentMixin, Base):
     __tablename__ = "historical_events"
+    __table_args__ = (
+        CheckConstraint("date_from <= date_to", name="date_range"),
+        CheckConstraint("lat BETWEEN -90 AND 90", name="lat_range"),
+        CheckConstraint("lng BETWEEN -180 AND 180", name="lng_range"),
+    )
 
     date_text: Mapped[str | None] = mapped_column(String(64))
     date_from: Mapped[date | None] = mapped_column(Date, index=True)

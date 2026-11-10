@@ -8,6 +8,7 @@ from datetime import date
 
 from sqlalchemy import (
     Boolean,
+    CheckConstraint,
     Column,
     Date,
     ForeignKey,
@@ -40,6 +41,8 @@ document_categories = Table(
 
 class Fund(ContentMixin, Base):
     __tablename__ = "funds"
+    # A fund number is unique within its archive (branch); NULL branch counts as one archive.
+    __table_args__ = (UniqueConstraint("branch_id", "number", postgresql_nulls_not_distinct=True),)
 
     number: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     title: Mapped[I18n] = i18n_column()
@@ -101,6 +104,7 @@ class Document(ContentMixin, Base):
             postgresql_using="gin",
             postgresql_ops={"archive_code": "gin_trgm_ops"},
         ),
+        CheckConstraint("date_from <= date_to", name="date_range"),
     )
 
     # `id` (uuid) is the stable internal id; the archive code (шифр) is a separate field.
