@@ -1,1 +1,87 @@
-{}
+{
+  "openSection": "Open",
+  "external": "external site, opens in a new tab",
+  "hero": {
+    "title": "Ask the archive in your own words",
+    "subtitle": "Describe what you are looking for: an event, a place, a person or a document. Search works in Kazakh, Russian and English.",
+    "label": "Search the archive",
+    "submit": "Search",
+    "chipsLabel": "For example:",
+    "advanced": "Advanced catalogue search",
+    "e1": "Photos of Ust-Kamenogorsk in the 1960s",
+    "e2": "Certificate about my grandfather, who worked at the lead plant",
+    "e3": "How to get an archive certificate",
+    "e4": "Branch in Ridder"
+  },
+  "catalog": {
+    "title": "Electronic catalogue",
+    "text": "Archive documents by category. Open materials can be viewed online; for the rest the access status is shown."
+  },
+  "explore": {
+    "title": "History and events"
+  },
+  "cards": {
+    "history": {
+      "title": "History in documents",
+      "text": "Thematic collections, a timeline and a map of the region built from archive materials."
+    },
+    "exhibitions": {
+      "title": "Online exhibitions",
+      "text": "Virtual exhibitions of archive documents and photographs."
+    },
+    "news": {
+      "title": "News and events",
+      "text": "Archive news, announcements and events."
+    },
+    "help": {
+      "title": "Visitor guide",
+      "text": "How to use the site, search and read archive codes."
+    },
+    "readingRoom": {
+      "title": "Reading room",
+      "text": "Rules and hours: Mon-Fri 9:00-16:00, no prior booking."
+    },
+    "legal": {
+      "title": "Legal acts",
+      "text": "Laws and regulations governing the archive."
+    },
+    "egov": {
+      "title": "eGov.kz",
+      "text": "The e-government portal: public services online."
+    }
+  },
+  "service": {
+    "title": "How to get an archive certificate",
+    "text": "This site only informs: the procedure, the list of documents and the time limits of the public service are described in the services section. The application is submitted on eGov.kz, not on this site.",
+    "cta": "Certificate procedure"
+  },
+  "branches": {
+    "title": "Our branches",
+    "text": "The head archive and branches on the regional map: {count}.",
+    "all": "All branches, addresses and directions",
+    "mapLabel": "Mini-map of archive branches",
+    "tilesFailed": "The map did not load. The branch list on the right and the branches page are available."
+  },
+  "calendar": {
+    "title": "Calendar of memorable dates",
+    "today": "Today",
+    "empty": "Memorable dates for this month are not published yet."
+  },
+  "useful": {
+    "title": "Useful information"
+  },
+  "social": {
+    "title": "We are on social media",
+    "feedStub": "The post feed is connected when social network APIs are available. For now, links to the archive pages are provided."
+  },
+  "share": {
+    "label": "Share",
+    "facebook": "Facebook",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "copy": "Copy link",
+    "copied": "Link copied",
+    "copyManual": "Copy the link",
+    "external": "external site, opens in a new tab"
+  }
+}

@@ -1,1 +1,62 @@
-{}
+{
+  "title": "Branches and map",
+  "intro": "The head archive and branches in the districts and cities of East Kazakhstan Region: addresses, contacts, opening hours and directions.",
+  "search": {
+    "label": "Search branches",
+    "placeholder": "Name or locality"
+  },
+  "filter": {
+    "label": "Branch type"
+  },
+  "types": {
+    "all": "All",
+    "head": "Head archive",
+    "district": "District branch",
+    "city": "City branch",
+    "personnel": "Personnel records"
+  },
+  "count": "Branches found: {count}",
+  "empty": "No branches match. Change the query or the type.",
+  "selectHint": "Choose a branch in the list or on the map to see its address, contacts and directions.",
+  "map": {
+    "label": "Map of archive branches",
+    "tilesFailed": "The map did not load. The address, contacts and external map links are available in the branch card."
+  },
+  "card": {
+    "address": "Address",
+    "phone": "Phone",
+    "email": "E-mail",
+    "director": "Head",
+    "hours": "Opening hours",
+    "funds": "Holdings",
+    "pending": "to be confirmed",
+    "details": "Branch page",
+    "coordsPending": "Coordinates are being verified: the map point is approximate, rely on the address.",
+    "notOnMap": "This branch is not shown on the map. Its address and contacts are above."
+  },
+  "route": {
+    "title": "Getting there",
+    "useLocation": "Use my location",
+    "addressLabel": "Starting address",
+    "addressPlaceholder": "Where from: address or city",
+    "find": "Find",
+    "mode": "Mode of travel",
+    "modes": {
+      "car": "By car",
+      "walk": "On foot",
+      "transit": "Public transport",
+      "bike": "By bicycle"
+    },
+    "distance": "Straight-line distance: about {km} km. Open the road route in an external service.",
+    "originSet": "Starting point set.",
+    "geoDenied": "Location access was not allowed. Enter an address manually or open the branch address via the links below.",
+    "geoUnavailable": "Could not determine your location. Enter an address manually or use the links below.",
+    "geocodeFailed": "Address not found. Use the external map links below.",
+    "open": {
+      "twoGis": "Open in 2GIS",
+      "google": "Open in Google Maps",
+      "yandex": "Open in Yandex Maps"
+    },
+    "external": "external site, opens in a new tab"
+  }
+}
