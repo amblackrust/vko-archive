@@ -15,5 +15,5 @@ class MemorialDateItem(BaseModel):
 
 class MemorialDatesResponse(BaseModel):
     year: int
-    month: int
+    month: int | None  # None: the whole year was requested
     items: list[MemorialDateItem]

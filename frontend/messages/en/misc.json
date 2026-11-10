@@ -1,1 +1,54 @@
-{}
+{
+  "publications": {
+    "title": "Publications, document collections and photo gallery",
+    "intro": "A selection of publications, collections of archival documents and photographs.",
+    "sections": {
+      "publications": "Publications",
+      "collections": "Document collections",
+      "photos": "Photo gallery"
+    },
+    "pending": "This section is being filled. Materials are published after agreement with the archive.",
+    "catalogLink": "Go to the electronic catalog"
+  },
+  "calendar": {
+    "title": "Calendar of memorable dates",
+    "intro": "Memorable and historical dates by year and month.",
+    "yearLabel": "Year",
+    "monthLabel": "Month",
+    "wholeYear": "Whole year",
+    "noDay": "Day not specified",
+    "empty": "There are no memorable dates for the selected period.",
+    "range": "The calendar covers the years 2022–2026.",
+    "widgetTitle": "Calendar and weather",
+    "widgetWeather": "Weather will be connected through an external service. It is not available yet.",
+    "demoNote": "This widget is a demonstration."
+  },
+  "symbols": {
+    "title": "State symbols of the Republic of Kazakhstan",
+    "intro": "Open informational materials on the state symbols and official sources.",
+    "pending": "This section is being filled. Materials and links to official sources will be added after agreement with the client.",
+    "linksLink": "Useful links"
+  },
+  "links": {
+    "title": "Useful links",
+    "intro": "Verified links to official resources. External sites open in a new tab.",
+    "officialTitle": "Official resources",
+    "akorda": "Akorda — President of the Republic of Kazakhstan",
+    "akimat": "Akimat of the East Kazakhstan region",
+    "digitalization": "Department of Digitalization and Archives of the East Kazakhstan region",
+    "veterans": "Materials on World War II veterans",
+    "urlPending": "Link to be confirmed",
+    "servicesTitle": "Site services",
+    "converter": "Latin script converter",
+    "converterText": "External tool. A separate translation service is not developed on this site.",
+    "rating": "Website rating",
+    "ratingPending": "Placeholder for a rating. It will appear once the client confirms its purpose and data reliability.",
+    "stats": "Site statistics",
+    "statsPending": "Public aggregates (page views and visitors) are being connected. Personal data is not disclosed.",
+    "poll": "Poll",
+    "pollPending": "The poll is not connected yet. A poll is not an official request."
+  },
+  "seo": {
+    "description": "State Archive of the East Kazakhstan region: documents, funds, branches, history and reference information."
+  }
+}

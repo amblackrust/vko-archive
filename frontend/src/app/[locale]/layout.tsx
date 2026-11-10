@@ -7,6 +7,7 @@ import { AssistantWidget } from "@/components/ai/chat/assistant-widget";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { routing } from "@/lib/i18n/routing";
+import { SITE_URL } from "@/lib/seo";
 import "../globals.css";
 
 // cyrillic-ext содержит казахские ә ғ қ ң ө ұ ү һ; і — в cyrillic.
@@ -29,7 +30,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "layout" });
-  return { title: { default: t("siteName"), template: `%s | ${t("siteShort")}` } };
+  const seo = await getTranslations({ locale, namespace: "misc.seo" });
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: { default: t("siteName"), template: `%s | ${t("siteShort")}` },
+    description: seo("description"),
+  };
 }
 
 export default async function LocaleLayout({
