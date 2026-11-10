@@ -12,6 +12,9 @@ from app.models import Case, Document, Fund, Inventory
 from app.repositories import catalog as repo
 from app.repositories import catalog_tree as tree
 from app.schemas.catalog import (
+    DocumentDetail,
+    DocumentFile,
+    TagRef,
     CaseDetail,
     CaseItem,
     CasesResponse,
@@ -31,6 +34,10 @@ from app.schemas.catalog import (
     PageParams,
     Ref,
 )
+from app.repositories import files as files_repo
+from app.services import files as files_service
+from app.services import search_log
+from app.services.authz import AuthUser
 from app.services.errors import NotFound
 
 _FALLBACK = ("ru", "kk", "en")
@@ -122,6 +129,10 @@ def search_documents(session: Session, filters: CatalogFilters) -> DocumentsResp
         category=[FacetValue(value=key, count=count) for key, count in raw["category"].items()],
         with_digital_copy=raw["with_digital_copy"],
     )
+    # Only page 1 is logged (paging is not a new search); filters alone count when nothing was found.
+    query = filters.q or filters.title or filters.keyword
+    if filters.page == 1 and (query.strip() or total == 0):
+        search_log.log_search(session, query=query, lang=lang, source="catalog", results_count=total)
     return DocumentsResponse(
         **_page(total, filters.page, filters.per_page),
         items=[_document_item(row, lang) for row in rows],
@@ -241,3 +252,59 @@ def get_case(session: Session, case_id: uuid.UUID, params: PageParams) -> CaseDe
         **_page(total, params.page, params.per_page), items=[_document_item(r, params.lang) for r in rows]
     )
     return CaseDetail(**item.model_dump(), documents=documents)
+
+
+RELATED_LIMIT = 6
+
+
+def _related(session: Session, row: Any, tags: list[Any], lang: str) -> list[DocumentItem]:
+    """Other public documents: the same case first, then those sharing a topic."""
+    document: Document = row.Document
+    found: dict[uuid.UUID, DocumentItem] = {}
+    queries = []
+    if document.case_id is not None:
+        queries.append(({"sort": "code"}, document.case_id))
+    if tags:
+        queries.append(({"sort": "code", "topic": [tag.id for tag in tags]}, None))
+    for extra, case_id in queries:
+        filters = CatalogFilters(lang=lang, per_page=RELATED_LIMIT + 1, **extra)
+        for related in repo.search_documents(session, filters, case_id=case_id)[1]:
+            if related.Document.id != document.id and len(found) < RELATED_LIMIT:
+                found.setdefault(related.Document.id, _document_item(related, lang))
+    return list(found.values())
+
+
+def get_document(session: Session, user: AuthUser | None, document_id: uuid.UUID, lang: str) -> DocumentDetail:
+    """Public document card. Not public (draft, needs review, do_not_publish) or unknown -> 404."""
+    row = repo.get_public_document(session, document_id)
+    if row is None:
+        raise NotFound()
+    document: Document = row.Document
+    tags = repo.published_tags(session, document.id)
+    visible = {ref.id: ref for ref in files_service.visible_files(session, user, document)}
+    files = [
+        DocumentFile(
+            id=file.id,
+            position=file.position,
+            mime=visible[file.id].mime,
+            pages=file.pages,
+            url=visible[file.id].url,
+            preview_url=visible[file.id].preview_url,
+            caption=pick(file.caption, lang)[0],
+            ocr_text=file.ocr_text or None,
+        )
+        for file in files_repo.files_of_owner(session, "document", document.id)
+        if file.id in visible
+    ]
+    branch_names = repo.published_branch_names(session, [document.branch_id] if document.branch_id else [])
+    return DocumentDetail(
+        **_document_item(row, lang).model_dump(),
+        historical_note=pick(document.historical_note, lang)[0],
+        summary=pick(document.summary, lang)[0],
+        storage_location=document.storage_location,
+        access_conditions=pick(document.access_conditions, lang)[0],
+        branch=pick(branch_names[document.branch_id], lang)[0] if document.branch_id in branch_names else None,
+        tags=[TagRef(id=tag.id, name=pick(tag.name, lang)[0], href=f"/catalog?topic={tag.id}") for tag in tags],
+        files=files,
+        related=_related(session, row, tags, lang),
+    )

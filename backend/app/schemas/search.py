@@ -16,6 +16,8 @@ class SearchFilters(BaseModel):
     branch_id: list[uuid.UUID] = Field(default_factory=list)
     per_group: int = Field(default=5, ge=1, le=50)
     offset: int = Field(default=0, ge=0, le=1000)
+    # False for internal lookups (suggestions, AI retrieval) that are not a visitor's own search.
+    log: bool = True
 
 
 class DocumentMeta(BaseModel):

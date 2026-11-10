@@ -44,6 +44,7 @@ from app.schemas.search import (
     SearchResponse,
 )
 from app.services import files as files_service
+from app.services import search_log
 from app.services.authz import FILE_DOWNLOAD, authorize
 from app.services.indexing import INDEXED_TYPES, OCR_LANG
 
@@ -437,6 +438,8 @@ def search(session: Session, settings: Settings, filters: SearchFilters) -> Sear
             )
         groups.append(SearchGroup(type=object_type, total=len(by_type[object_type]), items=items))
 
+    if filters.log and filters.offset == 0:
+        search_log.log_search(session, query=text, lang=filters.lang, source="search", results_count=len(selected))
     return SearchResponse(
         query=text,
         lang=filters.lang,

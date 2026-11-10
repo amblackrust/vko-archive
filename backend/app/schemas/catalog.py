@@ -181,3 +181,36 @@ class CaseDetail(CaseItem):
 
 class DocumentPage(Pagination):
     items: list[DocumentItem]
+
+
+class DocumentFile(BaseModel):
+    """A file the viewer may open. Only ids and /api/files URLs, never storage paths."""
+
+    id: uuid.UUID
+    position: int
+    mime: str
+    pages: int | None
+    url: str
+    preview_url: str | None
+    caption: str
+    ocr_text: str | None
+
+
+class TagRef(BaseModel):
+    id: uuid.UUID
+    name: str
+    href: str  # catalog filtered by this topic
+
+
+class DocumentDetail(DocumentItem):
+    """Document card (T3.5). Only public documents exist here; restricted/closed ones come
+    with the access conditions and an empty `files` list."""
+
+    historical_note: str
+    summary: str
+    storage_location: str | None
+    access_conditions: str
+    branch: str | None  # name of the (published) branch that keeps the document
+    tags: list[TagRef]
+    files: list[DocumentFile]
+    related: list[DocumentItem]
