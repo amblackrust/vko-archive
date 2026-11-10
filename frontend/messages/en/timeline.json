@@ -1,1 +1,40 @@
-{}
+{
+  "title": "Interactive timeline",
+  "breadcrumb": "Timeline",
+  "intro": "Events in the history of the region on a horizontal scale. Pick a decade, then a year, to see events, photos and documents.",
+  "theme": {
+    "label": "Topic",
+    "all": "All topics",
+    "people": "People",
+    "institutions": "Institutions and organisations",
+    "events": "Events"
+  },
+  "scale": {
+    "label": "Time scale by decades",
+    "years": "Years of the selected decade",
+    "all": "All years",
+    "decade": "{decade}s",
+    "hint": "Left and right arrows switch decades, Enter or Space selects.",
+    "count": "events: {count}"
+  },
+  "list": {
+    "title": "Events",
+    "count": "Events shown: {count}",
+    "empty": "No events in this period and topic.",
+    "reset": "Show all"
+  },
+  "event": {
+    "open": "Details",
+    "close": "Collapse",
+    "place": "Place",
+    "date": "Date",
+    "sources": "Source",
+    "documents": "Documents and photos",
+    "noDocuments": "No archival documents are linked to this event yet: the date and information are given as stated in the source and are not confirmed by archive documents.",
+    "toCatalog": "Search the catalog for this year",
+    "toMap": "Show on map",
+    "approxDate": "Date not confirmed by a document"
+  },
+  "back": "Back to the Memory archive",
+  "error": "Could not load the timeline. Please try again later."
+}

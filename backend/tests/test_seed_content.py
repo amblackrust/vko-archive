@@ -57,10 +57,11 @@ def test_memory_persons_and_chronology_from_calendar(db_session: Session, storag
         assert person.sources and "Календарь памятных дат" in person.sources[0]["title"]
         assert person.bio["ru"] and person.birth_year and person.years_text
 
-    events = db_session.scalars(select(HistoricalEvent).order_by(HistoricalEvent.date_from)).all()
+    events = db_session.scalars(select(HistoricalEvent).where(HistoricalEvent.is_demo.is_(False)).order_by(HistoricalEvent.date_from)).all()
     assert 25 <= len(events) <= 30
     assert all(e.date_from is not None and e.sources for e in events)
     assert events == sorted(events, key=lambda e: e.date_from)
+    assert all(e.theme for e in events)  # chronology filter has a theme for every event
 
 
 def test_collections_point_to_open_demo_documents(db_session: Session, storage: Path) -> None:

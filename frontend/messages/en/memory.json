@@ -1,1 +1,86 @@
-{}
+{
+  "title": "Great Memory Archive",
+  "breadcrumb": "Memory archive",
+  "intro": "A digital space for the historical heritage of East Kazakhstan Region: thematic collections of archival documents, pages of historical figures, a chronology and a historical map.",
+  "directions": {
+    "title": "Thematic areas",
+    "hint": "Areas that already have collections open their list.",
+    "d0": "History of East Kazakhstan Region",
+    "d1": "History of Ust-Kamenogorsk and other settlements",
+    "d2": "History of industrial enterprises",
+    "d3": "History of well-known people of the region",
+    "d4": "History of education and science",
+    "d5": "Culture and art",
+    "d6": "Military history",
+    "d7": "History of the Great Patriotic War",
+    "d8": "Family and generations history",
+    "d9": "History of public organisations",
+    "d10": "Development of the region in different historical periods"
+  },
+  "themes": {
+    "ust-kamenogorsk": "Ust-Kamenogorsk",
+    "lead-zinc": "Industry: lead-zinc plant",
+    "education": "Education and science"
+  },
+  "filters": {
+    "label": "Search collections",
+    "q": "Topic, word or title",
+    "theme": "Topic",
+    "period": "Period",
+    "all": "All",
+    "submit": "Search",
+    "reset": "Reset"
+  },
+  "collections": {
+    "title": "Thematic collections",
+    "count": "Collections found: {count}",
+    "items": "Items: {count}",
+    "empty": "No collections match your query.",
+    "open": "Open collection"
+  },
+  "persons": {
+    "title": "Historical figures",
+    "search": "Search figures",
+    "count": "Figures: {count}",
+    "empty": "No figures found.",
+    "years": "Years of life"
+  },
+  "more": {
+    "title": "More from this section",
+    "timeline": "Interactive timeline",
+    "timelineText": "Regional events on a time scale: from decades to years.",
+    "map": "Historical map of the region",
+    "mapText": "Historical sites and places of events. This is not the map of archive branches.",
+    "soon": "Memoirs and historical testimonies, and a separate photo gallery, are published as the archive processes the materials; they are not published yet."
+  },
+  "collection": {
+    "view": "View",
+    "list": "List",
+    "gallery": "Gallery",
+    "documents": "Documents of the collection",
+    "none": "This collection has no public documents yet.",
+    "note": "Editor's note",
+    "toCatalog": "Open in catalog",
+    "noPreview": "No open digital copy",
+    "back": "All collections",
+    "period": "Period",
+    "theme": "Topic"
+  },
+  "person": {
+    "documents": "Archival documents",
+    "noDocuments": "No archival documents are linked to this person yet: the information is given as stated in the source and is not confirmed by archive documents.",
+    "back": "All figures",
+    "notFoundTitle": "Person not found"
+  },
+  "editorial": {
+    "label": "Editorial text",
+    "note": "This summary was written by the editors. Facts with an archival source are shown separately: in the Sources block and among the documents."
+  },
+  "sources": {
+    "title": "Sources",
+    "none": "No source specified."
+  },
+  "badge": {
+    "unverified": "Not confirmed by archive documents"
+  }
+}

@@ -16,6 +16,7 @@ from app.routers.public import (
     health,
     home,
     legal,
+    memory,
     news,
     search,
 )
@@ -79,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(content.router, prefix="/api")
     app.include_router(branches.router, prefix="/api")
     app.include_router(home.router, prefix="/api")
+    app.include_router(memory.router, prefix="/api")
     app.include_router(exhibitions.router, prefix="/api")
     app.include_router(news.router, prefix="/api")
     app.include_router(cabinet.router, prefix="/api")

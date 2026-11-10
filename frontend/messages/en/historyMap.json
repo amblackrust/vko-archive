@@ -1,1 +1,34 @@
-{}
+{
+  "title": "Historical map of the region",
+  "breadcrumb": "Historical map",
+  "intro": "Historic buildings, enterprises, heritage sites and places of events in East Kazakhstan Region.",
+  "separate": "This is a historical map, not the map of the archive's operating branches.",
+  "toBranches": "Archive branches map",
+  "approx": "Positions on the map are approximate: a settlement or a conventional point is shown, not a confirmed location.",
+  "kind": {
+    "label": "Object type",
+    "all": "All",
+    "building": "Historic buildings",
+    "enterprise": "Enterprises",
+    "heritage": "Heritage sites",
+    "institutions": "Events: institutions",
+    "people": "Events: people",
+    "events": "Places of events"
+  },
+  "map": "Historical map of the region",
+  "tileError": "The map tiles did not load. The list of objects and descriptions is available below.",
+  "list": {
+    "title": "Objects",
+    "count": "Objects: {count}",
+    "empty": "No objects."
+  },
+  "card": {
+    "none": "Select an object on the map or in the list.",
+    "place": "Place",
+    "sources": "Source",
+    "documents": "Documents and photos",
+    "noDocuments": "No documents are linked to this object yet.",
+    "openMap": "Open the place in an external map",
+    "timeline": "Timeline"
+  }
+}
