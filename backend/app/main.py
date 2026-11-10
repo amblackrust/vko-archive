@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["Retry-After"],
     )
     app.add_exception_handler(ServiceError, _service_error_handler)
     app.include_router(health.router, prefix="/api")

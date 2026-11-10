@@ -38,7 +38,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     history: "/memory", exhibitions: "/exhibitions", news: "/news",
   });
   const useful = [
-    ...sectionCards(["help", "readingRoom", "legal"], { help: "/help", readingRoom: "/reading-room", legal: "/legal" }),
+    ...sectionCards(["help", "readingRoom", "legal"], { help: "/help", readingRoom: "/help/reading-room", legal: "/legal" }),
     { id: "egov", title: t("cards.egov.title"), text: t("cards.egov.text"), href: "https://egov.kz", external: true },
   ];
 

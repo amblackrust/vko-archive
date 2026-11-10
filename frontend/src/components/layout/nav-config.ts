@@ -18,7 +18,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { id: "about", href: "/about" },
       { id: "branches", href: "/branches" },
-      { id: "readingRoom", href: "/reading-room" },
+      { id: "readingRoom", href: "/help/reading-room" },
       { id: "contacts", href: "/contacts" },
       { id: "help", href: "/help" },
     ],
