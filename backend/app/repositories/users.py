@@ -49,3 +49,31 @@ def active_users_with_permission(session: Session, module: str, action: str) -> 
         .distinct()
     )
     return list(session.scalars(stmt))
+
+
+def search(
+    session: Session,
+    *,
+    q: str | None,
+    role: str | None,
+    is_active: bool | None,
+    branch_id: uuid.UUID | None,
+    hide_super_admins: bool,
+    offset: int,
+    limit: int,
+) -> tuple[list[User], int]:
+    stmt = select(User)
+    if q:
+        needle = f"%{q.strip().lower().replace('%', r'\%').replace('_', r'\_')}%"
+        stmt = stmt.where(or_(func.lower(User.email).like(needle), func.lower(User.full_name).like(needle)))
+    if role:
+        stmt = stmt.where(User.roles.any(Role.code == role))
+    if is_active is not None:
+        stmt = stmt.where(User.is_active.is_(is_active))
+    if branch_id is not None:
+        stmt = stmt.where(User.branch_id == branch_id)
+    if hide_super_admins:
+        stmt = stmt.where(~User.roles.any(Role.code == RoleCode.SUPER_ADMIN.value))
+    total = session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
+    rows = session.scalars(stmt.order_by(User.created_at.desc(), User.id).offset(offset).limit(limit))
+    return list(rows), total

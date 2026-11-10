@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { AiResult } from "@/lib/api/ai";
+import { useIsAdminArea } from "@/components/layout/site-shell";
 import { AnswerText } from "./answer-text";
 import { AnswerExtras } from "./source-cards";
 import { useAnswer, type AnswerState } from "./use-answer";
@@ -57,7 +58,7 @@ function AssistantBubble({ state }: { state: AnswerState }) {
  * Esc закрывает, фокус возвращается на кнопку. На мобильном — на весь экран. Только справочные ответы:
  * заявок и запросов через чат нет.
  */
-export function AssistantWidget() {
+function AssistantWidgetDialog() {
   const t = useTranslations("ai");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -196,4 +197,9 @@ export function AssistantWidget() {
       </Dialog.Portal>
     </Dialog.Root>
   );
+}
+
+/** В админке помощника нет: он отвечает только на публичные справочные вопросы. */
+export function AssistantWidget() {
+  return useIsAdminArea() ? null : <AssistantWidgetDialog />;
 }

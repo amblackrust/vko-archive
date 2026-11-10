@@ -7,6 +7,7 @@ from app.repositories import content as repo
 from app.schemas.content import Contacts, FaqGroup, FaqItem, FaqResponse, PageDetail
 from app.services.catalog import pick
 from app.services.errors import NotFound
+from app.services.sanitize import clean_html
 
 
 def get_page(session: Session, key: str, lang: str) -> PageDetail:
@@ -18,7 +19,7 @@ def get_page(session: Session, key: str, lang: str) -> PageDetail:
     return PageDetail(
         key=page.key,
         title=title,
-        body=body,
+        body=clean_html(body),
         lang=body_lang,
         translation_status=page.translation_status.get(body_lang, "missing"),
     )

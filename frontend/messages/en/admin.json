@@ -1,1 +1,202 @@
-{}
+{
+  "login": {
+    "title": "Administration panel",
+    "subtitle": "For archive staff only",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "invalid": "Wrong email or password. After 5 failed attempts sign-in is blocked for 15 minutes.",
+    "networkError": "The server is unavailable. Try again later.",
+    "expired": "Your session ended due to inactivity. Please sign in again.",
+    "hint": "Available sections depend on your role."
+  },
+  "shell": {
+    "sections": "Admin sections",
+    "skip": "Skip to content",
+    "brand": "Administration",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "logout": "Sign out"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users"
+  },
+  "session": {
+    "title": "Your session is about to end",
+    "text": "Because of inactivity your session ends in {minutes}:{seconds}. Extend it?",
+    "extend": "Extend session",
+    "logout": "Sign out"
+  },
+  "bell": {
+    "label": "Notifications",
+    "labelUnread": "Notifications, unread: {count}",
+    "title": "Notifications",
+    "markAll": "Mark all as read",
+    "loading": "Loading…",
+    "empty": "No notifications"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "working": "Working…",
+    "save": "Save",
+    "saving": "Saving…",
+    "actions": "Actions",
+    "empty": "No data",
+    "pagination": "Pages",
+    "total": "Total: {count}",
+    "prev": "Previous page",
+    "next": "Next page",
+    "pageOf": "{page} of {pages}"
+  },
+  "errors": {
+    "generic": "The action failed. Please try again.",
+    "network": "The server is unavailable.",
+    "forbidden": "You do not have permission for this action.",
+    "not_found": "Object not found.",
+    "not_authenticated": "Session ended. Please sign in again.",
+    "csrf_failed": "Security token is invalid. Reload the page.",
+    "rateLimitedAfter": "Too many attempts. Retry in {seconds} s.",
+    "rate_limited": "Too many attempts.",
+    "account_locked": "The account is temporarily locked.",
+    "invalid_credentials": "Invalid credentials.",
+    "email_taken": "A user with this email already exists.",
+    "invalid_email": "Invalid email address.",
+    "unknown_role": "Unknown role.",
+    "unknown_branch": "Branch not found.",
+    "branch_required": "A branch administrator needs a branch.",
+    "password_length": "The password must be 12 to 128 characters long.",
+    "password_too_weak": "The password is too weak (edge spaces, too few distinct characters).",
+    "invalid_input": "Invalid input.",
+    "conflict": "The data was changed by someone else. Reload."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Hello, {name}. Only data available to your role is shown.",
+    "retry": "Retry",
+    "nothing": "There is no data for your role here. Pick an available section from the menu.",
+    "counters": {
+      "funds": "Funds",
+      "inventories": "Inventories",
+      "cases": "Cases",
+      "documents": "Documents",
+      "documentsPublished": "Published documents",
+      "users": "Active users"
+    },
+    "review": {
+      "title": "Awaiting review: {count}",
+      "empty": "Nothing is waiting for review."
+    },
+    "recent": {
+      "title": "Recent actions",
+      "empty": "The journal is empty.",
+      "result": {
+        "success": "success",
+        "failure": "failure",
+        "denied": "denied"
+      }
+    },
+    "objectTypes": {
+      "fund": "Fund",
+      "inventory": "Inventory",
+      "case": "Case",
+      "document": "Document",
+      "branch": "Branch",
+      "news": "News",
+      "page": "Page",
+      "faq": "FAQ",
+      "legal_act": "Legal act",
+      "price_list_item": "Price item",
+      "memorial_date": "Memorial date",
+      "exhibition": "Exhibition",
+      "exhibit": "Exhibit",
+      "collection": "Collection",
+      "person": "Person",
+      "historical_event": "Historical event"
+    },
+    "health": {
+      "title": "System health",
+      "db": "Database",
+      "ollama": "Ollama (AI model)",
+      "index": "Search index (embeddings)",
+      "state": {
+        "ok": "ok",
+        "degraded": "degraded",
+        "unavailable": "unavailable"
+      },
+      "retry": "Retry",
+      "error": "Could not fetch the status."
+    }
+  },
+  "users": {
+    "title": "Users",
+    "create": "Add user",
+    "search": "Search by name or email",
+    "allRoles": "All roles",
+    "allStatuses": "All statuses",
+    "empty": "No users found",
+    "columns": {
+      "user": "User",
+      "roles": "Roles",
+      "branch": "Branch",
+      "status": "Status",
+      "lastLogin": "Last sign-in"
+    },
+    "status": {
+      "active": "active",
+      "locked": "temporarily locked out",
+      "blocked": "blocked"
+    },
+    "never": "never",
+    "itsYou": "You",
+    "actions": {
+      "edit": "Edit: {email}",
+      "password": "Reset password: {email}",
+      "block": "Block: {email}",
+      "unblock": "Unblock: {email}"
+    },
+    "roles": {
+      "super_admin": "Super administrator",
+      "site_admin": "Site administrator",
+      "editor": "Editor",
+      "archivist": "Archivist",
+      "branch_admin": "Branch administrator",
+      "moderator": "Moderator",
+      "analyst": "Analyst"
+    },
+    "created": "User added.",
+    "saved": "Changes saved.",
+    "blocked": "User blocked.",
+    "unblocked": "User unblocked.",
+    "passwordReset": "Password changed, the user's sessions were ended.",
+    "createTitle": "New user",
+    "editTitle": "Edit user",
+    "formDescription": "User details and roles",
+    "fields": {
+      "email": "Email",
+      "fullName": "Full name",
+      "password": "Initial password",
+      "newPassword": "New password",
+      "branch": "Branch",
+      "roles": "Roles"
+    },
+    "passwordHint": "12–128 characters; pass it to the user securely.",
+    "branchHint": "A branch administrator and a branch-bound archivist work only with their own branch.",
+    "noBranch": "No branch (whole archive)",
+    "errors": {
+      "noRoles": "Select at least one role."
+    },
+    "resetTitle": "Reset password",
+    "resetDescription": "A new password will be set for {email}; all their sessions will end.",
+    "resetSubmit": "Change password",
+    "blockTitle": "Block this user?",
+    "unblockTitle": "Unblock this user?",
+    "blockDescription": "{email} will not be able to sign in and open sessions will stop working.",
+    "unblockDescription": "{email} will be able to sign in again.",
+    "block": "Block",
+    "unblock": "Unblock"
+  }
+}
