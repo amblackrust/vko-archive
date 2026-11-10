@@ -9,11 +9,21 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import DigitalFile, FileAccess, OcrStatus
+from app.models import DigitalFile, Document, FileAccess, OcrStatus
+from seed.demo_data import FUNDS
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 INFO_DIR = ROOT_DIR / "info"
 LANGS = ("kk", "ru", "en")
+
+# Demo document key 'd<fund>-<inventory>-<case>-<n>' (as in demo_catalog) -> its archive code.
+DEMO_DOC_CODES = {
+    f"d{fund.number[2:]}-{inv.number}-{case.number}-{n}": f"ДЕМО Ф.{fund.number} Оп.{inv.number} Д.{case.number} №{n}"
+    for fund in FUNDS
+    for inv in fund.inventories
+    for case in inv.cases
+    for n in range(1, len(case.docs) + 1)
+}
 
 
 def i18n(**values: str) -> dict[str, str]:
@@ -57,6 +67,23 @@ def upsert(
             setattr(obj, key, value)
     report.count(model.__tablename__, created)
     return obj
+
+
+def demo_document(session: Session, key: str) -> Document:
+    """A demo catalog document by its key; the demo catalog must be seeded first."""
+    document = session.scalar(select(Document).where(Document.archive_code == DEMO_DOC_CODES[key]))
+    assert document is not None, f"demo document {key} is missing: seed the demo catalog first"
+    return document
+
+
+def demo_document_file(session: Session, document: Document) -> DigitalFile:
+    """The first digital copy of a demo document (its access follows the document)."""
+    file = session.scalar(
+        select(DigitalFile)
+        .where(DigitalFile.owner_type == "document", DigitalFile.owner_id == document.id, DigitalFile.position == 0)
+    )
+    assert file is not None, f"document {document.archive_code} has no digital copy"
+    return file
 
 
 def attach_file(
