@@ -20,7 +20,13 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3.5:9b-q6k"
     ollama_embed_model: str = "bge-m3"
+    # Used when OLLAMA_MODEL is not pulled (CLAUDE.md: qwen3.5:9b-q4_K_M).
+    ollama_fallback_model: str = "qwen3.5:9b-q4_K_M"
+    # Connect / model-list timeout; chat generation has its own (the first call loads the model, ~30 s).
     ollama_timeout_seconds: float = 5.0
+    ollama_chat_timeout_seconds: float = 120.0
+    ollama_parser_timeout_seconds: float = 60.0
+    ollama_num_ctx: int = 8192
     # The first embed call may load bge-m3 into memory (several seconds).
     ollama_embed_timeout_seconds: float = 30.0
     # /api/health is public: its Ollama probes are short and their result is cached.
