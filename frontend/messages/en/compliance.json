@@ -1,1 +1,10 @@
-{}
+{
+  "title": "Compliance service / Anti-corruption",
+  "intro": "Open information about the compliance service and the archive's anti-corruption materials.",
+  "officer": "Compliance officer: {name}",
+  "phoneHint": "The compliance officer's phone number is not given in the open sources. Archive phone numbers are on the contacts page.",
+  "contactsLink": "Archive contacts",
+  "translationNote": "The text is available in: {lang}.",
+  "documentsHeading": "Documents and materials",
+  "documentsEmpty": "No materials have been published yet."
+}

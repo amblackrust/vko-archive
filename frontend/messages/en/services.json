@@ -1,1 +1,34 @@
-{}
+{
+  "external": {
+    "heading": "Official channels",
+    "egov": "Go to eGov.kz",
+    "eotinish": "Go to e-Otinish",
+    "hint": "opens an external website"
+  },
+  "state": {
+    "notice": "This website does not accept applications. Use the official external services to apply.",
+    "title": "Government service",
+    "intro": "The legal basis and procedure for a government service in archival affairs. Informational section.",
+    "lawsHeading": "Legal basis",
+    "law": "Law of the Republic of Kazakhstan «On Public Services»",
+    "rules": "Rules for providing public services in archival affairs (order of 29.05.2020 No. 159)",
+    "detailsHeading": "Conditions, documents, deadlines",
+    "detailsPending": "Conditions, the list of documents, deadlines, step-by-step instructions and requisites will be published after the archive approves them.",
+    "reportsHeading": "Reports on services provided",
+    "reportsPending": "Reports will be published after agreement with the archive.",
+    "contactsHeading": "Chancellery contacts",
+    "contactsText": "Addresses, phone numbers and opening hours are on the contacts page.",
+    "contactsLink": "Archive contacts"
+  },
+  "paid": {
+    "title": "Paid services",
+    "intro": "Informational notes on paid services of the state archives of East Kazakhstan Region.",
+    "notice": "Services cannot be ordered or paid for on this website. The information is provided for reference.",
+    "resolutionHeading": "Resolution on approving the price list",
+    "resolution": "On approving the price list for goods (works, services) provided by the state archives of the Digitalization and Archives Department of East Kazakhstan Region",
+    "requisitesPending": "The number, date and update date of the resolution are being clarified.",
+    "priceHeading": "Price list",
+    "pricePending": "The text of the price list is not yet published on this website. Please check current prices with the archive via the contacts.",
+    "contactsLink": "Archive contacts"
+  }
+}
