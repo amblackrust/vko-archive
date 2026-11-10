@@ -5,7 +5,20 @@ from fastapi.responses import JSONResponse
 from app.config import get_settings
 from app.logging_config import configure_logging, log_requests
 from app.routers import admin
-from app.routers.public import ai, branches, catalog, content, files, health, home, legal, search
+from app.routers.public import (
+    ai,
+    branches,
+    cabinet,
+    catalog,
+    content,
+    exhibitions,
+    files,
+    health,
+    home,
+    legal,
+    news,
+    search,
+)
 from app.services.errors import (
     AccountLocked,
     Conflict,
@@ -66,6 +79,9 @@ def create_app() -> FastAPI:
     app.include_router(content.router, prefix="/api")
     app.include_router(branches.router, prefix="/api")
     app.include_router(home.router, prefix="/api")
+    app.include_router(exhibitions.router, prefix="/api")
+    app.include_router(news.router, prefix="/api")
+    app.include_router(cabinet.router, prefix="/api")
     app.include_router(admin.router, prefix="/api")
     return app
 

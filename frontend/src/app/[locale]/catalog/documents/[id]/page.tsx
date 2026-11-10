@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DocumentAiPanel } from "@/components/ai/document/document-ai-panel";
 import { AccessNotice } from "@/components/document/access-notice";
+import { FavoriteButton } from "@/components/cabinet/favorite-button";
 import { CardActions } from "@/components/document/card-actions";
+import { ShareButtons } from "@/components/layout/share-buttons";
 import { DocumentDetails } from "@/components/document/details";
 import { RelatedDocuments } from "@/components/document/related";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -58,6 +60,10 @@ export default async function DocumentPage({ params }: Props) {
             </p>
           )}
           <CardActions code={doc.archive_code} title={doc.title} />
+          <div className="flex flex-wrap items-center gap-4">
+            <ShareButtons title={doc.title} />
+            <FavoriteButton type="document" id={doc.id} />
+          </div>
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">

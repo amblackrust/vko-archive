@@ -1,1 +1,44 @@
-{}
+{
+  "title": "Online exhibitions",
+  "intro": "Thematic selections of archival documents: an introduction, exhibits with captions and a link to the catalog card.",
+  "count": "Exhibitions found: {count}",
+  "filter": {
+    "q": "Search by title",
+    "theme": "Theme",
+    "period": "Period",
+    "all": "All",
+    "submit": "Show",
+    "reset": "Reset"
+  },
+  "themes": {
+    "ust-kamenogorsk": "City history",
+    "industry": "Industry",
+    "education": "Education"
+  },
+  "card": {
+    "exhibits": "Exhibits: {count}",
+    "noCover": "No cover"
+  },
+  "detail": {
+    "exhibitsTitle": "Exhibits",
+    "empty": "This exhibition has no published exhibits yet.",
+    "open": "View exhibit",
+    "start": "Start viewing",
+    "noImage": "No image, or access to the copy is restricted"
+  },
+  "exhibit": {
+    "counter": "Exhibit {n} of {total}",
+    "caption": "Caption",
+    "source": "Source",
+    "code": "Archive code",
+    "toDocument": "Go to the document in the catalog",
+    "video": "Video (external link)",
+    "prev": "Previous",
+    "next": "Next",
+    "back": "Back to exhibition",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom",
+    "zoomLabel": "Zoom {percent}%"
+  }
+}

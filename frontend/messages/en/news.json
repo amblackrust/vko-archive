@@ -1,1 +1,37 @@
-{}
+{
+  "title": "News and events",
+  "intro": "Archive news and announcements of exhibitions and events.",
+  "count": "Items found: {count}",
+  "filter": {
+    "q": "Search news",
+    "category": "Category",
+    "sort": "Sort",
+    "all": "All categories",
+    "newest": "Newest first",
+    "oldest": "Oldest first",
+    "submit": "Show",
+    "reset": "Reset"
+  },
+  "categories": {
+    "exhibitions": "Exhibitions",
+    "events": "Events",
+    "memory": "Memory archive",
+    "branches": "Branches",
+    "site": "About the site"
+  },
+  "card": {
+    "read": "Read",
+    "noDate": "No date"
+  },
+  "detail": {
+    "media": "Photos and video",
+    "externalVideo": "Video (external link)",
+    "related": "Related materials",
+    "relatedTypes": {
+      "document": "Document",
+      "exhibition": "Exhibition",
+      "news": "News"
+    },
+    "back": "All news"
+  }
+}

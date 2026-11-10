@@ -1,1 +1,76 @@
-{}
+{
+  "title": "Personal cabinet",
+  "intro": "Optional section: favorites, personal selections, search history and subscriptions. The whole site works without registration.",
+  "noRequests": "The cabinet has no applications, orders, payments or request statuses. Requests to the archive are filed only through eGov.kz and e-Otinish.",
+  "demoNotice": "DEMO: do not enter real personal data. A made-up address such as name@example.kz will do.",
+  "loading": "Loading…",
+  "unavailable": "The cabinet is temporarily unavailable. The rest of the site works without it.",
+  "auth": {
+    "login": "Sign in",
+    "register": "Register",
+    "email": "E-mail",
+    "password": "Password",
+    "passwordHint": "At least 10 characters.",
+    "displayName": "Name (optional)",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create cabinet",
+    "logout": "Sign out",
+    "signedInAs": "Signed in as {name}",
+    "deleteAccount": "Delete cabinet and all data",
+    "deleteConfirm": "Delete the cabinet with favorites, selections, history and subscriptions? This cannot be undone."
+  },
+  "errors": {
+    "invalid_credentials": "Wrong e-mail or password. After 5 failed attempts sign-in is blocked for 15 minutes.",
+    "email_taken": "This e-mail is already registered.",
+    "invalid_email": "Check the e-mail address.",
+    "password_length": "The password must be 10 to 256 characters.",
+    "password_too_weak": "The password is too simple or starts/ends with a space.",
+    "rate_limited": "Too many attempts. Please wait a little and try again.",
+    "limit_reached": "The limit of entries has been reached.",
+    "not_found": "The item was not found or is no longer published.",
+    "generic": "The action failed. Please try again."
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "Nothing yet. Use “Add to favorites” on document, exhibition and news pages.",
+    "remove": "Remove from favorites: {title}",
+    "types": {
+      "document": "Document",
+      "exhibition": "Exhibition",
+      "news": "News"
+    }
+  },
+  "favorite": {
+    "add": "Add to favorites",
+    "remove": "In favorites",
+    "signIn": "Sign in to save favorites",
+    "failed": "Could not update favorites."
+  },
+  "selections": {
+    "title": "My selections",
+    "empty": "No selections yet.",
+    "newTitle": "Name of a new selection",
+    "create": "Create selection",
+    "delete": "Delete selection {title}",
+    "noDocuments": "No documents in this selection.",
+    "removeDocument": "Remove from selection: {title}",
+    "addTitle": "Add a document from favorites",
+    "addPick": "Document from favorites",
+    "add": "Add"
+  },
+  "searches": {
+    "title": "Search history",
+    "empty": "History is empty.",
+    "queryLabel": "Save the query and search",
+    "go": "Search",
+    "clear": "Clear history",
+    "removeOne": "Delete query {query}",
+    "hint": "Queries made through this form are saved here."
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "news": "News and events",
+    "exhibitions": "New online exhibitions",
+    "demo": "DEMO: notification delivery is not connected; a subscription only remembers your interest."
+  }
+}
