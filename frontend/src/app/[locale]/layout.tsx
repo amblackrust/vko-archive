@@ -3,6 +3,7 @@ import { Inter, PT_Serif } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { AssistantWidget } from "@/components/ai/chat/assistant-widget";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { routing } from "@/lib/i18n/routing";
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <ThemeProvider>
             <SiteShell>{children}</SiteShell>
+            <AssistantWidget />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
