@@ -36,6 +36,7 @@ from app.schemas.catalog import (
 )
 from app.repositories import files as files_repo
 from app.services import files as files_service
+from app.services import recommendations
 from app.services import search_log
 from app.services.authz import AuthUser
 from app.services.errors import NotFound
@@ -258,9 +259,14 @@ RELATED_LIMIT = 6
 
 
 def _related(session: Session, row: Any, tags: list[Any], lang: str) -> list[DocumentItem]:
-    """Other public documents: the same case first, then those sharing a topic."""
+    """Other public documents: nearest by embeddings first (T4.12), then the same case,
+    then those sharing a topic (also the whole list when there are no vectors)."""
     document: Document = row.Document
     found: dict[uuid.UUID, DocumentItem] = {}
+    for related_id in recommendations.similar_document_ids(session, document, RELATED_LIMIT):
+        related = repo.get_public_document(session, related_id)
+        if related is not None:
+            found[related_id] = _document_item(related, lang)
     queries = []
     if document.case_id is not None:
         queries.append(({"sort": "code"}, document.case_id))
