@@ -3,13 +3,17 @@ from the server, restricted materials get a fixed answer, everything degrades wi
 
 import json
 from collections.abc import Iterator
+from contextlib import ExitStack
 
+import httpx
 import pytest
 
 from app.ai import ollama_client
 from app.ai.ollama_client import Availability, OllamaUnavailable
+from app.config import get_settings
 from app.models import Synonym
 from app.models.enums import DescriptionStatus, FileAccess, WorkflowStatus
+from app.services.rate_limit import ai_limiter
 from tests.search.conftest import index, public_document, token
 
 
@@ -22,6 +26,7 @@ class FakeModel:
         self.parse_json = '{"intent": "search", "doc_types": [], "places": [], "period": null, "topics": [], "persons": [], "keywords": [], "lang": "ru"}'
         self.answer_chunks = ["Ответ."]
         self.fail_answer = False
+        self.fail_after_chunks = False  # Ollama breaks after the chunks were sent
         monkeypatch.setattr(ollama_client, "availability", lambda settings: Availability(True))
         monkeypatch.setattr(ollama_client, "chat", self._chat)
         monkeypatch.setattr(ollama_client, "chat_stream", self._stream)
@@ -35,6 +40,8 @@ class FakeModel:
         if self.fail_answer:
             raise OllamaUnavailable("ollama_unavailable")
         yield from self.answer_chunks
+        if self.fail_after_chunks:
+            raise OllamaUnavailable("bad_response")
 
     @property
     def context(self) -> str:
@@ -212,3 +219,48 @@ def test_parse_endpoint_returns_filters(api, factory, model):
 
 def test_query_length_is_validated(api, model):
     assert api.post("/api/ai/answer", json={"q": "x" * 501}).status_code == 422
+
+
+def test_error_mid_stream_ends_with_unavailable(api, factory, model):
+    """Contract: after deltas, `done` with mode=unavailable — the UI replaces the text shown."""
+    word = token()
+    index(factory, "document", public_document(factory, title={"ru": f"Приказ {word}"}))
+    model.parse_json = _keywords(word)
+    model.answer_chunks = ["Первое предложение [S1]. ", "Обрыв"]
+    model.fail_after_chunks = True
+    response = api.post("/api/ai/answer/stream", json={"q": word})
+    assert response.status_code == 200
+    events = [json.loads(line) for line in response.text.splitlines()]
+    assert [e["type"] for e in events] == ["meta", "delta", "done"]
+    result = events[-1]["result"]
+    assert result["mode"] == "unavailable" and result["ai_available"] is False and result["label"] is None
+    assert result["answer"] == "ИИ временно недоступен, используйте поиск — результаты ниже."
+    assert len(result["sources"]) == 1
+
+
+def test_busy_generations_degrade_without_error(api, factory, fake_ollama):
+    settings = get_settings()
+    word = token()
+    index(factory, "document", public_document(factory, title={"ru": f"Приказ {word}"}))
+    fake_ollama.handler = lambda r: httpx.Response(200, json={"models": [{"name": settings.ollama_model}]})
+    with ExitStack() as slots:
+        for _ in range(settings.ai_max_concurrent_generations):
+            slots.enter_context(ollama_client._generation_slot(settings))
+        body = _answer(api, f"приказ {word}")
+    assert body["mode"] == "unavailable" and body["parsed"]["source"] == "fallback"
+    assert len(body["sources"]) == 1
+    assert not [r for r in fake_ollama.requests if r.url.path == "/api/chat"]
+
+
+def test_rate_limit_per_ip(api, model):
+    limit = get_settings().ai_rate_limit_per_minute
+    for _ in range(limit):
+        assert api.post("/api/ai/answer", json={"q": "напиши код на python"}).status_code == 200
+    for path in ("/api/ai/answer", "/api/ai/answer/stream", "/api/ai/parse"):
+        response = api.post(path, json={"q": "напиши код на python"})
+        assert response.status_code == 429
+        assert response.json() == {"detail": "rate_limited"}
+        assert 1 <= int(response.headers["Retry-After"]) <= 60
+    assert api.get("/api/ai/status").status_code == 200  # status is not limited
+    ai_limiter.reset()
+    assert api.post("/api/ai/parse", json={"q": "напиши код на python"}).status_code == 200

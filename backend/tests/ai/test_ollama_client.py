@@ -104,3 +104,73 @@ def test_stream_filters_think_split_across_chunks(fake_ollama):
 def test_strip_think_unclosed_block():
     assert ollama_client.strip_think("<think>рассуждение без конца") == ""
     assert ollama_client.strip_think("Да.<think>x</think> Нет.") == "Да. Нет."
+
+
+def _chat_ok(request: httpx.Request) -> httpx.Response:
+    return httpx.Response(200, json={"message": {"content": "ok"}})
+
+
+def test_num_predict_limits_generation(fake_ollama):
+    settings = get_settings()
+    _router(fake_ollama, [settings.ollama_model], _chat_ok)
+    ollama_client.chat([{"role": "user", "content": "q"}], settings)
+    assert json.loads(fake_ollama.requests[-1].content)["options"]["num_predict"] == settings.ollama_num_predict == 400
+
+
+@pytest.mark.parametrize(
+    "fail",
+    [
+        lambda r: (_ for _ in ()).throw(httpx.ReadTimeout("slow", request=r)),
+        lambda r: httpx.Response(400, json={"error": "bad request"}),
+    ],
+    ids=["read_timeout", "4xx"],
+)
+def test_read_timeout_and_4xx_no_retry_no_cooldown(fake_ollama, fail):
+    settings = get_settings()
+    _router(fake_ollama, [settings.ollama_model], fail)
+    with pytest.raises(OllamaUnavailable):
+        ollama_client.chat([{"role": "user", "content": "q"}], settings)
+    assert len([r for r in fake_ollama.requests if r.url.path == "/api/chat"]) == 1
+    assert ollama_client.availability(settings).available is True  # one slow/bad request ≠ Ollama down
+
+
+def test_connect_error_retries_and_cools_down(fake_ollama):
+    settings = get_settings()
+
+    def refuse(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("refused", request=request)
+
+    _router(fake_ollama, [settings.ollama_model], refuse)
+    with pytest.raises(OllamaUnavailable):
+        ollama_client.chat([{"role": "user", "content": "q"}], settings)
+    assert len([r for r in fake_ollama.requests if r.url.path == "/api/chat"]) == 2
+    assert ollama_client.availability(settings).available is False
+
+
+def test_concurrent_generations_limited_fast_busy(fake_ollama):
+    settings = get_settings().model_copy(update={"ai_max_concurrent_generations": 1})
+    line = json.dumps({"message": {"content": "Текст."}, "done": True})
+    _router(fake_ollama, [settings.ollama_model], lambda r: httpx.Response(200, content=line.encode()))
+    stream = ollama_client.chat_stream([{"role": "user", "content": "q"}], settings)
+    assert next(stream) == "Текст."  # holds the only slot
+    with pytest.raises(OllamaUnavailable) as exc:
+        ollama_client.chat([{"role": "user", "content": "q"}], settings)
+    assert exc.value.reason == "busy"
+    assert ollama_client.availability(settings).available is True  # busy is not a failure
+    stream.close()  # the client went away: the slot is released
+    assert ollama_client.chat([{"role": "user", "content": "q"}], settings) == "Текст."
+
+
+def test_stream_error_line_mid_answer(fake_ollama):
+    settings = get_settings()
+    lines = "\n".join([
+        json.dumps({"message": {"content": "Первое. "}, "done": False}),
+        json.dumps({"error": "model runner crashed"}),
+    ])
+    _router(fake_ollama, [settings.ollama_model], lambda r: httpx.Response(200, content=lines.encode()))
+    stream = ollama_client.chat_stream([{"role": "user", "content": "q"}], settings)
+    assert next(stream) == "Первое. "
+    with pytest.raises(OllamaUnavailable) as exc:
+        next(stream)
+    assert exc.value.reason == "bad_response"
+    assert len([r for r in fake_ollama.requests if r.url.path == "/api/chat"]) == 1  # no repeat after the first token

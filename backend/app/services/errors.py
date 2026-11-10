@@ -29,6 +29,14 @@ class AccountLocked(ServiceError):
         self.retry_after_seconds = retry_after_seconds
 
 
+class RateLimited(ServiceError):
+    code = "rate_limited"
+
+    def __init__(self, retry_after_seconds: int) -> None:
+        super().__init__()
+        self.retry_after_seconds = retry_after_seconds
+
+
 class CsrfFailed(ServiceError):
     code = "csrf_failed"
 
