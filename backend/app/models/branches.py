@@ -1,7 +1,7 @@
 import uuid
 from decimal import Decimal
 
-from sqlalchemy import Boolean, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, ContentMixin, I18n, i18n_column, str_enum
@@ -10,6 +10,10 @@ from app.models.enums import BranchType
 
 class Branch(ContentMixin, Base):
     __tablename__ = "branches"
+    __table_args__ = (
+        CheckConstraint("lat BETWEEN -90 AND 90", name="lat_range"),
+        CheckConstraint("lng BETWEEN -180 AND 180", name="lng_range"),
+    )
 
     name: Mapped[I18n] = i18n_column()
     short_name: Mapped[I18n] = i18n_column()

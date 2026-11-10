@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     ollama_timeout_seconds: float = 5.0
     # The first embed call may load bge-m3 into memory (several seconds).
     ollama_embed_timeout_seconds: float = 30.0
+    # /api/health is public: its Ollama probes are short and their result is cached.
+    health_probe_timeout_seconds: float = 3.0
+    health_cache_ttl_seconds: float = 60.0
 
     storage_dir: Path = BACKEND_DIR / "storage"
 

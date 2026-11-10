@@ -7,10 +7,22 @@ PY := $(BACKEND_VENV)/bin/python
 dev: env db-up backend-install migrate
 	$(MAKE) -j2 backend-dev frontend-dev
 
-## Create .env files from the examples (only if missing). Change the password afterwards.
+## Create .env files from the examples (only if missing) with a random DB password.
+## Existing files are never overwritten; fails if one still has the example password.
 env:
-	@test -f .env || cp .env.example .env
-	@test -f backend/.env || cp backend/.env.example backend/.env
+	@if [ ! -f .env ]; then \
+		pw=$$(python3 -c 'import secrets; print(secrets.token_hex(24))') && \
+		sed "s/^POSTGRES_PASSWORD=change_me$$/POSTGRES_PASSWORD=$$pw/" .env.example > .env && \
+		echo "created .env with a random POSTGRES_PASSWORD"; \
+	fi
+	@if [ ! -f backend/.env ]; then \
+		pw=$$(sed -n 's/^POSTGRES_PASSWORD=//p' .env) && \
+		sed "s/:change_me@/:$$pw@/" backend/.env.example > backend/.env && \
+		echo "created backend/.env (password taken from .env)"; \
+	fi
+	@if grep -q change_me .env backend/.env; then \
+		echo "error: .env or backend/.env still uses the example password change_me" >&2; exit 1; \
+	fi
 
 db-up:
 	docker compose up -d --wait db

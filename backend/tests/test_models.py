@@ -7,12 +7,14 @@ from app.models import (
     EMBEDDING_DIM,
     Case,
     DescriptionStatus,
+    DigitalFile,
     Document,
     FileAccess,
     Fund,
     FundType,
     Inventory,
     SearchEntry,
+    User,
     WorkflowStatus,
 )
 
@@ -66,3 +68,45 @@ def test_search_entry_stores_embedding(db_session: Session) -> None:
     db_session.refresh(entry)
 
     assert len(entry.embedding) == EMBEDDING_DIM
+
+
+def test_digital_file_access_defaults_to_needs_review(db_session: Session) -> None:
+    file = DigitalFile(master_path="demo/a.pdf", mime="application/pdf", size=1, sha256="0" * 64)
+    db_session.add(file)
+    db_session.flush()
+    db_session.refresh(file)
+
+    assert file.access == FileAccess.NEEDS_REVIEW
+
+
+def test_fund_number_unique_within_archive_even_without_branch(db_session: Session) -> None:
+    _hierarchy(db_session)
+
+    with pytest.raises(IntegrityError):
+        with db_session.begin_nested():
+            db_session.add(Fund(number="ДЕМО-1", title={"ru": "Дубль"}, type=FundType.ORGANIZATION, is_demo=True))
+
+
+def test_user_email_unique_case_insensitive(db_session: Session) -> None:
+    db_session.add(User(email="demo@example.org", password_hash="x"))
+    db_session.flush()
+
+    with pytest.raises(IntegrityError):
+        with db_session.begin_nested():
+            db_session.add(User(email="DEMO@example.org", password_hash="x"))
+
+
+@pytest.mark.parametrize(
+    "statement",
+    [
+        "UPDATE documents SET date_from = '1950-01-02', date_to = '1950-01-01' WHERE id = :id",
+        "INSERT INTO memorial_dates (id, year, month) VALUES (gen_random_uuid(), 2026, 13)",
+        "INSERT INTO historical_events (id, lat) VALUES (gen_random_uuid(), 91)",
+    ],
+)
+def test_range_check_constraints(db_session: Session, statement: str) -> None:
+    _, document = _hierarchy(db_session)
+
+    with pytest.raises(IntegrityError):
+        with db_session.begin_nested():
+            db_session.execute(text(statement), {"id": document.id})
