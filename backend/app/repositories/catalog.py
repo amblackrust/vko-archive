@@ -265,3 +265,19 @@ def published_branch_names(session: Session, ids: Sequence[uuid.UUID]) -> dict[u
         return {}
     rows = session.execute(select(Branch.id, Branch.name).where(Branch.id.in_(ids), Branch.workflow_status == PUBLISHED))
     return {row.id: row.name for row in rows}
+
+
+def get_public_document(session: Session, document_id: uuid.UUID) -> Any | None:
+    """Row of (Document, chain columns) when the document is public, else None."""
+    stmt = _public_documents(select(Document, CHAIN), [Document.id == document_id])
+    return session.execute(stmt).first()
+
+
+def published_tags(session: Session, document_id: uuid.UUID) -> list[Tag]:
+    stmt = (
+        select(Tag)
+        .join(document_tags, document_tags.c.tag_id == Tag.id)
+        .where(document_tags.c.document_id == document_id, Tag.workflow_status == PUBLISHED)
+        .order_by(Tag.id)
+    )
+    return list(session.scalars(stmt))

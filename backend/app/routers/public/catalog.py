@@ -1,13 +1,14 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Response
 
-from app.deps import DbSession
+from app.deps import DbSession, OptionalUser
 from app.schemas.catalog import (
     CaseDetail,
     CasesResponse,
     CatalogFilters,
+    DocumentDetail,
     DocumentsResponse,
     FundDetail,
     FundListParams,
@@ -27,6 +28,21 @@ Params = Annotated[PageParams, Query()]
 def documents(filters: Annotated[CatalogFilters, Query()], session: DbSession) -> DocumentsResponse:
     """Public documents with the ТЗ filters, sorting, pagination and facets. List params are repeated."""
     return catalog_service.search_documents(session, filters)
+
+
+@router.get("/documents/{document_id}", response_model=DocumentDetail)
+def document(
+    document_id: uuid.UUID,
+    session: DbSession,
+    user: OptionalUser,
+    response: Response,
+    lang: Annotated[str, Query(pattern="^(kk|ru|en)$")] = "ru",
+) -> DocumentDetail:
+    """Card of a public document; anything else is 404. `files` lists only what this
+    user may open (restricted/closed -> empty), as /api/files URLs."""
+    # The file list depends on the session cookie, so shared caches must not reuse it.
+    response.headers["Cache-Control"] = "private, no-store"
+    return catalog_service.get_document(session, user, document_id, lang)
 
 
 @router.get("/funds", response_model=FundsResponse)

@@ -2,12 +2,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ActiveFilters } from "@/components/catalog/active-filters";
 import { CatalogNav } from "@/components/catalog/catalog-nav";
 import { CategoryTiles } from "@/components/catalog/category-tiles";
+import { EmptyResults } from "@/components/catalog/empty-results";
 import { DocumentCard } from "@/components/catalog/document-card";
 import { FilterForm } from "@/components/catalog/filter-form";
 import { Pagination } from "@/components/catalog/pagination";
 import { SortLinks } from "@/components/catalog/sort-links";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { EmptyState } from "@/components/ui/state-view";
 import { catalogFetch, catalogParams, type DocumentsResponse, type SearchParams } from "@/lib/api/catalog";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -55,7 +55,7 @@ export default async function CatalogPage({
             </div>
             <ActiveFilters params={params_} facets={result.facets} />
             {result.items.length === 0 ? (
-              <EmptyState as="h2" resetHref="/catalog" />
+              <EmptyResults params={params_} locale={locale} />
             ) : (
               <ul className="space-y-3">
                 {result.items.map((item) => (
