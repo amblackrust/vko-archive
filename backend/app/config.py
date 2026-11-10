@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,24 @@ class Settings(BaseSettings):
     health_cache_ttl_seconds: float = 60.0
 
     storage_dir: Path = BACKEND_DIR / "storage"
+
+    # Admin sessions (T6.1). The key comes only from the environment; without it login fails.
+    jwt_secret: SecretStr | None = None
+    session_cookie_secure: bool = True
+    session_idle_minutes: int = 30
+    session_max_hours: int = 12
+    login_max_attempts: int = 5
+    login_lock_minutes: int = 15
+
+    @field_validator("jwt_secret")
+    @classmethod
+    def _check_jwt_secret(cls, value: SecretStr | None) -> SecretStr | None:
+        if value is None:
+            return None
+        secret = value.get_secret_value()
+        if secret.startswith("change_me") or len(secret) < 32:
+            raise ValueError("JWT_SECRET must be a random value of at least 32 characters")
+        return value
 
 
 @lru_cache
