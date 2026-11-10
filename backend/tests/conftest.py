@@ -96,3 +96,18 @@ def client(engine: Engine) -> Iterator[TestClient]:
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def no_ollama_embeddings(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests never call the real Ollama for search vectors (slow, machine-dependent):
+    indexing leaves vectors NULL and search runs FTS + trigram. Tests of the vector path
+    patch these back explicitly."""
+    from app.ai.embeddings import EmbeddingUnavailable
+    from app.services import indexing, search
+
+    def _unavailable(*args: object, **kwargs: object) -> list[list[float]]:
+        raise EmbeddingUnavailable("disabled in tests")
+
+    monkeypatch.setattr(indexing, "embed_texts", _unavailable)
+    monkeypatch.setattr(search, "embed_query", lambda *args, **kwargs: None)

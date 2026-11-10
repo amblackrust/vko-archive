@@ -40,7 +40,7 @@ from app.models import (
 from app.models.enums import AuditResult, WorkflowStatus
 from app.repositories import users as users_repo
 from app.repositories import workflow as workflow_repo
-from app.services import audit
+from app.services import audit, indexing
 from app.services.authz import AuthUser, authorize, object_branch_id, require, sync_document_branch
 from app.services.errors import Conflict, InvalidInput, NotFound
 
@@ -156,7 +156,8 @@ def save_with_version(
     """Optimistic-lock update for any workflow object, recorded in the version history.
     Raises Conflict("version_conflict") if someone saved the object in the meantime
     (→ HTTP 409). For documents the branch is re-derived from the hierarchy.
-    Usable by catalog/content CRUD; does not commit."""
+    Usable by catalog/content CRUD; does not commit. Re-indexes the object for search
+    (call `indexing.embed_pending_background` as a BackgroundTask afterwards)."""
     if isinstance(obj, Document):
         sync_document_branch(obj)
         values = {**values, "branch_id": obj.branch_id}
@@ -164,6 +165,9 @@ def save_with_version(
     if new_version is None:
         raise Conflict("version_conflict")
     session.refresh(obj)
+    # Search index follows the saved state in the same transaction: unpublishing or
+    # do_not_publish removes the rows before commit (vectors are filled later).
+    indexing.reindex_object(session, object_type, obj)
     workflow_repo.add_history(
         session,
         WorkflowHistory(
