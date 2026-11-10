@@ -52,8 +52,19 @@ OWNER_MODELS: dict[str, type] = {
     "historical_event": HistoricalEvent,
 }
 
-# Active content is never rendered inline from our origin.
-_ACTIVE_MIME = frozenset({"text/html", "application/xhtml+xml", "image/svg+xml", "text/xml", "application/xml"})
+# Only passive formats are shown inline (allowlist); anything else — HTML, SVG, XML,
+# unknown types — is a download, so stored files can never run script on our origin.
+_INLINE_MIME = frozenset({"image/png", "image/jpeg", "image/webp", "image/gif", "application/pdf", "text/plain"})
+_INLINE_MIME_PREFIXES = ("audio/", "video/")
+
+
+def normalize_mime(mime: str | None) -> str:
+    """Bare lower-case media type: "TEXT/HTML; charset=utf-8" -> "text/html"."""
+    return (mime or "").split(";")[0].strip().lower() or "application/octet-stream"
+
+
+def is_inline_mime(mime: str) -> bool:
+    return mime in _INLINE_MIME or mime.startswith(_INLINE_MIME_PREFIXES)
 
 
 @dataclass(frozen=True)
@@ -62,7 +73,7 @@ class FileDownload:
     mime: str
     filename: str | None
     public: bool  # also visible to anonymous visitors (cacheable)
-    attachment: bool  # force download (active content)
+    attachment: bool  # force download (not an allowlisted passive format)
 
 
 @dataclass(frozen=True)
@@ -116,13 +127,13 @@ def get_download(
         # A DB row pointing outside storage or to a missing file: an operator problem.
         logger.error("file %s (%s) is missing or outside the storage dir", file.id, variant)
         raise NotFound()
-    mime = file.mime if variant == "master" else (mimetypes.guess_type(path.name)[0] or "application/octet-stream")
+    mime = normalize_mime(file.mime if variant == "master" else mimetypes.guess_type(path.name)[0])
     return FileDownload(
         path=path,
         mime=mime,
         filename=file.original_name if variant == "master" else None,
         public=authorize(None, FILE_DOWNLOAD, target),
-        attachment=mime in _ACTIVE_MIME,
+        attachment=not is_inline_mime(mime),
     )
 
 

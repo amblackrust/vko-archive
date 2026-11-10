@@ -10,8 +10,13 @@
 
 Only what the indexer wrote can be found, and every hit is re-checked against the live
 object (`indexing.INDEXED_TYPES[...].is_public`) before it is counted, grouped, faceted
-or shown, so a stale row can never expose a hidden object. Snippets come from indexed
-(public) text only and are HTML-escaped; highlights are <mark> tags.
+or shown, so a stale row can never expose a hidden object. OCR chunks are re-checked too:
+a chunk is used (for matching and snippets) only while its source file is still
+downloadable by an anonymous visitor. Snippets come from indexed (public) text only and
+are HTML-escaped; highlights are <mark> tags. `title` is plain text.
+
+Search deliberately ignores the current user: staff get the same public results as
+visitors (docs/DECISIONS.md).
 """
 
 import html
@@ -27,6 +32,7 @@ from sqlalchemy.orm import Session
 from app.ai.embeddings import embed_query
 from app.config import Settings
 from app.models import Branch, Document
+from app.models.enums import WorkflowStatus
 from app.repositories import search as search_repo
 from app.schemas.search import (
     DocumentMeta,
@@ -37,6 +43,8 @@ from app.schemas.search import (
     SearchItem,
     SearchResponse,
 )
+from app.services import files as files_service
+from app.services.authz import FILE_DOWNLOAD, authorize
 from app.services.indexing import INDEXED_TYPES, OCR_LANG
 
 TYPE_ORDER = ("document", "fund", "page", "branch", "exhibition", "collection", "news")
@@ -47,7 +55,8 @@ RRF_K = 60
 # Cosine distance cutoff for vector hits (bge-m3); without it every query would "match"
 # its nearest neighbours. Tuned on the demo catalog, see docs/DECISIONS.md.
 VECTOR_MAX_DISTANCE = 0.5
-QUERY_EMBED_TIMEOUT_SECONDS = 5.0
+# A query must stay fast: a slow Ollama just means no vector hits (indexing has its own timeout).
+QUERY_EMBED_TIMEOUT_SECONDS = 2.0
 SNIPPET_FALLBACK_CHARS = 220
 
 _WORD_RE = re.compile(r"\w+")
@@ -157,6 +166,51 @@ class Hit:
     matched: list[str] = field(default_factory=list)
 
 
+def _downloadable_files(session: Session, file_ids: set[uuid.UUID]) -> dict[uuid.UUID, Key]:
+    """file_id -> owner key for the files an anonymous visitor may download right now
+    (the live rule, authz "file.download"); others are left out."""
+    allowed: dict[uuid.UUID, Key] = {}
+    for file in search_repo.load_files(session, file_ids):
+        if file.owner_type in INDEXED_TYPES and file.owner_id is not None and authorize(
+            None, FILE_DOWNLOAD, files_service.file_target(session, file)
+        ):
+            allowed[file.id] = (file.owner_type, file.owner_id)
+    return allowed
+
+
+class _OcrGuard:
+    """Decides whether an index row may be used: description rows (no file) always,
+    OCR chunks only while their file is downloadable and belongs to the row's object."""
+
+    def __init__(self, session: Session) -> None:
+        self._session = session
+        self._allowed: dict[uuid.UUID, Key] = {}
+        self._checked: set[uuid.UUID] = set()
+
+    def check(self, file_ids: set[uuid.UUID | None]) -> None:
+        new = {f for f in file_ids if f is not None} - self._checked
+        if new:
+            self._allowed.update(_downloadable_files(self._session, new))
+            self._checked |= new
+
+    def ok(self, object_type: str, object_id: uuid.UUID, file_id: uuid.UUID | None) -> bool:
+        return file_id is None or self._allowed.get(file_id) == (object_type, object_id)
+
+
+def _live_candidates(guard: _OcrGuard, rows: list[search_repo.Candidate]) -> list[tuple[str, uuid.UUID, float]]:
+    """Drops rows of files no longer downloadable; keeps the best remaining row per object
+    (rows come ordered best first)."""
+    guard.check({file_id for _, _, file_id, _ in rows})
+    seen: set[Key] = set()
+    result: list[tuple[str, uuid.UUID, float]] = []
+    for object_type, object_id, file_id, score in rows:
+        if (object_type, object_id) in seen or not guard.ok(object_type, object_id, file_id):
+            continue
+        seen.add((object_type, object_id))
+        result.append((object_type, object_id, score))
+    return result
+
+
 def fuse(ranked_lists: dict[str, list[tuple[str, uuid.UUID, float]]]) -> dict[Key, Hit]:
     """Reciprocal Rank Fusion: score = Σ 1 / (k + rank) over the methods that found it."""
     hits: dict[Key, Hit] = {}
@@ -264,9 +318,11 @@ def _facets(session: Session, results: list[_Result], active: dict[str, set[str]
                 if value is not None:
                     counter[value] += 1
         counts[dimension] = counter
+    # Labels only for published branches: an unpublished one stays an id without a name.
     branch_names = {
         str(b.id): _i18n(b.short_name, lang) or _i18n(b.name, lang)
         for b in search_repo.load_objects(session, Branch, {uuid.UUID(v) for v in counts["branch"]})
+        if b.workflow_status == WorkflowStatus.PUBLISHED
     }
 
     def values(dimension: str, labels: dict[str, str] | None = None) -> list[FacetValue]:
@@ -320,17 +376,22 @@ def search(session: Session, settings: Settings, filters: SearchFilters) -> Sear
     if plan.and_query is None:
         return empty
 
+    guard = _OcrGuard(session)
     ranked: dict[str, list[tuple[str, uuid.UUID, float]]] = {}
     fts_query = plan.and_query
-    ranked["fts"] = search_repo.fts_candidates(session, fts_query, CANDIDATES_PER_METHOD)
+    ranked["fts"] = _live_candidates(guard, search_repo.fts_candidates(session, fts_query, CANDIDATES_PER_METHOD))
     if not ranked["fts"] and plan.or_query:
         fts_query = plan.or_query
-        ranked["fts"] = search_repo.fts_candidates(session, fts_query, CANDIDATES_PER_METHOD)
+        ranked["fts"] = _live_candidates(guard, search_repo.fts_candidates(session, fts_query, CANDIDATES_PER_METHOD))
     if len(text) >= 3:
-        ranked["trigram"] = search_repo.trigram_candidates(session, text, CANDIDATES_PER_METHOD)
+        ranked["trigram"] = _live_candidates(
+            guard, search_repo.trigram_candidates(session, text, CANDIDATES_PER_METHOD)
+        )
     vector = embed_query(text, settings, timeout=QUERY_EMBED_TIMEOUT_SECONDS)
     if vector is not None:
-        ranked["vector"] = search_repo.vector_candidates(session, vector, VECTOR_MAX_DISTANCE, CANDIDATES_PER_METHOD)
+        ranked["vector"] = _live_candidates(
+            guard, search_repo.vector_candidates(session, vector, VECTOR_MAX_DISTANCE, CANDIDATES_PER_METHOD)
+        )
 
     results = _load_public(session, fuse(ranked))
     active = _filter_values(filters)
@@ -346,8 +407,11 @@ def search(session: Session, settings: Settings, filters: SearchFilters) -> Sear
     }
     shown_keys = [r.hit.key for items in page.values() for r in items]
     rows_by_key: dict[Key, list[Any]] = defaultdict(list)
-    for row in search_repo.entries_for(session, shown_keys, fts_query):
-        rows_by_key[(row.object_type, row.object_id)].append(row)
+    shown_rows = search_repo.entries_for(session, shown_keys, fts_query)
+    guard.check({row.file_id for row in shown_rows})
+    for row in shown_rows:
+        if guard.ok(row.object_type, row.object_id, row.file_id):
+            rows_by_key[(row.object_type, row.object_id)].append(row)
 
     groups: list[SearchGroup] = []
     for object_type in TYPE_ORDER:
