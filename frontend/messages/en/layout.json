@@ -1,0 +1,90 @@
+{
+  "siteName": "State Archive of East Kazakhstan Region",
+  "siteShort": "VKO State Archive",
+  "homeLink": "Go to home page: State Archive of East Kazakhstan Region",
+  "search": {
+    "label": "Site search",
+    "placeholder": "Search the archive",
+    "submit": "Search"
+  },
+  "catalogButton": "Electronic catalogue",
+  "language": {
+    "label": "Site language"
+  },
+  "theme": {
+    "label": "Colour theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "menu": {
+    "open": "Open menu",
+    "close": "Close menu",
+    "main": "Main menu",
+    "mobile": "Mobile menu",
+    "sectionToggle": "Expand section"
+  },
+  "nav": {
+    "groups": {
+      "about": "About the archive",
+      "services": "Services and documents",
+      "memory": "Memory archive",
+      "media": "News and publications"
+    },
+    "items": {
+      "catalog": "Electronic catalogue",
+      "about": "About the archive",
+      "branches": "Branches and map",
+      "readingRoom": "Reading room",
+      "contacts": "Contacts",
+      "help": "Visitor guide",
+      "stateService": "Public service",
+      "paidServices": "Paid services",
+      "legal": "Legal acts",
+      "compliance": "Compliance and anti-corruption",
+      "memory": "Great Memory Archive",
+      "timeline": "Interactive timeline",
+      "historyMap": "Historical map of the region",
+      "exhibitions": "Online exhibitions",
+      "news": "News and events",
+      "publications": "Essays and collections"
+    }
+  },
+  "contactsBlock": {
+    "title": "Contacts",
+    "address": "Address",
+    "addressValue": "Republic of Kazakhstan, 070000, Ust-Kamenogorsk, Beibitshilik St., 26/1 (Golovkov St., 26/1)",
+    "phone": "Phone",
+    "phoneValue": "8 (7232) 25-13-22",
+    "reception": "Reception",
+    "receptionValue": "8 (7232) 25-59-76",
+    "email": "E-mail",
+    "emailValue": "arhiv-ukg@yandex.kz"
+  },
+  "hours": {
+    "title": "Opening hours",
+    "office": "Archive: Monday–Friday, 8:00–17:00",
+    "readingRoom": "Reading room: Monday–Friday, 9:00–16:00"
+  },
+  "social": {
+    "title": "Follow us",
+    "instagram": "Instagram @arhiv_vko",
+    "facebook": "Facebook vkoarhiv"
+  },
+  "govResources": {
+    "title": "Government resources",
+    "egov": "e-Government portal eGov.kz",
+    "eotinish": "Citizens' appeals e-Otinish",
+    "govkz": "Official government resources gov.kz",
+    "external": "opens an external site"
+  },
+  "privacy": "Privacy policy",
+  "copyright": "© {year} {name}",
+  "prototype": "Prototype. Part of the data is for demonstration.",
+  "home": {
+    "title": "State Archive of East Kazakhstan Region",
+    "stub": "The home page will be built in a later stage. The site skeleton works: language, theme, menu and system states."
+  }
+}

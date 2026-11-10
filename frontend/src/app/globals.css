@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens. Направление: «цифровой музей» + архивная эстетика —
+ * тёплая бумага, чернильный текст, глубокий синий и охра как акцент.
+ * Пары фон/текст проверены на контраст WCAG AA (>= 4.5:1 для текста).
+ */
+:root {
+  --background: #f7f4ee;
+  --foreground: #1d2433;
+  --surface: #ffffff;
+  --surface-muted: #efeae0;
+  --border: #d8d1c2;
+  --muted-foreground: #565d6b;
+  --primary: #1f3a5f;
+  --primary-foreground: #ffffff;
+  --accent: #7a4f0d;
+  --accent-soft: #f1e3c6;
+  --accent-soft-foreground: #5c3b05;
+  --destructive: #a31f2b;
+  --destructive-foreground: #ffffff;
+  --warning-soft: #fbe9c0;
+  --warning-soft-foreground: #5c3b05;
+  --ring: #1f3a5f;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.875rem;
+
+  --space-section: 4rem;
+  --container-max: 76rem;
+}
+
+.dark {
+  --background: #12151c;
+  --foreground: #ebe7df;
+  --surface: #1a1f29;
+  --surface-muted: #202633;
+  --border: #323a4a;
+  --muted-foreground: #a6adbb;
+  --primary: #8fb4e3;
+  --primary-foreground: #0f1a2b;
+  --accent: #e0b866;
+  --accent-soft: #3a2f17;
+  --accent-soft-foreground: #f0d9a3;
+  --destructive: #ff8a93;
+  --destructive-foreground: #2a0a0d;
+  --warning-soft: #3a2f17;
+  --warning-soft-foreground: #f0d9a3;
+  --ring: #8fb4e3;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-foreground: var(--accent-soft-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
+  --color-ring: var(--ring);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-sans: var(--font-sans-face), system-ui, sans-serif;
+  --font-serif: var(--font-serif-face), Georgia, serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    scroll-padding-top: 6rem;
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    line-height: 1.2;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .container-page {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

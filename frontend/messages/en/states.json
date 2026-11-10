@@ -1,0 +1,29 @@
+{
+  "notFound": {
+    "title": "Page not found",
+    "description": "This page does not exist or has been moved. Check the address or go to the home page."
+  },
+  "empty": {
+    "title": "Nothing found",
+    "description": "Try changing your query or resetting the filters.",
+    "reset": "Reset filters"
+  },
+  "unavailable": {
+    "title": "Material unavailable",
+    "description": "The material is hidden, unpublished or not published yet."
+  },
+  "forbidden": {
+    "title": "Access denied",
+    "description": "You do not have permission to view this material. Access to restricted materials is limited."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Try reloading the page.",
+    "retry": "Try again",
+    "code": "Error code: {digest}"
+  },
+  "loading": {
+    "label": "Loading content"
+  },
+  "toHome": "Back to home"
+}
