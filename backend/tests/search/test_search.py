@@ -96,6 +96,50 @@ def test_closed_file_ocr_is_not_searchable(api, factory):
     assert "master_path" not in str(body) and "masters/" not in str(body)
 
 
+def test_file_closed_without_reindex_hides_its_ocr(api, factory):
+    ocr_word = token()
+    document = public_document(factory, title={"ru": f"Документ {token()}"})
+    file = add_file(factory, document, ocr_text=f"текст скана {ocr_word}")
+    index(factory, "document", document)
+    assert _ids(_search(api, q=ocr_word)) == {str(document.id)}
+
+    # Access changed by raw update, without reindex_file_owner: the index is stale.
+    file.access = FileAccess.CLOSED
+    factory.session.commit()
+    assert _search(api, q=ocr_word)["total"] == 0
+    body = _search(api, q=document.title["ru"])
+    assert _ids(body) == {str(document.id)}
+    assert ocr_word not in str(body)
+
+    # Same when the document's file_access is closed.
+    file.access = FileAccess.OPEN
+    document.file_access = FileAccess.CLOSED
+    factory.session.commit()
+    assert _search(api, q=ocr_word)["total"] == 0
+
+
+def test_unpublished_fund_title_is_not_searchable_via_document(api, factory):
+    fund_word = token()
+    fund, inventory, case = factory.catalog(None)  # draft
+    fund.title = {"ru": f"Фонд {fund_word}"}
+    factory.session.commit()
+    document = public_document(factory, case=case, title={"ru": f"Документ {token()}"}, summary={"ru": "описание"})
+    index(factory, "document", document)
+    assert _search(api, q=fund_word)["total"] == 0
+    body = _search(api, q="описание " + document.title["ru"])
+    assert fund_word not in str(body)
+
+
+def test_branch_facet_labels_only_published_branches(api, factory):
+    word = token()
+    branch = factory.add(Branch(name={"ru": "ДЕМО скрытый филиал"}, type=BranchType.DISTRICT, slug=f"b-{word}"))
+    document = public_document(factory, title={"ru": f"Приказ {word}"}, branch_id=branch.id)
+    index(factory, "document", document)
+    body = _search(api, q=word)
+    assert body["facets"]["branch"] == [{"value": str(branch.id), "label": None, "count": 1}]
+    assert "скрытый" not in str(body)
+
+
 def test_synonyms_and_typos(api, factory):
     word = token()
     old_name, new_name = f"старгород{word[-6:]}", f"новгород{word[-6:]}"

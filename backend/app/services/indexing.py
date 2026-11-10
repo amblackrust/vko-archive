@@ -8,9 +8,12 @@ restricted or unreviewed files never reaches the index.
 Sync part (same transaction as the change): `reindex_object()` deletes the object's
 rows and, if it is still public, writes new rows with tsvector (FTS) and title (trigram).
 `workflow.save_with_version` calls it on every save/transition, so unpublishing or
-do_not_publish removes the rows before the commit. Vectors are filled afterwards by
+do_not_publish removes the rows before the commit. A document's text includes the titles
+of its fund and case (only while they are published) and of its published tags, so saving
+a fund/inventory/case re-indexes its documents too (`reindex_documents_under`). Vectors are filled afterwards by
 `embed_pending()` (a BackgroundTask after workflow transitions, or the command below);
-unchanged texts keep their vectors.
+unchanged texts keep their vectors. Only one embed_pending runs at a time (advisory lock),
+and no transaction stays open while Ollama computes vectors.
 
 Command: `python -m app.services.indexing [--no-embed]` — default synonyms (if the
 table is empty), full reindex, then embeddings for rows without a vector.
@@ -46,6 +49,11 @@ EMBED_TEXT_CHARS = 4000
 EMBED_BATCH = 8
 # Indexing is offline work: a slow (CPU/shared GPU) Ollama gets more time than queries.
 EMBED_TIMEOUT_SECONDS = 180.0
+# A BackgroundTask after one admin action embeds at most this many rows; the indexing
+# command picks up the rest.
+EMBED_BACKGROUND_MAX_ROWS = 200
+# pg advisory lock key for embed_pending ("embd"): concurrent runs would embed the same rows.
+EMBED_LOCK_KEY = 0x656D6264
 
 # Words for document types, so a query like "фото" or "приказ" finds them by type too.
 DOC_TYPE_LABELS: dict[str, dict[str, str]] = {
@@ -90,6 +98,7 @@ class IndexText:
     chunk_no: int
     title: str
     body: str
+    file_id: uuid.UUID | None = None  # source file of an OCR chunk
 
 
 @dataclass(frozen=True)
@@ -151,9 +160,14 @@ def chunk_text(text: str, size: int = OCR_CHUNK_CHARS) -> list[str]:
 
 
 def _document_texts(session: Session, document: Document) -> list[IndexText]:
+    # Titles of unpublished containers/tags must not become searchable through a public
+    # document (they would also show up in its snippet).
     case = document.case
     inventory = case.inventory if case is not None else None
     fund = inventory.fund if inventory is not None else None
+    case = case if case is not None and _published(case) else None
+    fund = fund if fund is not None and _published(fund) else None
+    tags = [tag for tag in document.tags if _published(tag)]
 
     def body(lang: str) -> str:
         return _join(
@@ -164,7 +178,7 @@ def _document_texts(session: Session, document: Document) -> list[IndexText]:
             ", ".join(_t(place, lang) for place in document.places if _t(place, lang)),
             _t(document.summary, lang),
             _t(document.historical_note, lang),
-            ", ".join(_t(tag.name, lang) for tag in document.tags if _t(tag.name, lang)),
+            ", ".join(_t(tag.name, lang) for tag in tags if _t(tag.name, lang)),
             _t(fund.title, lang) if fund is not None else None,
             _t(case.title, lang) if case is not None else None,
         )
@@ -180,7 +194,7 @@ def _document_texts(session: Session, document: Document) -> list[IndexText]:
             continue
         for chunk in chunk_text(file.ocr_text):
             chunk_no += 1
-            texts.append(IndexText(OCR_LANG, chunk_no, chunk_title, chunk))
+            texts.append(IndexText(OCR_LANG, chunk_no, chunk_title, chunk, file.id))
     return texts
 
 
@@ -250,9 +264,26 @@ def reindex_object(session: Session, object_type: str, obj: Any) -> int:
         embedding, model = kept.get((text.lang, text.chunk_no, text.title, text.body), (None, None))
         search_repo.add_entry(
             session, object_type=object_type, object_id=object_id, lang=text.lang, chunk_no=text.chunk_no,
-            title=text.title, body=text.body, embedding=embedding, embedding_model=model,
+            title=text.title, body=text.body, file_id=text.file_id, embedding=embedding, embedding_model=model,
         )
     return len(texts)
+
+
+# Containers whose titles are part of their documents' index text.
+DOCUMENT_CONTAINERS = frozenset({"fund", "inventory", "case"})
+
+
+def reindex_documents_under(session: Session, object_type: str, obj: Any) -> int:
+    """After a fund/inventory/case save: its documents' text (container titles) may have
+    changed, so they are re-indexed in the same transaction. Synchronous: a fund with
+    thousands of documents makes that save slower (acceptable for the demo catalog).
+    Returns rows written. Does not commit."""
+    if object_type not in DOCUMENT_CONTAINERS:
+        return 0
+    return sum(
+        reindex_object(session, "document", document)
+        for document in search_repo.documents_under(session, object_type, obj.id)
+    )
 
 
 def remove_object(session: Session, object_type: str, object_id: uuid.UUID) -> None:
@@ -284,34 +315,53 @@ def reindex_all(session: Session) -> dict[str, int]:
 
 
 def embed_pending(session: Session, settings: Settings, *, max_rows: int | None = None) -> int:
-    """Fills vectors of rows that have none, committing per batch. Stops quietly (logs a
-    warning) if Ollama is unavailable: search works without vectors. Returns rows embedded."""
+    """Fills vectors of rows that have none, one batch at a time: read the batch, end the
+    transaction, call Ollama, write the vectors by row id in a new transaction (rows
+    replaced meanwhile are skipped). Ends the session's current transaction first.
+    Only one run at a time (pg advisory lock on a separate connection); a concurrent call
+    returns 0 at once. Stops quietly (logs a warning) if Ollama is unavailable: search
+    works without vectors. Returns rows embedded."""
+    session.commit()
+    with session.get_bind().engine.connect() as lock_conn:
+        locked = search_repo.try_advisory_lock(lock_conn, EMBED_LOCK_KEY)
+        lock_conn.commit()  # the lock is session-level: no transaction is kept open
+        if not locked:
+            logger.info("embeddings are already being computed by another process")
+            return 0
+        try:
+            return _embed_batches(session, settings, max_rows)
+        finally:
+            search_repo.advisory_unlock(lock_conn, EMBED_LOCK_KEY)
+            lock_conn.commit()
+
+
+def _embed_batches(session: Session, settings: Settings, max_rows: int | None) -> int:
     done = 0
     while max_rows is None or done < max_rows:
         limit = EMBED_BATCH if max_rows is None else min(EMBED_BATCH, max_rows - done)
-        entries = search_repo.pending_embeddings(session, limit)
-        if not entries:
+        pending = search_repo.pending_embeddings(session, limit)
+        session.rollback()  # read-only; no transaction during the HTTP call
+        if not pending:
             break
-        inputs = [f"{e.title}\n\n{e.body}"[:EMBED_TEXT_CHARS] for e in entries]
+        inputs = [f"{title}\n\n{body}"[:EMBED_TEXT_CHARS] for _, title, body in pending]
         try:
             vectors = embed_texts(inputs, settings, timeout=EMBED_TIMEOUT_SECONDS)
         except EmbeddingUnavailable as exc:
-            logger.warning("embeddings unavailable (%s): %d rows left without vectors", exc, len(entries))
-            session.rollback()
+            logger.warning("embeddings unavailable (%s): %d rows left without vectors", exc, len(pending))
             break
-        for entry, vector in zip(entries, vectors, strict=True):
-            search_repo.set_embedding(session, entry.id, vector, settings.ollama_embed_model)
+        for (entry_id, _, _), vector in zip(pending, vectors, strict=True):
+            search_repo.set_embedding(session, entry_id, vector, settings.ollama_embed_model)
         session.commit()
-        session.expire_all()
-        done += len(entries)
+        done += len(pending)
     return done
 
 
 def embed_pending_background(bind: Engine) -> None:
-    """BackgroundTask entry point (own session, after the response)."""
+    """BackgroundTask entry point (own session, after the response), bounded by
+    EMBED_BACKGROUND_MAX_ROWS."""
     with Session(bind=bind) as session:
         try:
-            embed_pending(session, get_settings())
+            embed_pending(session, get_settings(), max_rows=EMBED_BACKGROUND_MAX_ROWS)
         except Exception:
             logger.exception("background embedding failed")
 

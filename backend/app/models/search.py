@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import BigInteger, Boolean, DateTime, Index, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import ARRAY, TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -65,6 +65,11 @@ class SearchEntry(UUIDPkMixin, Base):
     object_id: Mapped[uuid.UUID] = mapped_column(nullable=False, index=True)
     lang: Mapped[str] = mapped_column(String(8), nullable=False)
     chunk_no: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    # Source file of an OCR chunk (chunk_no >= 1): search re-checks that the file is still
+    # downloadable by anonymous visitors before using the row. NULL for description rows.
+    file_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("digital_files.id", ondelete="CASCADE"), index=True
+    )
     title: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     body: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     # Filled by the indexer with to_tsvector('simple', ...): Postgres has no Kazakh stemmer.

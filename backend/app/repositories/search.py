@@ -8,10 +8,11 @@ from \\w-only lexemes.
 import uuid
 from typing import Any
 
-from sqlalchemy import delete, func, insert, literal, literal_column, select, update
+from sqlalchemy import delete, func, insert, literal, literal_column, or_, select, update
+from sqlalchemy.engine import Connection
 from sqlalchemy.orm import Session
 
-from app.models import SearchEntry, Synonym
+from app.models import Case, DigitalFile, Document, Inventory, SearchEntry, Synonym
 
 _SIMPLE = literal_column("'simple'::regconfig")
 # Private-use characters mark highlights in ts_headline output; the service escapes the
@@ -21,6 +22,10 @@ HL_STOP = ""
 _HEADLINE_OPTIONS = f"StartSel={HL_START}, StopSel={HL_STOP}, MaxWords=35, MinWords=15"
 
 ObjectKey = tuple[str, uuid.UUID]
+# A candidate: (object_type, object_id, file_id of an OCR chunk or None, score).
+Candidate = tuple[str, uuid.UUID, uuid.UUID | None, float]
+# OCR chunks must name their source file; legacy rows without one are never matched.
+_HAS_SOURCE = or_(SearchEntry.chunk_no == 0, SearchEntry.file_id.is_not(None))
 
 
 def _tsquery(query: str):
@@ -69,6 +74,7 @@ def add_entry(
     chunk_no: int,
     title: str,
     body: str,
+    file_id: uuid.UUID | None = None,
     embedding: list[float] | None = None,
     embedding_model: str | None = None,
 ) -> None:
@@ -78,23 +84,48 @@ def add_entry(
     session.execute(
         insert(SearchEntry).values(
             id=uuid.uuid4(), object_type=object_type, object_id=object_id, lang=lang, chunk_no=chunk_no,
-            title=title, body=body, tsv=tsv, embedding=embedding, embedding_model=embedding_model,
+            file_id=file_id, title=title, body=body, tsv=tsv, embedding=embedding, embedding_model=embedding_model,
         )
     )
 
 
-def pending_embeddings(session: Session, limit: int) -> list[SearchEntry]:
-    stmt = select(SearchEntry).where(SearchEntry.embedding.is_(None))
-    return list(session.scalars(stmt.order_by(SearchEntry.updated_at, SearchEntry.id).limit(limit)))
+def pending_embeddings(session: Session, limit: int) -> list[tuple[uuid.UUID, str, str]]:
+    """(id, title, body) of rows without a vector."""
+    stmt = select(SearchEntry.id, SearchEntry.title, SearchEntry.body).where(SearchEntry.embedding.is_(None))
+    return [(r.id, r.title, r.body) for r in session.execute(stmt.order_by(SearchEntry.updated_at, SearchEntry.id).limit(limit))]
 
 
 def set_embedding(session: Session, entry_id: uuid.UUID, vector: list[float], model: str) -> None:
+    """No-op if the row was replaced meanwhile (reindex writes new ids)."""
     session.execute(
         update(SearchEntry)
-        .where(SearchEntry.id == entry_id)
+        .where(SearchEntry.id == entry_id, SearchEntry.embedding.is_(None))
         .values(embedding=vector, embedding_model=model)
         .execution_options(synchronize_session=False)
     )
+
+
+def try_advisory_lock(conn: Connection, key: int) -> bool:
+    """Session-level lock on `conn` (survives commits on that connection)."""
+    return bool(conn.scalar(select(func.pg_try_advisory_lock(key))))
+
+
+def advisory_unlock(conn: Connection, key: int) -> None:
+    conn.scalar(select(func.pg_advisory_unlock(key)))
+
+
+def documents_under(session: Session, object_type: str, object_id: uuid.UUID) -> list[Document]:
+    """Documents inside a fund / inventory / case (their index text includes its title)."""
+    stmt = select(Document).join(Case, Document.case_id == Case.id)
+    if object_type == "case":
+        stmt = stmt.where(Case.id == object_id)
+    elif object_type == "inventory":
+        stmt = stmt.where(Case.inventory_id == object_id)
+    elif object_type == "fund":
+        stmt = stmt.join(Inventory, Case.inventory_id == Inventory.id).where(Inventory.fund_id == object_id)
+    else:
+        return []
+    return list(session.scalars(stmt))
 
 
 def count_entries(session: Session) -> tuple[int, int]:
@@ -104,54 +135,56 @@ def count_entries(session: Session) -> tuple[int, int]:
     return total, missing
 
 
-def fts_candidates(session: Session, query: str, limit: int) -> list[tuple[str, uuid.UUID, float]]:
+def fts_candidates(session: Session, query: str, limit: int) -> list[Candidate]:
+    """Best rank per (object, source file): the service drops rows of files that are no
+    longer downloadable, then keeps the best remaining one per object."""
     q = _tsquery(query)
     rank = func.max(func.ts_rank_cd(SearchEntry.tsv, q)).label("rank")
     stmt = (
-        select(SearchEntry.object_type, SearchEntry.object_id, rank)
-        .where(SearchEntry.tsv.op("@@")(q))
-        .group_by(SearchEntry.object_type, SearchEntry.object_id)
+        select(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id, rank)
+        .where(SearchEntry.tsv.op("@@")(q), _HAS_SOURCE)
+        .group_by(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id)
         .order_by(rank.desc())
         .limit(limit)
     )
-    return [(r.object_type, r.object_id, float(r.rank)) for r in session.execute(stmt)]
+    return [(r.object_type, r.object_id, r.file_id, float(r.rank)) for r in session.execute(stmt)]
 
 
-def trigram_candidates(session: Session, text: str, limit: int) -> list[tuple[str, uuid.UUID, float]]:
+def trigram_candidates(session: Session, text: str, limit: int) -> list[Candidate]:
     """Typos and spelling variants: word similarity of the query to entry titles
     (`<%` uses pg_trgm.word_similarity_threshold, default 0.6, and the trigram GIN index)."""
     similarity = func.max(func.word_similarity(literal(text), SearchEntry.title)).label("sim")
     stmt = (
-        select(SearchEntry.object_type, SearchEntry.object_id, similarity)
-        .where(literal(text).op("<%")(SearchEntry.title))
-        .group_by(SearchEntry.object_type, SearchEntry.object_id)
+        select(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id, similarity)
+        .where(literal(text).op("<%")(SearchEntry.title), _HAS_SOURCE)
+        .group_by(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id)
         .order_by(similarity.desc())
         .limit(limit)
     )
-    return [(r.object_type, r.object_id, float(r.sim)) for r in session.execute(stmt)]
+    return [(r.object_type, r.object_id, r.file_id, float(r.sim)) for r in session.execute(stmt)]
 
 
 def vector_candidates(
     session: Session, vector: list[float], max_distance: float, limit: int
-) -> list[tuple[str, uuid.UUID, float]]:
-    """Nearest entries by cosine distance (HNSW index), best distance per object."""
+) -> list[Candidate]:
+    """Nearest entries by cosine distance (HNSW index), best distance per (object, file)."""
     distance = SearchEntry.embedding.cosine_distance(vector).label("distance")
     nearest = (
-        select(SearchEntry.object_type, SearchEntry.object_id, distance)
-        .where(SearchEntry.embedding.is_not(None))
+        select(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id, distance)
+        .where(SearchEntry.embedding.is_not(None), _HAS_SOURCE)
         .order_by(distance)
         .limit(limit * 3)
         .subquery()
     )
     best = func.min(nearest.c.distance).label("distance")
     stmt = (
-        select(nearest.c.object_type, nearest.c.object_id, best)
+        select(nearest.c.object_type, nearest.c.object_id, nearest.c.file_id, best)
         .where(nearest.c.distance <= max_distance)
-        .group_by(nearest.c.object_type, nearest.c.object_id)
+        .group_by(nearest.c.object_type, nearest.c.object_id, nearest.c.file_id)
         .order_by(best)
         .limit(limit)
     )
-    return [(r.object_type, r.object_id, float(r.distance)) for r in session.execute(stmt)]
+    return [(r.object_type, r.object_id, r.file_id, float(r.distance)) for r in session.execute(stmt)]
 
 
 def entries_for(session: Session, keys: list[ObjectKey], query: str | None) -> list[Any]:
@@ -166,8 +199,8 @@ def entries_for(session: Session, keys: list[ObjectKey], query: str | None) -> l
         headline = literal(None)
     stmt = select(
         SearchEntry.object_type, SearchEntry.object_id, SearchEntry.lang, SearchEntry.title,
-        SearchEntry.chunk_no, SearchEntry.body, headline.label("headline"),
-    ).where(SearchEntry.object_id.in_(ids))
+        SearchEntry.chunk_no, SearchEntry.file_id, SearchEntry.body, headline.label("headline"),
+    ).where(SearchEntry.object_id.in_(ids), _HAS_SOURCE)
     wanted = set(keys)
     return [row for row in session.execute(stmt) if (row.object_type, row.object_id) in wanted]
 
@@ -176,6 +209,12 @@ def load_objects(session: Session, model: type, ids: set[uuid.UUID]) -> list[Any
     if not ids:
         return []
     return list(session.scalars(select(model).where(model.id.in_(ids))))
+
+
+def load_files(session: Session, ids: set[uuid.UUID]) -> list[DigitalFile]:
+    if not ids:
+        return []
+    return list(session.scalars(select(DigitalFile).where(DigitalFile.id.in_(ids))))
 
 
 def active_synonym_groups(session: Session) -> list[list[str]]:

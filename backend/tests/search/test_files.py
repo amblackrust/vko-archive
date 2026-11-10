@@ -28,8 +28,10 @@ def test_open_file_of_public_document_is_served(api, factory, storage):
     assert response.status_code == 200
     assert response.content == CONTENT
     assert response.headers["x-content-type-options"] == "nosniff"
-    assert response.headers["cache-control"].startswith("public")
+    assert response.headers["cache-control"] == "public, no-cache"  # revalidated via ETag
     assert response.headers["content-disposition"].startswith("inline")
+    assert "sandbox" in response.headers["content-security-policy"]
+    assert api.get(f"/api/files/{file.id}", headers={"If-None-Match": response.headers["etag"]}).status_code == 304
 
     preview = api.get(f"/api/files/{file.id}", params={"variant": "preview"})
     assert preview.status_code == 200 and preview.headers["content-type"] == "image/png"
@@ -113,6 +115,33 @@ def test_active_content_is_downloaded_not_rendered(api, factory, storage):
     assert response.status_code == 200
     assert response.headers["content-disposition"].startswith("attachment")
     assert "sandbox" in response.headers["content-security-policy"]
+
+
+@pytest.mark.parametrize(
+    "mime",
+    ["text/html; charset=utf-8", "TEXT/HTML", "image/svg+xml;charset=utf-8", " Application/XHTML+XML ",
+     "application/javascript", "application/x-unknown", ""],
+)
+def test_non_allowlisted_mime_is_always_an_attachment(api, factory, storage, mime):
+    document = public_document(factory)
+    file = add_file(factory, document, master_path=_stored(storage, "masters/x.bin", b"<script>1</script>"), mime=mime)
+    response = api.get(f"/api/files/{file.id}")
+    assert response.status_code == 200
+    assert response.headers["content-disposition"].startswith("attachment")
+    assert "sandbox" in response.headers["content-security-policy"]
+
+
+@pytest.mark.parametrize(
+    ("mime", "served"),
+    [("image/PNG", "image/png"), ("application/pdf", "application/pdf"), ("audio/mpeg", "audio/mpeg"),
+     ("video/mp4", "video/mp4"), ("text/plain; charset=utf-8", "text/plain")],
+)
+def test_allowlisted_mime_is_inline(api, factory, storage, mime, served):
+    document = public_document(factory)
+    file = add_file(factory, document, master_path=_stored(storage), mime=mime)
+    response = api.get(f"/api/files/{file.id}")
+    assert response.headers["content-disposition"].startswith("inline")
+    assert response.headers["content-type"].split(";")[0] == served
 
 
 def test_visible_files_lists_only_allowed_files_without_paths(factory, storage):

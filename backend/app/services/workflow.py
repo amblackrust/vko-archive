@@ -168,6 +168,9 @@ def save_with_version(
     # Search index follows the saved state in the same transaction: unpublishing or
     # do_not_publish removes the rows before commit (vectors are filled later).
     indexing.reindex_object(session, object_type, obj)
+    if {"title", "workflow_status"} & values.keys():
+        # Documents' index text includes published fund/case titles.
+        indexing.reindex_documents_under(session, object_type, obj)
     workflow_repo.add_history(
         session,
         WorkflowHistory(
