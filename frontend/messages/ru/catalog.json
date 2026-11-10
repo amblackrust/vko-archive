@@ -1,0 +1,143 @@
+{
+  "title": "Электронный каталог",
+  "intro": "Фонды, описи, дела и документы Государственного архива ВКО. В каталоге показаны только материалы, разрешённые к публикации. Заказать копии или оформить запрос через сайт нельзя — используйте eGov.kz.",
+  "nav": {
+    "label": "Разделы каталога",
+    "documents": "Документы",
+    "funds": "Фонды",
+    "inventories": "Описи",
+    "cases": "Дела",
+    "personalFunds": "Личные фонды"
+  },
+  "categories": {
+    "title": "Категории каталога",
+    "historical": "Исторические документы",
+    "photos": "Фотографии",
+    "maps": "Карты и чертежи",
+    "written": "Письменные источники",
+    "organizations": "Документы организаций и предприятий",
+    "personal": "Документы личного происхождения",
+    "audio_video": "Аудио- и видеоматериалы"
+  },
+  "filters": {
+    "title": "Фильтры",
+    "apply": "Применить",
+    "reset": "Сбросить фильтры",
+    "q": "Общий поиск",
+    "qPlaceholder": "Название, шифр, автор, тема",
+    "titleField": "Название документа",
+    "fund_number": "Номер фонда",
+    "inventory_number": "Номер описи",
+    "case_number": "Номер дела",
+    "period": "Исторический период",
+    "year": "Год создания",
+    "date_from": "Дата не раньше",
+    "date_to": "Дата не позже",
+    "author": "Автор или организация",
+    "topic": "Тематика",
+    "place": "Населённый пункт",
+    "keyword": "Ключевое слово",
+    "doc_type": "Тип документа",
+    "branch_id": "Филиал архива",
+    "language": "Язык документа",
+    "fund_type": "Тип фонда",
+    "has_digital_copy": "Есть цифровая копия",
+    "category": "Категория",
+    "group": {
+      "search": "Поиск",
+      "code": "Шифр",
+      "dates": "Даты",
+      "attributes": "Признаки"
+    },
+    "active": "Применённые фильтры",
+    "remove": "Убрать фильтр: {name}"
+  },
+  "sort": {
+    "label": "Сортировка",
+    "relevance": "По релевантности",
+    "date_asc": "Дата: сначала старые",
+    "date_desc": "Дата: сначала новые",
+    "code": "По шифру",
+    "title": "По названию"
+  },
+  "results": {
+    "count": "Найдено: {count}",
+    "page": "Страница {page} из {pages}",
+    "prev": "Назад",
+    "next": "Вперёд",
+    "pagination": "Постраничная навигация"
+  },
+  "docTypes": {
+    "order": "Приказ",
+    "protocol": "Протокол",
+    "decision": "Решение",
+    "photo": "Фотография",
+    "drawing": "Чертёж",
+    "map": "Карта",
+    "letter": "Письмо",
+    "newspaper": "Газета",
+    "certificate": "Справка",
+    "personal": "Личный документ",
+    "manuscript": "Рукопись",
+    "audio": "Аудиозапись",
+    "video": "Видеозапись",
+    "report": "Отчёт",
+    "program": "Программа"
+  },
+  "period": "{decade}-е",
+  "languages": {
+    "ru": "Русский",
+    "kk": "Қазақша",
+    "en": "English"
+  },
+  "fundTypes": {
+    "organization": "Организации",
+    "personal": "Личные фонды",
+    "party": "Партийные",
+    "newspaper": "Газетные"
+  },
+  "access": {
+    "open": "Открыт",
+    "restricted": "Ограниченный доступ",
+    "closed": "Закрыт",
+    "needs_review": "Доступ уточняется"
+  },
+  "doc": {
+    "code": "Шифр",
+    "fund": "Фонд",
+    "inventory": "Опись",
+    "case": "Дело",
+    "sheets": "{count} л.",
+    "digitalCopy": "Есть цифровая копия",
+    "noDigitalCopy": "Цифровой копии нет",
+    "openCard": "Открыть карточку"
+  },
+  "tree": {
+    "fundsTitle": "Архивные фонды",
+    "personalTitle": "Личные фонды",
+    "inventoriesTitle": "Описи",
+    "casesTitle": "Архивные дела",
+    "fundOf": "Фонд № {number}",
+    "inventoryOf": "Опись № {number}",
+    "caseOf": "Дело № {number}",
+    "counts": {
+      "inventories": "Описей: {count}",
+      "cases": "Дел: {count}",
+      "documents": "Документов: {count}"
+    },
+    "years": "{from}–{to}",
+    "inventoriesInFund": "Описи фонда",
+    "casesInInventory": "Дела описи",
+    "documentsInCase": "Документы дела",
+    "sheetsCount": "Листов: {count}",
+    "up": "Выше по иерархии",
+    "emptyFunds": "Фондов не найдено.",
+    "emptyInventories": "В фонде нет опубликованных описей.",
+    "emptyCases": "В описи нет опубликованных дел.",
+    "emptyDocuments": "В деле нет документов, разрешённых к публикации.",
+    "search": "Поиск по номеру и названию",
+    "searchSubmit": "Найти",
+    "fundType": "Тип фонда: {type}",
+    "hierarchy": "Структура: архив → фонд → опись → дело → документ"
+  }
+}

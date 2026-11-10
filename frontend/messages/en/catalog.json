@@ -1,0 +1,143 @@
+{
+  "title": "Electronic catalog",
+  "intro": "Fonds, inventories, case files and documents of the State Archive of East Kazakhstan Region. Only materials approved for publication are shown. Copies and requests cannot be ordered on this site; use eGov.kz.",
+  "nav": {
+    "label": "Catalog sections",
+    "documents": "Documents",
+    "funds": "Fonds",
+    "inventories": "Inventories",
+    "cases": "Case files",
+    "personalFunds": "Personal fonds"
+  },
+  "categories": {
+    "title": "Catalog categories",
+    "historical": "Historical documents",
+    "photos": "Photographs",
+    "maps": "Maps and drawings",
+    "written": "Written sources",
+    "organizations": "Records of organizations and enterprises",
+    "personal": "Documents of personal origin",
+    "audio_video": "Audio and video"
+  },
+  "filters": {
+    "title": "Filters",
+    "apply": "Apply",
+    "reset": "Reset filters",
+    "q": "General search",
+    "qPlaceholder": "Title, code, author, topic",
+    "titleField": "Document title",
+    "fund_number": "Fond number",
+    "inventory_number": "Inventory number",
+    "case_number": "Case number",
+    "period": "Historical period",
+    "year": "Year of creation",
+    "date_from": "Date not earlier than",
+    "date_to": "Date not later than",
+    "author": "Author or organization",
+    "topic": "Topic",
+    "place": "Locality",
+    "keyword": "Keyword",
+    "doc_type": "Document type",
+    "branch_id": "Archive branch",
+    "language": "Document language",
+    "fund_type": "Fond type",
+    "has_digital_copy": "Has digital copy",
+    "category": "Category",
+    "group": {
+      "search": "Search",
+      "code": "Reference code",
+      "dates": "Dates",
+      "attributes": "Attributes"
+    },
+    "active": "Applied filters",
+    "remove": "Remove filter: {name}"
+  },
+  "sort": {
+    "label": "Sort by",
+    "relevance": "Relevance",
+    "date_asc": "Date: oldest first",
+    "date_desc": "Date: newest first",
+    "code": "Reference code",
+    "title": "Title"
+  },
+  "results": {
+    "count": "Found: {count}",
+    "page": "Page {page} of {pages}",
+    "prev": "Previous",
+    "next": "Next",
+    "pagination": "Pagination"
+  },
+  "docTypes": {
+    "order": "Order",
+    "protocol": "Minutes",
+    "decision": "Decision",
+    "photo": "Photograph",
+    "drawing": "Drawing",
+    "map": "Map",
+    "letter": "Letter",
+    "newspaper": "Newspaper",
+    "certificate": "Certificate",
+    "personal": "Personal document",
+    "manuscript": "Manuscript",
+    "audio": "Audio recording",
+    "video": "Video recording",
+    "report": "Report",
+    "program": "Program"
+  },
+  "period": "{decade}s",
+  "languages": {
+    "ru": "Russian",
+    "kk": "Kazakh",
+    "en": "English"
+  },
+  "fundTypes": {
+    "organization": "Organizations",
+    "personal": "Personal fonds",
+    "party": "Party records",
+    "newspaper": "Newspapers"
+  },
+  "access": {
+    "open": "Open",
+    "restricted": "Restricted access",
+    "closed": "Closed",
+    "needs_review": "Access to be confirmed"
+  },
+  "doc": {
+    "code": "Reference code",
+    "fund": "Fond",
+    "inventory": "Inventory",
+    "case": "Case",
+    "sheets": "{count} sheets",
+    "digitalCopy": "Digital copy available",
+    "noDigitalCopy": "No digital copy",
+    "openCard": "Open record"
+  },
+  "tree": {
+    "fundsTitle": "Archive fonds",
+    "personalTitle": "Personal fonds",
+    "inventoriesTitle": "Inventories",
+    "casesTitle": "Case files",
+    "fundOf": "Fond No. {number}",
+    "inventoryOf": "Inventory No. {number}",
+    "caseOf": "Case No. {number}",
+    "counts": {
+      "inventories": "Inventories: {count}",
+      "cases": "Cases: {count}",
+      "documents": "Documents: {count}"
+    },
+    "years": "{from}–{to}",
+    "inventoriesInFund": "Inventories of the fond",
+    "casesInInventory": "Cases of the inventory",
+    "documentsInCase": "Documents of the case",
+    "sheetsCount": "Sheets: {count}",
+    "up": "Up one level",
+    "emptyFunds": "No fonds found.",
+    "emptyInventories": "This fond has no published inventories.",
+    "emptyCases": "This inventory has no published cases.",
+    "emptyDocuments": "This case has no documents approved for publication.",
+    "search": "Search by number or title",
+    "searchSubmit": "Search",
+    "fundType": "Fond type: {type}",
+    "hierarchy": "Structure: archive → fond → inventory → case → document"
+  }
+}
