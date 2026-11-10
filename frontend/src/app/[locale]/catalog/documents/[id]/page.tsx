@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { DocumentAiPanel } from "@/components/ai/document/document-ai-panel";
 import { AccessNotice } from "@/components/document/access-notice";
 import { CardActions } from "@/components/document/card-actions";
 import { DocumentDetails } from "@/components/document/details";
 import { RelatedDocuments } from "@/components/document/related";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { PersonalRecommendations } from "@/components/recommendations/personal-recommendations";
 import { DocumentViewer } from "@/components/viewer/document-viewer";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { catalogFetch } from "@/lib/api/catalog";
@@ -65,6 +67,7 @@ export default async function DocumentPage({ params }: Props) {
             ) : (
               <AccessNotice access={doc.file_access} conditions={doc.access_conditions} />
             )}
+            {doc.file_access === "open" && <DocumentAiPanel documentId={doc.id} />}
             {doc.summary && (
               <section aria-labelledby="summary-title" className="space-y-2">
                 <h2 id="summary-title" className="text-xl font-semibold">{t("sections.description")}</h2>
@@ -85,6 +88,7 @@ export default async function DocumentPage({ params }: Props) {
         </div>
 
         <RelatedDocuments items={doc.related} />
+        <PersonalRecommendations documentId={doc.id} />
       </div>
     </>
   );

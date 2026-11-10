@@ -78,6 +78,10 @@ class AiSource(BaseModel):
     phone: str | None = None
     hours: str | None = None
     routes: list[RouteLink] = Field(default_factory=list)
+    # Document mode (T4.6): the page of the digital copy a fragment comes from and its file
+    # (the viewer opens it via /api/files/{file_id}). None for other sources.
+    page: int | None = None
+    file_id: uuid.UUID | None = None
 
 
 class ExternalLink(BaseModel):

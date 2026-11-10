@@ -1,1 +1,43 @@
-{}
+{
+  "panel": {
+    "title": "Ask about this document",
+    "intro": "The AI answers only from the open description and recognised text of this document and names the sheet. The answer is not an archival certificate.",
+    "placeholder": "For example: when was the document issued?",
+    "ask": "Ask",
+    "asking": "The AI is reading the document…",
+    "quickTitle": "Quick questions:",
+    "quick": {
+      "when": "When was the document issued?",
+      "who": "Who signed the document?",
+      "what": "What is this document about?"
+    },
+    "unavailable": "AI is temporarily unavailable. The description and the recognised text of the document are on this page.",
+    "error": "Could not get an answer. Please try again later.",
+    "rateLimited": "Too many questions. Try again in {seconds} s.",
+    "rateLimitedNoTime": "Too many questions. Try again a little later.",
+    "sheet": "sheet {page}",
+    "descriptionSource": "description",
+    "links": {
+      "egov": "eGov.kz portal",
+      "eotinish": "e-Otinish portal"
+    }
+  },
+  "recommendations": {
+    "similarTitle": "Similar materials",
+    "personalTitle": "You may be interested in",
+    "personalToggle": "Personal recommendations",
+    "personalHint": "Take the documents you have viewed into account. The history is kept only in this browser and is deleted when you switch this off.",
+    "personalEmpty": "Open a few more documents, and materials similar to them will appear here.",
+    "empty": "No similar materials yet.",
+    "error": "Could not load recommendations.",
+    "types": {
+      "document": "Document",
+      "fund": "Fund",
+      "exhibition": "Exhibition",
+      "collection": "Collection",
+      "news": "News",
+      "page": "Page",
+      "branch": "Branch"
+    }
+  }
+}

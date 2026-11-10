@@ -286,6 +286,13 @@ class Prepared:
     result: AiAnswer
     context: rag.Context = field(default_factory=rag.Context)
     messages: list[dict[str, str]] | None = None
+    # Fixed texts when the model fails or says nothing usable; the document mode (T4.6)
+    # has its own. `not_found_hints` None → hints from the search filters.
+    unavailable_texts: dict[str, str] = field(default_factory=lambda: prompts.UNAVAILABLE)
+    not_found_texts: dict[str, str] = field(default_factory=lambda: prompts.NOT_FOUND)
+    not_found_hints: list[str] | None = None
+    # «No such information» answers of the model (document mode): turned into the fixed text.
+    no_answer_texts: dict[str, str] | None = None
 
 
 def _fixed(base: dict[str, Any], mode: str, texts: dict[str, str], **extra: Any) -> AiAnswer:
@@ -367,14 +374,22 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
 # --- generation ---------------------------------------------------------------------
 
 
+def _says_no_answer(prepared: Prepared, sanitizer: rag.StreamSanitizer) -> bool:
+    if prepared.no_answer_texts is None or sanitizer.cited:
+        return False
+    text = " ".join(sanitizer.text.casefold().split()).strip(" .«»\"")
+    return any(text == phrase.casefold().rstrip(".") for phrase in prepared.no_answer_texts.values())
+
+
 def _finish(prepared: Prepared, sanitizer: rag.StreamSanitizer) -> AiAnswer:
     result = prepared.result
     text = sanitizer.text
-    if rag.is_empty(text):
+    if rag.is_empty(text) or _says_no_answer(prepared, sanitizer):
+        hints = _hints(result.filters) if prepared.not_found_hints is None else prepared.not_found_hints
         return result.model_copy(
             update={
                 "mode": "not_found", "ai_generated": False, "label": None,
-                "answer": prompts.NOT_FOUND[result.lang], "hints": _hints(result.filters),
+                "answer": prepared.not_found_texts[result.lang], "hints": hints,
             }
         )
     refs = prepared.context.refs
@@ -385,7 +400,7 @@ def _unavailable(prepared: Prepared) -> AiAnswer:
     return prepared.result.model_copy(
         update={
             "mode": "unavailable", "ai_available": False, "ai_generated": False, "label": None,
-            "answer": prompts.UNAVAILABLE[prepared.result.lang],
+            "answer": prepared.unavailable_texts[prepared.result.lang],
             "sources": [i.source for i in prepared.context.items],
         }
     )
