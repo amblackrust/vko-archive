@@ -10,6 +10,7 @@ from app.schemas.legal import ActFile, CompliancePage, LegalActItem, LegalActPar
 from app.services import files as files_service
 from app.services.catalog import pick
 from app.services.errors import NotFound
+from app.services.sanitize import clean_html
 
 # Compliance materials are seeded as legal acts with this slug prefix (see seed/info_content.py).
 COMPLIANCE_SLUG_PREFIX = "compliance-"
@@ -67,7 +68,7 @@ def get_compliance(session: Session, lang: str) -> CompliancePage:
     return CompliancePage(
         title=title,
         title_lang=title_lang,
-        body=body,
+        body=clean_html(body),
         body_lang=body_lang,
         officer=officer if isinstance(officer, str) else None,
         documents=documents,
