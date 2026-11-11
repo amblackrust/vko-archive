@@ -8,13 +8,12 @@ interface DemoBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   kind?: DemoKind;
 }
 
-/** Пометка в виде штампа: красная рамка, капитель. */
 export function DemoBadge({ kind = "noTranslation", className, ...props }: DemoBadgeProps) {
   const t = useTranslations("common.demo");
   return (
     <span
       className={cn(
-        "caps inline-flex items-center rounded-sm border border-accent/60 px-1.5 py-px text-xs leading-tight text-accent",
+        "inline-flex items-center rounded-sm border border-accent/40 bg-accent-soft px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-accent-soft-foreground",
         className,
       )}
       {...props}

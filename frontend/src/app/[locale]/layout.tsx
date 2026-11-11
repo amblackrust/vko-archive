@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Cormorant_SC, Inter } from "next/font/google";
+import { Inter, PT_Serif } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -18,18 +18,10 @@ const sans = Inter({
   variable: "--font-sans-face",
   display: "swap",
 });
-// Публичная часть: Cormorant Garamond (текст и заголовки) и Cormorant SC (капитель). Inter — админка.
-const serif = Cormorant_Garamond({
+const serif = PT_Serif({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
+  weight: ["400", "700"],
   variable: "--font-serif-face",
-  display: "swap",
-});
-const caps = Cormorant_SC({
-  subsets: ["latin", "cyrillic", "cyrillic-ext"],
-  weight: ["500", "600", "700"],
-  variable: "--font-caps-face",
   display: "swap",
 });
 
@@ -61,7 +53,7 @@ export default async function LocaleLayout({
   const siteSettings = await fetchSiteSettings(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${caps.variable}`}>
+    <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${serif.variable}`}>
       <body>
         <NextIntlClientProvider>
           <ThemeProvider>

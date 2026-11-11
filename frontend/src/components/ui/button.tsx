@@ -4,23 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-[color,background-color,border-color,transform] duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        /** Краска: главное действие на экране. */
-        primary: "caps bg-primary text-primary-foreground hover:bg-accent hover:text-white dark:hover:text-primary-foreground",
-        /** Тонкая рамка краской: второстепенное действие. */
-        outline: "caps border border-primary bg-transparent text-foreground hover:bg-primary hover:text-primary-foreground",
-        /** Без рамки: действие в панели инструментов. */
+        primary: "bg-primary text-primary-foreground hover:opacity-90",
+        outline: "border bg-surface hover:bg-surface-muted",
         ghost: "hover:bg-surface-muted",
-        link: "text-foreground underline decoration-1 underline-offset-4 hover:text-accent",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-9 px-3 text-sm",
-        md: "h-11 px-5 text-base",
-        lg: "h-14 px-7 text-lg",
-        icon: "size-11",
+        sm: "h-8 px-3",
+        md: "h-10 px-4",
+        lg: "h-12 px-6 text-base",
+        icon: "size-10",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },
