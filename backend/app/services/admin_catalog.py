@@ -16,6 +16,7 @@ from app.models import Branch, Case, Document, Fund, Inventory
 from app.models.enums import WorkflowStatus
 from app.repositories import admin_catalog as repo
 from app.schemas.admin_catalog import CaseIn, DocumentIn, FundIn, InventoryIn
+from app.schemas.admin_common import ListItem, ListPage
 from app.services import admin_common as common
 from app.services.admin_common import Spec
 from app.services.authz import AuthUser, document_branch_id, require
@@ -73,6 +74,23 @@ def search(
         branch_id=user.branch_id if user.branch_scoped else None,
         offset=(page - 1) * page_size, limit=page_size,
     )
+
+
+def list_page(
+    session: Session, user: AuthUser, kind: str, *, q: str | None, parent_id: uuid.UUID | None,
+    status: WorkflowStatus | None, page: int, page_size: int, ip: str | None,
+) -> ListPage:
+    rows, total = search(session, user, kind, q=q, parent_id=parent_id, status=status, page=page, page_size=page_size, ip=ip)
+    items = [
+        ListItem(
+            id=obj.id, kind=kind, number=repo.number_of(kind, obj), title=obj.title,
+            workflow_status=obj.workflow_status.value, version=obj.version, updated_at=obj.updated_at,
+            parent_id=getattr(obj, "fund_id", None) or getattr(obj, "inventory_id", None) or getattr(obj, "case_id", None),
+            children=children, extra={"is_demo": obj.is_demo},
+        )
+        for obj, children in rows
+    ]
+    return ListPage(items=items, total=total, page=page, page_size=page_size)
 
 
 def branch_options(session: Session, user: AuthUser, *, ip: str | None) -> list[Branch]:

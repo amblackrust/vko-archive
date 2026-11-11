@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from app.models import AuditLog
 from app.models.enums import AuditResult
 from app.repositories import audit as audit_repo
-from app.repositories.audit import AuditFilter
+from app.repositories.audit import AuditFilter  # noqa: F401  (re-exported: routers build filters from it)
 from app.services import authz  # module import: authz also imports this module
 
 if TYPE_CHECKING:
