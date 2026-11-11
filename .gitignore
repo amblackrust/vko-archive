@@ -10,3 +10,4 @@ __pycache__/
 backend/storage/masters/
 backend/storage/previews/
 *.tsbuildinfo
+backups/

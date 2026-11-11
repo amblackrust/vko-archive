@@ -25,6 +25,8 @@ class Visitor(UUIDPkMixin, TimestampMixin, Base):
     failed_logins: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # In every session token (claim `sev`); logout increments it, revoking all issued tokens.
+    session_version: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
 
 
 Index("uq_visitors_email_lower", func.lower(Visitor.email), unique=True)

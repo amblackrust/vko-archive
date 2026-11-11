@@ -44,8 +44,11 @@ cd backend
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/alembic upgrade head          # расширения vector, pg_trgm и все таблицы
-.venv/bin/uvicorn app.main:app --reload --port 8000
+.venv/bin/uvicorn app.main:app --reload --port 8000 --no-access-log
 ```
+
+`--no-access-log` обязателен и в продакшене: access-лог uvicorn пишет query-строку (поисковый текст)
+мимо маски; запросы и так журналирует само приложение (метод, путь, статус, время).
 
 Frontend (в отдельном терминале):
 
@@ -71,6 +74,17 @@ make test                               # pytest -q в backend/
 
 Тесты используют реальную БД из docker compose: отдельную базу `TEST_DATABASE_URL`
 (по умолчанию `vko_archive_test`), которая создаётся автоматически и мигрируется с нуля.
+
+## Резервная копия БД
+
+```bash
+make backup    # pg_dump -Fc из контейнера db → backups/vko_archive_<дата>.dump
+# восстановление в пустую базу:
+docker compose exec -T db sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' < backups/<файл>.dump
+```
+
+Файлы цифровых копий в БД не входят: каталог `backend/storage/` копируется отдельно (например, `tar`).
+Папка `backups/` не коммитится.
 
 ## Структура
 

@@ -197,7 +197,7 @@ def machine_translate(
     values["translation_status"] = {**(obj.translation_status or {}), target: "machine"}
     # The optimistic lock catches any edit made while the model was working.
     workflow.save_with_version(
-        session, user, object_type, obj, version, values, comment=f"machine translation {source}→{target}"
+        session, user, object_type, obj, version, values, comment=f"machine translation {source}→{target}", ip=ip,
     )
     audit.record(
         session, action_type="translation.machine", result=AuditResult.SUCCESS, user=user,
@@ -223,7 +223,7 @@ def verify(
     workflow.save_with_version(
         session, user, object_type, obj, version,
         {"translation_status": {**(obj.translation_status or {}), lang: "verified"}},
-        comment=f"translation verified: {lang}",
+        comment=f"translation verified: {lang}", ip=ip,
     )
     audit.record(
         session, action_type="translation.verify", result=AuditResult.SUCCESS, user=user,

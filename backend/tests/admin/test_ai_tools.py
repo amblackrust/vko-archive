@@ -13,6 +13,7 @@ from app.config import Settings, get_settings
 from app.main import app
 from app.models import DigitalFile, DocumentAnnotation, Tag
 from app.models.enums import FileAccess, OcrStatus, RoleCode, WorkflowStatus
+from app.repositories import roles as roles_repo
 from tests.admin.conftest import login
 from tests.search.conftest import add_file, factory, public_document  # noqa: F401  (fixtures/helpers)
 
@@ -51,6 +52,15 @@ def _as(api, user):
 
 def _editor(api, factory, role=RoleCode.EDITOR, **kw):
     user = factory.user(role, **kw)
+    _as(api, user)
+    return user
+
+
+def _publisher(api, factory):
+    """An editor who may also publish: changing a live (published) document needs workflow.publish."""
+    user = factory.user(RoleCode.EDITOR)
+    user.roles.append(roles_repo.get_role(factory.session, RoleCode.MODERATOR.value))
+    factory.session.commit()
     _as(api, user)
     return user
 
@@ -98,6 +108,9 @@ def test_apply_is_explicit_versioned_and_field_by_field(api, factory, model):
     tag = factory.add(Tag(name={"ru": "ДЕМО тег"}, workflow_status=WorkflowStatus.PUBLISHED))
     doc = public_document(factory, authors={"ru": "Прежний автор"})
     url = f"{BASE}/documents/{doc.id}/apply"
+    # The document is published: a plain editor cannot change it past the review.
+    assert api.post(url, json={"version": 1, "summary": "Без согласования"}).status_code == 403
+    _publisher(api, factory)
     ok = api.post(url, json={"version": 1, "summary": "Новое описание https://x.example", "tag_ids": [str(tag.id)]})
     assert ok.status_code == 200, ok.text
     assert ok.json()["version"] == 2 and ok.json()["applied"] == ["summary", "tags"]
@@ -177,6 +190,9 @@ def test_ocr_proposal_is_stored_only_on_apply(api, factory, model, storage, monk
     assert proposal["status"] == "done" and proposal["text"] == "Распознанный текст"
     factory.session.refresh(file)
     assert file.ocr_text is None
+    # Live document: the confirmed text becomes searchable at once, so publishing rights are needed.
+    assert api.post(f"{BASE}/files/{file.id}/ocr/apply", json={"text": "Исправленный текст"}).status_code == 403
+    _publisher(api, factory)
     applied = api.post(f"{BASE}/files/{file.id}/ocr/apply", json={"text": "Исправленный текст"})
     assert applied.status_code == 200 and applied.json()["ocr_status"] == "done"
     factory.session.refresh(file)
@@ -211,6 +227,9 @@ def test_annotation_from_public_text_only_and_approval_flow(api, factory, model)
     assert api.get(f"/api/catalog/documents/{doc.id}?lang=ru").json()["annotation"] is None
     edited = api.put(f"{BASE}/documents/{doc.id}/annotations/ru", json={"text": "Править вручную. https://a.example"})
     assert edited.status_code == 200 and "a.example" not in edited.json()["text"]
+    # Approval puts the text on the public card: an editor alone may not do it.
+    assert api.post(f"{BASE}/documents/{doc.id}/annotations/ru/approve").status_code == 403
+    _publisher(api, factory)
     approved = api.post(f"{BASE}/documents/{doc.id}/annotations/ru/approve")
     assert approved.json()["status"] == "approved"
     card = api.get(f"/api/catalog/documents/{doc.id}?lang=ru").json()["annotation"]

@@ -594,7 +594,7 @@ def apply(
                         plan.object_id = _create(session, user, plan, branch_id).id
                     else:
                         workflow.save_with_version(
-                            session, user, "document", plan.document, plan.document.version, plan.values, comment="import"
+                            session, user, "document", plan.document, plan.document.version, plan.values, comment="import", ip=ip
                         )
                     session.flush()
             except IntegrityError:

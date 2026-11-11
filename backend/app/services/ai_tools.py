@@ -195,7 +195,7 @@ def apply(session: Session, user: AuthUser, document_id: uuid.UUID, body: ApplyI
     if not applied:
         raise InvalidInput("nothing_to_apply")
     try:
-        version = workflow.save_with_version(session, user, "document", document, body.version, values, comment="AI proposal applied")
+        version = workflow.save_with_version(session, user, "document", document, body.version, values, comment="AI proposal applied", ip=ip)
     except Conflict:
         session.rollback()
         raise
@@ -236,6 +236,8 @@ def apply_ocr(session: Session, user: AuthUser, file_id: uuid.UUID, text: str, *
     """The employee confirmed (possibly corrected) the recognised text. It reaches the search
     index only if the file is open to the public (indexing re-checks that)."""
     file, document = _ocr_file_and_owner(session, user, file_id, ip)
+    # The text of an open file of a live document is searchable at once: no bypassing review.
+    workflow.require_live_edit(session, user, document, ip=ip)
     clean = _CONTROL_RE.sub("", text).strip()
     if not clean:
         raise InvalidInput("empty_text")
@@ -325,6 +327,8 @@ def approve_annotation(session: Session, user: AuthUser, document_id: uuid.UUID,
     document, annotation = _own_annotation(session, user, document_id, lang, ip)
     if not indexing.document_is_public(document):
         raise Conflict("not_public")
+    # Approval puts the text on the public card: the same right as publishing.
+    require(session, user, "workflow.publish", document, ip=ip)
     annotation.status, annotation.approved_by, annotation.approved_at = "approved", user.id, datetime.now(UTC)
     _journal(session, user, "annotation_approve", "document", document_id, ip, lang=lang)
     session.commit()

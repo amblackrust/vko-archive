@@ -65,6 +65,7 @@ def _issue(settings: Settings, visitor: Visitor, csrf: str, auth_time: datetime)
         "auth_time": int(auth_time.timestamp()),
         "csrf": csrf,
         "pwv": security.password_version(visitor.password_changed_at),
+        "sev": visitor.session_version,
     }
     return VisitorSession(visitor, csrf, jwt.encode(payload, _key(settings), algorithm=security.JWT_ALGORITHM))
 
@@ -142,7 +143,7 @@ def authenticate(
             _key(settings),
             algorithms=[security.JWT_ALGORITHM],
             audience=AUDIENCE,
-            options={"require": ["sub", "exp", "iat", "auth_time", "csrf", "pwv", "aud"]},
+            options={"require": ["sub", "exp", "iat", "auth_time", "csrf", "pwv", "sev", "aud"]},
         )
         visitor = repo.visitor_by_id(session, uuid.UUID(claims["sub"]))
     except (jwt.InvalidTokenError, ValueError, TypeError) as exc:
@@ -151,6 +152,7 @@ def authenticate(
         visitor is None
         or not visitor.is_active
         or claims["pwv"] != security.password_version(visitor.password_changed_at)
+        or claims["sev"] != visitor.session_version
     ):
         raise NotAuthenticated()
     if method not in ("GET", "HEAD", "OPTIONS"):
@@ -158,3 +160,9 @@ def authenticate(
         if not csrf_header or not hmac.compare_digest(csrf_header.encode(), str(claims["csrf"]).encode()):
             raise CsrfFailed()
     return _issue(settings, visitor, str(claims["csrf"]), datetime.fromtimestamp(claims["auth_time"], UTC))
+
+
+def logout(session: Session, visitor: Visitor) -> None:
+    """Revokes every session token of the visitor issued so far (all devices)."""
+    visitor.session_version += 1
+    session.commit()
