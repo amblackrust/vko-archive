@@ -22,6 +22,9 @@
   "nav": {
     "import": "Import and export",
     "translations": "Translations",
+    "catalog": "Catalog",
+    "branches": "Branches",
+    "exhibitions": "Exhibitions",
     "dashboard": "Dashboard",
     "users": "Users"
   },

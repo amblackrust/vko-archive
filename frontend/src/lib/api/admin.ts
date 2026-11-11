@@ -50,12 +50,14 @@ export function setUnauthorizedHandler(handler: (() => void) | null) {
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
+  /** Файл как «сырое» тело запроса (загрузки); тогда `body` не используется. */
+  rawBody?: Blob;
   background?: boolean;
 }
 
-export async function adminRequest<T>(path: string, { method = "GET", body, background = false }: RequestOptions = {}): Promise<T> {
+export async function adminRequest<T>(path: string, { method = "GET", body, rawBody, background = false }: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {};
-  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (body !== undefined && !rawBody) headers["Content-Type"] = "application/json";
   if (method !== "GET" && csrfToken) headers["X-CSRF-Token"] = csrfToken;
   if (background) headers["X-Background"] = "1";
   let response: Response;
@@ -65,7 +67,7 @@ export async function adminRequest<T>(path: string, { method = "GET", body, back
       headers,
       credentials: "include",
       cache: "no-store",
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: rawBody ?? (body === undefined ? undefined : JSON.stringify(body)),
     });
   } catch {
     throw new AdminApiError(0, "network");

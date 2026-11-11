@@ -24,6 +24,7 @@ from app.services.errors import (
     AccountLocked,
     Conflict,
     CsrfFailed,
+    FileTooLarge,
     InvalidCredentials,
     InvalidInput,
     NotAuthenticated,
@@ -31,6 +32,7 @@ from app.services.errors import (
     PermissionDenied,
     RateLimited,
     ServiceError,
+    UnsupportedMedia,
 )
 
 _ERROR_STATUS: dict[type[ServiceError], int] = {
@@ -43,6 +45,8 @@ _ERROR_STATUS: dict[type[ServiceError], int] = {
     NotFound: status.HTTP_404_NOT_FOUND,
     Conflict: status.HTTP_409_CONFLICT,
     InvalidInput: status.HTTP_422_UNPROCESSABLE_CONTENT,
+    FileTooLarge: status.HTTP_413_CONTENT_TOO_LARGE,
+    UnsupportedMedia: status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
 }
 
 

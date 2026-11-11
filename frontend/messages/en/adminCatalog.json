@@ -1,1 +1,230 @@
-{}
+{
+  "title": "Catalog",
+  "branchesTitle": "Branches",
+  "exhibitionsTitle": "Exhibitions and exhibits",
+  "levels": "Catalog levels",
+  "breadcrumbs": "Catalog path",
+  "search": "Search by code or title",
+  "empty": "Nothing found",
+  "kinds": {
+    "fund": "Funds",
+    "inventory": "Inventories",
+    "case": "Cases",
+    "document": "Documents"
+  },
+  "columns": {
+    "title": "Title",
+    "status": "Status",
+    "children": "Nested",
+    "number": {
+      "fund": "Fund number",
+      "inventory": "Inventory number",
+      "case": "Case number",
+      "document": "Archive code"
+    }
+  },
+  "status": {
+    "draft": "Draft",
+    "review": "In review",
+    "needs_changes": "Needs changes",
+    "approved": "Approved",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "actions": {
+    "submit": "Submit for review",
+    "return": "Return for changes",
+    "approve": "Approve",
+    "publish": "Publish",
+    "archive": "Archive",
+    "restore": "Restore to draft"
+  },
+  "workflow": {
+    "title": "Approval",
+    "status": "Status",
+    "history": "Version history",
+    "comment": "Comment (required when returning)"
+  },
+  "create": {
+    "fund": "New fund",
+    "inventory": "New inventory",
+    "case": "New case",
+    "document": "New document",
+    "branch": "New branch",
+    "exhibition": "New exhibition",
+    "exhibit": "New exhibit"
+  },
+  "edit": {
+    "fund": "Fund",
+    "inventory": "Inventory",
+    "case": "Case",
+    "document": "Document",
+    "branch": "Branch",
+    "exhibition": "Exhibition",
+    "exhibit": "Exhibit"
+  },
+  "editItem": "Edit {name}",
+  "deleteItem": "Delete {name}",
+  "deleteTitle": "Delete object?",
+  "deleteDescription": "“{name}” will be deleted permanently. Only a draft or archived object without nested objects and files can be deleted.",
+  "delete": "Delete",
+  "deleted": "Object deleted.",
+  "formDescription": "Edit form. Publishing happens only through approval.",
+  "reload": "Reload",
+  "saved": "Saved.",
+  "filesAfterSave": "Files can be uploaded after the first save.",
+  "yes": "Yes",
+  "no": "No",
+  "fields": {
+    "number": "Number",
+    "title": "Title",
+    "type": "Type",
+    "dates_from": "Start year",
+    "dates_to": "End year",
+    "branch_id": "Branch",
+    "annotation": "Annotation",
+    "is_demo": "Demo data (marked “DEMO”)",
+    "dates_text": "Dates (text)",
+    "sheets_count": "Number of sheets",
+    "archive_code": "Archive code",
+    "date_text": "Date (text)",
+    "date_from": "Date from",
+    "date_to": "Date to",
+    "period": "Period",
+    "doc_type": "Document type",
+    "language": "Language",
+    "authors": "Authors / organization",
+    "places": "Places (one per line)",
+    "summary": "Summary",
+    "historical_note": "Historical note",
+    "storage_location": "Storage location",
+    "description_status": "Description status",
+    "file_access": "File access",
+    "access_conditions": "Access conditions",
+    "slug": "Address (slug)",
+    "name": "Name",
+    "short_name": "Short name",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "director": "Director",
+    "hours": "Opening hours",
+    "description": "Description",
+    "funds_summary": "Funds summary",
+    "coords_verified": "Coordinates verified",
+    "show_on_map": "Show on map",
+    "position": "Order",
+    "theme": "Category",
+    "intro": "Introduction",
+    "caption": "Caption",
+    "source": "Source",
+    "media_url": "External video/media link (http/https)"
+  },
+  "options": {
+    "type": {
+      "organization": "Organization",
+      "personal": "Personal",
+      "party": "Party",
+      "newspaper": "Newspaper",
+      "head": "Head archive",
+      "district": "District",
+      "city": "City",
+      "personnel": "Personnel records"
+    },
+    "description_status": {
+      "public": "Public",
+      "do_not_publish": "Do not publish",
+      "needs_review": "Needs review"
+    },
+    "file_access": {
+      "open": "Open",
+      "restricted": "Restricted",
+      "closed": "Closed",
+      "needs_review": "Needs review"
+    }
+  },
+  "hints": {
+    "branch": "Branch staff can only pick their own branch. A document in the hierarchy takes its branch from the fund.",
+    "slug": "Latin letters, digits and hyphens. A published object's address cannot change.",
+    "lines": "One place per line. Editing keeps the Russian variant only."
+  },
+  "i18n": {
+    "languages": "Languages",
+    "filled": "filled",
+    "machine": "machine translation, needs review"
+  },
+  "files": {
+    "title": "Files",
+    "upload": "Upload files",
+    "uploading": "Uploading…",
+    "hint": "PDF, JPG/PNG/WebP/TIFF, audio and video. The type is checked by content. A new file stays closed (“Needs review”) until you set its access.",
+    "pages": "{count} pp.",
+    "access": "File access",
+    "accessOptions": {
+      "needs_review": "Needs review",
+      "open": "Open",
+      "restricted": "Restricted",
+      "closed": "Closed"
+    },
+    "pick": "Select",
+    "picked": "Selected",
+    "delete": "Delete file {name}",
+    "empty": "No files."
+  },
+  "coords": {
+    "title": "Coordinates",
+    "hint": "Click the map to place the point or enter values. Latitude and longitude are set together.",
+    "map": "Coordinate picker map",
+    "lat": "Latitude",
+    "lng": "Longitude"
+  },
+  "link": {
+    "document": "Link to a document",
+    "fund": "Link to a fund",
+    "selected": "Selected: {id}…",
+    "none": "Not selected",
+    "search": "Code or title",
+    "find": "Find",
+    "clear": "Clear",
+    "nothing": "Nothing found"
+  },
+  "exhibits": {
+    "title": "Exhibits",
+    "description": "Reorder by dragging or with the buttons. Each exhibit is published through approval.",
+    "add": "Add exhibit",
+    "manage": "Exhibits: {name}",
+    "up": "Move up",
+    "down": "Move down",
+    "edit": "Edit",
+    "delete": "Delete (press again to confirm)",
+    "confirmDelete": "Press the trash icon again to delete.",
+    "empty": "No exhibits yet."
+  },
+  "errors": {
+    "version_conflict": "The object was changed by someone else. Reload the form; unsaved edits will be lost.",
+    "required_field": "Fill in the required fields.",
+    "invalid_range": "The start date is later than the end date.",
+    "archive_code_taken": "This archive code already exists.",
+    "slug_taken": "This address is already taken.",
+    "duplicate_number": "An object with this number already exists here.",
+    "has_children": "Delete the nested objects first.",
+    "has_files": "Delete the object's files first.",
+    "not_deletable": "Only a draft or archived object can be deleted.",
+    "branch_locked": "The branch of a fund with inventories cannot be changed.",
+    "slug_locked": "A published object's address cannot change.",
+    "coords_incomplete": "Provide both latitude and longitude.",
+    "file_not_owned": "The file does not belong to this object.",
+    "unknown_parent": "Parent object not found.",
+    "unknown_link": "Linked document or fund not found.",
+    "unknown_branch": "Branch not found.",
+    "unknown_owner": "Unknown file owner.",
+    "invalid_order": "The exhibit list is out of date. Reload the page.",
+    "file_too_large": "The file is too large.",
+    "unsupported_file_type": "File type is not supported or does not match the extension.",
+    "invalid_file": "The file is damaged or empty.",
+    "image_too_large": "The image is too large.",
+    "version_required": "Object version is missing.",
+    "comment_required": "A comment is required.",
+    "invalid_transition": "This transition is not available now."
+  }
+}
