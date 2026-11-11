@@ -100,11 +100,13 @@ def test_staff_login_is_rate_limited_per_address(api, factory):
 
 def test_audit_log_is_append_only_in_the_database(factory: Factory):
     session = factory.session
-    entry = AuditLog(action_type="test.append_only", result=AuditResult.SUCCESS, details={})
+    author = factory.user(RoleCode.EDITOR)
+    entry = AuditLog(user_id=author.id, action_type="test.append_only", result=AuditResult.SUCCESS, details={})
     session.add(entry)
     session.commit()
     for statement in (
         "UPDATE audit_logs SET action_type = 'forged' WHERE id = :id",
+        "UPDATE audit_logs SET user_id = NULL WHERE id = :id",  # only the FK action may do this
         "DELETE FROM audit_logs WHERE id = :id",
         "TRUNCATE audit_logs",
     ):
@@ -163,23 +165,59 @@ def test_draft_is_edited_without_publishing_rights(api, factory):
     assert api.patch(f"{ADMIN}/content/news/{news.id}", json={"version": 1, "title": {"ru": "Черновик"}}).status_code == 200
 
 
-def test_file_access_of_a_published_document_needs_publishing_rights(api, factory):
+def test_opening_a_live_document_needs_publishing_rights_but_closing_does_not(api, factory):
     document = factory.document(
         workflow_status=WorkflowStatus.PUBLISHED, description_status=DescriptionStatus.PUBLIC, file_access=FileAccess.OPEN
     )
-    file = factory.add(
-        DigitalFile(owner_type="document", owner_id=document.id, master_path="x/m.jpg", mime="image/jpeg", size=1,
-                    sha256=uuid.uuid4().hex + uuid.uuid4().hex, access=FileAccess.CLOSED, is_demo=True)
+    closed, opened = (
+        factory.add(DigitalFile(owner_type="document", owner_id=document.id, master_path="x/m.jpg", mime="image/jpeg", size=1,
+                                sha256=uuid.uuid4().hex + uuid.uuid4().hex, access=access, is_demo=True))
+        for access in (FileAccess.CLOSED, FileAccess.OPEN)
     )
     login(api, factory.user(RoleCode.ARCHIVIST).email)
-    assert api.patch(f"{ADMIN}/uploads/{file.id}", json={"access": "open"}).status_code == 403
-    assert api.delete(f"{ADMIN}/uploads/{file.id}").status_code == 403
-    assert api.patch(f"{ADMIN}/catalog/document/{document.id}", json={"version": 1, "file_access": "closed"}).status_code == 403
-    factory.session.refresh(file)
-    assert file.access == FileAccess.CLOSED
+    # Widening access or other changes of public content: only through publishing rights.
+    assert api.patch(f"{ADMIN}/uploads/{closed.id}", json={"access": "open"}).status_code == 403
+    assert api.patch(f"{ADMIN}/uploads/{opened.id}", json={"access": "closed", "position": 5}).status_code == 403
+    assert api.delete(f"{ADMIN}/uploads/{closed.id}").status_code == 403
+    # Narrowing access never waits for a moderator.
+    assert api.patch(f"{ADMIN}/uploads/{opened.id}", json={"access": "closed"}).json()["access"] == "closed"
+    hidden = api.patch(f"{ADMIN}/catalog/document/{document.id}", json={"version": 1, "description_status": "do_not_publish"})
+    assert hidden.status_code == 200 and hidden.json()["workflow_status"] == "published"
+    assert api.get(f"/api/catalog/documents/{document.id}").status_code == 404
+    closed_access = api.patch(f"{ADMIN}/catalog/document/{document.id}", json={"version": 2, "file_access": "closed"})
+    assert closed_access.status_code == 200
+    reopen = api.patch(f"{ADMIN}/catalog/document/{document.id}", json={"version": 3, "description_status": "public"})
+    assert reopen.status_code == 403
     api.cookies.clear()
     login(api, factory.user(RoleCode.SUPER_ADMIN).email)
-    assert api.patch(f"{ADMIN}/uploads/{file.id}", json={"access": "open"}).json()["access"] == "open"
+    assert api.patch(f"{ADMIN}/uploads/{closed.id}", json={"access": "open"}).json()["access"] == "open"
+
+
+def test_editor_reworks_a_published_object_through_review(api, factory):
+    news = _news(factory, WorkflowStatus.PUBLISHED)
+    login(api, factory.user(RoleCode.EDITOR).email)
+    detail = api.get(f"{ADMIN}/content/news/{news.id}").json()
+    assert "rework" in detail["available_actions"]
+    url = f"{ADMIN}/workflow/news/{news.id}/transitions"
+    taken = api.post(url, json={"action": "rework", "version": 1})
+    assert taken.status_code == 200 and taken.json()["workflow_status"] == "needs_changes"
+    assert api.get(f"/api/news/{news.slug}").status_code == 404  # off the site while being changed
+    edited = api.patch(f"{ADMIN}/content/news/{news.id}", json={"version": 2, "title": {"ru": "Исправлено"}})
+    assert edited.status_code == 200
+    assert api.post(url, json={"action": "submit", "version": 3}).json()["workflow_status"] == "review"
+    assert api.post(url, json={"action": "publish", "version": 4}).status_code == 403  # the editor cannot publish
+
+
+def test_branch_admin_edits_own_live_branch_via_rework(api, factory):
+    branch = factory.branch()
+    branch.workflow_status = WorkflowStatus.PUBLISHED
+    factory.session.commit()
+    login(api, factory.user(RoleCode.BRANCH_ADMIN, branch_id=branch.id).email)
+    url = f"{ADMIN}/branches/{branch.id}"
+    assert api.patch(url, json={"version": 1, "phone": "+7 000 000-00-00"}).status_code == 403
+    taken = api.post(f"{ADMIN}/workflow/branch/{branch.id}/transitions", json={"action": "rework", "version": 1})
+    assert taken.status_code == 200, taken.text
+    assert api.patch(url, json={"version": 2, "phone": "+7 000 000-00-00"}).status_code == 200
 
 
 def test_unverified_machine_translation_cannot_be_published(api, factory):

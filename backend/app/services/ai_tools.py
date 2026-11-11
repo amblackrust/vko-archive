@@ -324,11 +324,13 @@ def edit_annotation(session: Session, user: AuthUser, document_id: uuid.UUID, la
 
 
 def approve_annotation(session: Session, user: AuthUser, document_id: uuid.UUID, lang: str, *, ip: str | None) -> AnnotationOut:
+    document = _load(session, document_id)
+    require(session, user, "catalog.edit", document, ip=ip)
+    # Approval puts the text on the public card: the same right as publishing.
+    require(session, user, "workflow.publish", document, ip=ip)
     document, annotation = _own_annotation(session, user, document_id, lang, ip)
     if not indexing.document_is_public(document):
         raise Conflict("not_public")
-    # Approval puts the text on the public card: the same right as publishing.
-    require(session, user, "workflow.publish", document, ip=ip)
     annotation.status, annotation.approved_by, annotation.approved_at = "approved", user.id, datetime.now(UTC)
     _journal(session, user, "annotation_approve", "document", document_id, ip, lang=lang)
     session.commit()

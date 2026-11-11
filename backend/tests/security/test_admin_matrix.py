@@ -90,7 +90,7 @@ OPS: list[Op] = [
     Op("DELETE", "/exhibits/{exhibit}", ("content.delete",)),
     Op("GET", "/translations", ("catalog.view",)),  # default object_type=document
     Op("GET", "/translations/document/{doc}", ("catalog.view",)),
-    Op("POST", "/translations/document/{doc}/machine", ("catalog.edit",), {"source_lang": "ru", "target_lang": "kk", "version": 1}),
+    Op("POST", "/translations/document/{doc}/machine", ("catalog.edit", "ai.use"), {"source_lang": "ru", "target_lang": "kk", "version": 1}),
     Op("POST", "/translations/document/{doc}/verify", ("catalog.edit",), {"lang": "kk", "version": 1}),
     # branches
     Op("GET", "/branches", ("branches.view",)),
@@ -236,21 +236,44 @@ def test_reads_follow_the_role_matrix(api, factory, world, role):
     assert mismatches == []
 
 
+def _granted(role: RoleCode | None) -> frozenset[str]:
+    return DEFAULT_ROLE_PERMISSIONS.get(role, frozenset()) if role else frozenset()
+
+
+@pytest.mark.parametrize("role", [r for r in RoleCode if r != RoleCode.SUPER_ADMIN], ids=str)
+def test_mutations_follow_the_role_matrix(api, factory, world, role):
+    """Every mutating endpoint × every role lacking one of its permissions → 403 (and nothing changes).
+    Allowed combinations are not run here: they would change the shared fixture objects."""
+    login(api, factory.user(role, branch_id=world["branch"].id if role == RoleCode.BRANCH_ADMIN else None).email)
+    mismatches = []
+    for op in MUTATIONS:
+        if set(op.needs) <= _granted(role):
+            continue
+        status = call(api, op, world).status_code
+        if status != 403:
+            mismatches.append((op.method, op.path, status))
+    assert mismatches == []
+
+
 BRANCH_MUTATIONS = [
     Op("PATCH", CATALOG_DOC, ("catalog.edit",), {"version": 1, "title": {"ru": "Чужой"}}),
     Op("DELETE", CATALOG_DOC, ("catalog.delete",)),
-    Op("POST", "/workflow/document/{doc}/transitions", ("workflow.submit",), {"action": "submit", "version": 1}),
-    Op("POST", "/uploads?owner_type=document&owner_id={doc}&filename=a.jpg", ("files.upload",), raw=b"x"),
-    Op("PATCH", "/uploads/{file}", ("files.upload",), {"access": "open"}),
-    Op("DELETE", "/uploads/{file}", ("files.delete",)),
+    Op("POST", "/workflow/document/{doc}/transitions", ("workflow.submit", "catalog.edit"), {"action": "submit", "version": 1}),
+    Op("POST", "/uploads?owner_type=document&owner_id={doc}&filename=a.jpg", ("files.upload", "catalog.edit"), raw=b"x"),
+    Op("PATCH", "/uploads/{file}", ("files.upload", "catalog.edit"), {"access": "open"}),
+    Op("DELETE", "/uploads/{file}", ("files.delete", "catalog.edit")),
     Op("PATCH", "/branches/{branch}", ("branches.edit",), {"version": 1}),
     Op("POST", "/translations/document/{doc}/verify", ("catalog.edit",), {"lang": "kk", "version": 1}),
     Op("POST", "/ai-tools/documents/{doc}/apply", ("catalog.edit",), {"version": 1, "summary": "Чужой"}),
 ]
+# Only roles that HAVE the permissions: the refusal must come from the branch, not the matrix.
+BRANCH_CASES = [
+    (role, op) for op in BRANCH_MUTATIONS for role in (RoleCode.BRANCH_ADMIN, RoleCode.ARCHIVIST)
+    if set(op.needs) <= _granted(role)
+]
 
 
-@pytest.mark.parametrize("role", [RoleCode.BRANCH_ADMIN, RoleCode.ARCHIVIST])
-@pytest.mark.parametrize("op", BRANCH_MUTATIONS, ids=lambda op: f"{op.method} {op.path}")
+@pytest.mark.parametrize(("role", "op"), BRANCH_CASES, ids=lambda x: str(x) if isinstance(x, RoleCode) else f"{x.method} {x.path}")
 def test_branch_roles_cannot_touch_another_branch(api, factory, world, role, op):
     login(api, factory.user(role, branch_id=world["branch"].id).email)
     foreign = {"doc": world["other_doc"], "file": world["other_file"], "branch": world["other_branch"]}

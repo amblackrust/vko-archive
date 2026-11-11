@@ -199,7 +199,10 @@ def store(
         session.add(file)
         if target.owner_type == "document":
             # Derived flag: set directly so an open editor form does not hit a version conflict.
-            session.get(Document, target.owner_id).has_digital_copy = True
+            # A live document's card changes only once a file is opened (update_file), not on upload.
+            document = session.get(Document, target.owner_id)
+            if document.workflow_status not in workflow.LIVE_STATUSES:
+                document.has_digital_copy = True
         audit.record(
             session, action_type="file.upload", result=AuditResult.SUCCESS, user=user, object_type="file",
             object_id=file_id, details={"owner": target.owner_type, "owner_id": target.owner_id, "mime": kind.mime, "size": size},
@@ -261,13 +264,17 @@ def _load_file(session: Session, user: AuthUser, file_id: uuid.UUID, permission:
 
 def update_file(session: Session, user: AuthUser, file_id: uuid.UUID, body: dict[str, Any], *, ip: str | None) -> UploadedFile:
     file, owner = _load_file(session, user, file_id, "files.upload", "edit", ip)
-    # Access, order and captions of a live object's files are public content.
-    workflow.require_live_edit(session, user, owner, ip=ip)
     values = common.parse(FilePatch, body)
     if any(v is None for v in values.values()):
         raise InvalidInput("invalid_input")
+    # Access, order and captions of a live object's files are public content; closing is always allowed.
+    changed = {name: value for name, value in values.items() if getattr(file, name) != value}
+    if changed:
+        workflow.require_live_edit(session, user, owner, ip=ip, values=changed)
     for name, value in values.items():
         setattr(file, name, value)
+    if isinstance(owner, Document) and file.access == FileAccess.OPEN:
+        owner.has_digital_copy = True
     audit.record(
         session, action_type="file.update", result=AuditResult.SUCCESS, user=user, object_type="file",
         object_id=file.id, details={"fields": sorted(values), "access": values.get("access")}, ip=ip,

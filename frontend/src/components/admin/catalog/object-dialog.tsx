@@ -14,6 +14,12 @@ import { FilesPanel } from "./files-panel";
 import { useCatalogError } from "./use-catalog-error";
 import { WorkflowBar } from "./workflow-bar";
 
+/** Значения, которые только закрывают доступ: их можно сохранить у опубликованного объекта без права публикации. */
+const NARROWING: Record<string, string[]> = {
+  file_access: ["restricted", "closed", "needs_review"],
+  description_status: ["do_not_publish", "needs_review"],
+};
+
 export interface ObjectDialogProps {
   kind: string;
   /** null — создание. */
@@ -115,6 +121,10 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
   const editing = object !== null;
   const canFiles = fileOwner !== undefined && editing;
   const moduleEdit = kind === "branch" ? "branches.edit" : ["fund", "inventory", "case", "document"].includes(kind) ? "catalog.edit" : "content.edit";
+  // Опубликованное/одобренное без права публикации: сервер примет только сужение доступа (DECISIONS п.76).
+  const liveLocked =
+    object !== null && ["published", "approved"].includes(object.workflow_status) && !can(me, "workflow.publish");
+  const onlyNarrowing = dirty.size > 0 && [...dirty].every((name) => NARROWING[name]?.includes(String(values[name])));
 
   return (
     <Dialog.Root open onOpenChange={(open) => !open && !pending && onClose()}>
@@ -155,6 +165,7 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
                   </Notice>
                 )}
                 {saved && <Notice kind="success">{t("saved")}</Notice>}
+                {liveLocked && <Notice kind="info">{t("liveLocked")}</Notice>}
                 <FieldsForm
                   idPrefix={`obj-${kind}`}
                   spec={spec}
@@ -170,7 +181,7 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
                   <Button type="button" variant="outline" onClick={onClose} disabled={pending}>
                     {tc("cancel")}
                   </Button>
-                  <Button type="submit" disabled={pending}>
+                  <Button type="submit" disabled={pending || (liveLocked && !onlyNarrowing)}>
                     {pending ? tc("saving") : tc("save")}
                   </Button>
                 </div>

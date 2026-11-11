@@ -37,7 +37,8 @@
     "approve": "Approve",
     "publish": "Publish",
     "archive": "Archive",
-    "restore": "Restore to draft"
+    "restore": "Restore to draft",
+    "rework": "Take back for editing"
   },
   "workflow": {
     "title": "Approval",
@@ -226,5 +227,6 @@
     "version_required": "Object version is missing.",
     "comment_required": "A comment is required.",
     "invalid_transition": "This transition is not available now."
-  }
+  },
+  "liveLocked": "This item is live: without the right to publish you may only restrict access. For other changes take it back for editing first."
 }

@@ -83,7 +83,8 @@
     "password_length": "The password must be 12 to 128 characters long.",
     "password_too_weak": "The password is too weak (edge spaces, too few distinct characters).",
     "invalid_input": "Invalid input.",
-    "conflict": "The data was changed by someone else. Reload."
+    "conflict": "The data was changed by someone else. Reload.",
+    "unverified_translation": "An unverified machine translation remains: mark the language as verified first."
   },
   "dashboard": {
     "title": "Dashboard",

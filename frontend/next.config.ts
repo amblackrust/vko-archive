@@ -5,7 +5,8 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 const isDev = process.env.NODE_ENV !== "production";
 /** Backend API: файлы, превью и запросы браузера (админка, кабинет, ИИ). */
-const apiOrigin = new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").origin;
+const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000");
+const apiOrigin = apiUrl.origin;
 const siteIsHttps = (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https://");
 
 /**
@@ -45,6 +46,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+    // Оптимизатор next/image берёт только файлы и превью из API (права проверяет сам API).
+    remotePatterns: [
+      {
+        protocol: apiUrl.protocol.replace(":", "") as "http" | "https",
+        hostname: apiUrl.hostname,
+        port: apiUrl.port,
+        pathname: "/api/files/**",
+      },
+    ],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

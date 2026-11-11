@@ -7,8 +7,10 @@ Publishing only changes workflow_status: it never touches documents.file_access 
 file's own access, so a published document with closed files keeps them closed.
 
 Review cannot be bypassed afterwards: changing an approved or published object (any save
-that is not a transition, files included) needs `workflow.publish` on it, and an object
-with a machine translation that nobody has verified cannot be published.
+that is not a transition, files included) needs `workflow.publish` on it, unless the change
+only narrows access (closing a file or a description). Editors change a live object by
+taking it back to work first (`rework`: published/approved -> needs_changes, off the site
+until approved again). An object with an unverified machine translation cannot be published.
 """
 
 import uuid
@@ -91,6 +93,8 @@ TRANSITIONS: dict[str, Transition] = {
     "publish": Transition(frozenset({S.APPROVED}), S.PUBLISHED, "workflow.publish", "view"),
     "archive": Transition(frozenset({S.PUBLISHED, S.APPROVED}), S.ARCHIVED, "workflow.archive", "view"),
     "restore": Transition(frozenset({S.ARCHIVED}), S.DRAFT, "workflow.archive", "view"),
+    # The author side's way to change live content: it leaves the site and goes through review again.
+    "rework": Transition(frozenset({S.PUBLISHED, S.APPROVED}), S.NEEDS_CHANGES, "workflow.submit", "edit"),
 }
 
 # Who hears about a transition: reviewers on submit, the author and submitter otherwise.
@@ -101,9 +105,24 @@ _MESSAGES: dict[str, dict[str, str]] = {
     "publish": {"kk": "Материал жарияланды", "ru": "Материал опубликован", "en": "Item published"},
     "archive": {"kk": "Материал мұрағатқа жіберілді", "ru": "Материал архивирован", "en": "Item archived"},
     "restore": {"kk": "Материал қайтадан черновикке ауыстырылды", "ru": "Материал возвращён в черновики", "en": "Item restored to draft"},
+    "rework": {"kk": "Материал түзетуге алынды (сайттан алынды)", "ru": "Материал снят с сайта для правки", "en": "Item taken back for editing (off the site)"},
 }
 # Changes to these reach the public (or are about to) without another review.
 LIVE_STATUSES = frozenset({S.APPROVED, S.PUBLISHED})
+# Values that only take something away from the public: allowed on live objects with the
+# ordinary module right (closing access must never wait for a moderator).
+_NARROWING: dict[str, frozenset[str]] = {
+    "file_access": frozenset({"restricted", "closed", "needs_review"}),
+    "access": frozenset({"restricted", "closed", "needs_review"}),
+    "description_status": frozenset({"do_not_publish", "needs_review"}),
+}
+
+
+def narrows_access(values: dict[str, Any]) -> bool:
+    """True if every changed field only restricts public access."""
+    return bool(values) and all(
+        name in _NARROWING and str(getattr(value, "value", value)) in _NARROWING[name] for name, value in values.items()
+    )
 
 # Never stored in snapshots: noisy or derived columns.
 _SNAPSHOT_EXCLUDE = frozenset({"updated_at", "version"})
@@ -149,10 +168,13 @@ def load_object(session: Session, object_type: str, object_id: uuid.UUID) -> tup
     return obj, module
 
 
-def require_live_edit(session: Session, user: AuthUser, obj: Any, *, ip: str | None) -> None:
+def require_live_edit(
+    session: Session, user: AuthUser, obj: Any, *, ip: str | None, values: dict[str, Any] | None = None
+) -> None:
     """An approved or published object may be changed only by someone who may publish it:
-    otherwise an editor could change live content after (or instead of) the review."""
-    if obj.workflow_status in LIVE_STATUSES:
+    otherwise an editor could change live content after (or instead of) the review.
+    `values` (the changed fields) that only narrow access pass with the caller's module right."""
+    if obj.workflow_status in LIVE_STATUSES and not (values is not None and narrows_access(values)):
         require(session, user, "workflow.publish", obj, ip=ip)
 
 
@@ -180,7 +202,7 @@ def save_with_version(
     A save that is not a transition (`from_status` unset) of an approved/published object
     needs `workflow.publish` (`require_live_edit`)."""
     if from_status is None:
-        require_live_edit(session, user, obj, ip=ip)
+        require_live_edit(session, user, obj, ip=ip, values=values)
     if isinstance(obj, Document):
         sync_document_branch(obj)
         values = {**values, "branch_id": obj.branch_id}

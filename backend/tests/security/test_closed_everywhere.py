@@ -9,7 +9,9 @@ import pytest
 
 from app.models import Collection, CollectionItem, Exhibit, Exhibition, Person
 from app.models.enums import DescriptionStatus, FileAccess, RoleCode, WorkflowStatus
+from app.services.rate_limit import ai_limiter
 from tests.admin.conftest import Factory, login
+from tests.ai.test_answer_api import FakeModel, _keywords, model  # noqa: F401  (fixture)
 from tests.search.conftest import add_file, index, public_document, token
 
 PUBLISHED = WorkflowStatus.PUBLISHED
@@ -62,6 +64,11 @@ def _public_texts(api, scene: dict[str, Any]) -> dict[str, str]:
         "person": f"/api/memory/persons/{slug}",
         "collection": f"/api/memory/collections/{slug}",
         "recommendations": f"/api/ai/recommendations?type=document&id={public.id}",
+        "persons": "/api/memory/persons",
+        "collections": "/api/memory/collections",
+        "timeline": "/api/memory/timeline",
+        "map_points": "/api/memory/map-points",
+        "memorial_dates": "/api/home/memorial-dates",
     }
     texts = {}
     for name, path in urls.items():
@@ -97,15 +104,47 @@ def test_closed_material_is_absent_from_every_public_endpoint(api, scene):
 
 
 def test_visitor_session_does_not_open_closed_material(api, scene):
-    """A signed-in visitor is anonymous for access rules (cabinet ≠ staff)."""
+    """A signed-in visitor is anonymous for access rules (cabinet ≠ staff); the cabinet itself
+    shows only public objects and never stores files."""
     from tests.cabinet.conftest import register
 
     register(api, f"v-{uuid.uuid4().hex[:8]}@cabinet.test")
-    _assert_hidden(_public_texts(api, scene), scene, card_public=scene["kind"] == "files_closed")
+    card_public = scene["kind"] == "files_closed"
+    _assert_hidden(_public_texts(api, scene), scene, card_public=card_public)
     assert api.get(f"/api/files/{scene['file'].id}").status_code == 404
+    hidden, public = str(scene["hidden"].id), str(scene["public"].id)
+    assert api.post("/api/cabinet/favorites", json={"type": "document", "id": public}).status_code == 204
+    added = api.post("/api/cabinet/favorites", json={"type": "document", "id": hidden})
+    assert added.status_code == (204 if card_public else 404)
+    # A file (or its preview) is not something a visitor can save.
+    for kind in ("file", "preview"):
+        assert api.post("/api/cabinet/favorites", json={"type": kind, "id": str(scene["file"].id)}).status_code == 422
+    selection = api.post("/api/cabinet/selections", json={"title": "ДЕМО подборка"}).json()
+    items = f"/api/cabinet/selections/{selection['id']}/items"
+    assert api.post(items, json={"document_id": public}).status_code == 204
+    assert api.post(items, json={"document_id": hidden}).status_code == (204 if card_public else 404)
+    cabinet = {name: api.get(f"/api/cabinet/{name}").text for name in ("favorites", "selections")}
+    _assert_hidden(cabinet, scene, card_public=card_public)
+    assert public in cabinet["favorites"] and public in cabinet["selections"]
+
+
+def test_ai_never_sees_closed_material(api, scene, model):
+    """The general answer and the «ask this document» mode build their context only from public
+    text: the model's prompt never holds the hidden title or the closed file's OCR."""
+    ai_limiter.reset()
+    model.parse_json = _keywords(scene["word"])
+    general = api.post("/api/ai/answer", json={"q": f"документы {scene['word']}"})
+    assert general.status_code == 200, general.text
+    assert model.answer_calls, "the public document should have reached the model"
+    targets = [scene["public"].id] + ([scene["hidden"].id] if scene["kind"] == "files_closed" else [])
+    for document_id in targets:
+        response = api.post(f"/api/ai/documents/{document_id}/answer", json={"q": "о чём этот документ?"})
+        assert response.status_code == 200, response.text
+    prompts = "\n".join(m["content"] for call in model.parse_calls + model.answer_calls for m in call)
+    assert scene["ocr_marker"] not in prompts
     if scene["kind"] != "files_closed":
-        added = api.post("/api/cabinet/favorites", json={"type": "document", "id": str(scene["hidden"].id)})
-        assert added.status_code == 404
+        assert scene["marker"] not in prompts
+    assert scene["ocr_marker"] not in general.text and str(scene["file"].id) not in general.text
 
 
 def test_staff_session_does_not_change_public_endpoints(api, factory, scene):
