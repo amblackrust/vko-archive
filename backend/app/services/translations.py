@@ -208,6 +208,22 @@ def machine_translate(
     return _view(object_type, obj)
 
 
+def translate_text(
+    session: Session, user: AuthUser, settings: Settings, text: str, *, source: str, target: str, ip: str | None,
+) -> str:
+    """Draft translation of one string that is not stored as a translatable object (site settings forms).
+    Nothing is saved: the editor reviews the text and saves it with the form. Needs `settings.edit`."""
+    if source not in LANGS or target not in LANGS or source == target:
+        raise InvalidInput("invalid_language")
+    require(session, user, "settings.edit", ip=ip)
+    if not text.strip():
+        raise InvalidInput("nothing_to_translate")
+    if len(text) > MAX_SOURCE_CHARS:
+        raise InvalidInput("text_too_long")
+    session.rollback()
+    return _translate({"text": text}, source, target, settings)["text"]
+
+
 def verify(
     session: Session, user: AuthUser, object_type: str, object_id: uuid.UUID, *,
     lang: str, version: int, ip: str | None,

@@ -164,3 +164,27 @@ def test_html_translation_is_sanitized(monkeypatch):
 
     result = translations._translate({"body": "<p>Привет</p>"}, "ru", "en", get_settings())
     assert result == {"body": "<p>Hi</p>"}
+
+
+def test_text_translation_is_stateless_and_needs_settings_edit(factory, fake_chat):
+    body = {"text": "Вопрос опроса", "source_lang": "ru", "target_lang": "en"}
+    site_admin = client_for(factory, RoleCode.SITE_ADMIN)
+    response = site_admin.post("/api/admin/translations/text", json=body)
+    assert response.status_code == 200, response.text
+    assert response.json() == {"text": "EN: Вопрос опроса"}
+    assert fake_chat[0]["fmt"]["required"] == ["text"]
+    assert site_admin.post("/api/admin/translations/text", json={**body, "target_lang": "ru"}).status_code == 422
+    assert site_admin.post("/api/admin/translations/text", json={**body, "text": ""}).status_code == 422
+    editor = client_for(factory, RoleCode.EDITOR)  # no settings.edit
+    assert editor.post("/api/admin/translations/text", json=body).status_code == 403
+    assert len(fake_chat) == 1
+
+
+def test_text_translation_failure_gives_503(factory, monkeypatch):
+    def _chat(*args, **kwargs):
+        raise ollama_client.OllamaUnavailable("busy")
+
+    monkeypatch.setattr(ollama_client, "chat", _chat)
+    client = client_for(factory, RoleCode.SITE_ADMIN)
+    response = client.post("/api/admin/translations/text", json={"text": "Привет", "source_lang": "ru", "target_lang": "kk"})
+    assert response.status_code == 503 and response.json() == {"detail": "ai_unavailable", "reason": "busy"}

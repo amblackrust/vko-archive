@@ -1,7 +1,7 @@
 import uuid
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 Lang = Literal["kk", "ru", "en"]
 Status = Literal["verified", "machine", "missing"]
@@ -33,6 +33,16 @@ class MachineTranslateRequest(BaseModel):
     target_lang: Lang
     version: int
     overwrite: bool = False
+
+
+class TextTranslateRequest(BaseModel):
+    text: Annotated[str, Field(min_length=1, max_length=6000)]
+    source_lang: Lang
+    target_lang: Lang
+
+
+class TextTranslateOut(BaseModel):
+    text: str
 
 
 class VerifyRequest(BaseModel):

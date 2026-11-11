@@ -26,6 +26,26 @@ def _drop(factory, model, object_id):
     s.commit()
 
 
+def test_news_media_and_related_are_validated_and_stored(api, factory):
+    _as(api, factory.user(RoleCode.EDITOR))
+    related = {"type": "news", "id": str(uuid.uuid4())}
+    created = api.post(f"{URL}/content/news", json={
+        "slug": _slug(), "title": {"ru": "ДЕМО новость"},
+        "media": [{"url": "https://example.org/video"}], "related": [related],
+    })
+    assert created.status_code == 201, created.text
+    news_id = created.json()["id"]
+    values = created.json()["values"]
+    assert values["media"][0]["url"] == "https://example.org/video" and values["related"] == [related]
+    # Exactly one source per entry, https only, known related types, and files only from this news item.
+    for media in ({}, {"url": "https://example.org/a", "file_id": str(uuid.uuid4())}, {"url": "javascript:alert(1)"}):
+        assert api.patch(f"{URL}/content/news/{news_id}", json={"version": 1, "media": [media]}).status_code == 422
+    assert api.patch(f"{URL}/content/news/{news_id}", json={"version": 1, "related": [{"type": "person", "id": related["id"]}]}).status_code == 422
+    foreign = api.patch(f"{URL}/content/news/{news_id}", json={"version": 1, "media": [{"file_id": str(uuid.uuid4())}]})
+    assert foreign.status_code == 422 and foreign.json()["detail"] == "file_not_owned"
+    _drop(factory, News, news_id)
+
+
 def test_news_html_is_sanitized_and_publication_only_by_workflow(api, factory):
     editor = factory.user(RoleCode.EDITOR)
     _as(api, editor)
