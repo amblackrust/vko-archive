@@ -4,6 +4,8 @@ import { AdminApiError, adminRequest, type BranchOption } from "@/lib/api/admin"
 /** Контракты /api/admin/import и /api/admin/export (backend/app/schemas/import_export.py). */
 export type RowAction = "create" | "update" | "unchanged" | "skip" | "error";
 
+export type HierarchyLevel = "fund" | "inventory" | "case";
+
 export interface ImportRow {
   line: number;
   archive_code: string;
@@ -11,6 +13,8 @@ export interface ImportRow {
   errors: { field: string | null; code: string }[];
   values: Record<string, string>;
   object_id: string | null;
+  /** Уровни иерархии, которые строка создаст (или создала). */
+  creates: HierarchyLevel[];
 }
 
 export interface ImportReport {
@@ -21,6 +25,8 @@ export interface ImportReport {
   fields: string[];
   applied: boolean;
   counts: Record<RowAction, number>;
+  /** Фонды, описи и дела, которые создадут строки (применено: созданы). */
+  hierarchy: Record<HierarchyLevel, number>;
   rows: ImportRow[];
 }
 

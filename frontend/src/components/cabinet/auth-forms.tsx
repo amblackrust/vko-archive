@@ -1,15 +1,18 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CabinetError, cabinetFetch, type VisitorMe } from "./api";
 import { errorKey } from "./errors";
+import { PasswordResetRequest } from "./password-reset-request";
 
 /** Вход и регистрация посетителя. Пароль не хранится на клиенте и не попадает в URL. */
 export function AuthForms({ onSignedIn }: { onSignedIn: (me: VisitorMe) => void }) {
   const t = useTranslations("cabinet");
+  const locale = useLocale();
   const [mode, setMode] = useState<"login" | "register">("login");
+  const [forgot, setForgot] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -23,7 +26,7 @@ export function AuthForms({ onSignedIn }: { onSignedIn: (me: VisitorMe) => void 
       const me =
         mode === "login"
           ? await cabinetFetch<VisitorMe>("/auth/login", { method: "POST", body })
-          : await cabinetFetch<VisitorMe>("/auth/register", { method: "POST", body: { ...body, display_name: String(data.get("name") ?? "") } });
+          : await cabinetFetch<VisitorMe>("/auth/register", { method: "POST", body: { ...body, display_name: String(data.get("name") ?? ""), lang: locale } });
       onSignedIn(me);
     } catch (e) {
       setError(errorKey(e instanceof CabinetError ? e.code : "generic"));
@@ -31,6 +34,8 @@ export function AuthForms({ onSignedIn }: { onSignedIn: (me: VisitorMe) => void 
       setBusy(false);
     }
   }
+
+  if (forgot) return <PasswordResetRequest onBack={() => setForgot(false)} />;
 
   const field = "h-10 rounded-md border bg-background px-3 font-normal";
   return (
@@ -61,6 +66,11 @@ export function AuthForms({ onSignedIn }: { onSignedIn: (me: VisitorMe) => void 
             autoComplete={mode === "login" ? "current-password" : "new-password"} className={field} />
           {mode === "register" && <span className="text-xs font-normal text-muted-foreground">{t("auth.passwordHint")}</span>}
         </label>
+        {mode === "login" && (
+          <Button type="button" variant="link" size="sm" className="justify-start px-0" onClick={() => setForgot(true)}>
+            {t("auth.forgotPassword")}
+          </Button>
+        )}
         {error && <p role="alert" className="text-sm text-destructive">{t(error)}</p>}
         <Button type="submit" disabled={busy}>{mode === "login" ? t("auth.submitLogin") : t("auth.submitRegister")}</Button>
       </form>

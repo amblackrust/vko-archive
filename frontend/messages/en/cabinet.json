@@ -16,7 +16,8 @@
     "logout": "Sign out",
     "signedInAs": "Signed in as {name}",
     "deleteAccount": "Delete cabinet and all data",
-    "deleteConfirm": "Delete the cabinet with favorites, selections, history and subscriptions? This cannot be undone."
+    "deleteConfirm": "Delete the cabinet with favorites, selections, history and subscriptions? This cannot be undone.",
+    "forgotPassword": "Forgot password?"
   },
   "errors": {
     "invalid_credentials": "Wrong e-mail or password. After 5 failed attempts sign-in is blocked for 15 minutes.",
@@ -80,5 +81,33 @@
     "done": "Password changed. Other sessions were signed out.",
     "wrongCurrent": "The current password is wrong. After 5 failed attempts sign-in is blocked for 15 minutes.",
     "unchanged": "The new password must differ from the current one."
+  },
+  "reset": {
+    "requestTitle": "Password recovery",
+    "requestHint": "Enter the e-mail your account is registered with. We will send a link to set a new password.",
+    "requestSubmit": "Send link",
+    "requestSent": "If this address is registered, an e-mail with a link has been sent. Check your inbox, including the spam folder.",
+    "back": "Back to sign in",
+    "confirmTitle": "New password",
+    "repeat": "Repeat new password",
+    "mismatch": "Passwords do not match.",
+    "confirmSubmit": "Save password",
+    "done": "Password changed. You can now sign in with the new password.",
+    "signIn": "Go to sign in",
+    "invalidLink": "The link is invalid or has expired.",
+    "requestAgain": "Request a new link"
+  },
+  "emailConfirm": {
+    "title": "E-mail confirmation",
+    "pending": "Confirming your e-mail address…",
+    "done": "Your e-mail address is confirmed.",
+    "invalid": "The link is invalid or has expired. Sign in to your account and resend the confirmation e-mail.",
+    "toCabinet": "Go to the account"
+  },
+  "emailBanner": {
+    "text": "Confirm your e-mail address using the link in the message.",
+    "resend": "Resend the e-mail",
+    "sent": "The e-mail has been sent. Open the link in it.",
+    "tooOften": "E-mails are being sent too often. Wait a little and try again."
   }
 }

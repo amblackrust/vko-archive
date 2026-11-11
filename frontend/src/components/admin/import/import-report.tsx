@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { DataTable, type Column } from "../data-table";
 import { Select } from "../form-field";
 import { Notice } from "../notice";
-import type { ImportReport, ImportRow, RowAction } from "./import-api";
+import type { HierarchyLevel, ImportReport, ImportRow, RowAction } from "./import-api";
 import { useImportError } from "./use-import-error";
 
 const ACTIONS: RowAction[] = ["create", "update", "unchanged", "skip", "error"];
@@ -34,6 +34,7 @@ export function ImportReportView({ report, mapping, onMap }: ImportReportViewPro
   const id = useId();
   const [onlyProblems, setOnlyProblems] = useState(false);
   const fieldLabel = (field: string) => (t.has(`fields.${field}`) ? t(`fields.${field}`) : field);
+  const levelLabel = (level: HierarchyLevel) => t(`levels.${level}`);
   const rows = report.rows.filter((row) => !onlyProblems || row.action === "error" || row.action === "skip");
 
   const columns: Column<ImportRow>[] = [
@@ -52,6 +53,11 @@ export function ImportReportView({ report, mapping, onMap }: ImportReportViewPro
           {t(`actions.${row.action}`)}
         </span>
       ),
+    },
+    {
+      key: "creates",
+      header: t(report.applied ? "columns.created" : "columns.creates"),
+      cell: (row) => (row.creates.length ? row.creates.map(levelLabel).join(", ") : "—"),
     },
     {
       key: "errors",
@@ -108,6 +114,13 @@ export function ImportReportView({ report, mapping, onMap }: ImportReportViewPro
             </li>
           ))}
         </ul>
+        <p className="text-sm">
+          {t(report.applied ? "hierarchyApplied" : "hierarchyPreview", {
+            fund: report.hierarchy.fund,
+            inventory: report.hierarchy.inventory,
+            case: report.hierarchy.case,
+          })}
+        </p>
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={onlyProblems} onChange={(e) => setOnlyProblems(e.target.checked)} />
           {t("onlyProblems")}

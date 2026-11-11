@@ -9,6 +9,7 @@ export interface VisitorMe {
   id: string;
   email: string;
   display_name: string;
+  email_confirmed: boolean;
   csrf_token: string;
 }
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cabinetFetch, fetchMe, type VisitorMe } from "./api";
 import { AuthForms } from "./auth-forms";
+import { EmailBanner } from "./email-banner";
 import { FavoritesPanel } from "./favorites-panel";
 import { PasswordPanel } from "./password-panel";
 import { SearchesPanel } from "./searches-panel";
@@ -49,6 +50,7 @@ export function CabinetApp() {
 
   return (
     <div className="space-y-8">
+      {state.me.email_confirmed === false && <EmailBanner />}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-surface p-4">
         <p>{t("auth.signedInAs", { name: state.me.display_name || state.me.email })}</p>
         <div className="flex flex-wrap gap-2">

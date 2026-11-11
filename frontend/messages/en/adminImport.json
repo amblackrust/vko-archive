@@ -27,6 +27,8 @@
     "resultApplied": "Import completed",
     "notApplied": "Import not performed: errors found in “all or nothing” mode. Nothing was written.",
     "onlyProblems": "Only rows with errors",
+    "hierarchyPreview": "Will be created: funds {fund}, inventories {inventory}, cases {case}.",
+    "hierarchyApplied": "Created: funds {fund}, inventories {inventory}, cases {case}.",
     "downloadReport": "Download report (CSV)",
     "reportHeader": [
       "line",
@@ -41,7 +43,9 @@
       "code": "Archive code",
       "title": "Title",
       "action": "Action",
-      "errors": "Errors"
+      "errors": "Errors",
+      "creates": "Creates",
+      "created": "Created"
     },
     "actions": {
       "create": "Create",
@@ -83,7 +87,12 @@
       "inventory_number": "Inventory no.",
       "case_number": "File no."
     },
-    "section": "Document import"
+    "section": "Document import",
+    "levels": {
+      "fund": "Fund",
+      "inventory": "Inventory",
+      "case": "Case"
+    }
   },
   "export": {
     "title": "Catalog export",
@@ -151,7 +160,8 @@
       "model_missing": "Reason: the model is not loaded in Ollama.",
       "bad_response": "Reason: the model returned an unusable answer.",
       "busy": "Reason: the AI is busy with other requests."
-    }
+    },
+    "forbidden_create_hierarchy": "The fund, inventory or case is missing in the archive and you may not create it. Use an existing case or contact an administrator."
   },
   "translations": {
     "title": "Translations",
