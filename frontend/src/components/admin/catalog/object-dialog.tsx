@@ -11,6 +11,7 @@ import type { FileOwner } from "./files-panel";
 import { Notice } from "../notice";
 import { FieldsForm, type BranchChoice, type FieldSpec } from "./fields-form";
 import { FilesPanel } from "./files-panel";
+import { TRANSLATION_OBJECT_TYPES, type TranslationDetail } from "../translations/translations-api";
 import { useCatalogError } from "./use-catalog-error";
 import { WorkflowBar } from "./workflow-bar";
 
@@ -19,6 +20,11 @@ const NARROWING: Record<string, string[]> = {
   file_access: ["restricted", "closed", "needs_review"],
   description_status: ["do_not_publish", "needs_review"],
 };
+
+/** Пустые строки списков (например, добавленное и не заполненное место) на сервер не уходят. */
+function withoutEmptyRows(value: Values[string]): Values[string] {
+  return Array.isArray(value) ? value.filter((item) => Object.values(item).some((text) => String(text).trim())) : value;
+}
 
 export interface ObjectDialogProps {
   kind: string;
@@ -95,13 +101,13 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
     setError(null);
     try {
       if (object) {
-        const changes = Object.fromEntries([...dirty].map((name) => [name, values[name]]));
+        const changes = Object.fromEntries([...dirty].map((name) => [name, withoutEmptyRows(values[name])]));
         const next = Object.keys(changes).length ? await contentApi.update(kind, object.id, object.version, changes) : object;
         setObject(next);
         setValues(next.values);
         setDirty(new Set());
       } else {
-        const created = await contentApi.create(kind, values);
+        const created = await contentApi.create(kind, Object.fromEntries(Object.entries(values).map(([name, value]) => [name, withoutEmptyRows(value)])));
         setCurrentId(created.id);
         setObject(created);
         setValues(created.values);
@@ -124,6 +130,24 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
   // Опубликованное/одобренное без права публикации: сервер примет только сужение доступа (DECISIONS п.76).
   const liveLocked =
     object !== null && ["published", "approved"].includes(object.workflow_status) && !can(me, "workflow.publish");
+  const machine =
+    object !== null && dirty.size === 0 && ["draft", "needs_changes"].includes(object.workflow_status) && (TRANSLATION_OBJECT_TYPES as readonly string[]).includes(kind)
+      ? {
+          objectType: kind,
+          objectId: object.id,
+          version: object.version,
+          // Сервер уже сохранил перевод: подтягиваем тексты, статусы и новую версию.
+          onDone: (detail: TranslationDetail) => {
+            const names = new Set(spec.map((field) => field.name));
+            setObject({ ...object, version: detail.version, translation_status: detail.translation_status });
+            setValues((current) => ({
+              ...current,
+              ...Object.fromEntries(Object.entries(detail.fields).filter(([name]) => names.has(name))),
+            }));
+            onSaved();
+          },
+        }
+      : undefined;
   const onlyNarrowing = dirty.size > 0 && [...dirty].every((name) => NARROWING[name]?.includes(String(values[name])));
 
   return (
@@ -175,6 +199,7 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
                   translationStatus={object?.translation_status}
                   editing={editing}
                   ns={ns}
+                  machine={machine}
                 />
                 {extra?.(object, change, values)}
                 <div className="flex justify-end gap-2">

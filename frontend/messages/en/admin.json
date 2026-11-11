@@ -47,7 +47,8 @@
     "title": "Notifications",
     "markAll": "Mark all as read",
     "loading": "Loading…",
-    "empty": "No notifications"
+    "empty": "No notifications",
+    "openObject": "open the object"
   },
   "common": {
     "loading": "Loading…",

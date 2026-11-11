@@ -145,7 +145,13 @@
     "text_too_long": "The text is too long for machine translation — translate it manually in parts.",
     "not_machine_translation": "This language is not marked as machine-translated.",
     "invalid_language": "Choose different source and target languages.",
-    "unknown_object_type": "Unknown item type."
+    "unknown_object_type": "Unknown item type.",
+    "ai_reason": {
+      "ollama_unavailable": "Reason: the Ollama service is not responding.",
+      "model_missing": "Reason: the model is not loaded in Ollama.",
+      "bad_response": "Reason: the model returned an unusable answer.",
+      "busy": "Reason: the AI is busy with other requests."
+    }
   },
   "translations": {
     "title": "Translations",

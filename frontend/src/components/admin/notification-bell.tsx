@@ -6,10 +6,22 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { notificationsApi, type Notification } from "@/lib/api/admin";
 import { cn } from "@/lib/utils";
+import { CATALOG_SPECS, BRANCH_SPEC, EXHIBITION_SPEC, EXHIBIT_SPEC, type CatalogKind } from "./catalog/specs";
+import { ObjectDialog } from "./catalog/object-dialog";
+import type { FieldSpec } from "./catalog/fields-form";
+import { CMS_SPECS } from "./cms/specs";
 import { Notice } from "./notice";
 import { useApiError } from "./use-api-error";
 
 const POLL_MS = 60_000;
+
+/** Форма объекта, на который ссылается уведомление: поля и namespace подписей (как в разделах админки). */
+function objectForm(kind: string): { spec: FieldSpec[]; ns: string } | null {
+  if (kind in CMS_SPECS) return { spec: CMS_SPECS[kind], ns: "adminContent" };
+  if (kind in CATALOG_SPECS) return { spec: CATALOG_SPECS[kind as CatalogKind], ns: "adminCatalog" };
+  const other: Record<string, FieldSpec[]> = { branch: BRANCH_SPEC, exhibition: EXHIBITION_SPEC, exhibit: EXHIBIT_SPEC };
+  return other[kind] ? { spec: other[kind], ns: "adminCatalog" } : null;
+}
 
 /** Колокольчик уведомлений. Опрос — фоновыми запросами (X-Background: 1): сессия по нему не продлевается. */
 export function NotificationBell() {
@@ -20,6 +32,7 @@ export function NotificationBell() {
   const [items, setItems] = useState<Notification[] | null>(null);
   const [unread, setUnread] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [target, setTarget] = useState<{ kind: string; id: string } | null>(null);
 
   const load = useCallback(
     async (background: boolean) => {
@@ -51,6 +64,22 @@ export function NotificationBell() {
       setError(describe(caught));
     }
   }
+
+  async function openObject(item: Notification) {
+    if (!item.object_type || !item.object_id) return;
+    setTarget({ kind: item.object_type, id: item.object_id });
+    setOpen(false);
+    if (!item.is_read) {
+      try {
+        await notificationsApi.read(item.id);
+        await load(false);
+      } catch (caught) {
+        setError(describe(caught));
+      }
+    }
+  }
+
+  const targetForm = target ? objectForm(target.kind) : null;
 
   return (
     <div className="relative">
@@ -91,15 +120,42 @@ export function NotificationBell() {
           {items?.length === 0 && <p className="py-4 text-center text-sm text-muted-foreground">{t("empty")}</p>}
           <ul className="max-h-80 space-y-1 overflow-y-auto">
             {items?.map((item) => (
-              <li key={item.id} className={cn("rounded-md px-2 py-1.5 text-sm", !item.is_read && "bg-accent-soft text-accent-soft-foreground")}>
-                <p>{item.message[locale] ?? item.message.ru ?? item.message.kk ?? item.message.en ?? item.kind}</p>
-                <time className="text-xs text-muted-foreground" dateTime={item.created_at}>
-                  {new Date(item.created_at).toLocaleString(locale)}
-                </time>
+              <li key={item.id}>
+                {item.object_type && item.object_id && objectForm(item.object_type) ? (
+                  <button
+                    type="button"
+                    onClick={() => void openObject(item)}
+                    className={cn("w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-surface-muted", !item.is_read && "bg-accent-soft text-accent-soft-foreground")}
+                  >
+                    <p>{item.message[locale] ?? item.message.ru ?? item.message.kk ?? item.message.en ?? item.kind}</p>
+                    <time className="text-xs text-muted-foreground" dateTime={item.created_at}>
+                      {new Date(item.created_at).toLocaleString(locale)}
+                    </time>
+                    <span className="sr-only"> — {t("openObject")}</span>
+                  </button>
+                ) : (
+                  <div className={cn("rounded-md px-2 py-1.5 text-sm", !item.is_read && "bg-accent-soft text-accent-soft-foreground")}>
+                    <p>{item.message[locale] ?? item.message.ru ?? item.message.kk ?? item.message.en ?? item.kind}</p>
+                    <time className="text-xs text-muted-foreground" dateTime={item.created_at}>
+                      {new Date(item.created_at).toLocaleString(locale)}
+                    </time>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
         </div>
+      )}
+      {target && targetForm && (
+        <ObjectDialog
+          key={`${target.kind}-${target.id}`}
+          kind={target.kind}
+          id={target.id}
+          spec={targetForm.spec}
+          ns={targetForm.ns}
+          onClose={() => setTarget(null)}
+          onSaved={() => void load(false)}
+        />
       )}
     </div>
   );

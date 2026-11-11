@@ -146,8 +146,7 @@
   },
   "hints": {
     "branch": "Branch staff can only pick their own branch. A document in the hierarchy takes its branch from the fund.",
-    "slug": "Latin letters, digits and hyphens. A published object's address cannot change.",
-    "lines": "One place per line. Editing keeps the Russian variant only."
+    "slug": "Latin letters, digits and hyphens. A published object's address cannot change."
   },
   "i18n": {
     "languages": "Languages",
@@ -228,5 +227,10 @@
     "comment_required": "A comment is required.",
     "invalid_transition": "This transition is not available now."
   },
-  "liveLocked": "This item is live: without the right to publish you may only restrict access. For other changes take it back for editing first."
+  "liveLocked": "This item is live: without the right to publish you may only restrict access. For other changes take it back for editing first.",
+  "places": {
+    "add": "Add a place",
+    "row": "Place {number}, {lang}",
+    "remove": "Remove place {number}"
+  }
 }

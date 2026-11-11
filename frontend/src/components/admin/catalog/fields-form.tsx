@@ -7,7 +7,8 @@ import type { I18nValue, Values } from "@/lib/api/admin-content";
 import { FormField, Select } from "../form-field";
 import { RichTextField } from "../cms/rich-text-field";
 import { SourcesField } from "../cms/sources-field";
-import { I18nField } from "../i18n-field";
+import { PlacesField } from "./places-field";
+import { I18nField, type MachineTranslateProps } from "../i18n-field";
 
 export type FieldSpec =
   | { name: string; type: "text" | "date" | "slug"; required?: boolean; maxLength?: number; lockedOnEdit?: boolean }
@@ -36,10 +37,12 @@ interface FieldsFormProps {
   editing: boolean;
   /** Namespace подписей полей (fields.<name>, options.<name>.<value>); по умолчанию каталог. */
   ns?: string;
+  /** Кнопка чернового перевода ИИ под i18n-полями (только для сохранённого черновика). */
+  machine?: MachineTranslateProps;
 }
 
 /** Форма по описанию полей: подписи — adminCatalog.fields.<name>, варианты списков — adminCatalog.options.<name>.<value>. */
-export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing, ns = "adminCatalog" }: FieldsFormProps) {
+export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing, ns = "adminCatalog", machine }: FieldsFormProps) {
   const t = useTranslations("adminCatalog");
   const tf = useTranslations(ns);
   const locale = useLocale();
@@ -60,6 +63,7 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                 multiline={field.type === "i18nArea"}
                 value={(value as I18nValue) ?? {}}
                 translationStatus={translationStatus}
+                machine={machine}
                 onChange={(next) => onChange(field.name, next)}
               />
             );
@@ -117,24 +121,12 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
             );
           case "lines":
             return (
-              <FormField key={field.name} label={label} htmlFor={id} hint={t("hints.lines")}>
-                <textarea
-                  id={id}
-                  rows={3}
-                  className="w-full rounded-md border bg-surface px-3 py-2 text-sm"
-                  value={((value as I18nValue[]) ?? []).map((place) => place.ru ?? Object.values(place)[0] ?? "").join("\n")}
-                  onChange={(e) =>
-                    onChange(
-                      field.name,
-                      e.target.value
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .filter(Boolean)
-                        .map((line) => ({ ru: line })),
-                    )
-                  }
-                />
-              </FormField>
+              <PlacesField
+                key={field.name}
+                label={label}
+                value={((value as I18nValue[]) ?? []).filter((place) => place && typeof place === "object")}
+                onChange={(next) => onChange(field.name, next)}
+              />
             );
           case "number":
             return (

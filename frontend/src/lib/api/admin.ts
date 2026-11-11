@@ -27,6 +27,8 @@ export class AdminApiError extends Error {
     /** Машинный код из `detail` (invalid_credentials, forbidden, email_taken...); "network" — сервер недоступен. */
     readonly code: string,
     readonly retryAfter: number | null = null,
+    /** Причина 503 ai_unavailable (ollama_unavailable | model_missing | bad_response | busy). */
+    readonly reason: string | null = null,
   ) {
     super(code);
   }
@@ -74,9 +76,11 @@ export async function adminRequest<T>(path: string, { method = "GET", body, rawB
   }
   if (!response.ok) {
     let code = "error";
+    let reason: string | null = null;
     try {
-      const data = (await response.json()) as { detail?: unknown };
+      const data = (await response.json()) as { detail?: unknown; reason?: unknown };
       if (typeof data.detail === "string") code = data.detail;
+      if (typeof data.reason === "string") reason = data.reason;
       else if (response.status === 422) code = "invalid_input";
     } catch {
       /* тело не JSON — оставляем общий код */
@@ -84,7 +88,7 @@ export async function adminRequest<T>(path: string, { method = "GET", body, rawB
     const retry = Number(response.headers.get("Retry-After"));
     // 401 вне входа = сессия закончилась; сам вход (invalid_credentials) обрабатывает форма.
     if (response.status === 401 && path !== "/auth/login") onUnauthorized?.();
-    throw new AdminApiError(response.status, code, Number.isFinite(retry) && retry > 0 ? retry : null);
+    throw new AdminApiError(response.status, code, Number.isFinite(retry) && retry > 0 ? retry : null, reason);
   }
   if (!background) lastActivity = Date.now();
   if (response.status === 204) return undefined as T;

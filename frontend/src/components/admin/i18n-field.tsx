@@ -4,6 +4,16 @@ import { useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { MachineTranslateButton } from "./translations/machine-translate-button";
+import type { TranslationDetail, TranslationLang } from "./translations/translations-api";
+
+/** Сохранённый объект в draft/needs_changes без несохранённых правок: только тогда можно переводить на сервере. */
+export interface MachineTranslateProps {
+  objectType: string;
+  objectId: string;
+  version: number;
+  onDone: (detail: TranslationDetail) => void;
+}
 
 export const FIELD_LANGS = ["kk", "ru", "en"] as const;
 
@@ -15,13 +25,16 @@ interface I18nFieldProps {
   required?: boolean;
   /** Статус перевода по языкам (verified / machine / missing) для пометки вкладок. */
   translationStatus?: Record<string, string>;
+  machine?: MachineTranslateProps;
 }
 
 /** Поле с вкладками kk / ru / en (PLAN T6.11). Пустой язык отправляется как отсутствующий. */
-export function I18nField({ label, value, onChange, multiline, required, translationStatus }: I18nFieldProps) {
+export function I18nField({ label, value, onChange, multiline, required, translationStatus, machine }: I18nFieldProps) {
   const t = useTranslations("adminCatalog.i18n");
   const id = useId();
   const [lang, setLang] = useState<(typeof FIELD_LANGS)[number]>("ru");
+  // Источник перевода: первый заполненный язык, отличный от открытой вкладки.
+  const source = FIELD_LANGS.find((code) => code !== lang && value[code]?.trim());
   const setText = (text: string) => onChange({ ...value, [lang]: text });
   return (
     <div className="space-y-1.5">
@@ -61,6 +74,15 @@ export function I18nField({ label, value, onChange, multiline, required, transla
         />
       ) : (
         <Input id={`${id}-${lang}`} lang={lang} value={value[lang] ?? ""} onChange={(e) => setText(e.target.value)} />
+      )}
+      {machine && source && (
+        <MachineTranslateButton
+          {...machine}
+          source={source as TranslationLang}
+          target={lang}
+          targetStatus={translationStatus?.[lang] as "verified" | "machine" | "missing" | undefined}
+          onDone={machine.onDone}
+        />
       )}
     </div>
   );

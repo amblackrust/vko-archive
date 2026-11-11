@@ -2,15 +2,9 @@
 
 import { Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { SiteSettings } from "@/lib/api/site-settings";
 import { cn } from "@/lib/utils";
+import { socialEntries } from "./social-data";
 import { useSiteSettings } from "./site-settings";
-
-// Ссылки из info/Контакты.docx
-export const socialUrls = {
-  instagram: "https://www.instagram.com/arhiv_vko/",
-  facebook: "https://www.facebook.com/vkoarhiv",
-} as const;
 
 // В lucide-react нет брендовых иконок, поэтому простые inline SVG.
 function InstagramIcon() {
@@ -32,16 +26,6 @@ function FacebookIcon() {
 }
 
 type Network = "instagram" | "facebook" | "telegram" | "youtube" | "whatsapp";
-
-/** Если настройки сайта недоступны, показываем официальные страницы из info/. */
-const defaultSocial: Record<string, { url: string | null; handle: string | null }> = {
-  instagram: { url: socialUrls.instagram, handle: "@arhiv_vko" },
-  facebook: { url: socialUrls.facebook, handle: null },
-};
-
-export function socialEntries(social: SiteSettings["social"] | undefined) {
-  return Object.entries(social ?? defaultSocial).filter(([, link]) => link.url) as [string, { url: string; handle: string | null }][];
-}
 
 export function SocialLinks({ className }: { className?: string }) {
   const t = useTranslations("layout.social");
