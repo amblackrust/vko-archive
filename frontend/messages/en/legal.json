@@ -1,28 +1,46 @@
 {
   "title": "Legal acts",
-  "intro": "Acts in force that relate to the archive's activities. Requisites and status come from the catalogue data; check the current version on adilet.zan.kz.",
+  "lead": "The laws, resolutions and orders the archive works under: requisites, status, a link to the official publication and the file where it is open.",
   "filter": {
-    "q": "Search by title, number or issuer",
+    "label": "Search the acts",
+    "q": "Title, number or issuer",
     "status": "Status",
-    "all": "All statuses",
+    "all": "Any status",
     "submit": "Search",
     "reset": "Reset"
   },
   "status": {
     "active": "In force",
-    "amended": "Amended",
-    "expired": "Expired"
+    "amended": "In force as amended",
+    "expired": "No longer in force"
   },
-  "count": "Found: {count}",
-  "card": {
+  "legend": {
+    "title": "What the statuses mean",
+    "active": "The act applies as adopted.",
+    "amended": "The act has been amended or supplemented. Read the current version.",
+    "expired": "The act has been repealed or replaced and no longer applies."
+  },
+  "official": {
+    "title": "Official texts",
+    "text": "Only the texts published in the Adilet legal information system are legally binding. Check the current version before relying on an act.",
+    "link": "Open adilet.zan.kz"
+  },
+  "more": {
+    "title": "See also",
+    "state": "Public service: archival certificate",
+    "paid": "Paid services",
+    "compliance": "Compliance service",
+    "complianceText": "The archive's internal anti-corruption documents."
+  },
+  "count": "Acts: {count}",
+  "checkedNote": "A check date is shown for acts compared with the official publication. For the other acts the status check and the Adilet link have not been entered yet.",
+  "row": {
     "number": "No. {number}",
-    "date": "of {date}",
-    "issuer": "Issuer",
-    "actualized": "Updated: {date}",
+    "date": "dated {date}",
+    "checked": "checked on {date}",
+    "adilet": "Official publication on Adilet",
     "file": "Open file",
-    "pages": "{count} p.",
-    "noFile": "No file published",
-    "adilet": "Open on adilet.zan.kz"
-  },
-  "adiletLink": "Go to Adilet (adilet.zan.kz)"
+    "pages": "{count} pp.",
+    "noLinks": "The link to the official publication and the file have not been entered yet."
+  }
 }

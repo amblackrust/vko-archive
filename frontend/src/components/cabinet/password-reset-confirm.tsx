@@ -3,73 +3,56 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
 import { Link } from "@/lib/i18n/navigation";
-import { CabinetError, cabinetFetch } from "./api";
-import { errorKey } from "./errors";
+import { cabinetFetch } from "./api";
+import { errorCode, PasswordRules, TextInput } from "./form";
 
 /** Новый пароль по одноразовой ссылке из письма. Пароль не попадает в URL и не хранится на клиенте. */
 export function PasswordResetConfirm({ token }: { token: string }) {
   const t = useTranslations("cabinet");
   const [status, setStatus] = useState<"form" | "done" | "invalid">(token ? "form" : "invalid");
+  const [password, setPassword] = useState("");
+  const [repeat, setRepeat] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const mismatch = repeat !== "" && repeat !== password;
 
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const password = String(data.get("password"));
-    if (password !== String(data.get("repeat"))) {
-      setError(t("reset.mismatch"));
-      return;
-    }
+    if (password !== repeat) return;
     setBusy(true);
     setError(null);
     try {
       await cabinetFetch("/auth/password-reset/confirm", { method: "POST", body: { token, new_password: password } });
       setStatus("done");
-    } catch (e) {
-      const code = e instanceof CabinetError ? e.code : "generic";
+    } catch (caught) {
+      const code = errorCode(caught);
       if (code === "invalid_token") setStatus("invalid");
-      else setError(t(errorKey(code)));
+      else setError(code);
     } finally {
       setBusy(false);
     }
   }
 
-  if (status === "invalid") {
+  if (status !== "form") {
     return (
-      <section className="max-w-md space-y-4">
-        <p role="alert" className="text-destructive">{t("reset.invalidLink")}</p>
-        <Link href="/cabinet" className="text-primary underline-offset-4 hover:underline">{t("reset.requestAgain")}</Link>
-      </section>
-    );
-  }
-
-  if (status === "done") {
-    return (
-      <section className="max-w-md space-y-4">
-        <p role="status">{t("reset.done")}</p>
-        <Button asChild>
-          <Link href="/cabinet">{t("reset.signIn")}</Link>
+      <div className="max-w-xl space-y-5">
+        {status === "done" ? <Notice tone="success" title={t("reset.done")}>{t("reset.doneText")}</Notice> : <Notice tone="warning" title={t("reset.invalidLink")}>{t("reset.invalidText")}</Notice>}
+        <Button asChild variant={status === "done" ? "primary" : "outline"}>
+          <Link href="/cabinet">{t(status === "done" ? "reset.signIn" : "reset.requestAgain")}</Link>
         </Button>
-      </section>
+      </div>
     );
   }
 
-  const field = "h-10 rounded-md border bg-background px-3 font-normal";
+  const passwordError = error && ["password_length", "password_too_weak"].includes(error) ? t(`errors.${error}`) : null;
   return (
-    <form onSubmit={submit} className="max-w-md space-y-3 rounded-lg border bg-surface p-5">
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        {t("reset.confirmTitle")}
-        <input name="password" type="password" required minLength={10} maxLength={256} autoComplete="new-password" className={field} />
-        <span className="text-xs font-normal text-muted-foreground">{t("auth.passwordHint")}</span>
-      </label>
-      <label className="flex flex-col gap-1 text-sm font-medium">
-        {t("reset.repeat")}
-        <input name="repeat" type="password" required minLength={10} maxLength={256} autoComplete="new-password" className={field} />
-      </label>
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={busy}>{t("reset.confirmSubmit")}</Button>
+    <form onSubmit={submit} className="max-w-md space-y-4">
+      {error && !passwordError && <p role="alert" className="rounded-md border border-destructive/40 bg-destructive-soft px-4 py-3 text-sm">{t(`errors.${error}`)}</p>}
+      <TextInput label={t("password.new")} name="password" type="password" required minLength={10} maxLength={256} autoComplete="new-password" value={password} error={passwordError} hint={<PasswordRules value={password} />} onChange={(event) => setPassword(event.target.value)} />
+      <TextInput label={t("reset.repeat")} name="repeat" type="password" required maxLength={256} autoComplete="new-password" value={repeat} error={mismatch ? t("reset.mismatch") : null} onChange={(event) => setRepeat(event.target.value)} />
+      <Button type="submit" size="lg" disabled={busy || mismatch}>{t("reset.confirmSubmit")}</Button>
     </form>
   );
 }

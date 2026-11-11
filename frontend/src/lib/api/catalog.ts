@@ -24,6 +24,8 @@ export interface DocumentItem {
   sheets_count: number | null;
   file_access: "open" | "restricted" | "closed" | "needs_review";
   has_digital_copy: boolean;
+  /** Путь превью первого файла, открытого анониму (/api/files/{id}?variant=preview), иначе null. */
+  preview_url?: string | null;
   branch_id: string | null;
   is_demo: boolean;
   fund: Ref | null;
@@ -74,6 +76,26 @@ export interface FundItem {
   inventory_count: number;
   document_count: number;
   href: string;
+  branch_id: string | null;
+  /** Названия фондообразователя по порядку; последнее совпадает с title. */
+  former_names: { dates: string | null; name: string }[];
+  units_count: number | null;
+  category: number | null;
+  ownership: "state" | "private" | null;
+  first_received: string | null;
+  /** "partial" — часть единиц хранения ограничена в доступе (число не публикуется). */
+  restricted: string | null;
+  source: string | null;
+}
+
+export interface NewspaperItem {
+  id: string;
+  title: string;
+  publisher: string | null;
+  year_from: number;
+  year_to: number;
+  volumes_total: number;
+  years: { year: number; volumes: number; note: string | null }[];
 }
 
 export interface InventoryItem {
@@ -107,36 +129,49 @@ export interface List<T> extends Pagination {
   items: T[];
 }
 
-export type FundDetail = FundItem & { inventories: InventoryItem[] };
+/** `branch` — филиал, где хранится фонд (только если он опубликован). */
+export type FundDetail = FundItem & { inventories: InventoryItem[]; branch?: { name: string; href: string } | null };
 export type InventoryDetail = InventoryItem & { cases: List<CaseItem> };
 export type CaseDetail = CaseItem & { documents: List<DocumentItem> };
 
 export type SearchParams = Record<string, string | string[] | undefined>;
 
 /** Параметры фильтров каталога (повторяемые — списки); всё прочее из URL отбрасывается. */
-export const LIST_FILTERS = ["period", "topic", "doc_type", "branch_id", "fund_type", "language"] as const;
-export const TEXT_FILTERS = [
+const LIST_FILTERS = ["period", "topic", "doc_type", "branch_id", "fund_type", "language"] as const;
+const TEXT_FILTERS = [
   "q", "title", "fund_number", "inventory_number", "case_number", "year", "date_from", "date_to",
   "author", "place", "keyword", "category", "has_digital_copy",
 ] as const;
 export const SORTS = ["relevance", "date_asc", "date_desc", "code", "title"] as const;
 
-/** Фильтры, сортировка и страница из searchParams страницы -> query для API и ссылок. */
+const first = (raw: string | string[] | undefined) => (Array.isArray(raw) ? raw[0] : raw)?.trim() ?? "";
+
+/** Фильтры, сортировка и страница из searchParams страницы -> query для API и ссылок; пустые поля отбрасываются. */
 export function catalogParams(searchParams: SearchParams): URLSearchParams {
   const out = new URLSearchParams();
   for (const key of LIST_FILTERS) {
     const raw = searchParams[key];
     for (const value of Array.isArray(raw) ? raw : raw ? [raw] : []) if (value) out.append(key, value);
   }
-  for (const key of [...TEXT_FILTERS, "sort", "page"]) {
-    const raw = searchParams[key];
-    const value = Array.isArray(raw) ? raw[0] : raw;
+  for (const key of [...TEXT_FILTERS, "sort", "view", "page"]) {
+    const value = first(searchParams[key]);
     if (value) out.set(key, value);
   }
   return out;
 }
 
-/** Копия query с изменением (value=null — убрать ключ или одно значение списка). */
+/** Адрес страницы с условиями; без условий — без «?» на конце. */
+export function withQuery(pathname: string, params: URLSearchParams): string {
+  const query = params.toString();
+  return query ? `${pathname}?${query}` : pathname;
+}
+
+/** GET-форма без JS отправляет и пустые поля: такой адрес страница каталога заменяет коротким. */
+export function hasBlankParams(searchParams: SearchParams): boolean {
+  return Object.values(searchParams).some((raw) => [raw].flat().includes(""));
+}
+
+/** Копия query без ключа целиком или без одного значения списка (`value`); номер страницы сбрасывается. */
 export function withoutParam(params: URLSearchParams, key: string, value?: string): URLSearchParams {
   const out = new URLSearchParams();
   for (const [k, v] of params) {
@@ -163,11 +198,24 @@ export async function catalogFetch<T>(path: string, params: URLSearchParams, lan
   return (await response.json()) as T;
 }
 
+export const FUND_SORTS = ["number", "title", "year"] as const;
+
+/** Как catalogFetch, но сбой сети или API не роняет страницу: undefined -> страница показывает UnavailableState. */
+export function catalogLoad<T>(...args: Parameters<typeof catalogFetch>): Promise<T | null | undefined> {
+  return catalogFetch<T>(...args).catch(() => undefined);
+}
+
+/** Список каталога: при 422 (мусор в параметрах адреса) — тот же список без условий; undefined — API недоступен. */
+export async function catalogList<T>(path: string, params: URLSearchParams, lang: string): Promise<T | undefined> {
+  const data = await catalogLoad<T>(path, params, lang);
+  return data === null ? ((await catalogLoad<T>(path, new URLSearchParams(), lang)) ?? undefined) : data;
+}
+
+/** Параметры списков иерархии и фондов из URL страницы; остальное отбрасывается. */
 export function listPage(searchParams: SearchParams): URLSearchParams {
   const out = new URLSearchParams();
-  for (const key of ["q", "page", "type"]) {
-    const raw = searchParams[key];
-    const value = Array.isArray(raw) ? raw[0] : raw;
+  for (const key of ["q", "page", "type", "year", "category", "sort"]) {
+    const value = first(searchParams[key]);
     if (value) out.set(key, value);
   }
   return out;

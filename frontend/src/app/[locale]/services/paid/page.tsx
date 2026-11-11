@@ -1,47 +1,86 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { InfoNotice } from "@/components/services/info-notice";
+import { ActRow } from "@/components/legal/act-row";
+import { legalFetch, type LegalActsResponse } from "@/components/legal/api";
+import { safe } from "@/components/misc/api";
+import { MailLink, PhoneLink } from "@/components/misc/contact-links";
+import { pageMetadata } from "@/components/misc/metadata";
+import { Block, PageBody, SeeAlso } from "@/components/misc/page-layout";
+import { PriceTable } from "@/components/services/price-table";
+import { FactList } from "@/components/ui/facts";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/ui/page-header";
+import { RecordList } from "@/components/ui/record-list";
+import { fetchContacts, receptionPhone } from "@/lib/api/content";
 import { Link } from "@/lib/i18n/navigation";
-import { localizedAlternates } from "@/lib/seo";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "services.paid" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/services/paid") };
-}
+export const generateMetadata = pageMetadata("services.paid", "/services/paid");
 
-/** Справочные сведения о платных услугах. Прейскурант не загружен в каталог: показываем, где его уточнить. */
+/**
+ * Платные услуги — только справка. Постановление об утверждении прейскуранта и сам прейскурант заказчик
+ * не передал: страница говорит об этом прямо и не показывает цен. Постановление появится здесь само,
+ * когда его внесут в перечень актов (поиск по слову «прейскурант»).
+ */
 export default async function PaidServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("services.paid");
+  const section = await getTranslations("services.index");
+  const [acts, contacts] = await Promise.all([
+    safe(legalFetch<LegalActsResponse>("legal-acts", new URLSearchParams({ q: "прейскурант" }), locale)),
+    safe(fetchContacts()),
+  ]);
+  const decrees = acts?.items ?? [];
+  const reception = receptionPhone(contacts);
 
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title") }]} />
-      <div className="container-page space-y-8 pb-12">
-        <header className="space-y-3">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-        </header>
-        <InfoNotice>{t("notice")}</InfoNotice>
+      <PageHeader crumbs={[{ label: section("title"), href: "/services" }, { label: t("title") }]} title={t("title")} lead={t("lead")} />
+      <PageBody
+        aside={
+          <>
+            <FactList
+              items={[
+                { label: t("facts.priceList"), value: t("facts.priceListValue") },
+                { label: t("facts.payment"), value: t("facts.paymentValue") },
+                { label: t("facts.phone"), value: reception && <PhoneLink value={reception} /> },
+              ]}
+            />
+            <SeeAlso
+              title={t("more.title")}
+              items={[
+                { href: "/services/state", label: t("more.state"), text: t("more.stateText") },
+                { href: "/legal", label: t("more.legal") },
+                { href: "/compliance", label: t("more.compliance") },
+              ]}
+            />
+          </>
+        }
+      >
+        <Notice tone="warning">{t("notice")}</Notice>
 
-        <section aria-labelledby="paid-resolution" className="space-y-3">
-          <h2 id="paid-resolution" className="text-xl font-semibold">{t("resolutionHeading")}</h2>
-          <p className="rounded-lg border bg-surface p-4">{t("resolution")}</p>
-          <p className="text-sm text-muted-foreground">{t("requisitesPending")}</p>
-        </section>
+        <Block id="decree" title={t("decree.title")} text={t("decree.text")}>
+          <p className="max-w-3xl border-l-2 border-primary pl-4 font-medium">{t("decree.name")}</p>
+          {decrees.length > 0 ? (
+            <RecordList>{decrees.map((act) => <ActRow key={act.id} act={act} locale={locale} />)}</RecordList>
+          ) : (
+            <Notice title={t("decree.pendingTitle")}>{t("decree.pending")}</Notice>
+          )}
+        </Block>
 
-        <section aria-labelledby="paid-price" className="space-y-3 rounded-lg border bg-surface-muted p-5">
-          <h2 id="paid-price" className="flex flex-wrap items-center gap-3 text-xl font-semibold">
-            {t("priceHeading")}
-          </h2>
-          <p>
-            {t("pricePending")}{" "}
-            <Link href="/contacts" className="text-primary underline underline-offset-2">{t("contactsLink")}</Link>
-          </p>
-        </section>
-      </div>
+        <Block id="price-list" title={t("price.title")} text={t("price.text")}>
+          <PriceTable items={[]} />
+        </Block>
+
+        <Block id="ask" title={t("ask.title")} text={t("ask.text")}>
+          {contacts && (
+            <p className="flex flex-wrap gap-x-8 gap-y-2">
+              {reception && <PhoneLink value={reception} className="font-semibold" />}
+              <MailLink value={contacts.email} className="font-semibold" />
+            </p>
+          )}
+          <p><Link href="/contacts" className="text-link font-medium">{t("ask.link")}</Link></p>
+        </Block>
+      </PageBody>
     </>
   );
 }

@@ -1,89 +1,102 @@
-import { ImageOff } from "lucide-react";
+import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FavoriteButton } from "@/components/cabinet/favorite-button";
-import { fetchPublic, type ExhibitionDetail } from "@/components/exhibitions/api";
-import { ThemeLabel } from "@/components/exhibitions/theme-label";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { fetchExhibition, thumbPath } from "@/components/exhibitions/api";
+import { MediaImage } from "@/components/exhibitions/media-image";
 import { ShareButtons } from "@/components/layout/share-buttons";
+import { themeLabel } from "@/components/memory/labels";
 import { SimilarMaterials } from "@/components/recommendations/similar-materials";
 import { Button } from "@/components/ui/button";
 import { DemoBadge } from "@/components/ui/demo-badge";
-import { NotFoundState, UnavailableState } from "@/components/ui/state-view";
+import { DemoTag } from "@/components/ui/demo-tag";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/ui/page-header";
+import { UnavailableState } from "@/components/ui/state-view";
 import { fileUrl } from "@/lib/api/document";
+import { attempt } from "@/lib/api/memory";
 import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
 
-async function load(slug: string, locale: string): Promise<ExhibitionDetail | null | undefined> {
-  try {
-    return await fetchPublic<ExhibitionDetail>(`exhibitions/${encodeURIComponent(slug)}`, new URLSearchParams(), locale);
-  } catch {
-    return undefined; // backend недоступен
-  }
-}
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+export async function generateMetadata({ params }: Props) {
   const { locale, slug } = await params;
-  const exhibition = await load(slug, locale);
-  return { title: exhibition?.title, alternates: localizedAlternates(locale, `/exhibitions/${slug}`) };
+  const exhibition = await attempt(fetchExhibition(slug, locale));
+  return { title: exhibition?.title, description: exhibition?.intro || undefined, alternates: localizedAlternates(locale, `/exhibitions/${slug}`) };
 }
 
-export default async function ExhibitionPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+export default async function ExhibitionPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("exhibitions");
-  const exhibition = await load(slug, locale);
+  const exhibition = await attempt(fetchExhibition(slug, locale));
   if (exhibition === undefined) return <UnavailableState />;
-  if (exhibition === null) return <NotFoundState />;
+  if (exhibition === null) notFound();
+  const t = await getTranslations("exhibitions");
+  const base = `/exhibitions/${exhibition.slug}`;
+  // В шапке обложка крупная: берём сам файл, если это изображение, иначе его превью.
+  const cover = exhibition.cover?.mime.startsWith("image/") ? exhibition.cover.url : thumbPath(exhibition.cover);
 
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title"), href: "/exhibitions" }, { label: exhibition.title }]} />
-      <div className="container-page space-y-8 pb-12">
-        <header className="space-y-3">
-          <h1 className="break-words text-3xl font-bold" lang={exhibition.title_lang}>
-            {exhibition.title}
-          </h1>
-          <p className="flex flex-wrap items-center gap-3 text-muted-foreground">
-            {exhibition.theme && <ThemeLabel theme={exhibition.theme} />}
-            {exhibition.period && <span>{exhibition.period}</span>}
+      <PageHeader
+        tone="brand"
+        crumbs={[{ label: t("title"), href: "/exhibitions" }, { label: exhibition.title }]}
+        title={exhibition.title}
+        titleLang={exhibition.title_lang}
+        meta={
+          <>
+            <p className="mr-2 flex flex-wrap gap-x-4 text-sm text-muted-foreground">
+              {exhibition.theme && <span>{themeLabel(t, "themes", exhibition.theme)}</span>}
+              {exhibition.period && <span>{exhibition.period}</span>}
+              <span>{t("card.exhibits", { count: exhibition.exhibits.length })}</span>
+            </p>
+            {exhibition.is_demo && <DemoTag />}
             {exhibition.title_lang !== locale && <DemoBadge kind="noTranslation" />}
-          </p>
-          <p className="max-w-3xl whitespace-pre-line" lang={exhibition.title_lang}>{exhibition.intro}</p>
-          <div className="flex flex-wrap items-center gap-4">
-            <ShareButtons title={exhibition.title} />
-            <FavoriteButton type="exhibition" id={exhibition.id} />
-          </div>
-          {exhibition.exhibits.length > 0 && (
-            <Button asChild>
-              <Link href={`/exhibitions/${exhibition.slug}/1`}>{t("detail.start")}</Link>
-            </Button>
-          )}
-        </header>
+          </>
+        }
+        lead={exhibition.intro && <p className="whitespace-pre-line" lang={exhibition.title_lang}>{exhibition.intro}</p>}
+        actions={exhibition.exhibits.length > 0 && (
+          // В баннере токены переназначены: основная кнопка набора здесь белая.
+          <Button asChild size="lg"><Link href={`${base}/${exhibition.exhibits[0].position}`}>{t("detail.start")}</Link></Button>
+        )}
+        aside={cover && <MediaImage src={fileUrl(cover)} alt="" fallback={t("card.noCover")} eager className="aspect-[4/3] rounded-2xl" />}
+      />
 
-        <section aria-labelledby="exhibits-title" className="space-y-4">
-          <h2 id="exhibits-title" className="text-xl font-semibold">{t("detail.exhibitsTitle")}</h2>
+      <div className="container-page space-y-10 py-4 pb-16">
+        <div className="flex flex-wrap items-center gap-4" data-noprint>
+          <ShareButtons title={exhibition.title} />
+          <FavoriteButton type="exhibition" id={exhibition.id} />
+        </div>
+        {exhibition.translation_status === "machine" && <Notice className="max-w-3xl">{t("detail.machine")}</Notice>}
+
+        <section aria-labelledby="exhibits" className="space-y-6">
+          <div className="max-w-2xl">
+            <h2 id="exhibits" className="text-2xl">{t("detail.exhibitsTitle")}</h2>
+            {exhibition.exhibits.length > 0 && <p className="mt-2 text-muted-foreground">{t("detail.exhibitsText")}</p>}
+          </div>
           {exhibition.exhibits.length === 0 ? (
-            <p className="text-muted-foreground">{t("detail.empty")}</p>
+            <p className="card max-w-2xl p-6 text-muted-foreground">
+              {t("detail.empty")} <Link href="/exhibitions" className="text-link">{t("detail.others")}</Link>
+            </p>
           ) : (
-            <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <ol className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {exhibition.exhibits.map((exhibit) => {
-                const thumb = exhibit.media?.preview_url ?? exhibit.media?.url;
+                const thumb = thumbPath(exhibit.media);
                 return (
-                  <li key={exhibit.id} className="overflow-hidden rounded-lg border bg-surface">
-                    <Link href={`/exhibitions/${exhibition.slug}/${exhibit.position}`} className="block hover:bg-surface-muted">
-                      <div className="flex aspect-[4/3] items-center justify-center bg-surface-muted text-muted-foreground">
-                        {thumb ? (
-                          // eslint-disable-next-line @next/next/no-img-element -- файл отдаёт backend с проверкой прав
-                          <img src={fileUrl(thumb)} alt="" loading="lazy" className="size-full object-cover" />
-                        ) : (
-                          <ImageOff className="size-6" aria-label={t("detail.noImage")} />
-                        )}
+                  // min-w-0 и break-words: длинное слово в названии не раздвигает колонку на узком экране.
+                  <li key={exhibit.id} className="min-w-0">
+                    <article className="card lift group relative flex h-full flex-col overflow-hidden">
+                      <MediaImage src={thumb && fileUrl(thumb)} alt="" fallback={t(exhibit.video_url ? "detail.video" : "detail.noImage")} className="aspect-[4/3] rounded-none border-0" />
+                      <div className="space-y-1 p-4">
+                        <h3 className="flex gap-2 text-base leading-snug">
+                          <span className="tabular-nums text-primary">{exhibit.position}.</span>
+                          {/* Ссылка растянута на всю карточку: изображение тоже нажимается. */}
+                          <Link href={`${base}/${exhibit.position}`} className="min-w-0 break-words after:absolute after:inset-0 group-hover:text-primary">{exhibit.title}</Link>
+                        </h3>
+                        {exhibit.caption && <p className="line-clamp-2 text-sm text-muted-foreground">{exhibit.caption}</p>}
+                        {exhibit.is_demo && <p className="pt-1"><DemoTag /></p>}
                       </div>
-                      <p className="p-3 text-sm font-medium">
-                        <span className="text-muted-foreground">{exhibit.position}. </span>
-                        {exhibit.title}
-                      </p>
-                    </Link>
+                    </article>
                   </li>
                 );
               })}

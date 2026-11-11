@@ -30,7 +30,8 @@ def test_public_card_has_fields_files_and_related(api, factory):
     hidden_sibling = doc(factory, case, word, workflow_status=WorkflowStatus.DRAFT)
     second = add_file(factory, main, position=2, master_path="masters/secret/b.png", mime="image/png",
                       ocr_text="текст страницы", preview_path="previews/secret/b.jpg")
-    first = add_file(factory, main, position=1, master_path="masters/secret/a.png", mime="image/png")
+    first = add_file(factory, main, position=1, master_path="masters/secret/a.png", mime="image/png",
+                     provenance={"ru": "Wikimedia Commons: страница файла"}, rights_note={"ru": "Автор: N. Лицензия: CC0"})
 
     response = card(api, main.id)
     assert response.status_code == 200
@@ -40,6 +41,10 @@ def test_public_card_has_fields_files_and_related(api, factory):
     assert [f["id"] for f in body["files"]] == [str(first.id), str(second.id)]
     assert body["files"][1]["ocr_text"] == "текст страницы"
     assert body["files"][1]["preview_url"] == f"/api/files/{second.id}?variant=preview"
+    assert body["preview_url"] == body["files"][1]["preview_url"]  # the first copy that has a preview
+    # Where the copy comes from and whose it is: shown next to the image.
+    assert body["files"][0]["provenance"] == "Wikimedia Commons: страница файла"
+    assert body["files"][0]["rights_note"] == "Автор: N. Лицензия: CC0" and body["files"][1]["rights_note"] == ""
     assert [r["id"] for r in body["related"]] == [str(sibling.id)]
     assert str(hidden_sibling.id) not in response.text
     assert "secret" not in response.text and "master_path" not in response.text

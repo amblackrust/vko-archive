@@ -2,7 +2,8 @@ import { API_URL } from "@/lib/api/client";
 
 /** Контракты backend/app/schemas/legal.py. Названия и тексты — plain text; file.url — путь /api/files. */
 
-export type LegalActStatus = "active" | "amended" | "expired";
+export const LEGAL_STATUSES = ["active", "amended", "expired"] as const;
+export type LegalActStatus = (typeof LEGAL_STATUSES)[number];
 
 export interface ActFile {
   url: string;
@@ -18,6 +19,7 @@ export interface LegalActItem {
   date: string | null;
   issuer: string;
   status: LegalActStatus;
+  /** Дата последней сверки с официальной публикацией. */
   actualized_at: string | null;
   adilet_url: string | null;
   file: ActFile | null;
@@ -37,8 +39,6 @@ export interface CompliancePage {
   documents: LegalActItem[];
 }
 
-export const LEGAL_STATUSES = ["active", "amended", "expired"] as const;
-
 /** Возвращает null на 404; при сетевой ошибке или 5xx бросает исключение. */
 export async function legalFetch<T>(path: string, params: URLSearchParams, lang: string): Promise<T | null> {
   const query = new URLSearchParams(params);
@@ -49,9 +49,5 @@ export async function legalFetch<T>(path: string, params: URLSearchParams, lang:
   return (await response.json()) as T;
 }
 
-/** ISO-дата из API → ДД.ММ.ГГГГ (как в справочных документах Казахстана). */
-export function formatDate(iso: string | null): string | null {
-  if (!iso) return null;
-  const [year, month, day] = iso.split("-");
-  return `${day}.${month}.${year}`;
-}
+/** Короткое обозначение формата файла для подписи ссылки; неизвестный тип — пустая строка. */
+export const fileFormat = (mime: string) => (mime === "application/pdf" ? "PDF" : mime.includes("wordprocessingml") ? "DOCX" : "");

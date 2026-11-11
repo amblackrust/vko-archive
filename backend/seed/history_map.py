@@ -1,9 +1,10 @@
 """T5.11/T5.12: themes for the chronology and the historical map.
 
-Real part: calendar events get a theme from their wording, and three events that name a town
-get that town's approximate coordinates (the town centre, not the site). Existing values are
-never overwritten (admin edits survive).
-DEMO part: fictitious historical objects (is_demo) linked to fictitious demo documents."""
+Calendar events get a theme from their wording, and three events that name a town get that
+town's approximate coordinates (the town centre, not the site). Existing values are never
+overwritten (admin edits survive).
+Map objects are real places shown in the open historical materials (seed/open_data.py), linked to
+those documents. Their coordinates are approximate too: events have no "verified" flag."""
 
 from decimal import Decimal
 
@@ -11,7 +12,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import HistoricalEvent, WorkflowStatus
-from seed.common import Report, demo_document, i18n, translation_status, upsert
+from seed.common import Report, i18n, translation_status, upsert
+from seed.open_data import MAP_OBJECTS, MAP_WIKI
+from seed.open_materials import open_document
 
 # (substring of the ru title, place ru, lat, lng): town centres, approximate
 TOWN_EVENTS = [
@@ -19,25 +22,6 @@ TOWN_EVENTS = [
     ("съезда Советов в г.Зыряновске", "г. Зыряновск", "49.738900", "84.270000"),
     ("газеты «Риддерский рабочий»", "г. Риддер", "50.345600", "83.512500"),
 ]
-
-# (slug, ru title, theme, ru place, lat, lng, ru description, demo document keys)
-DEMO_OBJECTS = [
-    ("map-council", "Здание городского совета (вымышленный объект)", "building", "г. Усть-Каменогорск",
-     "49.951000", "82.614000", "Вымышленный объект: здание, о котором рассказывают документы подборки.",
-     ["d2-1-1-1", "d2-1-1-2"]),
-    ("map-school", "Школа № 1 (вымышленный объект)", "building", "г. Усть-Каменогорск",
-     "49.944000", "82.633000", "Вымышленный объект: школа из документов об образовании.",
-     ["d6-1-1-1"]),
-    ("map-plant", "Цех свинцово-цинкового комбината (вымышленный объект)", "enterprise", "г. Усть-Каменогорск",
-     "49.985000", "82.560000", "Вымышленный объект: цех из документов о комбинате.",
-     ["d1-1-1-1", "d1-2-1-1"]),
-    ("map-mine", "Рудник (вымышленный объект)", "enterprise", "г. Риддер",
-     "50.350000", "83.500000", "Вымышленный объект. Реальный рудник не обозначается.", []),
-    ("map-monument", "Памятный знак (вымышленный объект)", "heritage", "г. Семей",
-     "50.411100", "80.227500", "Вымышленный объект наследия. Реального памятника не обозначает.", []),
-    ("map-site", "Место исторического события (вымышленное)", "heritage", "г. Зыряновск",
-     "49.741000", "84.266000", "Вымышленное место.", []),
-]  # fmt: skip
 
 PEOPLE_MARKERS = ("рождения",)
 
@@ -57,7 +41,7 @@ def seed_history_map(session: Session, report: Report, refresh: bool, *, demo: b
                 event.lat, event.lng = Decimal(lat), Decimal(lng)
     if not demo:
         return
-    for slug, title, theme, place, lat, lng, description, keys in DEMO_OBJECTS:
+    for slug, title, theme, place, lat, lng, description, files, article in MAP_OBJECTS:
         event = upsert(
             session, report, HistoricalEvent, {"slug": slug},
             {
@@ -67,12 +51,16 @@ def seed_history_map(session: Session, report: Report, refresh: bool, *, demo: b
                 "place": i18n(ru=place),
                 "lat": Decimal(lat),
                 "lng": Decimal(lng),
-                "sources": [{"title": "Вымышленные данные"}],
-                "is_demo": True,
+                "sources": [
+                    {"title": "Изображения и их описания: Wikimedia Commons (см. привязанные документы)"},
+                    {"title": f"Координаты (приблизительно): Википедия, статья «{article.replace('_', ' ')}»",
+                     "url": MAP_WIKI + article},
+                ],
+                "is_demo": False,
                 "workflow_status": WorkflowStatus.PUBLISHED,
                 "translation_status": translation_status(ru=title),
             },
             refresh,
         )  # fmt: skip
         if not event.documents:
-            event.documents = [demo_document(session, key) for key in keys]
+            event.documents = [open_document(session, file) for file in files]

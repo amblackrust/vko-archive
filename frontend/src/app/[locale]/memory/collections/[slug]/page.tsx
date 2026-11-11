@@ -1,68 +1,94 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DocumentGallery, DocumentList } from "@/components/memory/document-views";
-import { themeLabel } from "@/components/memory/theme-label";
-import { EditorialNote } from "@/components/memory/source-block";
+import { DocumentGallery, DocumentRows } from "@/components/memory/documents";
+import { themeLabel } from "@/components/memory/labels";
 import { DemoBadge } from "@/components/ui/demo-badge";
+import { DemoTag } from "@/components/ui/demo-tag";
+import { FactList } from "@/components/ui/facts";
+import { LinkList } from "@/components/ui/link-list";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/ui/page-header";
+import { UnavailableState } from "@/components/ui/state-view";
+import { TabsNav } from "@/components/ui/tabs-nav";
+import { attempt, fetchCollection } from "@/lib/api/memory";
 import { Link } from "@/lib/i18n/navigation";
-import { fetchCollection } from "@/lib/api/memory";
-import { cn } from "@/lib/utils";
 import { localizedAlternates } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-
-type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<{ view?: string }> };
+type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<{ view?: string | string[] }> };
 
 export async function generateMetadata({ params }: Props) {
   const { locale, slug } = await params;
-  const collection = await fetchCollection(slug, locale);
-  return { title: collection?.title, alternates: localizedAlternates(locale, `/memory/collections/${slug}`) };
+  const collection = await attempt(fetchCollection(slug, locale));
+  return { title: collection?.title, description: collection?.description || undefined, alternates: localizedAlternates(locale, `/memory/collections/${slug}`) };
 }
 
 export default async function CollectionPage({ params, searchParams }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const { view } = await searchParams;
-  const collection = await fetchCollection(slug, locale);
-  if (!collection) notFound();
+  const collection = await attempt(fetchCollection(slug, locale));
+  if (collection === undefined) return <UnavailableState />;
+  if (collection === null) notFound();
   const t = await getTranslations("memory");
-  const gallery = view === "gallery";
-  const tab = (active: boolean) =>
-    cn("inline-flex min-h-9 items-center rounded-md border px-3 text-sm", active ? "border-primary bg-primary text-primary-foreground" : "bg-surface hover:bg-surface-muted");
+  const gallery = (await searchParams).view === "gallery";
+  const base = `/memory/collections/${collection.slug}`;
+  // Происхождение материалов коллекции — фонды, в которых хранятся её документы.
+  const funds = [...new Map(collection.documents.flatMap((doc) => (doc.fund ? [[doc.fund.id, doc.fund] as const] : []))).values()];
+
   return (
     <>
-      <Breadcrumbs items={[{ label: t("breadcrumb"), href: "/memory" }, { label: collection.title }]} />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold" lang={collection.title_lang}>
-            {collection.title}
-            {collection.translation_missing && <DemoBadge kind="noTranslation" className="ml-2 align-middle" />}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {[collection.theme && themeLabel(t, collection.theme), collection.period].filter(Boolean).join(" · ")}
-          </p>
-          {collection.description && <p className="max-w-3xl">{collection.description}</p>}
-          <div className="max-w-3xl"><EditorialNote /></div>
-        </header>
+      <PageHeader
+        crumbs={[{ label: t("breadcrumb"), href: "/memory" }, { label: t("collections.title"), href: "/memory#collections" }, { label: collection.title }]}
+        title={collection.title}
+        titleLang={collection.title_lang}
+        lead={collection.description && <p lang={collection.title_lang}>{collection.description}</p>}
+        meta={(collection.is_demo || collection.translation_missing) && (
+          <>
+            {collection.is_demo && <DemoTag />}
+            {collection.translation_missing && <DemoBadge kind="noTranslation" />}
+          </>
+        )}
+        aside={
+          <FactList
+            items={[
+              { label: t("collection.theme"), value: collection.theme && themeLabel(t, "themes", collection.theme) },
+              { label: t("collection.period"), value: collection.period },
+              { label: t("collection.size"), value: t("collections.items", { count: collection.documents.length }) },
+            ]}
+          />
+        }
+      >
+        <Notice className="max-w-3xl">{t("collection.editorial")}</Notice>
+      </PageHeader>
 
-        <section aria-labelledby="docs-title" className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 id="docs-title" className="text-xl font-semibold">{t("collection.documents")}</h2>
-            <div role="group" aria-label={t("collection.view")} className="flex gap-2">
-              <Link href={`/memory/collections/${slug}`} aria-current={!gallery ? "true" : undefined} className={tab(!gallery)}>{t("collection.list")}</Link>
-              <Link href={`/memory/collections/${slug}?view=gallery`} aria-current={gallery ? "true" : undefined} className={tab(gallery)}>{t("collection.gallery")}</Link>
-            </div>
-          </div>
+      <div className="container-page space-y-10 py-6 pb-16">
+        <section aria-labelledby="documents" className="space-y-4">
+          <h2 id="documents" className="text-2xl">{t("collection.documents")}</h2>
           {collection.documents.length === 0 ? (
-            <p className="rounded-lg border p-4">{t("collection.none")}</p>
-          ) : gallery ? (
-            <DocumentGallery items={collection.documents} />
+            <p className="card p-6 text-muted-foreground">
+              {t("collection.none")} <Link href="/catalog" className="text-link">{t("collection.toCatalog")}</Link>
+            </p>
           ) : (
-            <DocumentList items={collection.documents} />
+            <>
+              <TabsNav
+                label={t("collection.view")}
+                active={gallery ? "gallery" : "list"}
+                items={[
+                  { id: "list", href: `${base}#documents`, label: t("collection.list") },
+                  { id: "gallery", href: `${base}?view=gallery#documents`, label: t("collection.gallery") },
+                ]}
+              />
+              {gallery ? <DocumentGallery items={collection.documents} /> : <DocumentRows items={collection.documents} />}
+            </>
           )}
         </section>
-        <Link href="/memory" className="inline-block text-primary hover:underline">← {t("collection.back")}</Link>
+
+        {funds.length > 0 && (
+          <section aria-labelledby="collection-sources" className="max-w-3xl space-y-4">
+            <h2 id="collection-sources" className="text-2xl">{t("collection.sources")}</h2>
+            <p className="text-muted-foreground">{t("collection.sourcesText")}</p>
+            <LinkList items={funds.map((fund) => ({ href: fund.href, label: t("collection.fund", { number: fund.number, title: fund.title }) }))} />
+          </section>
+        )}
       </div>
     </>
   );

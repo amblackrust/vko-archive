@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Leaflet работает только в браузере: без SSR.
 const BranchMap = dynamic(() => import("./branch-map"), {
   ssr: false,
-  loading: () => <Skeleton className="h-full w-full rounded-lg" />,
+  loading: () => <Skeleton className="h-full w-full rounded-none" />,
 });
 
 export { BranchMap };

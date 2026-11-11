@@ -4,54 +4,142 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design tokens. Направление: «цифровой музей» + архивная эстетика —
- * тёплая бумага, чернильный текст, глубокий синий и охра как акцент.
- * Пары фон/текст проверены на контраст WCAG AA (>= 4.5:1 для текста).
+ * Дизайн-система: современный государственный портал.
+ * Светло-серый холст, белые скруглённые карточки с мягкой тенью, индиго-синий акцент и градиентные
+ * баннеры-карточки; крупные фотографии. Пары фон/текст проверены на контраст WCAG AA (>= 4.5:1 для текста).
  */
 :root {
-  --background: #f7f4ee;
-  --foreground: #1d2433;
+  --background: #f2f4f9;
+  --foreground: #121a2b;
   --surface: #ffffff;
-  --surface-muted: #efeae0;
-  --border: #d8d1c2;
-  --muted-foreground: #565d6b;
-  --primary: #1f3a5f;
+  --surface-muted: #eef1f8;
+  --border: #e1e6f0;
+  --border-strong: #8a94a8;
+  --muted-foreground: #5a6478;
+  --primary: #3247d3;
+  --primary-hover: #2536b0;
   --primary-foreground: #ffffff;
-  --accent: #7a4f0d;
-  --accent-soft: #f1e3c6;
-  --accent-soft-foreground: #5c3b05;
-  --destructive: #a31f2b;
+  --primary-soft: #e8ecff;
+  --brand: #2c40cc;
+  --brand-2: #5a6df2;
+  --brand-foreground: #ffffff;
+  --brand-muted: #dbe1ff;
+  --brand-line: rgb(255 255 255 / 0.22);
+  --sky: #0090b0;
+  --gold: #ffd166;
+  --accent: #8a5a00;
+  --accent-soft: #fff4d6;
+  --accent-soft-foreground: #5a3d00;
+  --success: #12703f;
+  --success-soft: #e2f6ea;
+  --destructive: #b3261e;
   --destructive-foreground: #ffffff;
-  --warning-soft: #fbe9c0;
-  --warning-soft-foreground: #5c3b05;
-  --ring: #1f3a5f;
+  --destructive-soft: #fdeceb;
+  --warning-soft: #fff4d6;
+  --warning-soft-foreground: #5a3d00;
+  --ring: #3247d3;
+  --shadow-card: 0 1px 2px rgb(18 26 43 / 0.04), 0 6px 20px rgb(18 26 43 / 0.06);
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.875rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
 
-  --space-section: 4rem;
-  --container-max: 76rem;
+  --container-max: 80rem;
 }
 
 .dark {
-  --background: #12151c;
-  --foreground: #ebe7df;
-  --surface: #1a1f29;
-  --surface-muted: #202633;
-  --border: #323a4a;
-  --muted-foreground: #a6adbb;
-  --primary: #8fb4e3;
-  --primary-foreground: #0f1a2b;
-  --accent: #e0b866;
-  --accent-soft: #3a2f17;
-  --accent-soft-foreground: #f0d9a3;
-  --destructive: #ff8a93;
-  --destructive-foreground: #2a0a0d;
-  --warning-soft: #3a2f17;
-  --warning-soft-foreground: #f0d9a3;
-  --ring: #8fb4e3;
+  /* Тёмная тема — глубокий синий, не чёрный: включается только по выбору посетителя. */
+  --background: #152040;
+  --foreground: #f1f4fb;
+  --surface: #1d2a52;
+  --surface-muted: #263463;
+  --border: #33437a;
+  --border-strong: #7c8bbd;
+  --muted-foreground: #b7c1df;
+  --primary: #a5b3ff;
+  --primary-hover: #c5ceff;
+  --primary-foreground: #121a38;
+  --primary-soft: #2b3a78;
+  --brand: #2a3ebe;
+  --brand-2: #4f62e3;
+  --brand-foreground: #ffffff;
+  --brand-muted: #d9dfff;
+  --brand-line: rgb(255 255 255 / 0.22);
+  --sky: #5ccfe6;
+  --gold: #ffd166;
+  --accent: #f3cb78;
+  --accent-soft: #3d3520;
+  --accent-soft-foreground: #f8e2ad;
+  --success: #7ddcab;
+  --success-soft: #173d30;
+  --destructive: #ffa099;
+  --destructive-foreground: #2a0a08;
+  --destructive-soft: #4a2230;
+  --warning-soft: #3d3520;
+  --warning-soft-foreground: #f8e2ad;
+  --ring: #a5b3ff;
+  --shadow-card: 0 1px 2px rgb(6 12 34 / 0.28), 0 6px 20px rgb(6 12 34 / 0.22);
 }
+
+/* Версия для слабовидящих: контраст, кегль, межбуквенный интервал, изображения. */
+html[data-contrast="high"] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --surface: #ffffff;
+  --surface-muted: #ffffff;
+  --border: #000000;
+  --border-strong: #000000;
+  --muted-foreground: #000000;
+  --primary: #00237a;
+  --primary-hover: #000000;
+  --primary-foreground: #ffffff;
+  --brand: #000000;
+  --brand-2: #000000;
+  --brand-muted: #ffffff;
+  --brand-line: #ffffff;
+  --primary-soft: #ffffff;
+  --shadow-card: 0 0 0 1px #000000;
+  --accent: #000000;
+  --accent-soft: #ffffff;
+  --accent-soft-foreground: #000000;
+  --success: #000000;
+  --success-soft: #ffffff;
+  --destructive: #7a0000;
+  --destructive-soft: #ffffff;
+  --warning-soft: #ffffff;
+  --warning-soft-foreground: #000000;
+  --ring: #000000;
+}
+html.dark[data-contrast="high"] {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #000000;
+  --surface-muted: #000000;
+  --border: #ffffff;
+  --border-strong: #ffffff;
+  --muted-foreground: #ffffff;
+  --primary: #ffe14d;
+  --primary-hover: #ffffff;
+  --primary-foreground: #000000;
+  --primary-soft: #000000;
+  --brand: #000000;
+  --brand-2: #000000;
+  --shadow-card: 0 0 0 1px #ffffff;
+  --accent: #ffe14d;
+  --accent-soft: #000000;
+  --accent-soft-foreground: #ffffff;
+  --success: #ffffff;
+  --success-soft: #000000;
+  --destructive: #ffb3ad;
+  --destructive-soft: #000000;
+  --warning-soft: #000000;
+  --warning-soft-foreground: #ffffff;
+  --ring: #ffe14d;
+}
+html[data-font="lg"] { font-size: 112.5%; }
+html[data-font="xl"] { font-size: 131.25%; }
+html[data-spacing="wide"] body { letter-spacing: 0.04em; word-spacing: 0.12em; line-height: 1.8; }
+html[data-images="off"] :is(img, video, picture, .leaflet-container, [data-decorative]) { visibility: hidden; }
 
 @theme inline {
   --color-background: var(--background);
@@ -59,14 +147,27 @@
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-line: var(--brand-line);
+  --color-sky: var(--sky);
+  --color-gold: var(--gold);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-accent-soft-foreground: var(--accent-soft-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
   --color-warning-soft: var(--warning-soft);
   --color-warning-soft-foreground: var(--warning-soft-foreground);
   --color-ring: var(--ring);
@@ -75,8 +176,12 @@
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
 
+  --shadow-card: var(--shadow-card);
+
+  /* Golos Text — интерфейс и заголовки; Literata — длинное чтение и архивные тексты. */
   --font-sans: var(--font-sans-face), system-ui, sans-serif;
-  --font-serif: var(--font-serif-face), Georgia, serif;
+  --font-display: var(--font-sans-face), system-ui, sans-serif;
+  --font-reading: var(--font-reading-face), Georgia, serif;
 }
 
 @layer base {
@@ -84,24 +189,38 @@
     border-color: var(--border);
   }
   html {
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 7rem;
   }
   body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    line-height: 1.6;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
   h3 {
-    font-family: var(--font-serif);
-    line-height: 1.2;
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+  }
+  h1 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -117,6 +236,101 @@
       padding-inline: 1.5rem;
     }
   }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+  /*
+   * Градиентный баннер (первый экран, шапки разделов, подвал): токены переназначаются,
+   * поэтому кнопки, ссылки и поля внутри него не требуют отдельных вариантов.
+   */
+  .on-brand {
+    --background: var(--brand);
+    --foreground: var(--brand-foreground);
+    --surface: rgb(255 255 255 / 0.12);
+    --surface-muted: rgb(255 255 255 / 0.18);
+    --border: var(--brand-line);
+    --border-strong: rgb(255 255 255 / 0.6);
+    --muted-foreground: var(--brand-muted);
+    --primary: #ffffff;
+    --primary-hover: #e8ecff;
+    --primary-foreground: var(--brand);
+    --primary-soft: rgb(255 255 255 / 0.16);
+    --ring: #ffffff;
+    --shadow-card: none;
+    background: linear-gradient(115deg, var(--brand) 0%, var(--brand-2) 100%);
+    color: var(--brand-foreground);
+  }
+  /* Белая карточка на сером холсте: основной контейнер содержимого. */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+  /*
+   * Движение: один появляющийся момент на первом экране (rise со ступенчатой задержкой) и отклик на действия
+   * (lift у карточек-ссылок). При prefers-reduced-motion всё отключается общим правилом внизу файла.
+   */
+  .rise {
+    animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .rise-1 { animation-delay: 70ms; }
+  .rise-2 { animation-delay: 140ms; }
+  .rise-3 { animation-delay: 220ms; }
+  .lift {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgb(50 71 211 / 0.16);
+  }
+  /* «Помощник печатает»: три точки по очереди. */
+  .typing-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 9999px;
+    background: currentColor;
+    animation: typing 1.1s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+  /* Архивный шифр: табличные цифры, длинный шифр переносится, а не ломает строку. */
+  .cipher {
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+    letter-spacing: 0.01em;
+  }
+  /* Длинное чтение: исторические справки, описания, подписи экспонатов. */
+  .reading {
+    font-family: var(--font-reading);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .reading :where(p + p) {
+    margin-top: 1em;
+  }
+  /* Ссылка в тексте: подчёркнута всегда, чтобы не полагаться только на цвет. */
+  .text-link {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .text-link:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* Только сдвиг, без прозрачности: если анимация не запустилась (вкладка в фоне), содержимое всё равно видно. */
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+@keyframes rise {
+  from {
+    transform: translateY(18px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -125,5 +339,17 @@
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Печать: скрываются шапка и подвал сайта, навигация и кнопки (data-noprint); заголовок страницы остаётся. */
+@media print {
+  nav,
+  [data-noprint] {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
   }
 }

@@ -15,7 +15,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(prog="python -m seed")
     parser.add_argument("--refresh", action="store_true", help="overwrite existing seeded rows")
     parser.add_argument("--info-only", action="store_true", help="only content from info/")
-    parser.add_argument("--demo-only", action="store_true", help="only the demo catalog")
+    parser.add_argument("--demo-only", action="store_true", help="only the demo catalog and the open materials")
     args = parser.parse_args()
 
     with get_sessionmaker()() as session:

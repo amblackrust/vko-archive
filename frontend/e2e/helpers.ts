@@ -64,15 +64,16 @@ export async function loginInBrowser(page: Page, email: string) {
   await page.getByLabel(/Электронная почта/).fill(email);
   await page.getByLabel(/Пароль/).fill(DEMO_PASSWORD);
   await page.getByRole("button", { name: "Войти" }).click();
-  await expect(page.getByRole("button", { name: "Выйти" })).toBeVisible({ timeout: 15_000 });
+  // Вошёл — в шапке появляется меню учётной записи (выход внутри него).
+  await expect(page.getByRole("button", { name: "Учётная запись" })).toBeVisible({ timeout: 15_000 });
 }
 
 /** Шифры демо-документов; UUID при каждом seed новые, поэтому id всегда ищем по шифру. */
 export const DEMO_CODES = {
-  order31: "ДЕМО Ф.Д-1 Оп.1 Д.1 №1", // Приказ № 31 о пуске цеха обогащения, открыт
-  restrictedProtocol: "ДЕМО Ф.Д-1 Оп.1 Д.3 №1", // Протокол № 5, file_access=restricted
-  photoMounting: "ДЕМО Ф.Д-1 Оп.2 Д.1 №1", // Фотография: монтаж оборудования в цехе
-  photoFirstShift: "ДЕМО Ф.Д-1 Оп.2 Д.1 №3", // Фотография: первая смена цеха
+  order31: "Ф.Д-1 Оп.1 Д.1 №1", // Приказ № 31 о пуске цеха обогащения, открыт
+  restrictedProtocol: "Ф.Д-1 Оп.1 Д.3 №1", // Протокол № 5, file_access=restricted
+  photoMounting: "Ф.Д-1 Оп.2 Д.1 №1", // Фотография: монтаж оборудования в цехе
+  photoFirstShift: "Ф.Д-1 Оп.2 Д.1 №3", // Фотография: первая смена цеха
 } as const;
 
 const documentIds = new Map<string, string>();
@@ -83,7 +84,7 @@ export async function documentId(code: string): Promise<string> {
   const api = await publicApi();
   let found: { id: string; archive_code: string } | undefined;
   for (let page = 1; page <= 10 && !found; page++) {
-    const list = await (await api.get(`/api/catalog/documents?page=${page}`)).json();
+    const list = await (await api.get(`/api/catalog/documents?sort=code&per_page=50&page=${page}`)).json();
     found = (list.items as { id: string; archive_code: string }[]).find((d) => d.archive_code === code);
     if (page >= list.pages) break;
   }

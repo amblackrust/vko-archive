@@ -2,7 +2,6 @@ import { Compass, FileX2, Lock, SearchX, TriangleAlert, type LucideIcon } from "
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface StateViewProps {
@@ -101,21 +100,5 @@ export function ErrorState({ onRetry, digest }: ErrorStateProps) {
       <HomeButton />
       {digest && <p className="w-full text-xs text-muted-foreground">{t("code", { digest })}</p>}
     </StateView>
-  );
-}
-
-/** Skeleton страницы: заголовок + карточки. Для loading.tsx. */
-export function PageSkeleton() {
-  const t = useTranslations("states.loading");
-  return (
-    <div role="status" aria-label={t("label")} className="container-page py-10">
-      <Skeleton className="h-8 w-1/3" />
-      <Skeleton className="mt-4 h-4 w-2/3" />
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }, (_, i) => (
-          <Skeleton key={i} className="h-40" />
-        ))}
-      </div>
-    </div>
   );
 }

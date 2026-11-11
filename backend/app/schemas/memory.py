@@ -7,7 +7,6 @@ from app.schemas.catalog import DocumentItem
 
 class MemoryDocument(DocumentItem):
     note: str = ""  # editorial note of the collection entry
-    preview_url: str | None = None  # /api/files/{id}/preview, only when the file is open to everyone
 
 
 class SourceRef(BaseModel):

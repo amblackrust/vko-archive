@@ -4,9 +4,15 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 const isDev = process.env.NODE_ENV !== "production";
-/** Backend API: файлы, превью и запросы браузера (админка, кабинет, ИИ). */
-const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000");
-const apiOrigin = apiUrl.origin;
+/**
+ * Backend API: файлы, превью и запросы браузера (админка, кабинет, ИИ).
+ * Режим одного адреса (показ через туннель, обратный прокси): NEXT_PUBLIC_API_URL пуст, а API_PROXY_TARGET
+ * указывает на backend — тогда /api проксирует сам Next.js, и сайту с API хватает одного публичного адреса.
+ */
+const proxyTarget = process.env.API_PROXY_TARGET;
+const publicApi = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const apiUrl = publicApi ? new URL(publicApi) : null;
+const apiOrigin = apiUrl?.origin ?? "";
 const siteIsHttps = (process.env.NEXT_PUBLIC_SITE_URL ?? "").startsWith("https://");
 
 /**
@@ -51,14 +57,12 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     // Оптимизатор next/image берёт только файлы и превью из API (права проверяет сам API).
-    remotePatterns: [
-      {
-        protocol: apiUrl.protocol.replace(":", "") as "http" | "https",
-        hostname: apiUrl.hostname,
-        port: apiUrl.port,
-        pathname: "/api/files/**",
-      },
-    ],
+    remotePatterns: apiUrl
+      ? [{ protocol: apiUrl.protocol.replace(":", "") as "http" | "https", hostname: apiUrl.hostname, port: apiUrl.port, pathname: "/api/files/**" }]
+      : [],
+  },
+  async rewrites() {
+    return proxyTarget ? [{ source: "/api/:path*", destination: `${proxyTarget}/api/:path*` }] : [];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

@@ -1,4 +1,4 @@
-import { API_URL } from "./client";
+import { PUBLIC_API_URL } from "./client";
 import type { DocumentItem } from "./catalog";
 
 /** Контракты карточки документа (backend/app/schemas/catalog.py: DocumentDetail). */
@@ -42,27 +42,5 @@ export interface DocumentDetail extends DocumentItem {
 
 /** Абсолютный адрес файла для браузера: файлы отдаёт только backend (/api/files/{id}). */
 export function fileUrl(path: string): string {
-  return `${API_URL}${path}`;
-}
-
-/** Результат подсказок для пустой выдачи: похожие документы из /api/search. */
-export interface SimilarDocument {
-  id: string;
-  title: string;
-  href: string;
-}
-
-export async function similarDocuments(query: string, lang: string): Promise<SimilarDocument[]> {
-  if (!query.trim()) return [];
-  const params = new URLSearchParams({ q: query, lang, per_group: "3", log: "false" });
-  params.append("types", "document");
-  try {
-    const response = await fetch(`${API_URL}/api/search?${params}`, { cache: "no-store" });
-    if (!response.ok) return [];
-    const body = (await response.json()) as { groups: { items: SimilarDocument[] }[] };
-    return body.groups.flatMap((group) => group.items).slice(0, 3);
-  } catch {
-    // Подсказки необязательны: без поиска пустая выдача всё равно показывается.
-    return [];
-  }
+  return `${PUBLIC_API_URL}${path}`;
 }

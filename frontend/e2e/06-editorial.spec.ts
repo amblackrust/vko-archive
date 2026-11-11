@@ -34,7 +34,7 @@ test.describe("Сценарий 6. Редактор -> согласование 
       const listed = await (await anon.get("/api/news?page_size=100")).json();
       expect(JSON.stringify(listed)).not.toContain(slug);
       await page.goto(`/ru/news/${slug}`);
-      await expect(page.getByText("Страница не найдена")).toBeVisible();
+      await expect(page.getByText("Страница не существует")).toBeVisible();
     };
     await hidden();
 
@@ -72,8 +72,18 @@ test.describe("Сценарий 6. Редактор -> согласование 
   test("редактор входит в админку через форму и видит разделы своей роли", async ({ page }) => {
     await loginInBrowser(page, ACCOUNTS.editor);
     await expect(page.getByText("Только для сотрудников архива")).toHaveCount(0);
-    // Редактору недоступны журнал действий и матрица ролей.
+    // Обзор открыт, разделы роли видны; журнал действий и матрица ролей редактору недоступны.
+    await expect(page.getByRole("heading", { level: 1, name: "Обзор" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Контент сайта" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Журнал действий" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Роли и права" })).toHaveCount(0);
+    // Язык интерфейса — выпадающим списком, выход — в меню учётной записи.
+    await page.getByRole("button", { name: "Язык интерфейса" }).click();
+    await expect(page.getByRole("link", { name: /Қазақша/ })).toBeVisible();
+    await page.keyboard.press("Escape");
+    await page.getByRole("button", { name: "Учётная запись" }).click();
+    // Сам выход не нажимаем: он завершает все сессии сотрудника, а ими пользуются соседние сценарии.
+    await expect(page.getByRole("button", { name: "Выйти" })).toBeVisible();
   });
 });
 

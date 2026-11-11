@@ -50,7 +50,7 @@ class DemoFund:
     inventories: list[DemoInventory] = field(default_factory=list)
 
 
-# (slug, ru, kk, en)
+# Topics (slug, ru, kk, en). Not fictitious: the last three are used only by the open materials (seed/open_data.py).
 TAGS = [
     ("ust-kamenogorsk", "Усть-Каменогорск", "Өскемен", "Ust-Kamenogorsk"),
     ("lead-zinc", "Свинцово-цинковый комбинат", "Қорғасын-мырыш комбинаты", "Lead-zinc plant"),
@@ -59,6 +59,9 @@ TAGS = [
     ("ridder-leninogorsk", "Риддер и Лениногорск", "Риддер және Лениногорск", "Ridder and Leninogorsk"),
     ("culture", "Культура", "Мәдениет", "Culture"),
     ("personal-history", "Личные истории", "Жеке тарихтар", "Personal stories"),
+    ("industry", "Промышленность", "Өнеркәсіп", "Industry"),
+    ("nature", "Природа", "Табиғат", "Nature"),
+    ("people", "Персоналии", "Тұлғалар", "People"),
 ]
 
 NOTE_DEMO = "Документ вымышленный."

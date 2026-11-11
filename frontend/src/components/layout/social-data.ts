@@ -1,7 +1,7 @@
 import type { SiteSettings } from "@/lib/api/site-settings";
 
 // Ссылки из info/Контакты.docx: запасные значения, если настройки сайта недоступны.
-export const socialUrls = {
+const socialUrls = {
   instagram: "https://www.instagram.com/arhiv_vko/",
   facebook: "https://www.facebook.com/vkoarhiv",
 } as const;

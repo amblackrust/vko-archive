@@ -1,31 +1,71 @@
 {
-  "title": "Great Memory Archive",
-  "breadcrumb": "Memory archive",
-  "intro": "A digital space for the historical heritage of East Kazakhstan Region: thematic collections of archival documents, pages of historical figures, a chronology and a historical map.",
+  "title": "Great Archive of Memory",
+  "breadcrumb": "Archive of Memory",
+  "intro": "A digital space for the historical heritage of East Kazakhstan Region: thematic collections of archival documents, biographies, a timeline of events and a historical map.",
+  "ways": {
+    "label": "Sections of the Archive of Memory",
+    "collections": {
+      "title": "Collections",
+      "text": "Documents and photographs grouped by theme"
+    },
+    "people": {
+      "title": "People",
+      "text": "Biographical notes with their sources"
+    },
+    "timeline": {
+      "title": "Timeline",
+      "text": "The region's history by decade and year"
+    },
+    "map": {
+      "title": "Historical map",
+      "text": "Historic sites and places of events"
+    },
+    "exhibitions": {
+      "title": "Online exhibitions",
+      "text": "Exhibits with captions and sources"
+    }
+  },
+  "units": {
+    "collections": "{count, plural, one {collection} other {collections}}",
+    "people": "{count, plural, one {person} other {people}}",
+    "events": "{count, plural, one {event} other {events}}",
+    "places": "{count, plural, one {place} other {places}}",
+    "exhibitions": "{count, plural, one {exhibition} other {exhibitions}}"
+  },
   "directions": {
     "title": "Thematic areas",
-    "hint": "Areas that already have collections open their list.",
-    "d0": "History of East Kazakhstan Region",
-    "d1": "History of Ust-Kamenogorsk and other settlements",
-    "d2": "History of industrial enterprises",
-    "d3": "History of well-known people of the region",
-    "d4": "History of education and science",
-    "d5": "Culture and art",
-    "d6": "Military history",
-    "d7": "History of the Great Patriotic War",
-    "d8": "Family and generations history",
-    "d9": "History of public organisations",
-    "d10": "Development of the region in different historical periods"
+    "text": "Eleven areas in which the archive gathers materials for this section. Areas that already have materials open them; the rest are in preparation.",
+    "pending": "Materials in preparation",
+    "region": "History of East Kazakhstan Region",
+    "ust-kamenogorsk": "History of Ust-Kamenogorsk and other settlements",
+    "industry": "History of industrial enterprises",
+    "people": "History of notable people of the region",
+    "education": "History of education and science",
+    "culture": "Culture and art",
+    "military": "Military history",
+    "war": "History of the Great Patriotic War",
+    "family": "History of families and generations",
+    "organisations": "History of public organisations",
+    "periods": "Development of the region in different historical periods"
   },
   "themes": {
-    "ust-kamenogorsk": "Ust-Kamenogorsk",
-    "lead-zinc": "Industry: lead-zinc plant",
-    "education": "Education and science"
+    "region": "History of the region",
+    "ust-kamenogorsk": "Ust-Kamenogorsk and settlements",
+    "industry": "Industry",
+    "lead-zinc": "Lead and zinc plant",
+    "people": "People",
+    "education": "Education and science",
+    "culture": "Culture and art",
+    "military": "Military history",
+    "war": "Great Patriotic War",
+    "family": "Families and generations",
+    "organisations": "Public organisations",
+    "periods": "Different historical periods"
   },
   "filters": {
-    "label": "Search collections",
-    "q": "Topic, word or title",
-    "theme": "Topic",
+    "label": "Search collections and people",
+    "q": "Word in a title, description or name",
+    "theme": "Collection theme",
     "period": "Period",
     "all": "All",
     "submit": "Search",
@@ -33,54 +73,67 @@
   },
   "collections": {
     "title": "Thematic collections",
-    "count": "Collections found: {count}",
-    "items": "Items: {count}",
-    "empty": "No collections match your query.",
-    "open": "Open collection"
+    "text": "Selections of archival documents and photographs. Each document opens in the catalog with its archive code and fond details.",
+    "found": "Collections found: {count}",
+    "items": "{count, plural, one {# document} other {# documents}}",
+    "empty": "No collections have been published yet",
+    "emptyText": "The archive is preparing the first selections. You can already search documents in the electronic catalog.",
+    "toCatalog": "Open the catalog",
+    "noneFound": "No collections match these conditions",
+    "noneFoundText": "Change the word or choose another theme and period.",
+    "showAll": "Show all collections"
   },
-  "persons": {
+  "people": {
     "title": "Historical figures",
-    "search": "Search figures",
-    "count": "Figures: {count}",
-    "empty": "No figures found.",
-    "years": "Years of life"
+    "text": "Biographical notes on people connected with the region's history. Each note names the source of its information.",
+    "empty": "No biographical notes have been published yet.",
+    "noneFound": "No people found for “{q}”."
   },
-  "more": {
-    "title": "More from this section",
-    "timeline": "Interactive timeline",
-    "timelineText": "Regional events on a time scale: from decades to years.",
-    "map": "Historical map of the region",
-    "mapText": "Historical sites and places of events. This is not the map of archive branches.",
-    "soon": "Memoirs and historical testimonies, and a separate photo gallery, are published as the archive processes the materials; they are not published yet."
+  "exhibitions": {
+    "title": "Online exhibitions",
+    "text": "Archival documents and photographs arranged into a story: exhibits with captions and sources.",
+    "all": "All exhibitions"
   },
   "collection": {
-    "view": "View",
+    "theme": "Theme",
+    "period": "Period",
+    "size": "Contents",
+    "editorial": "The collection description and the notes on documents are editorial texts. Details of the documents themselves — code, date, author, fond — are given with each document and on its catalog card.",
+    "documents": "Documents in the collection",
+    "none": "This collection has no published documents yet.",
+    "toCatalog": "Go to the catalog",
+    "view": "Document list view",
     "list": "List",
     "gallery": "Gallery",
-    "documents": "Documents of the collection",
-    "none": "This collection has no public documents yet.",
-    "note": "Editor's note",
-    "toCatalog": "Open in catalog",
-    "noPreview": "No open digital copy",
-    "back": "All collections",
-    "period": "Period",
-    "theme": "Topic"
+    "sources": "Sources",
+    "sourcesText": "The documents of this collection are described in the catalog as part of the following fonds. Each link opens the fond description.",
+    "fund": "Fond {number}. {title}"
   },
   "person": {
+    "bio": "Biographical note",
+    "editorial": "This note is an editorial text compiled from the sources named on this page.",
+    "noBio": "The biographical note is in preparation.",
     "documents": "Archival documents",
-    "noDocuments": "No archival documents are linked to this person yet: the information is given as stated in the source and is not confirmed by archive documents.",
-    "back": "All figures",
-    "notFoundTitle": "Person not found"
+    "noDocuments": "No archival documents are linked to this page yet: the information follows the stated source and is not confirmed by archive documents.",
+    "search": "Search the archive for mentions",
+    "sources": "Sources of information",
+    "sourcesText": "The origin of the information is stated for every biographical note.",
+    "all": "All people"
   },
-  "editorial": {
-    "label": "Editorial text",
-    "note": "This summary was written by the editors. Facts with an archival source are shown separately: in the Sources block and among the documents."
+  "provenance": {
+    "noSource": "No source stated",
+    "unconfirmed": "Not confirmed by archive documents",
+    "unconfirmedHint": "The information follows the stated source. Archive documents that confirm it have not been linked to this entry yet.",
+    "editorialNote": "Editors' note"
   },
-  "sources": {
-    "title": "Sources",
-    "none": "No source specified."
+  "documents": {
+    "fund": "Fond {number}",
+    "noImage": "No image to view"
   },
-  "badge": {
-    "unverified": "Not confirmed by archive documents"
+  "event": {
+    "date": "Date",
+    "place": "Place",
+    "source": "Source",
+    "documents": "Documents and photographs"
   }
 }

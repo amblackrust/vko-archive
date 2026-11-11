@@ -88,6 +88,8 @@ export async function cabinetFetch<T = void>(path: string, init: { method?: stri
 
 /** Текущий посетитель или null, если не вошёл. Другие ошибки (сеть, 5xx) пробрасываются. */
 export async function fetchMe(): Promise<VisitorMe | null> {
+  // CSRF-cookie ставится при входе: без неё сессии нет, и запрос (с 401 в консоли браузера) не нужен.
+  if (!csrfToken()) return null;
   try {
     return await cabinetFetch<VisitorMe>("/me");
   } catch (error) {

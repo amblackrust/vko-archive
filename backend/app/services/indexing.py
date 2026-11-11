@@ -199,7 +199,15 @@ def _document_texts(session: Session, document: Document) -> list[IndexText]:
 
 
 def _fund_texts(session: Session, fund: Fund) -> list[IndexText]:
-    return _per_lang(fund.title, lambda lang: _join(fund.number, _t(fund.annotation, lang)))
+    # Former names are part of the text, so a fund is found by any name its organisation had.
+    # FTS reads «Р-103» as «р» and «-103»: the spaced form makes the bare number findable.
+    number = " ".join(dict.fromkeys([fund.number, fund.number.replace("-", " ")]))
+
+    def body(lang: str) -> str:
+        former = [n["name"] for n in fund.former_names if n["name"] != _t(fund.title, lang)]
+        return _join(number, *former, _t(fund.annotation, lang))
+
+    return _per_lang(fund.title, body)
 
 
 def _page_texts(session: Session, page: Page) -> list[IndexText]:

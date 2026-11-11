@@ -1,11 +1,7 @@
 {
   "title": "Catalog",
-  "branchesTitle": "Branches",
-  "exhibitionsTitle": "Exhibitions and exhibits",
   "levels": "Catalog levels",
   "breadcrumbs": "Catalog path",
-  "search": "Search by code or title",
-  "empty": "Nothing found",
   "kinds": {
     "fund": "Funds",
     "inventory": "Inventories",
@@ -13,38 +9,12 @@
     "document": "Documents"
   },
   "columns": {
-    "title": "Title",
-    "status": "Status",
-    "children": "Nested",
     "number": {
       "fund": "Fund number",
       "inventory": "Inventory number",
       "case": "Case number",
       "document": "Archive code"
     }
-  },
-  "status": {
-    "draft": "Draft",
-    "review": "In review",
-    "needs_changes": "Needs changes",
-    "approved": "Approved",
-    "published": "Published",
-    "archived": "Archived"
-  },
-  "actions": {
-    "submit": "Submit for review",
-    "return": "Return for changes",
-    "approve": "Approve",
-    "publish": "Publish",
-    "archive": "Archive",
-    "restore": "Restore to draft",
-    "rework": "Take back for editing"
-  },
-  "workflow": {
-    "title": "Approval",
-    "status": "Status",
-    "history": "Version history",
-    "comment": "Comment (required when returning)"
   },
   "create": {
     "fund": "New fund",
@@ -55,27 +25,6 @@
     "exhibition": "New exhibition",
     "exhibit": "New exhibit"
   },
-  "edit": {
-    "fund": "Fund",
-    "inventory": "Inventory",
-    "case": "Case",
-    "document": "Document",
-    "branch": "Branch",
-    "exhibition": "Exhibition",
-    "exhibit": "Exhibit"
-  },
-  "editItem": "Edit {name}",
-  "deleteItem": "Delete {name}",
-  "deleteTitle": "Delete object?",
-  "deleteDescription": "“{name}” will be deleted permanently. Only a draft or archived object without nested objects and files can be deleted.",
-  "delete": "Delete",
-  "deleted": "Object deleted.",
-  "formDescription": "Edit form. Publishing happens only through approval.",
-  "reload": "Reload",
-  "saved": "Saved.",
-  "filesAfterSave": "Files can be uploaded after the first save.",
-  "yes": "Yes",
-  "no": "No",
   "fields": {
     "number": "Number",
     "title": "Title",
@@ -95,7 +44,7 @@
     "doc_type": "Document type",
     "language": "Language",
     "authors": "Authors / organization",
-    "places": "Places (one per line)",
+    "places": "Places mentioned in the document",
     "summary": "Summary",
     "historical_note": "Historical note",
     "storage_location": "Storage location",
@@ -148,18 +97,13 @@
     "branch": "Branch staff can only pick their own branch. A document in the hierarchy takes its branch from the fund.",
     "slug": "Latin letters, digits and hyphens. A published object's address cannot change."
   },
-  "i18n": {
-    "languages": "Languages",
-    "filled": "filled",
-    "machine": "machine translation, needs review"
-  },
   "files": {
     "title": "Files",
     "upload": "Upload files",
-    "uploading": "Uploading…",
+    "uploading": "Uploading files: {done} of {total}…",
     "hint": "PDF, JPG/PNG/WebP/TIFF, audio and video. The type is checked by content. A new file stays closed (“Needs review”) until you set its access.",
     "pages": "{count} pp.",
-    "access": "File access",
+    "access": "Access to the file {name}",
     "accessOptions": {
       "needs_review": "Needs review",
       "open": "Open",
@@ -169,7 +113,13 @@
     "pick": "Select",
     "picked": "Selected",
     "delete": "Delete file {name}",
-    "empty": "No files."
+    "empty": "No files",
+    "size": "{kb} KB",
+    "accessSaved": "File access changed.",
+    "emptyHint": "Press “Upload files”.",
+    "deleteTitle": "Delete the file?",
+    "deleteText": "The file “{name}” will be deleted permanently.",
+    "deleteConfirm": "Delete"
   },
   "coords": {
     "title": "Coordinates",
@@ -181,24 +131,26 @@
   "link": {
     "document": "Link to a document",
     "fund": "Link to a fund",
-    "selected": "Selected: {id}…",
-    "none": "Not selected",
+    "none": "Not linked",
     "search": "Code or title",
-    "find": "Find",
-    "clear": "Clear",
-    "nothing": "Nothing found"
+    "clear": "Unlink",
+    "pick": "Link"
   },
   "exhibits": {
     "title": "Exhibits",
-    "description": "Reorder by dragging or with the buttons. Each exhibit is published through approval.",
+    "description": "Change the order by dragging or with the buttons. Each exhibit is published through approval.",
     "add": "Add exhibit",
     "manage": "Exhibits: {name}",
-    "up": "Move up",
-    "down": "Move down",
-    "edit": "Edit",
-    "delete": "Delete (press again to confirm)",
-    "confirmDelete": "Press the trash icon again to delete.",
-    "empty": "No exhibits yet."
+    "up": "Move up: {name}",
+    "down": "Move down: {name}",
+    "edit": "Edit: {name}",
+    "delete": "Delete: {name}",
+    "empty": "No exhibits yet.",
+    "emptyHint": "Press “Add exhibit”.",
+    "reordered": "Exhibit order saved.",
+    "deleteTitle": "Delete the exhibit?",
+    "deleteText": "The exhibit “{name}” will be deleted permanently.",
+    "deleteConfirm": "Delete"
   },
   "errors": {
     "version_conflict": "The object was changed by someone else. Reload the form; unsaved edits will be lost.",
@@ -227,10 +179,43 @@
     "comment_required": "A comment is required.",
     "invalid_transition": "This transition is not available now."
   },
-  "liveLocked": "This item is live: without the right to publish you may only restrict access. For other changes take it back for editing first.",
   "places": {
     "add": "Add a place",
     "row": "Place {number}, {lang}",
     "remove": "Remove place {number}"
+  },
+  "branches": {
+    "title": "Branches",
+    "lead": "Contacts, opening hours, coordinates and a photo of the building. Changes reach the site after approval.",
+    "leadScoped": "You see only your own branch. Changes reach the site after approval.",
+    "empty": "Create the first branch.",
+    "map": "Map",
+    "onMap": "On the map",
+    "offMap": "Hidden from the map"
+  },
+  "exhibitions": {
+    "title": "Exhibitions and exhibits",
+    "lead": "An exhibition consists of exhibits. The icon in a row opens the exhibit list, where you add and order them.",
+    "empty": "Create the first exhibition and add exhibits."
+  },
+  "lead": "A fund holds inventories, an inventory holds cases, a case holds documents. Click a title to open nested records; the pencil icon opens the card.",
+  "createInside": {
+    "inventory": "A new inventory is created inside a fund: open a fund on the “Funds” tab.",
+    "case": "A new case is created inside an inventory: open a fund, then an inventory.",
+    "document": "A new document is created inside a case: open a fund, an inventory and a case."
+  },
+  "emptyHint": {
+    "fund": "Create the first fund or load descriptions under “Import and export”.",
+    "inventory": "No inventories here yet.",
+    "case": "No cases here yet.",
+    "document": "No documents here yet."
+  },
+  "sections": {
+    "dates": "Dating",
+    "description": "Description",
+    "access": "Access and storage",
+    "contacts": "Contacts",
+    "about": "About the branch",
+    "map": "Map and order"
   }
 }

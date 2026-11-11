@@ -4,186 +4,153 @@ import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { ForbiddenState } from "@/components/ui/state-view";
 import { can } from "@/lib/api/admin";
-import { analyticsApi, type AiLang, type AiSummary, type QueryStat } from "@/lib/api/admin-ai";
+import { analyticsApi, type AiLang, type AiSummary, type AnalyticsReport, type QueryStat } from "@/lib/api/admin-ai";
+import { formatIsoDate } from "@/lib/dates";
 import { useMe } from "../admin-provider";
-import { Select } from "../form-field";
-import { Notice } from "../notice";
-import { useAiError } from "../ai-tools/use-ai-error";
-import { useLoad } from "../use-load";
+import { Badge } from "../kit/badge";
+import { DataTable, type Column } from "../kit/data-table";
+import { Select } from "../kit/form";
+import { useAction, useLoad } from "../kit/hooks";
+import { EmptyState, LoadError, NoAccess, Notice } from "../kit/notice";
+import { AdminPage, Panel, Toolbar } from "../kit/page";
 
 const PERIODS = [7, 30, 90, 365];
 
-function QueryTable({ title, rows }: { title: string; rows: QueryStat[] }) {
+function QueryTable({ title, hint, rows }: { title: string; hint?: string; rows: QueryStat[] }) {
   const t = useTranslations("adminAi.analytics");
+  const columns: Column<QueryStat>[] = [
+    { key: "query", header: t("columns.query"), primary: true, cell: (row) => <span className="break-words font-medium">{row.query}</span> },
+    { key: "count", header: t("columns.count"), className: "md:w-28", cell: (row) => <span className="tabular-nums">{row.count}</span> },
+    { key: "avg", header: t("columns.avg"), className: "md:w-44", cell: (row) => <span className="tabular-nums">{row.avg_results}</span> },
+  ];
   return (
     <section className="space-y-2">
-      <h2 className="text-lg font-semibold">{title}</h2>
-      {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("empty")}</p>
-      ) : (
-        <div className="overflow-x-auto rounded-md border" tabIndex={0} role="region" aria-label={title}>
-          <table className="w-full text-sm">
-            <caption className="sr-only">{title}</caption>
-            <thead className="bg-surface-muted text-left">
-              <tr>
-                <th scope="col" className="px-3 py-2">{t("columns.query")}</th>
-                <th scope="col" className="px-3 py-2">{t("columns.count")}</th>
-                <th scope="col" className="px-3 py-2">{t("columns.avg")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.query} className="border-t">
-                  <td className="px-3 py-2 break-words">{row.query}</td>
-                  <td className="px-3 py-2">{row.count}</td>
-                  <td className="px-3 py-2">{row.avg_results}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <h2 className="text-lg">{title}</h2>
+      {hint && <p className="text-sm text-muted-foreground">{hint}</p>}
+      <DataTable caption={title} columns={columns} rows={rows} rowKey={(row) => row.query} empty={<EmptyState title={t("empty")} />} />
     </section>
   );
 }
 
-/** Раздел «Аналитика» (T4.11, T6.14) для роли «Аналитик»: только агрегаты без персональных данных. */
+/** Запросы по дням: полоса показывает долю от самого загруженного дня, числа подписаны текстом. */
+function PerDay({ days }: { days: AnalyticsReport["per_day"] }) {
+  const t = useTranslations("adminAi.analytics");
+  const locale = useLocale();
+  const max = Math.max(1, ...days.map((day) => day.searches));
+  if (days.length === 0) return <p className="text-sm text-muted-foreground">{t("empty")}</p>;
+  return (
+    <ul className="space-y-1.5 text-sm">
+      {days.map((day) => (
+        <li key={day.day} className="grid grid-cols-[9rem_1fr] items-center gap-3 sm:grid-cols-[11rem_1fr]">
+          <span className="text-muted-foreground">{formatIsoDate(day.day, locale)}</span>
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="h-3 rounded-sm bg-primary" style={{ width: `${(day.searches / max) * 70}%`, minWidth: 2 }} aria-hidden />
+            <span className="whitespace-nowrap tabular-nums">{t("perDayValue", { count: day.searches, zero: day.zero_result })}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Аналитика поиска для роли «Аналитик»: только агрегаты без персональных данных. */
 export function AnalyticsView() {
   const t = useTranslations("adminAi.analytics");
   const locale = useLocale();
-  const describe = useAiError();
   const me = useMe();
+  const allowed = can(me, "analytics.view");
   const [days, setDays] = useState(30);
-  const report = useLoad(() => analyticsApi.report(days), [days]);
+  const report = useLoad(() => (allowed ? analyticsApi.report(days) : Promise.resolve(null)), [days], "ai");
+  const ai = useAction("ai");
   const [summary, setSummary] = useState<AiSummary | null>(null);
-  const [summarising, setSummarising] = useState(false);
-  const [summaryError, setSummaryError] = useState<string | null>(null);
-
-  if (!can(me, "analytics.view")) return <ForbiddenState />;
-
-  async function runSummary() {
-    setSummarising(true);
-    setSummaryError(null);
-    try {
-      setSummary(await analyticsApi.aiSummary(days, (["kk", "ru", "en"].includes(locale) ? locale : "ru") as AiLang));
-    } catch (caught) {
-      setSummaryError(describe(caught));
-    } finally {
-      setSummarising(false);
-    }
-  }
+  if (!allowed) return <NoAccess />;
 
   const data = report.data;
-  const maxPerDay = Math.max(1, ...(data?.per_day.map((day) => day.searches) ?? [1]));
+  const stale: Column<AnalyticsReport["stale_pages"][number]>[] = [
+    { key: "page", header: t("columns.page"), primary: true, cell: (row) => <span className="break-words font-medium">{row.title}</span> },
+    { key: "type", header: t("columns.type"), cell: (row) => (t.has(`types.${row.object_type}`) ? t(`types.${row.object_type}`) : row.object_type) },
+    { key: "updated", header: t("columns.updated"), cell: (row) => <span className="text-muted-foreground">{formatIsoDate(row.updated_at, locale)}</span> },
+  ];
+
   return (
-    <div className="space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("intro")}</p>
-      </header>
-      <label className="inline-block space-y-1.5 text-sm font-medium">
-        {t("period")}
-        <Select value={days} onChange={(event) => { setDays(Number(event.target.value)); setSummary(null); }} className="w-40 font-normal">
-          {PERIODS.map((n) => <option key={n} value={n}>{t("days", { n })}</option>)}
-        </Select>
-      </label>
-      {report.error && <Notice kind="error" action={<Button size="sm" variant="outline" onClick={report.reload}>↻</Button>}>{report.error}</Notice>}
-      {report.loading && !data && <Notice kind="loading">…</Notice>}
+    <AdminPage title={t("title")} lead={t("intro")}>
+      <Toolbar>
+        <label className="block text-sm sm:w-48">
+          <span className="mb-1.5 block font-medium">{t("period")}</span>
+          <Select value={days} onChange={(event) => { setDays(Number(event.target.value)); setSummary(null); }}>
+            {PERIODS.map((n) => <option key={n} value={n}>{t("days", { n })}</option>)}
+          </Select>
+        </label>
+      </Toolbar>
+      {report.error && <LoadError message={report.error} onRetry={report.reload} />}
+      {report.loading && !data && <Notice kind="loading">{t("loading")}</Notice>}
 
       {data && (
-        <>
-          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="space-y-6" aria-busy={report.loading}>
+          <dl className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              [t("cards.searches"), data.total_searches],
-              [t("cards.zero"), data.zero_result_searches],
+              [t("cards.searches"), data.total_searches.toLocaleString("ru-RU")],
+              [t("cards.zero"), data.zero_result_searches.toLocaleString("ru-RU")],
               [t("cards.rate"), `${Math.round(data.zero_result_rate * 100)}%`],
-              [t("cards.rare"), data.rare_queries],
+              [t("cards.rare"), data.rare_queries.toLocaleString("ru-RU")],
             ].map(([label, value]) => (
-              <div key={String(label)} className="rounded-lg border p-3">
-                <dt className="text-xs text-muted-foreground">{label}</dt>
-                <dd className="text-2xl font-semibold">{value}</dd>
+              <div key={label} className="card flex flex-col-reverse justify-end gap-1 p-5">
+                <dt className="text-sm text-muted-foreground">{label}</dt>
+                <dd className="text-2xl font-bold tabular-nums text-primary">{value}</dd>
               </div>
             ))}
           </dl>
 
-          <section className="space-y-2">
-            <h2 className="text-lg font-semibold">{t("perDay")}</h2>
-            {data.per_day.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t("empty")}</p>
-            ) : (
-              <ul className="space-y-1">
-                {data.per_day.map((day) => (
-                  <li key={day.day} className="flex items-center gap-2 text-xs">
-                    <span className="w-20 shrink-0 text-muted-foreground">{day.day}</span>
-                    <span className="h-3 rounded bg-primary" style={{ width: `${(day.searches / maxPerDay) * 100}%`, minWidth: 2 }} aria-hidden />
-                    <span>{day.searches}{day.zero_result > 0 && ` (${day.zero_result})`}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
-          <section className="space-y-2 rounded-lg border p-4">
-            <h2 className="text-lg font-semibold">{t("recommendations")}</h2>
-            {data.recommendations.length === 0 && <p className="text-sm text-muted-foreground">{t("empty")}</p>}
-            <ul className="list-disc space-y-1 pl-5 text-sm">
-              {data.recommendations.map((rec, index) => <li key={`${rec.code}-${index}`}>{t(`rec.${rec.code}`, rec.params)}</li>)}
-            </ul>
-            <div className="pt-2">
-              <Button variant="outline" size="sm" onClick={() => void runSummary()} disabled={summarising}>
-                <Sparkles aria-hidden />
-                {t("ai.run")}
-              </Button>
-            </div>
-            {summarising && <Notice kind="loading">{t("ai.running")}</Notice>}
-            {summaryError && <Notice kind="error">{summaryError}</Notice>}
-            {summary && !summary.available && <Notice kind="info">{t("ai.off")}</Notice>}
-            {summary?.available && (
-              <div className="space-y-1 text-sm">
-                <h3 className="font-medium">{t("ai.title")}</h3>
-                <p className="whitespace-pre-line">{summary.text}</p>
-                <p className="text-xs text-muted-foreground">{summary.label}</p>
+          <div className="grid gap-5 xl:grid-cols-2">
+            <Panel title={t("perDay")} description={t("perDayHint")}>
+              <PerDay days={data.per_day} />
+            </Panel>
+            <Panel title={t("recommendations")}>
+              {data.recommendations.length === 0 ? (
+                <p className="text-sm text-muted-foreground">{t("noRecommendations")}</p>
+              ) : (
+                <ul className="-my-2 divide-y text-sm">
+                  {data.recommendations.map((rec, index) => <li key={`${rec.code}-${index}`} className="py-2">{t(`rec.${rec.code}`, rec.params)}</li>)}
+                </ul>
+              )}
+              <div className="space-y-3 border-t pt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={ai.pending}
+                  onClick={() => void ai.run(async () => setSummary(await analyticsApi.aiSummary(days, (["kk", "ru", "en"].includes(locale) ? locale : "ru") as AiLang)))}
+                >
+                  <Sparkles aria-hidden />
+                  {t("ai.run")}
+                </Button>
+                <div aria-live="polite" className="space-y-2">
+                  {ai.pending && <Notice kind="loading">{t("ai.running")}</Notice>}
+                  {ai.error && <Notice kind="error">{ai.error}</Notice>}
+                  {summary && !summary.available && <Notice kind="warning">{t("ai.off")}</Notice>}
+                  {summary?.available && (
+                    <div className="space-y-2 text-sm">
+                      <h3 className="text-base font-bold">{t("ai.title")}</h3>
+                      <Badge tone="warning">{summary.label}</Badge>
+                      <p className="whitespace-pre-line">{summary.text}</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </section>
+            </Panel>
+          </div>
 
           <QueryTable title={t("topQueries")} rows={data.top_queries} />
-          <QueryTable title={t("zeroQueries")} rows={data.zero_queries} />
+          <QueryTable title={t("zeroQueries")} hint={t("zeroQueriesHint")} rows={data.zero_queries} />
           <QueryTable title={t("aiQuestions")} rows={data.ai_questions} />
 
           <section className="space-y-2">
-            <h2 className="text-lg font-semibold">{t("staleTitle")}</h2>
-            {data.stale_pages.length === 0 ? (
-              <p className="text-sm text-muted-foreground">{t("empty")}</p>
-            ) : (
-              <div className="overflow-x-auto rounded-md border" tabIndex={0} role="region" aria-label={t("staleTitle")}>
-                <table className="w-full text-sm">
-                  <caption className="sr-only">{t("staleTitle")}</caption>
-                  <thead className="bg-surface-muted text-left">
-                    <tr>
-                      <th scope="col" className="px-3 py-2">{t("columns.page")}</th>
-                      <th scope="col" className="px-3 py-2">{t("columns.type")}</th>
-                      <th scope="col" className="px-3 py-2">{t("columns.updated")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.stale_pages.map((page) => (
-                      <tr key={page.id} className="border-t">
-                        <td className="px-3 py-2">{page.title}</td>
-                        <td className="px-3 py-2">{t.has(`types.${page.object_type}`) ? t(`types.${page.object_type}`) : page.object_type}</td>
-                        <td className="px-3 py-2">{page.updated_at.slice(0, 10)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            <h2 className="text-lg">{t("staleTitle")}</h2>
+            <DataTable caption={t("staleTitle")} columns={stale} rows={data.stale_pages} rowKey={(row) => row.id} empty={<EmptyState title={t("noStale")} />} />
           </section>
-          <p className="text-xs text-muted-foreground">{t("views")}</p>
-        </>
+          <p className="text-sm text-muted-foreground">{t("views")}</p>
+        </div>
       )}
-    </div>
+    </AdminPage>
   );
 }

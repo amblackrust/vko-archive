@@ -1,47 +1,32 @@
-import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { withoutParam, type CatalogFacets } from "@/lib/api/catalog";
+import { withoutParam, withQuery, type CatalogFacets } from "@/lib/api/catalog";
+import { FilterChip } from "./filter-chip";
 import { enumLabel, periodLabel } from "./labels";
 
-const SKIPPED = new Set(["sort", "page"]);
+/** Группы подписей для значений-справочников; прочие значения показываются как есть. */
+const ENUMS: Record<string, string> = { doc_type: "docTypes", language: "languages", fund_type: "fundTypes", category: "categories" };
 
-/** Чипы применённых фильтров; каждый — ссылка, которая снимает именно это значение. */
+/** Применённые условия чипами: каждый снимает ровно своё значение; рядом — сброс всех условий. */
 export function ActiveFilters({ params, facets }: { params: URLSearchParams; facets: CatalogFacets }) {
   const t = useTranslations("catalog");
-  const labels = new Map<string, string>();
-  for (const f of [...facets.topic, ...facets.branch]) if (f.label) labels.set(f.value, f.label);
-
-  function valueText(key: string, value: string): string {
-    if (key === "doc_type") return enumLabel(t, "docTypes", value);
-    if (key === "language") return enumLabel(t, "languages", value);
-    if (key === "fund_type") return enumLabel(t, "fundTypes", value);
-    if (key === "category") return enumLabel(t, "categories", value);
-    if (key === "period") return periodLabel(t, value);
-    if (key === "has_digital_copy") return t("filters.has_digital_copy");
-    return labels.get(value) ?? value;
-  }
-
-  const chips = [...params].filter(([key]) => !SKIPPED.has(key)) as [string, string][];
+  const chips = [...params].filter(([key]) => key !== "sort" && key !== "page" && key !== "view");
   if (chips.length === 0) return null;
+  const names = new Map([...facets.topic, ...facets.branch].map((facet) => [facet.value, facet.label]));
+  const valueText = (key: string, value: string) =>
+    key === "period" ? periodLabel(t, value) : ENUMS[key] ? enumLabel(t, ENUMS[key], value) : (names.get(value) ?? value);
   return (
-    <ul aria-label={t("filters.active")} className="flex flex-wrap gap-2">
+    <ul aria-label={t("filters.active")} className="flex flex-wrap items-center gap-2">
       {chips.map(([key, value]) => {
-        const name = key === "has_digital_copy" ? valueText(key, value) : `${t(`filters.${key === "title" ? "titleField" : key}`)}: ${valueText(key, value)}`;
-        const query = withoutParam(params, key, value).toString();
+        const field = t(`filters.fields.${key}`);
+        const label = key === "has_digital_copy" ? field : `${field}: ${valueText(key, value)}`;
         return (
           <li key={`${key}=${value}`}>
-            <Link
-              href={query ? `/catalog?${query}` : "/catalog"}
-              aria-label={t("filters.remove", { name })}
-              className="inline-flex items-center gap-1 rounded-full border bg-accent-soft px-3 py-1 text-sm text-accent-soft-foreground hover:opacity-80"
-            >
-              {name}
-              <X className="size-3.5" aria-hidden />
-            </Link>
+            <FilterChip href={withQuery("/catalog", withoutParam(params, key, value))} label={label} hint={t("filters.remove", { name: label })} />
           </li>
         );
       })}
+      <li><Link href="/catalog" className="text-link px-1 text-sm">{t("filters.reset")}</Link></li>
     </ul>
   );
 }

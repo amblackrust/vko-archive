@@ -172,12 +172,13 @@ def _public_documents(stmt: Select, clauses: Sequence[ColumnElement[bool]]) -> S
     )
 
 
-def _title(lang: str) -> ColumnElement[str]:
+def title_text(column: Any, lang: str) -> ColumnElement[str]:
+    """An I18n title in the requested language, else ru, kk, en (as the services show it)."""
     return func.coalesce(
-        func.nullif(Document.title[lang].astext, ""),
-        func.nullif(Document.title["ru"].astext, ""),
-        func.nullif(Document.title["kk"].astext, ""),
-        Document.title["en"].astext,
+        func.nullif(column[lang].astext, ""),
+        func.nullif(column["ru"].astext, ""),
+        func.nullif(column["kk"].astext, ""),
+        column["en"].astext,
         "",
     )
 
@@ -185,7 +186,9 @@ def _title(lang: str) -> ColumnElement[str]:
 def _order_by(f: CatalogFilters) -> tuple[list[ColumnElement], str]:
     has_text = bool(f.q.strip() or f.title.strip() or f.keyword.strip())
     sort = f.sort
-    if sort == "relevance" and not has_text:
+    # Просмотр без запроса: сначала подлинные материалы, демонстрационные записи — после них.
+    browsing = sort == "relevance" and not has_text
+    if browsing:
         sort = "code"
     if sort == "relevance":
         phrase = (f.q or f.title or f.keyword).strip()
@@ -194,15 +197,17 @@ def _order_by(f: CatalogFilters) -> tuple[list[ColumnElement], str]:
             (ilike(func.coalesce(Document.archive_code, ""), phrase), 1),
             else_=2,
         )
-        order = [rank, Document.date_from.asc().nulls_last()]
+        order = [rank, Document.is_demo.asc(), Document.date_from.asc().nulls_last()]
     elif sort == "date_asc":
         order = [Document.date_from.asc().nulls_last()]
     elif sort == "date_desc":
         order = [Document.date_from.desc().nulls_last()]
     elif sort == "title":
-        order = [func.lower(_title(f.lang))]
+        order = [func.lower(title_text(Document.title, f.lang))]
     else:
         order = [Document.archive_code.asc().nulls_last()]
+        if browsing:
+            order.insert(0, Document.is_demo.asc())
     return [*order, Document.id], sort
 
 

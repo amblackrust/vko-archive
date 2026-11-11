@@ -8,7 +8,7 @@ from \\w-only lexemes.
 import uuid
 from typing import Any
 
-from sqlalchemy import delete, func, insert, literal, literal_column, or_, select, update
+from sqlalchemy import Select, delete, func, insert, literal, literal_column, or_, select, update
 from sqlalchemy.engine import Connection
 from sqlalchemy.orm import Session
 
@@ -135,33 +135,39 @@ def count_entries(session: Session) -> tuple[int, int]:
     return total, missing
 
 
+def _best_per_type(session: Session, scored: Select, limit: int) -> list[Candidate]:
+    """The best `limit` rows of every object type, best first: a large type (the fund list)
+    must not push the other types out of the candidates."""
+    rows = scored.subquery()
+    place = func.row_number().over(partition_by=rows.c.object_type, order_by=rows.c.score.desc())
+    ranked = select(rows, place.label("place")).subquery()
+    stmt = select(ranked).where(ranked.c.place <= limit).order_by(ranked.c.score.desc())
+    return [(r.object_type, r.object_id, r.file_id, float(r.score)) for r in session.execute(stmt)]
+
+
 def fts_candidates(session: Session, query: str, limit: int) -> list[Candidate]:
-    """Best rank per (object, source file): the service drops rows of files that are no
-    longer downloadable, then keeps the best remaining one per object."""
+    """Best rank per (object, source file), up to `limit` per object type: the service drops rows
+    of files that are no longer downloadable, then keeps the best remaining one per object."""
     q = _tsquery(query)
-    rank = func.max(func.ts_rank_cd(SearchEntry.tsv, q)).label("rank")
-    stmt = (
+    rank = func.max(func.ts_rank_cd(SearchEntry.tsv, q)).label("score")
+    scored = (
         select(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id, rank)
         .where(SearchEntry.tsv.op("@@")(q), _HAS_SOURCE)
         .group_by(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id)
-        .order_by(rank.desc())
-        .limit(limit)
     )
-    return [(r.object_type, r.object_id, r.file_id, float(r.rank)) for r in session.execute(stmt)]
+    return _best_per_type(session, scored, limit)
 
 
 def trigram_candidates(session: Session, text: str, limit: int) -> list[Candidate]:
     """Typos and spelling variants: word similarity of the query to entry titles
     (`<%` uses pg_trgm.word_similarity_threshold, default 0.6, and the trigram GIN index)."""
-    similarity = func.max(func.word_similarity(literal(text), SearchEntry.title)).label("sim")
-    stmt = (
+    similarity = func.max(func.word_similarity(literal(text), SearchEntry.title)).label("score")
+    scored = (
         select(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id, similarity)
         .where(literal(text).op("<%")(SearchEntry.title), _HAS_SOURCE)
         .group_by(SearchEntry.object_type, SearchEntry.object_id, SearchEntry.file_id)
-        .order_by(similarity.desc())
-        .limit(limit)
     )
-    return [(r.object_type, r.object_id, r.file_id, float(r.sim)) for r in session.execute(stmt)]
+    return _best_per_type(session, scored, limit)
 
 
 def vector_candidates(

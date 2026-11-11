@@ -15,6 +15,8 @@ from app.schemas.catalog import (
     FundsResponse,
     InventoriesResponse,
     InventoryDetail,
+    NewspaperParams,
+    NewspapersResponse,
     PageParams,
 )
 from app.services import catalog as catalog_service
@@ -47,7 +49,15 @@ def document(
 
 @router.get("/funds", response_model=FundsResponse)
 def funds(params: Annotated[FundListParams, Query()], session: DbSession) -> FundsResponse:
+    """Published funds: `q` over the number, the title and every former name (typo-tolerant), filters
+    `type`, `category`, `year` / `year_from` + `year_to`, `sort` = relevance | number | title | year."""
     return catalog_service.list_funds(session, params)
+
+
+@router.get("/newspapers", response_model=NewspapersResponse)
+def newspapers(params: Annotated[NewspaperParams, Query()], session: DbSession) -> NewspapersResponse:
+    """Newspapers kept by the archive: `q` over title and publisher, `year` = a volume of that year exists."""
+    return catalog_service.list_newspapers(session, params)
 
 
 @router.get("/funds/{fund_id}", response_model=FundDetail)

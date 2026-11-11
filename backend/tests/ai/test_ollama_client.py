@@ -117,6 +117,41 @@ def test_num_predict_limits_generation(fake_ollama):
     assert json.loads(fake_ollama.requests[-1].content)["options"]["num_predict"] == settings.ollama_num_predict == 400
 
 
+def test_model_without_structured_output_is_asked_for_json_in_the_prompt(fake_ollama):
+    """A runner that answers 501 to `format` (MLX builds): the schema moves into the prompt, the JSON object is
+    cut out of the free text, the model is remembered and Ollama is not marked as down."""
+    settings = get_settings()
+
+    def chat_handler(request: httpx.Request) -> httpx.Response:
+        if "format" in json.loads(request.content):
+            return httpx.Response(501, json={"error": "structured output is unavailable"})
+        return httpx.Response(200, json={"message": {"content": 'Вот ответ:\n```json\n{"intent": "search"}\n```'}})
+
+    _router(fake_ollama, [settings.ollama_model], chat_handler)
+    schema = {"type": "object", "properties": {"intent": {"type": "string"}}}
+    assert ollama_client.chat([{"role": "user", "content": "q"}], settings, fmt=schema) == '{"intent": "search"}'
+    sent = json.loads(fake_ollama.requests[-1].content)
+    assert "format" not in sent and '"intent"' in sent["messages"][-1]["content"]
+    calls = len(fake_ollama.requests)
+    assert ollama_client.chat([{"role": "user", "content": "q"}], settings, fmt=schema) == '{"intent": "search"}'
+    assert len(fake_ollama.requests) == calls + 1  # no second 501 round trip
+    assert ollama_client.availability(settings).available
+
+
+def test_reasoning_only_model_gets_think_and_a_larger_budget(fake_ollama, monkeypatch):
+    """OLLAMA_THINK: free text asks the model to reason (the reasoning comes back in a separate field);
+    a JSON-constrained call still does not."""
+    settings = get_settings()
+    monkeypatch.setattr(settings, "ollama_think", True)
+    _router(fake_ollama, [settings.ollama_model], _chat_ok)
+    ollama_client.chat([{"role": "user", "content": "q"}], settings)
+    free = json.loads(fake_ollama.requests[-1].content)
+    assert free["think"] is True and free["options"]["num_predict"] == 400 + settings.ollama_think_tokens
+    ollama_client.chat([{"role": "user", "content": "q"}], settings, fmt="json")
+    constrained = json.loads(fake_ollama.requests[-1].content)
+    assert constrained["think"] is False and constrained["options"]["num_predict"] == 400
+
+
 @pytest.mark.parametrize(
     "fail",
     [

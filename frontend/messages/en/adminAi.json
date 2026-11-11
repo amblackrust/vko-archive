@@ -16,11 +16,10 @@
     "picker": {
       "label": "Find a document",
       "placeholder": "Archive code or title",
-      "empty": "Nothing found",
-      "list": "Search results",
       "pick": "Select",
       "selected": "Selected document",
-      "change": "Change"
+      "change": "Change",
+      "hint": "Find a document by code or title. The AI works with its description and recognised text."
     },
     "analysis": {
       "title": "Document analysis",
@@ -59,7 +58,8 @@
       "duplicateReason": {
         "same_file": "same file (sha256)",
         "similar": "similar description"
-      }
+      },
+      "hint": "The AI finds dates, names, places and topics in the text. Only the fields you tick go into the card."
     },
     "ocrPanel": {
       "title": "Text recognition (OCR)",
@@ -80,7 +80,8 @@
       },
       "result": "Recognised text (you can edit it)",
       "apply": "Save as the file's text",
-      "applied": "Text saved. It enters search only if the file is open to the public."
+      "applied": "Text saved. It enters search only if the file is open to the public.",
+      "hint": "Recognised text is saved to the file only when you say so."
     },
     "annotation": {
       "title": "“Briefly about the document” annotation",
@@ -96,8 +97,11 @@
       "draft": "Draft (not visible to visitors)",
       "approved": "Approved: shown on the site",
       "none": "No annotation.",
-      "saved": "Saved.",
-      "fileText": "File text was used: the annotation is hidden if the files stop being open."
+      "saved": "Edit saved.",
+      "fileText": "File text was used: the annotation is hidden if the files stop being open.",
+      "text": "Annotation text",
+      "generated": "The draft annotation is ready. Check the text.",
+      "approvedDone": "The annotation is approved and shown on the site."
     },
     "collection": {
       "title": "Thematic selection draft",
@@ -108,7 +112,8 @@
       "running": "Picking…",
       "draftTitle": "Title",
       "draftText": "Description",
-      "items": "Materials"
+      "items": "Materials",
+      "lang": "Language"
     }
   },
   "analytics": {
@@ -116,7 +121,6 @@
     "intro": "Search data without personal data: no users, no IPs. Names, e-mails and numbers in queries are masked; queries asked only once are not shown.",
     "period": "Period",
     "days": "{n} d.",
-    "forbidden": "The Analyst role or an administrator is required to view analytics.",
     "cards": {
       "searches": "Search queries",
       "zero": "Without results",
@@ -125,7 +129,7 @@
     },
     "perDay": "Queries per day",
     "topQueries": "Popular queries",
-    "zeroQueries": "Queries without results (what the site lacks)",
+    "zeroQueries": "Queries without results",
     "aiQuestions": "Questions to the AI assistant",
     "staleTitle": "Pages not updated for over a year",
     "columns": {
@@ -156,10 +160,15 @@
       "run": "Write an AI conclusion",
       "running": "AI is analysing…",
       "off": "AI is unavailable now — use the recommendations above."
-    }
+    },
+    "loading": "Loading the report…",
+    "perDayHint": "The bar shows the number of queries relative to the busiest day.",
+    "perDayValue": "{count}, without results: {zero}",
+    "noRecommendations": "No recommendations.",
+    "zeroQueriesHint": "These queries show which materials or synonyms the site lacks.",
+    "noStale": "No stale pages."
   },
   "errors": {
-    "ai_unavailable": "AI is unavailable now (Ollama is not running, the model is not loaded or busy). Try later.",
     "not_public": "The document is not published or its description is not public.",
     "no_source_text": "The document has no public text for an annotation.",
     "nothing_to_apply": "No fields to apply.",

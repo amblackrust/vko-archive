@@ -1,29 +1,23 @@
 """Shared helpers for the seed: i18n values, idempotent upserts, file storage."""
 
 import hashlib
+import io
 import mimetypes
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from sqlalchemy import select
+from PIL import Image
+from sqlalchemy import insert, select, update
 from sqlalchemy.orm import Session
 
-from app.models import DigitalFile, Document, FileAccess, OcrStatus
-from seed.demo_data import FUNDS
+from app.models import DigitalFile, FileAccess, OcrStatus
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 INFO_DIR = ROOT_DIR / "info"
 LANGS = ("kk", "ru", "en")
-
-# Demo document key 'd<fund>-<inventory>-<case>-<n>' (as in demo_catalog) -> its archive code.
-DEMO_DOC_CODES = {
-    f"d{fund.number[2:]}-{inv.number}-{case.number}-{n}": f"Ф.{fund.number} Оп.{inv.number} Д.{case.number} №{n}"
-    for fund in FUNDS
-    for inv in fund.inventories
-    for case in inv.cases
-    for n in range(1, len(case.docs) + 1)
-}
+# ru is the original text; kk/en were translated for the prototype and are not proofread.
+MACHINE_KK_EN = {"ru": "verified", "kk": "machine", "en": "machine"}
 
 
 def i18n(**values: str) -> dict[str, str]:
@@ -44,9 +38,10 @@ class Report:
     existing: dict[str, int] = field(default_factory=dict)
     warnings: list[str] = field(default_factory=list)
 
-    def count(self, entity: str, created: bool) -> None:
-        target = self.created if created else self.existing
-        target[entity] = target.get(entity, 0) + 1
+    def count(self, entity: str, created: bool, n: int = 1) -> None:
+        if n:
+            target = self.created if created else self.existing
+            target[entity] = target.get(entity, 0) + n
 
     def total(self, entity: str) -> int:
         return self.created.get(entity, 0) + self.existing.get(entity, 0)
@@ -69,21 +64,30 @@ def upsert(
     return obj
 
 
-def demo_document(session: Session, key: str) -> Document:
-    """A demo catalog document by its key; the demo catalog must be seeded first."""
-    document = session.scalar(select(Document).where(Document.archive_code == DEMO_DOC_CODES[key]))
-    assert document is not None, f"demo document {key} is missing: seed the demo catalog first"
-    return document
+def bulk_upsert(
+    session: Session, report: Report, model: type, key: tuple[str, ...], rows: list[dict], refresh: bool, **scope
+) -> None:
+    """`upsert` for thousands of rows: one SELECT of the keys (within `scope`), one INSERT of the
+    missing rows and, with `refresh`, one UPDATE of the existing ones."""
+    columns = [getattr(model, name) for name in key]
+    found = {tuple(row[1:]): row[0] for row in session.execute(select(model.id, *columns).filter_by(**scope))}
+    new = [{**scope, **row} for row in rows if tuple(row[name] for name in key) not in found]
+    old = [{"id": found[ident], **row} for row in rows if (ident := tuple(row[name] for name in key)) in found]
+    if new:
+        session.execute(insert(model), new)
+    if old and refresh:
+        session.execute(update(model), old)
+    report.count(model.__tablename__, True, len(new))
+    report.count(model.__tablename__, False, len(old))
 
 
-def demo_document_file(session: Session, document: Document) -> DigitalFile:
-    """The first digital copy of a demo document (its access follows the document)."""
-    file = session.scalar(
-        select(DigitalFile)
-        .where(DigitalFile.owner_type == "document", DigitalFile.owner_id == document.id, DigitalFile.position == 0)
-    )
-    assert file is not None, f"document {document.archive_code} has no digital copy"
-    return file
+def jpeg_preview(image: Image.Image, size: int = 400) -> bytes:
+    """A lightweight JPEG copy for lists and cards."""
+    thumb = image.convert("RGB")
+    thumb.thumbnail((size, size))
+    buffer = io.BytesIO()
+    thumb.save(buffer, "JPEG", quality=75)
+    return buffer.getvalue()
 
 
 def attach_file(

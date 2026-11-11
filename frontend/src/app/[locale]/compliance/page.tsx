@@ -1,69 +1,84 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LegalActCard } from "@/components/legal/act-card";
-import { legalFetch, type CompliancePage as CompliancePageData } from "@/components/legal/api";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DemoBadge } from "@/components/ui/demo-badge";
-import { Link } from "@/lib/i18n/navigation";
-import { localizedAlternates } from "@/lib/seo";
+import { TranslationNote } from "@/components/help/translation-note";
+import { ActRow } from "@/components/legal/act-row";
+import { legalFetch, type CompliancePage as ComplianceData } from "@/components/legal/api";
+import { safe } from "@/components/misc/api";
+import { PhoneLink } from "@/components/misc/contact-links";
+import { pageMetadata } from "@/components/misc/metadata";
+import { Block, PageBody, SeeAlso } from "@/components/misc/page-layout";
+import { RichText } from "@/components/misc/rich-text";
+import { Unavailable } from "@/components/misc/state-help";
+import { ExternalServiceLinks } from "@/components/services/external-links";
+import { FactList } from "@/components/ui/facts";
+import { PageHeader } from "@/components/ui/page-header";
+import { RecordList } from "@/components/ui/record-list";
+import { fetchContacts, receptionPhone } from "@/lib/api/content";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "compliance" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/compliance") };
-}
+export const generateMetadata = pageMetadata("compliance", "/compliance");
 
-/** Комплаенс-служба: открытые материалы и комплаенс-офицер. Тексты страницы — из БД (санитизированный HTML). */
+/** Комплаенс-служба: офицер, сведения о работе службы и её открытые документы из API. */
 export default async function CompliancePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("compliance");
-  // Страница не опубликована (404) -> 404 сайта; сетевая ошибка -> error.tsx.
-  const page = await legalFetch<CompliancePageData>("compliance", new URLSearchParams(), locale);
+  const [page, contacts] = await Promise.all([
+    legalFetch<ComplianceData>("compliance", new URLSearchParams(), locale).catch(() => undefined),
+    safe(fetchContacts()),
+  ]);
+  if (page === undefined) return <Unavailable />;
   if (!page) notFound();
+  // Телефон комплаенс-офицера заказчик не передал: даём приёмную архива.
+  const reception = receptionPhone(contacts);
 
   return (
     <>
-      <Breadcrumbs items={[{ label: page.title }]} />
-      <div className="container-page space-y-8 pb-12">
-        <header className="space-y-3">
-          <h1 className="text-3xl font-bold" lang={page.title_lang}>{page.title}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-          {page.officer && <p className="font-medium">{t("officer", { name: page.officer })}</p>}
-          <p className="text-sm text-muted-foreground">
-            {t("phoneHint")}{" "}
-            <Link href="/contacts" className="text-primary underline underline-offset-2">{t("contactsLink")}</Link>
-          </p>
-        </header>
+      <PageHeader crumbs={[{ label: page.title }]} title={page.title} titleLang={page.title_lang} lead={t("lead")} />
+      <PageBody
+        aside={
+          <>
+            <FactList
+              items={[
+                { label: t("officer"), value: page.officer ? <span lang="ru">{page.officer}</span> : <span className="font-normal text-muted-foreground">{t("officerMissing")}</span> },
+                {
+                  label: t("phone"),
+                  value: (
+                    <>
+                      <span className="block text-sm font-normal text-muted-foreground">{t("phoneMissing")}</span>
+                      {reception && <PhoneLink value={reception} className="mt-1" />}
+                    </>
+                  ),
+                },
+              ]}
+            />
+            <SeeAlso
+              title={t("more.title")}
+              items={[
+                { href: "/legal", label: t("more.legal") },
+                { href: "/services/paid", label: t("more.paid") },
+                { href: "/contacts", label: t("more.contacts") },
+              ]}
+            />
+          </>
+        }
+      >
+        <Block id="about" title={t("about")}>
+          <TranslationNote requested={locale} actual={page.body_lang} />
+          <RichText html={page.body} lang={page.body_lang} />
+        </Block>
 
-        {page.body_lang !== locale && (
-          <p className="flex items-center gap-3 text-sm text-muted-foreground">
-            <DemoBadge kind="noTranslation" />
-            {t("translationNote", { lang: page.body_lang })}
-          </p>
-        )}
-        <div
-          className="max-w-3xl space-y-3 leading-relaxed"
-          lang={page.body_lang}
-          // Санитизированный HTML из страницы БД (seed/CMS), не пользовательский ввод.
-          dangerouslySetInnerHTML={{ __html: page.body }}
-        />
-
-        <section aria-labelledby="compliance-documents" className="space-y-4">
-          <h2 id="compliance-documents" className="text-xl font-semibold">{t("documentsHeading")}</h2>
+        <Block id="documents" title={t("documents.title")} text={t("documents.text")}>
           {page.documents.length === 0 ? (
-            <p className="text-muted-foreground">{t("documentsEmpty")}</p>
+            <p className="text-muted-foreground">{t("documents.empty")}</p>
           ) : (
-            <ul className="space-y-3">
-              {page.documents.map((act) => (
-                <li key={act.id}>
-                  <LegalActCard act={act} />
-                </li>
-              ))}
-            </ul>
+            <RecordList>{page.documents.map((act) => <ActRow key={act.id} act={act} locale={locale} status={false} />)}</RecordList>
           )}
-        </section>
-      </div>
+        </Block>
+
+        <Block id="report" title={t("report.title")} text={t("report.text")}>
+          <ExternalServiceLinks only="eotinish" />
+        </Block>
+      </PageBody>
     </>
   );
 }

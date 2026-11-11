@@ -1,33 +1,46 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { Timeline } from "@/components/timeline/timeline";
-import { fetchTimeline } from "@/lib/api/memory";
+import { Timeline, type TimelineQuery } from "@/components/timeline/timeline";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
+import { UnavailableState } from "@/components/ui/state-view";
+import { attempt, fetchTimeline } from "@/lib/api/memory";
+import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "timeline" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/memory/timeline") };
+  return { title: t("title"), description: t("intro"), alternates: localizedAlternates(locale, "/memory/timeline") };
 }
 
-export default async function TimelinePage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ event?: string }> }) {
+export default async function TimelinePage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { event } = await searchParams;
   const t = await getTranslations("timeline");
   const tm = await getTranslations("memory");
-  const { items, themes } = await fetchTimeline(locale);
+  const data = await attempt(fetchTimeline(locale));
+  if (!data) return <UnavailableState />;
+  const sp = await searchParams;
+  const query: TimelineQuery = {};
+  for (const key of ["theme", "decade", "year", "event"] as const) {
+    if (typeof sp[key] === "string") query[key] = sp[key];
+  }
+
   return (
     <>
-      <Breadcrumbs items={[{ label: tm("breadcrumb"), href: "/memory" }, { label: t("breadcrumb") }]} />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-        </header>
-        <Timeline events={items} themes={themes} initialSlug={event} />
+      <PageHeader crumbs={[{ label: tm("breadcrumb"), href: "/memory" }, { label: t("breadcrumb") }]} title={t("title")} lead={t("intro")} />
+      <div className="container-page py-6 pb-16">
+        {data.items.length === 0 ? (
+          <div className="card max-w-2xl space-y-4 p-6">
+            <p className="text-lg font-semibold">{t("empty.title")}</p>
+            <p className="text-muted-foreground">{t("empty.text")}</p>
+            <Button asChild variant="outline"><Link href="/calendar">{t("empty.calendar")}</Link></Button>
+          </div>
+        ) : (
+          <Timeline events={data.items} themes={data.themes} query={query} />
+        )}
       </div>
     </>
   );

@@ -1,73 +1,69 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ListSearch } from "@/components/catalog/list-search";
-import { Pagination } from "@/components/catalog/pagination";
-import { TreeCard } from "@/components/catalog/tree-card";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { Link } from "@/lib/i18n/navigation";
-import { catalogFetch, listPage, type InventoryDetail, type SearchParams } from "@/lib/api/catalog";
+import { CipherChip } from "@/components/catalog/cipher-chip";
+import { CaseRow, CipherPath, Level, LevelList } from "@/components/catalog/hierarchy";
+import { DemoBadge } from "@/components/ui/demo-badge";
+import { DemoTag } from "@/components/ui/demo-tag";
+import { PageHeader } from "@/components/ui/page-header";
+import { UnavailableState } from "@/components/ui/state-view";
+import { catalogLoad, listPage, type InventoryDetail, type SearchParams } from "@/lib/api/catalog";
 import { localizedAlternates } from "@/lib/seo";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string; id: string }> }) {
+type Props = { params: Promise<{ locale: string; id: string }>; searchParams: Promise<SearchParams> };
+
+const load = (id: string, query: URLSearchParams, locale: string) =>
+  catalogLoad<InventoryDetail>(`inventories/${encodeURIComponent(id)}`, query, locale);
+
+export async function generateMetadata({ params }: Props) {
   const { locale, id } = await params;
   const t = await getTranslations({ locale, namespace: "catalog" });
-  const x = await catalogFetch<InventoryDetail>(`inventories/${encodeURIComponent(id)}`, new URLSearchParams(), locale);
-  return { title: x ? x.title || t("tree.inventoryOf", { number: x.number }) : t("title"), alternates: localizedAlternates(locale, `/catalog/inventories/${id}`) };
+  const item = await load(id, new URLSearchParams(), locale);
+  const cipher = item && t("tree.cipher.inventory", { fund: item.fund.number, inventory: item.number });
+  return { title: item ? [cipher, item.title].filter(Boolean).join(". ") : t("title"), alternates: localizedAlternates(locale, `/catalog/inventories/${id}`) };
 }
 
-export default async function InventoryPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<SearchParams>;
-}) {
+/** Опись: путь по шифру, дела описи с поиском, сведения об описи. */
+export default async function InventoryPage({ params, searchParams }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("catalog");
   const query = listPage(await searchParams);
-  const inventory = await catalogFetch<InventoryDetail>(`inventories/${encodeURIComponent(id)}`, query, locale);
+  const inventory = await load(id, query, locale);
+  if (inventory === undefined) return <UnavailableState />;
   if (!inventory) notFound();
-  const path = `/catalog/inventories/${inventory.id}`;
+  const label = t("tree.inventoryOf", { number: inventory.number });
+  const foreign = Boolean(inventory.title) && inventory.title_lang !== locale;
   return (
     <>
-      <Breadcrumbs
-        items={[
+      <PageHeader
+        crumbs={[
           { label: t("title"), href: "/catalog" },
-          { label: t("tree.fundsTitle"), href: "/catalog/funds" },
           { label: t("tree.fundOf", { number: inventory.fund.number }), href: inventory.fund.href },
-          { label: t("tree.inventoryOf", { number: inventory.number }) },
+          { label },
         ]}
+        title={inventory.title || label}
+        titleLang={foreign ? inventory.title_lang : undefined}
+        meta={
+          <>
+            <CipherChip>{t("tree.cipher.inventory", { fund: inventory.fund.number, inventory: inventory.number })}</CipherChip>
+            {inventory.is_demo && <DemoTag />}
+            {foreign && <DemoBadge kind="noTranslation" />}
+          </>
+        }
       />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-2">
-          <p className="text-sm text-muted-foreground">
-            <Link href={inventory.fund.href} className="hover:underline">
-              {t("tree.up")}: {t("tree.fundOf", { number: inventory.fund.number })}. {inventory.fund.title}
-            </Link>
-          </p>
-          <h1 className="text-3xl font-bold" lang={inventory.title_lang}>
-            {inventory.title || t("tree.inventoryOf", { number: inventory.number })}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {[inventory.dates_text, t("tree.counts.cases", { count: inventory.case_count }), t("tree.counts.documents", { count: inventory.document_count })]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-        </header>
-        <h2 className="text-xl font-semibold">{t("tree.casesInInventory")}</h2>
-        <ListSearch path={path} params={query} />
-        {inventory.cases.items.length === 0 ? (
-          <p className="text-muted-foreground">{t("tree.emptyCases")}</p>
-        ) : (
-          <ul className="grid gap-3 md:grid-cols-2">
-            {inventory.cases.items.map((item) => (
-              <li key={item.id}><TreeCard entry={{ kind: "case", item }} /></li>
-            ))}
-          </ul>
-        )}
-        <Pagination pathname={path} params={query} page={inventory.cases.page} pages={inventory.cases.pages} />
-      </div>
+      <Level
+        path={<CipherPath fund={inventory.fund} inventory={inventory} />}
+        facts={[
+          { label: t("tree.facts.fund"), value: inventory.fund.title },
+          { label: t("tree.facts.dates"), value: inventory.dates_text },
+          { label: t("tree.facts.cases"), value: inventory.case_count },
+          { label: t("tree.facts.documents"), value: inventory.document_count },
+        ]}
+      >
+        <LevelList heading={t("tree.casesInInventory")} pathname={inventory.href} query={query} list={inventory.cases} empty={t("tree.emptyCases")}>
+          {inventory.cases.items.map((item) => <CaseRow key={item.id} item={item} />)}
+        </LevelList>
+      </Level>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CabinetApp } from "@/components/cabinet/cabinet-app";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { SECTIONS } from "@/components/cabinet/sections";
+import { PageHeader } from "@/components/ui/page-header";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -8,21 +9,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t("title"), robots: { index: false } };
 }
 
-/** Личный кабинет (T5.18): необязательный, без заявлений, заказов и оплаты. */
-export default async function CabinetPage({ params }: { params: Promise<{ locale: string }> }) {
+/** Личный кабинет: необязательная персонализация (избранное, подборки, история поиска, подписки) без заявлений, заказов и оплаты. */
+export default async function CabinetPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ section?: string | string[] }> }) {
   const { locale } = await params;
+  const { section } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("cabinet");
+  const active = SECTIONS.find((id) => id === section) ?? SECTIONS[0];
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title") }]} />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-3">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-          <p className="max-w-3xl text-sm text-muted-foreground">{t("noRequests")}</p>
-        </header>
-        <CabinetApp />
+      <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("intro")} />
+      <div className="container-page py-8 lg:py-10">
+        <CabinetApp section={active} />
       </div>
     </>
   );

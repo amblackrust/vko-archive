@@ -1,39 +1,88 @@
 {
-  "title": "Personal cabinet",
-  "intro": "Optional section: favorites, personal selections, search history and subscriptions. The whole site works without registration.",
-  "noRequests": "The cabinet has no applications, orders, payments or request statuses. Requests to the archive are filed only through eGov.kz and e-Otinish.",
-  "loading": "Loading…",
-  "unavailable": "The cabinet is temporarily unavailable. The rest of the site works without it.",
+  "title": "Personal account",
+  "intro": "Save documents, build your own selections and return to earlier searches. The account is optional: the catalogue, search and exhibitions are open without registration.",
+  "noRequests": "The account has no applications, orders or payments. Requests to the archive are filed through eGov.kz and e-Otinish.",
+  "loading": "Loading the account",
+  "cancel": "Cancel",
+  "signedInAs": "Signed in as",
+  "logout": "Sign out",
+  "sectionsLabel": "Account sections",
+  "unavailable": {
+    "title": "The account is temporarily unavailable",
+    "text": "The rest of the site works without it. Try opening the account later.",
+    "retry": "Retry"
+  },
+  "sections": {
+    "favorites": "Favourites",
+    "selections": "My selections",
+    "searches": "Search history",
+    "subscriptions": "Subscriptions",
+    "account": "Account"
+  },
+  "features": {
+    "title": "What the account gives you",
+    "favorites": "Documents, exhibitions and news you want to come back to.",
+    "selections": "Your own themed lists of documents from favourites.",
+    "searches": "Saved queries you can repeat with one click.",
+    "subscriptions": "Marks for the topics you care about: news and new exhibitions."
+  },
   "auth": {
-    "login": "Sign in",
-    "register": "Register",
-    "email": "E-mail",
+    "title": {
+      "login": "Sign in",
+      "register": "Create an account",
+      "reset": "Reset password"
+    },
+    "lead": {
+      "login": "Enter the email and password you registered with.",
+      "register": "Only an email and a password are needed. No other data is requested.",
+      "reset": "Enter the email the account is registered with. We will send a link for a new password."
+    },
+    "email": "Email",
+    "displayName": "Name",
+    "displayNameHint": "Optional. This is how the account will address you.",
     "password": "Password",
-    "passwordHint": "At least 10 characters.",
-    "displayName": "Name (optional)",
-    "submitLogin": "Sign in",
-    "submitRegister": "Create cabinet",
-    "logout": "Sign out",
-    "signedInAs": "Signed in as {name}",
-    "deleteAccount": "Delete cabinet and all data",
-    "deleteConfirm": "Delete the cabinet with favorites, selections, history and subscriptions? This cannot be undone.",
-    "forgotPassword": "Forgot password?"
+    "showPassword": "Show password",
+    "forgotPassword": "Forgot password?",
+    "working": "Please wait…",
+    "submit": {
+      "login": "Sign in",
+      "register": "Create account",
+      "reset": "Send link"
+    },
+    "noAccount": "No account yet?",
+    "toRegister": "Register",
+    "hasAccount": "Already have an account?",
+    "remembered": "Remembered your password?",
+    "toLogin": "Sign in",
+    "rules": {
+      "length": "At least 10 characters",
+      "spaces": "No spaces at the start or the end",
+      "simple": "At least 4 different characters",
+      "done": "met",
+      "pending": "not met"
+    }
   },
   "errors": {
-    "invalid_credentials": "Wrong e-mail or password. After 5 failed attempts sign-in is blocked for 15 minutes.",
-    "email_taken": "This e-mail is already registered.",
-    "invalid_email": "Check the e-mail address.",
-    "password_length": "The password must be 10 to 256 characters.",
-    "password_too_weak": "The password is too simple or starts/ends with a space.",
-    "rate_limited": "Too many attempts. Please wait a little and try again.",
-    "limit_reached": "The limit of entries has been reached.",
+    "invalid_credentials": "Wrong email or password. After 5 failed attempts sign-in is blocked for 15 minutes.",
+    "email_taken": "This email is already registered. Sign in or reset the password.",
+    "invalid_email": "Check the email address.",
+    "password_length": "The password must be 10 to 256 characters long.",
+    "password_too_weak": "The password is too simple: use at least 4 different characters and no spaces at the edges.",
+    "password_unchanged": "The new password must differ from the current one.",
+    "rate_limited": "Too many attempts. Wait a little and try again.",
+    "limit_reached": "The limit of records is reached. Delete some and try again.",
     "not_found": "The item was not found or is no longer published.",
+    "invalid_token": "The link is invalid or has expired.",
     "generic": "The action failed. Please try again."
   },
   "favorites": {
-    "title": "Favorites",
-    "empty": "Nothing yet. Use “Add to favorites” on document, exhibition and news pages.",
-    "remove": "Remove from favorites: {title}",
+    "lead": "Items you marked with the “Add to favourites” button.",
+    "emptyTitle": "No favourites yet",
+    "emptyText": "Open a document, an exhibition or a news item and press “Add to favourites” next to the title.",
+    "toCatalog": "Open the catalogue",
+    "toExhibitions": "Online exhibitions",
+    "toNews": "News",
+    "remove": "Remove from favourites: {title}",
     "types": {
       "document": "Document",
       "exhibition": "Exhibition",
@@ -41,73 +90,105 @@
     }
   },
   "favorite": {
-    "add": "Add to favorites",
-    "remove": "In favorites",
-    "signIn": "Sign in to save favorites",
-    "failed": "Could not update favorites."
+    "add": "Add to favourites",
+    "added": "In favourites",
+    "addedStatus": "Added to favourites",
+    "signInHint": "Sign in to your account to save items",
+    "failed": "Could not change favourites."
   },
   "selections": {
-    "title": "My selections",
-    "empty": "No selections yet.",
-    "newTitle": "Name of a new selection",
+    "lead": "Themed lists of documents. A document goes into a selection from favourites.",
+    "newTitle": "Name of the new selection",
+    "placeholder": "For example: Family history",
     "create": "Create selection",
-    "delete": "Delete selection {title}",
-    "noDocuments": "No documents in this selection.",
-    "removeDocument": "Remove from selection: {title}",
-    "addTitle": "Add a document from favorites",
-    "addPick": "Document from favorites",
-    "add": "Add"
+    "emptyTitle": "No selections yet",
+    "emptyText": "Think of a name and press “Create selection”. Then add documents from favourites.",
+    "count": "{count, plural, =0 {No documents} one {# document} other {# documents}}",
+    "delete": "Delete the selection “{title}”",
+    "removeDocument": "Remove from the selection: {title}",
+    "addPick": "Add a document from favourites",
+    "add": "Add",
+    "allAdded": "All documents from favourites are already in this selection.",
+    "needFavorites": "To add a document, save it to favourites first: open the document in the catalogue and press “Add to favourites”.",
+    "deleteTitle": "Delete the selection?",
+    "deleteText": "The selection “{title}” will be deleted. The documents stay in favourites.",
+    "deleteConfirm": "Delete selection"
   },
   "searches": {
-    "title": "Search history",
-    "empty": "History is empty.",
-    "queryLabel": "Save the query and search",
+    "lead": "Queries saved through this form. Click a query to repeat the search.",
+    "queryLabel": "Save a query and search",
+    "placeholder": "For example: photographs of the 1950s",
     "go": "Search",
+    "emptyTitle": "The history is empty",
+    "emptyText": "Type a query in the field above: it is saved here and opens in the search.",
+    "removeOne": "Delete the query “{query}”",
     "clear": "Clear history",
-    "removeOne": "Delete query {query}",
-    "hint": "Queries made through this form are saved here."
+    "clearTitle": "Clear the search history?",
+    "clearText": "All saved queries will be deleted. This cannot be undone."
   },
   "subscriptions": {
-    "title": "Subscriptions",
-    "news": "News and events",
-    "exhibitions": "New online exhibitions"
+    "lead": "Tick the topics you are interested in.",
+    "demo": "Demonstration mode: subscriptions are saved in the account, but emails are not sent yet.",
+    "news": {
+      "title": "News and events",
+      "text": "Archive announcements, events and publications."
+    },
+    "exhibitions": {
+      "title": "New online exhibitions",
+      "text": "A message about every new exhibition on the site."
+    },
+    "status": "{count, plural, =0 {No subscriptions} one {# topic selected} other {# topics selected}}"
+  },
+  "account": {
+    "lead": "Email, password and deleting the account."
+  },
+  "email": {
+    "title": "Email",
+    "confirmed": "The address is confirmed.",
+    "unconfirmedTitle": "Confirm your email address",
+    "unconfirmedText": "Open the link from the email you received after registration. If there is no email, send it again.",
+    "resend": "Send the email again",
+    "sent": "The email has been sent. Open the link in it."
   },
   "password": {
     "title": "Change password",
     "current": "Current password",
     "new": "New password",
+    "note": "After the change you will need to sign in again on other devices.",
+    "done": "Password changed. Other devices have been signed out.",
     "submit": "Change password",
-    "note": "Other devices will have to sign in again. Reset by e-mail is unavailable: mail delivery is not connected.",
-    "done": "Password changed. Other sessions were signed out.",
-    "wrongCurrent": "The current password is wrong. After 5 failed attempts sign-in is blocked for 15 minutes.",
-    "unchanged": "The new password must differ from the current one."
+    "wrongCurrent": "The current password is wrong. After 5 failed attempts sign-in is blocked for 15 minutes."
+  },
+  "delete": {
+    "title": "Delete the account",
+    "text": "Favourites, selections, search history and subscriptions are deleted together with the account.",
+    "button": "Delete account",
+    "confirmTitle": "Delete the account and all data?",
+    "confirmText": "Favourites, selections, search history and subscriptions will be deleted permanently.",
+    "confirm": "Delete account"
   },
   "reset": {
-    "requestTitle": "Password recovery",
-    "requestHint": "Enter the e-mail your account is registered with. We will send a link to set a new password.",
-    "requestSubmit": "Send link",
-    "requestSent": "If this address is registered, an e-mail with a link has been sent. Check your inbox, including the spam folder.",
-    "back": "Back to sign in",
+    "requestSent": "If the address is registered, we have sent an email with a link. Check your inbox, including the spam folder.",
     "confirmTitle": "New password",
-    "repeat": "Repeat new password",
-    "mismatch": "Passwords do not match.",
+    "confirmLead": "Choose a new password for your account.",
+    "repeat": "Repeat the new password",
+    "mismatch": "The passwords do not match.",
     "confirmSubmit": "Save password",
-    "done": "Password changed. You can now sign in with the new password.",
-    "signIn": "Go to sign in",
-    "invalidLink": "The link is invalid or has expired.",
-    "requestAgain": "Request a new link"
+    "done": "Password changed",
+    "doneText": "You can now sign in with the new password.",
+    "signIn": "Go to sign-in",
+    "invalidLink": "The link is invalid or has expired",
+    "invalidText": "Request a new link: press “Forgot password?” on the sign-in page.",
+    "requestAgain": "Open the sign-in page"
   },
   "emailConfirm": {
-    "title": "E-mail confirmation",
-    "pending": "Confirming your e-mail address…",
-    "done": "Your e-mail address is confirmed.",
-    "invalid": "The link is invalid or has expired. Sign in to your account and resend the confirmation e-mail.",
+    "title": "Email confirmation",
+    "lead": "Checking the link from the email.",
+    "pending": "Confirming the address…",
+    "done": "The email address is confirmed",
+    "doneText": "You can continue working in the account.",
+    "invalid": "The link is invalid or has expired",
+    "invalidText": "Sign in and send the email again under “Account”.",
     "toCabinet": "Go to the account"
-  },
-  "emailBanner": {
-    "text": "Confirm your e-mail address using the link in the message.",
-    "resend": "Resend the e-mail",
-    "sent": "The e-mail has been sent. Open the link in it.",
-    "tooOften": "E-mails are being sent too often. Wait a little and try again."
   }
 }

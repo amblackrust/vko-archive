@@ -1,30 +1,25 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EmailConfirm } from "@/components/cabinet/email-confirm";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { PageHeader } from "@/components/ui/page-header";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ token?: string | string[] }> };
+
+export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "cabinet" });
   return { title: t("emailConfirm.title"), robots: { index: false } };
 }
 
-/** Подтверждение e-mail по ссылке из письма (токен в query, проверяет только сервер). */
-export default async function ConfirmEmailPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ token?: string | string[] }>;
-}) {
+/** Страница по ссылке из письма: токен в адресе проверяет только сервер. */
+export default async function Page({ params, searchParams }: Props) {
   const { locale } = await params;
   const { token } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("cabinet");
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title"), href: "/cabinet" }, { label: t("emailConfirm.title") }]} />
-      <div className="container-page space-y-6 pb-12">
-        <h1 className="text-3xl font-bold">{t("emailConfirm.title")}</h1>
+      <PageHeader crumbs={[{ label: t("title"), href: "/cabinet" }, { label: t("emailConfirm.title") }]} title={t("emailConfirm.title")} lead={t("emailConfirm.lead")} />
+      <div className="container-page py-8 lg:py-10">
         <EmailConfirm token={typeof token === "string" ? token : ""} />
       </div>
     </>

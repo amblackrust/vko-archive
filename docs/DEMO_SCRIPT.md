@@ -1,16 +1,19 @@
 # DEMO_SCRIPT — сценарий защиты (T8.3)
 
-Источник: плана работ §6 (сценарии проверки) и §7 (сценарий защиты). Всё, что показывается, работает на **вымышленных
-демо-данных** (бейдж «ДЕМО»): реальных персональных данных на сайте нет. Длительность: 12–15 минут.
+Источник: плана работ §6 (сценарии проверки) и §7 (сценарий защиты). В базе три вида данных
+([DATA_SOURCES.md](DATA_SOURCES.md)): реальные перечни фондов архива (только названия), подлинные изображения
+с Wikimedia Commons в выставках, «Архиве памяти» и фонде «ОИ-1» (с автором и лицензией; в фонды архива не входят)
+и вымышленные документы шести демо-фондов (бейдж «Демо-запись»). Персональных данных граждан на сайте нет.
+Длительность: 12–15 минут.
 
 ## 0. Подготовка (за 30 минут до выступления)
 
 ```bash
 make dev                                   # PostgreSQL, миграции, backend :8000, frontend :3000
 cd backend
-.venv/bin/python -m seed                   # данные из info/ + демо-каталог (идемпотентно)
+.venv/bin/python -m seed                   # данные из info/, открытые материалы и демо-каталог (идемпотентно)
 .venv/bin/python -m app.services.indexing  # поисковый индекс и эмбеддинги (нужна Ollama)
-ollama list                                # qwen3.5:9b-q6k и bge-m3 на месте
+ollama list                                # qwen3.5:9b и bge-m3 на месте
 curl -s localhost:8000/api/health          # db / ollama / embeddings = ok
 ```
 
@@ -25,14 +28,19 @@ curl -s localhost:8000/api/health          # db / ollama / embeddings = ok
 
 ```bash
 cd backend
-for spec in "superadmin@demo.kz super_admin" "siteadmin@demo.kz site_admin" "editor@demo.kz editor" \
-            "archivist@demo.kz archivist" "moderator@demo.kz moderator" "analyst@demo.kz analyst"; do
-  set -- $spec
-  VKO_USER_PASSWORD='Demo-Pass-2026!' .venv/bin/python -m app.cli create-user --email "$1" --role "$2" --full-name "ДЕМО $2"
-done
+while IFS='|' read -r email role name; do
+  VKO_USER_PASSWORD='Demo-Pass-2026!' .venv/bin/python -m app.cli create-user --email "$email" --role "$role" --full-name "$name"
+done <<'USERS'
+superadmin@demo.kz|super_admin|Главный администратор
+siteadmin@demo.kz|site_admin|Администратор сайта
+editor@demo.kz|editor|Редактор
+archivist@demo.kz|archivist|Сотрудник архива
+moderator@demo.kz|moderator|Модератор
+analyst@demo.kz|analyst|Аналитик
+USERS
 # Администратор филиала привязывается к филиалу: id Риддерского филиала берём из /api/admin/branches
 VKO_USER_PASSWORD='Demo-Pass-2026!' .venv/bin/python -m app.cli create-user \
-  --email branch.ridder@demo.kz --role branch_admin --branch-id <UUID филиала branch-ridder> --full-name "ДЕМО branch_admin"
+  --email branch.ridder@demo.kz --role branch_admin --branch-id <UUID филиала branch-ridder> --full-name "Администратор Риддерского филиала"
 ```
 
 | Роль | Логин | Пароль | Что показывать |
@@ -137,7 +145,8 @@ VKO_USER_PASSWORD='Demo-Pass-2026!' .venv/bin/python -m app.cli create-user \
 
 ## 3. Что нельзя показывать и говорить
 - Любые «заявки», «заказ справки», «оплата» — их на сайте нет по ТЗ.
-- Реальные ФИО и документы граждан: всё тестовое — вымышленное и помечено «ДЕМО».
+- Реальные ФИО и документы граждан: документы демо-фондов вымышленные и помечены «Демо-запись». Изображения
+  выставок и «Архива памяти» — подлинные, из открытого источника; не называть их документами из фондов архива.
 - Не выдавать мок за готовое: перечень «Имитация/макет» и «Частично» — в `READINESS.md`.
 - Не трогать `backend/storage/`, не удалять базу перед показом; резервная копия: `make backup`.
 

@@ -30,6 +30,24 @@ def _cleanup_tree(factory, *ids):
             s.commit()
 
 
+def test_fund_accounting_fields_are_editable(api, factory):
+    _as(api, factory.user(RoleCode.EDITOR))
+    names = [{"dates": "1939-1945", "name": "Старое название"}, {"dates": None, "name": "ДЕМО фонд"}]
+    fields = {"former_names": names, "category": 2, "ownership": "state", "restricted": "partial", "units_count": 10,
+              "first_received": "1963-08-12", "source": "тест"}  # fmt: skip
+    created = api.post(f"{URL}/fund", json={"number": _code(), "title": {"ru": "ДЕМО фонд"}, "type": "organization", **fields})
+    assert created.status_code == 201, created.text
+    fund_id = created.json()["id"]
+    assert {name: created.json()["values"][name] for name in fields} == fields
+    edited = api.patch(f"{URL}/fund/{fund_id}", json={"version": 1, "category": 3, "restricted": None})
+    assert edited.status_code == 200, edited.text
+    assert (edited.json()["values"]["category"], edited.json()["values"]["restricted"]) == (3, None)
+    # A fully secret fund has no mark: it must simply stay unpublished.
+    for bad in ({"restricted": "secret"}, {"category": 4}, {"ownership": "x"}, {"former_names": [{"dates": None}]}):
+        assert api.patch(f"{URL}/fund/{fund_id}", json={"version": 2, **bad}).status_code == 422
+    _cleanup_tree(factory, (Fund, uuid.UUID(fund_id)))
+
+
 def test_create_tree_edit_and_history(api, factory):
     editor = factory.user(RoleCode.EDITOR)
     _as(api, editor)

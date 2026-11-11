@@ -1,103 +1,195 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CollectionCard } from "@/components/memory/collection-card";
-import { CollectionFilters } from "@/components/memory/collection-filters";
-import { PersonCard } from "@/components/memory/person-card";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { fetchPublic, type ExhibitionList } from "@/components/exhibitions/api";
+import { ExhibitionCard } from "@/components/exhibitions/exhibition-card";
+import { FilterForm, filterValues } from "@/components/memory/filter-form";
+import { themeLabel } from "@/components/memory/labels";
+import { DemoBadge } from "@/components/ui/demo-badge";
+import { DemoTag } from "@/components/ui/demo-tag";
+import { PageHeader } from "@/components/ui/page-header";
+import { RecordList, RecordRow } from "@/components/ui/record-list";
+import { Section } from "@/components/ui/section";
+import { UnavailableState } from "@/components/ui/state-view";
+import { attempt, fetchCollections, fetchMapPoints, fetchPersons, fetchTimeline } from "@/lib/api/memory";
 import { Link } from "@/lib/i18n/navigation";
-import { fetchCollections, fetchPersons } from "@/lib/api/memory";
-import { History, MapPinned } from "lucide-react";
 import { localizedAlternates } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+/**
+ * Одиннадцать направлений раздела из ТЗ (§5.6) в порядке ТЗ. Ключ направления — это тема коллекций (поле theme в API),
+ * которой оно наполняется; отдельного поля «направление» у коллекции нет.
+ */
+const DIRECTIONS = ["region", "ust-kamenogorsk", "industry", "people", "education", "culture", "military", "war", "family", "organisations", "periods"];
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "memory" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/memory") };
+  return { title: t("title"), description: t("intro"), alternates: localizedAlternates(locale, "/memory") };
 }
 
-// Направление ТЗ §5.6 -> тема коллекции (если коллекции по нему уже есть).
-const directionThemes: Record<number, string> = { 1: "ust-kamenogorsk", 2: "lead-zinc", 4: "education" };
-
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
-
-export default async function MemoryPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: SearchParams }) {
+export default async function MemoryPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const sp = await searchParams;
-  const filters = { q: first(sp.q), theme: first(sp.theme), period: first(sp.period) };
   const t = await getTranslations("memory");
-  const [collections, persons] = await Promise.all([fetchCollections(locale, filters), fetchPersons(locale)]);
-  const available = new Set(collections.themes.map((x) => x.value));
+  const filters = filterValues(await searchParams);
+  const filtered = Boolean(filters.q || filters.theme || filters.period);
+  // Счётчики и указатель направлений строятся по всему разделу, список — по условиям поиска.
+  const [all, found, persons, foundPersons, timeline, places, exhibitions] = await Promise.all([
+    attempt(fetchCollections(locale)),
+    filtered ? attempt(fetchCollections(locale, filters)) : undefined,
+    attempt(fetchPersons(locale)),
+    filters.q ? attempt(fetchPersons(locale, filters.q)) : undefined,
+    attempt(fetchTimeline(locale)),
+    attempt(fetchMapPoints(locale)),
+    attempt(fetchPublic<ExhibitionList>("exhibitions", new URLSearchParams(), locale)),
+  ]);
+  if (!all) return <UnavailableState />;
+  const collections = (filtered ? found?.items : all.items) ?? [];
+  const people = (filters.q ? foundPersons : persons) ?? [];
+
+  const ways = [
+    { id: "collections", unit: "collections", href: "/memory#collections", count: all.items.length },
+    { id: "people", unit: "people", href: "/memory#persons", count: persons?.length },
+    { id: "timeline", unit: "events", href: "/memory/timeline", count: timeline?.items.length },
+    { id: "map", unit: "places", href: "/memory/map", count: places?.items.length },
+    { id: "exhibitions", unit: "exhibitions", href: "/exhibitions", count: exhibitions?.total },
+  ];
+  const amount = (unit: string, count: number) => `${count} ${t(`units.${unit}`, { count })}`;
+
+  /** Куда ведёт направление и чем оно наполнено: коллекциями своей темы, а без них — личностями или хронологией; null — материалы готовятся. */
+  function directionEntry(theme: string) {
+    const count = all!.themes.find((facet) => facet.value === theme)?.count;
+    if (count) return { href: `/memory?theme=${theme}#collections`, status: amount("collections", count) };
+    if (theme === "people" && persons?.length) return { href: "/memory#persons", status: amount("people", persons.length) };
+    if (theme === "periods" && timeline?.items.length) return { href: "/memory/timeline", status: amount("events", timeline.items.length) };
+    return null;
+  }
+
   return (
     <>
-      <Breadcrumbs items={[{ label: t("breadcrumb") }]} />
-      <div className="container-page space-y-10 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-        </header>
+      <PageHeader tone="brand" crumbs={[{ label: t("breadcrumb") }]} title={t("title")} lead={t("intro")} />
+      <nav aria-label={t("ways.label")} className="container-page">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {ways.map((way) => (
+            <li key={way.id}>
+              <Link href={way.href} className="card lift group flex h-full flex-col gap-1 p-5">
+                {way.count != null && (
+                  <span className="text-sm text-muted-foreground">
+                    <span className="mr-1.5 text-3xl font-bold tabular-nums text-primary">{way.count}</span>
+                    {t(`units.${way.unit}`, { count: way.count })}
+                  </span>
+                )}
+                <span className="text-[1.0625rem] font-semibold group-hover:text-primary">{t(`ways.${way.id}.title`)}</span>
+                <span className="text-sm text-muted-foreground">{t(`ways.${way.id}.text`)}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-        <section aria-labelledby="dir-title" className="space-y-3">
-          <h2 id="dir-title" className="text-xl font-semibold">{t("directions.title")}</h2>
-          <p className="text-sm text-muted-foreground">{t("directions.hint")}</p>
-          <ul className="flex flex-wrap gap-2">
-            {Array.from({ length: 11 }, (_, i) => {
-              const theme = directionThemes[i];
-              const label = t(`directions.d${i}`);
-              return (
-                <li key={i}>
-                  {theme && available.has(theme) ? (
-                    <Link href={`/memory?theme=${theme}`} className="inline-block rounded-full border border-primary bg-surface px-3 py-1.5 text-sm text-primary hover:bg-surface-muted">{label}</Link>
-                  ) : (
-                    <span className="inline-block rounded-full border px-3 py-1.5 text-sm text-muted-foreground">{label}</span>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+      <Section id="directions" title={t("directions.title")} text={t("directions.text")}>
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {DIRECTIONS.map((direction) => {
+            const entry = directionEntry(direction);
+            const name = t(`directions.${direction}`);
+            return (
+              <li key={direction}>
+                {entry ? (
+                  <Link href={entry.href} className="card lift group flex h-full items-start justify-between gap-3 p-4">
+                    <span className="font-semibold group-hover:text-primary">{name}</span>
+                    <span className="shrink-0 rounded-full bg-primary-soft px-2.5 py-0.5 text-sm font-medium text-primary">{entry.status}</span>
+                  </Link>
+                ) : (
+                  // Направление без материалов — не ссылка: пунктирная рамка и подпись «готовятся».
+                  <div className="flex h-full flex-col gap-1 rounded-lg border border-dashed border-border-strong p-4 text-muted-foreground">
+                    <span>{name}</span>
+                    <span className="text-sm">{t("directions.pending")}</span>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </Section>
 
-        <section aria-labelledby="col-title" className="space-y-4">
-          <h2 id="col-title" className="text-2xl font-semibold">{t("collections.title")}</h2>
-          <CollectionFilters themes={collections.themes} periods={collections.periods} values={filters} />
-          <p role="status" className="text-sm text-muted-foreground">{t("collections.count", { count: collections.items.length })}</p>
-          {collections.items.length === 0 ? (
-            <p className="rounded-lg border p-4">{t("collections.empty")}</p>
-          ) : (
-            <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {collections.items.map((item) => <li key={item.slug}><CollectionCard item={item} /></li>)}
-            </ul>
-          )}
-        </section>
-
-        <section aria-labelledby="per-title" className="space-y-4">
-          <h2 id="per-title" className="text-2xl font-semibold">{t("persons.title")}</h2>
-          {persons.length === 0 ? (
-            <p className="rounded-lg border p-4">{t("persons.empty")}</p>
-          ) : (
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {persons.map((item) => <li key={item.slug}><PersonCard item={item} /></li>)}
-            </ul>
-          )}
-        </section>
-
-        <section aria-labelledby="more-title" className="space-y-4">
-          <h2 id="more-title" className="text-2xl font-semibold">{t("more.title")}</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Link href="/memory/timeline" className="flex gap-3 rounded-lg border bg-surface p-4 hover:bg-surface-muted">
-              <History className="mt-1 size-6 shrink-0 text-primary" aria-hidden />
-              <span><strong className="block">{t("more.timeline")}</strong><span className="text-sm text-muted-foreground">{t("more.timelineText")}</span></span>
-            </Link>
-            <Link href="/memory/map" className="flex gap-3 rounded-lg border bg-surface p-4 hover:bg-surface-muted">
-              <MapPinned className="mt-1 size-6 shrink-0 text-primary" aria-hidden />
-              <span><strong className="block">{t("more.map")}</strong><span className="text-sm text-muted-foreground">{t("more.mapText")}</span></span>
-            </Link>
+      <Section id="collections" title={t("collections.title")} text={t("collections.text")}>
+        <FilterForm
+          path="/memory#collections"
+          label={t("filters.label")}
+          values={filters}
+          themes={all.themes.map((facet) => ({ value: facet.value, label: `${themeLabel(t, "themes", facet.value)} (${facet.count})` }))}
+          periods={all.periods.map((facet) => ({ value: facet.value, label: `${facet.value} (${facet.count})` }))}
+          text={{ q: t("filters.q"), theme: t("filters.theme"), period: t("filters.period"), all: t("filters.all"), submit: t("filters.submit"), reset: t("filters.reset") }}
+        />
+        {filtered && <p role="status" className="mt-6 font-semibold">{t("collections.found", { count: collections.length })}</p>}
+        {collections.length === 0 ? (
+          <div className="card mt-4 space-y-2 p-6">
+            <p className="text-lg font-semibold">{t(filtered ? "collections.noneFound" : "collections.empty")}</p>
+            <p className="text-muted-foreground">{t(filtered ? "collections.noneFoundText" : "collections.emptyText")}</p>
+            <p>
+              <Link href={filtered ? "/memory#collections" : "/catalog"} className="text-link font-medium">{t(filtered ? "collections.showAll" : "collections.toCatalog")}</Link>
+            </p>
           </div>
-          <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">{t("more.soon")}</p>
-        </section>
-      </div>
+        ) : (
+          <RecordList className="mt-4">
+            {collections.map((item) => (
+              <RecordRow
+                key={item.slug}
+                title={item.title}
+                href={item.href}
+                lang={item.title_lang}
+                meta={
+                  <>
+                    {item.theme && <span>{themeLabel(t, "themes", item.theme)}</span>}
+                    {item.period && <span>{item.period}</span>}
+                    {item.is_demo && <DemoTag />}
+                    {item.translation_missing && <DemoBadge kind="noTranslation" />}
+                  </>
+                }
+                aside={<span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-muted-foreground">{t("collections.items", { count: item.item_count })}</span>}
+              >
+                {item.description && <p className="mt-2 line-clamp-2 max-w-3xl text-sm" lang={item.title_lang}>{item.description}</p>}
+              </RecordRow>
+            ))}
+          </RecordList>
+        )}
+      </Section>
+
+      <Section id="persons" title={t("people.title")} text={t("people.text")}>
+        {people.length === 0 ? (
+          <p className="card max-w-2xl p-6 text-muted-foreground">{filters.q ? t("people.noneFound", { q: filters.q }) : t("people.empty")}</p>
+        ) : (
+          <RecordList>
+            {people.map((person) => (
+              <RecordRow
+                key={person.slug}
+                title={person.name}
+                href={person.href}
+                lang={person.name_lang}
+                meta={(person.is_demo || person.translation_missing) && (
+                  <>
+                    {person.is_demo && <DemoTag />}
+                    {person.translation_missing && <DemoBadge kind="noTranslation" />}
+                  </>
+                )}
+                aside={person.years_text}
+              >
+                {person.bio && <p className="mt-1 line-clamp-2 max-w-3xl text-sm text-muted-foreground" lang={person.name_lang}>{person.bio}</p>}
+              </RecordRow>
+            ))}
+          </RecordList>
+        )}
+      </Section>
+
+      {exhibitions && exhibitions.items.length > 0 && (
+        <Section id="memory-exhibitions" title={t("exhibitions.title")} text={t("exhibitions.text")} href="/exhibitions" linkLabel={t("exhibitions.all")}>
+          <ul className="grid gap-4 md:grid-cols-3">
+            {exhibitions.items.slice(0, 3).map((item) => (
+              <li key={item.id}><ExhibitionCard exhibition={item} locale={locale} heading="h3" /></li>
+            ))}
+          </ul>
+        </Section>
+      )}
     </>
   );
 }

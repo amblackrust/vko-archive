@@ -16,12 +16,13 @@ from sqlalchemy import (
     Integer,
     String,
     Table,
+    Text,
     UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.base import Base, ContentMixin, I18n, i18n_column, str_enum
+from app.models.base import Base, ContentMixin, I18n, UUIDPkMixin, i18n_column, str_enum
 from app.models.enums import DescriptionStatus, FileAccess, FundType
 
 document_tags = Table(
@@ -42,7 +43,12 @@ document_categories = Table(
 class Fund(ContentMixin, Base):
     __tablename__ = "funds"
     # A fund number is unique within its archive (branch); NULL branch counts as one archive.
-    __table_args__ = (UniqueConstraint("branch_id", "number", postgresql_nulls_not_distinct=True),)
+    __table_args__ = (
+        UniqueConstraint("branch_id", "number", postgresql_nulls_not_distinct=True),
+        CheckConstraint("category BETWEEN 1 AND 3", name="category_range"),
+        CheckConstraint("ownership IN ('state', 'private')", name="ownership_value"),
+        CheckConstraint("restricted = 'partial'", name="restricted_value"),
+    )
 
     number: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     title: Mapped[I18n] = i18n_column()
@@ -54,8 +60,39 @@ class Fund(ContentMixin, Base):
     )
     annotation: Mapped[I18n] = i18n_column()
     is_demo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default="false")
+    # Every name the fund's organisation had, oldest first: [{"dates": "1939-1945" | None, "name": "..."}].
+    # `title` is the latest one.
+    former_names: Mapped[list[dict[str, str | None]]] = mapped_column(
+        JSONB, nullable=False, default=list, server_default="[]"
+    )
+    units_count: Mapped[int | None] = mapped_column(Integer)  # storage units (ед. хр.)
+    category: Mapped[int | None] = mapped_column(Integer)  # 1..3
+    ownership: Mapped[str | None] = mapped_column(String(16))  # state / private
+    first_received: Mapped[date | None] = mapped_column(Date)
+    # "partial": some storage units are restricted («ч.с.»), the description is public.
+    # Fully secret funds are never stored, so there is no other value.
+    restricted: Mapped[str | None] = mapped_column(String(16))
+    source: Mapped[str | None] = mapped_column(String(255))  # where the description comes from
 
     inventories: Mapped[list["Inventory"]] = relationship(back_populates="fund")
+
+
+class Newspaper(UUIDPkMixin, Base):
+    """A newspaper the archive keeps, from its public «Перечень газет» (loaded by the seed).
+    The list is public as a whole, so the rows carry no workflow status."""
+
+    __tablename__ = "newspapers"
+    # The same title under another publisher is another newspaper.
+    __table_args__ = (UniqueConstraint("title", "publisher", postgresql_nulls_not_distinct=True),)
+
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    publisher: Mapped[str | None] = mapped_column(Text)
+    year_from: Mapped[int] = mapped_column(Integer, nullable=False)
+    year_to: Mapped[int] = mapped_column(Integer, nullable=False)
+    volumes_total: Mapped[int] = mapped_column(Integer, nullable=False)
+    years_covered: Mapped[list[int]] = mapped_column(JSONB, nullable=False)  # every year that has a volume
+    # One entry per bound volume: [{"year": 1958, "volumes": 1, "note": "Том 2" | None}].
+    years: Mapped[list[dict]] = mapped_column(JSONB, nullable=False)
 
 
 class Inventory(ContentMixin, Base):

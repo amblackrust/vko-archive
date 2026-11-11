@@ -13,7 +13,7 @@ from app.models.cabinet import (
     VisitorSubscription,
     VisitorToken,
 )
-from app.models.catalog import Case, Document, Fund, Inventory, document_categories, document_tags
+from app.models.catalog import Case, Document, Fund, Inventory, Newspaper, document_categories, document_tags
 from app.models.content import FAQ, Category, LegalAct, MemorialDate, News, Page, PriceListItem, SiteSetting, Tag
 from app.models.enums import (
     AuditResult,
@@ -68,6 +68,7 @@ __all__ = [
     "LegalActStatus",
     "MemorialDate",
     "News",
+    "Newspaper",
     "Notification",
     "OcrStatus",
     "Page",

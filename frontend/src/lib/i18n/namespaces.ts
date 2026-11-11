@@ -32,4 +32,5 @@ export const namespaces = [
   "misc",
   "adminAi",
   "adminContent",
+  "navigator",
 ] as const;

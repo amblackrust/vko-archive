@@ -54,6 +54,15 @@ def alembic_config(url: str) -> Config:
     return config
 
 
+@pytest.fixture(autouse=True)
+def default_ai_settings(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Tests assume the documented defaults: a local backend/.env may enable reasoning for a model that
+    cannot switch it off, or name a vision model for OCR."""
+    settings = get_settings()
+    monkeypatch.setattr(settings, "ollama_think", False)
+    monkeypatch.setattr(settings, "ollama_vision_model", "")
+
+
 @pytest.fixture(scope="session")
 def test_db_url() -> str:
     url = _test_database_url(get_settings())

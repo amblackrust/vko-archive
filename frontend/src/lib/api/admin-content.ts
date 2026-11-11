@@ -45,6 +45,8 @@ export interface HistoryEntry {
   ts: string;
   from_status: string | null;
   to_status: string;
+  /** Кто сохранил версию или сменил статус; имени сервер не отдаёт. */
+  user_id: string | null;
   comment: string | null;
   version: number;
   changes: { field: string; old: unknown; new: unknown }[];

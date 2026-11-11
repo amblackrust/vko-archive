@@ -24,35 +24,46 @@
     "close": "Close menu",
     "main": "Main menu",
     "mobile": "Mobile menu",
-    "sectionToggle": "Expand section"
+    "sectionToggle": "Expand section",
+    "title": "Menu",
+    "description": "Language, appearance, site sections and contacts"
   },
   "nav": {
     "groups": {
-      "about": "About the archive",
-      "services": "Services and documents",
-      "memory": "Memory archive",
-      "media": "News and publications"
+      "about": "About",
+      "services": "Services",
+      "catalog": "Catalogue",
+      "history": "Regional history",
+      "help": "For visitors"
     },
     "items": {
-      "catalog": "Electronic catalogue",
       "about": "About the archive",
       "branches": "Branches and map",
       "readingRoom": "Reading room",
       "contacts": "Contacts",
-      "help": "Visitor guide",
-      "stateService": "Public service",
+      "help": "How to use the site",
+      "stateService": "Archival certificate: public service",
       "paidServices": "Paid services",
       "legal": "Legal acts",
       "compliance": "Compliance and anti-corruption",
-      "memory": "Great Memory Archive",
-      "timeline": "Interactive timeline",
-      "historyMap": "Historical map of the region",
+      "memory": "Great Archive of Memory",
+      "timeline": "Timeline",
+      "historyMap": "Historical map",
       "exhibitions": "Online exhibitions",
       "news": "News and events",
       "publications": "Essays and collections",
       "calendar": "Memorial dates calendar",
       "symbols": "State symbols",
-      "links": "Useful links"
+      "links": "Useful links",
+      "search": "Search the archive",
+      "documents": "Documents",
+      "funds": "Archival fonds",
+      "personalFunds": "Personal fonds",
+      "newspapers": "Newspaper holdings",
+      "faq": "Questions and answers",
+      "assistant": "Archive assistant",
+      "navigator": "Where to look for records",
+      "services": "Archive services"
     }
   },
   "contactsBlock": {
@@ -92,5 +103,57 @@
     "title": "State Archive of East Kazakhstan Region",
     "stub": "The home page will be built in a later stage. The site skeleton works: language, theme, menu and system states."
   },
-  "counter": "Visitors: {count}"
+  "counter": "Visitors: {count}",
+  "parentOrg": "Department of Digitalization and Archives of East Kazakhstan Region",
+  "logo": {
+    "line1": "State Archive",
+    "line2": "of East Kazakhstan Region"
+  },
+  "footerNav": "Site sections",
+  "a11y": {
+    "open": "Accessible version",
+    "title": "Display settings",
+    "hint": "Settings are saved in this browser.",
+    "close": "Close settings",
+    "reset": "Reset settings",
+    "font": {
+      "label": "Text size",
+      "md": "Normal",
+      "lg": "Large",
+      "xl": "Extra large"
+    },
+    "contrast": {
+      "label": "Contrast",
+      "normal": "Normal",
+      "high": "High"
+    },
+    "spacing": {
+      "label": "Letter and line spacing",
+      "normal": "Normal",
+      "wide": "Wide"
+    },
+    "images": {
+      "label": "Images",
+      "on": "Show",
+      "off": "Hide"
+    }
+  },
+  "quick": {
+    "placeholder": "What are you looking for? Organisation, event, place, code",
+    "hint": "Start typing; use the arrow keys to choose a row, Enter opens it",
+    "shortcuts": "Frequent sections",
+    "results": "Found",
+    "empty": "Nothing found. Try another word or open the full search.",
+    "all": "All results for “{query}”",
+    "section": "Section",
+    "types": {
+      "document": "Document",
+      "fund": "Fonds",
+      "collection": "Collection",
+      "exhibition": "Exhibition",
+      "news": "News",
+      "page": "Page",
+      "branch": "Branch"
+    }
+  }
 }

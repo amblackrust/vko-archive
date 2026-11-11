@@ -3,10 +3,8 @@
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Leaflet работает только в браузере: без SSR.
-const HistoryMap = dynamic(() => import("./history-map"), {
+// Leaflet обращается к window при импорте: карта загружается только в браузере.
+export const HistoryMap = dynamic(() => import("./history-map"), {
   ssr: false,
-  loading: () => <Skeleton className="h-full w-full rounded-lg" />,
+  loading: () => <Skeleton className="h-full w-full" />,
 });
-
-export { HistoryMap };

@@ -18,10 +18,11 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
 
     ollama_url: str = "http://localhost:11434"
-    ollama_model: str = "qwen3.5:9b-q6k"
+    # Official Ollama library tags (a custom quantisation is not something others can pull).
+    ollama_model: str = "qwen3.5:9b"
     ollama_embed_model: str = "bge-m3"
-    # Used when OLLAMA_MODEL is not pulled (CLAUDE.md: qwen3.5:9b-q4_K_M).
-    ollama_fallback_model: str = "qwen3.5:9b-q4_K_M"
+    # Used when OLLAMA_MODEL is not pulled: the smaller model of the same family for weak machines.
+    ollama_fallback_model: str = "qwen3.5:4b"
     # Connect / model-list timeout; chat generation has its own (the first call loads the model, ~30 s).
     ollama_timeout_seconds: float = 5.0
     ollama_chat_timeout_seconds: float = 120.0
@@ -30,6 +31,11 @@ class Settings(BaseSettings):
     # Generation limits (DoS): tokens per answer, simultaneous generations per process
     # (more → fast «busy» refusal), requests per IP per minute to /api/ai/parse and /answer*.
     ollama_num_predict: int = 400
+    # Some builds (e.g. `qwen3:30b`) always reason and ignore `think: false`: the reasoning then lands in
+    # the answer. With this on, Ollama is asked to think and returns the reasoning in a separate field
+    # that is dropped; `ollama_think_tokens` is the extra budget for it on top of `ollama_num_predict`.
+    ollama_think: bool = False
+    ollama_think_tokens: int = 1500
     ai_max_concurrent_generations: int = 2
     # OCR fallback when Tesseract is not installed: a vision model of Ollama (empty = none).
     ollama_vision_model: str = ""

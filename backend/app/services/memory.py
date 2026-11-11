@@ -1,7 +1,7 @@
 """Public «Архив памяти» (T5.10-T5.12): collections, persons, chronology, historical map.
 
-Anonymous and published-only. Documents appear only when public (the catalog rule), and a preview
-is returned only when the file is open to everyone; links are built here."""
+Anonymous and published-only. Documents appear only when public (the catalog rule), with the
+catalog's thumbnail rule (services.catalog.document_items); links are built here."""
 
 import uuid
 from collections.abc import Sequence
@@ -25,8 +25,7 @@ from app.schemas.memory import (
     SourceRef,
     TimelineResponse,
 )
-from app.services import files as files_service
-from app.services.catalog import _document_item, pick
+from app.services.catalog import document_items, pick
 from app.services.errors import NotFound
 
 
@@ -38,20 +37,8 @@ def _documents(
     session: Session, ids: Sequence[uuid.UUID], lang: str, notes: dict[uuid.UUID, str] | None = None
 ) -> list[MemoryDocument]:
     rows = repo.public_documents(session, ids)
-    out: list[MemoryDocument] = []
-    for document_id in ids:
-        row = rows.get(document_id)
-        if row is None:
-            continue
-        files = files_service.visible_files(session, None, row.Document)
-        out.append(
-            MemoryDocument(
-                **_document_item(row, lang).model_dump(),
-                note=(notes or {}).get(document_id, ""),
-                preview_url=next((f.preview_url for f in files if f.preview_url), None),
-            )
-        )
-    return out
+    items = document_items(session, [rows[i] for i in ids if i in rows], lang)
+    return [MemoryDocument(**item.model_dump(), note=(notes or {}).get(item.id, "")) for item in items]
 
 
 def _facets(rows: list[Any]) -> list[FacetCount]:

@@ -1,12 +1,11 @@
 {
   "title": "Historical map of the region",
   "breadcrumb": "Historical map",
-  "intro": "Historic buildings, enterprises, heritage sites and places of events in East Kazakhstan Region.",
-  "separate": "This is a historical map, not the map of the archive's operating branches.",
-  "toBranches": "Archive branches map",
-  "approx": "Positions on the map are approximate: a settlement or a conventional point is shown, not a confirmed location.",
+  "intro": "Historic buildings, enterprises, heritage sites and places of events in East Kazakhstan Region. Select a place on the map or in the list to read its description, see the source and open linked documents.",
+  "separate": "This is a historical map, not the map of the archive's operating branches. Branch addresses and contacts are on a separate page:",
+  "toBranches": "Branches and map",
   "kind": {
-    "label": "Object type",
+    "label": "Type of place",
     "all": "All",
     "building": "Historic buildings",
     "enterprise": "Enterprises",
@@ -16,19 +15,18 @@
     "events": "Places of events"
   },
   "map": "Historical map of the region",
-  "tileError": "The map tiles did not load. The list of objects and descriptions is available below.",
+  "tileError": "The map background did not load. All places and their descriptions are in the list.",
+  "legend": "Diamonds mark historic sites and places of events. Positions are approximate: a settlement or a conventional point is shown.",
+  "skipMap": "Skip the map and go to the list of places",
   "list": {
-    "title": "Objects",
-    "count": "Objects: {count}",
-    "empty": "No objects."
+    "title": "Places and sites",
+    "count": "Places shown: {count}",
+    "openMap": "Open the place on OpenStreetMap",
+    "timeline": "Event in the timeline"
   },
-  "card": {
-    "none": "Select an object on the map or in the list.",
-    "place": "Place",
-    "sources": "Source",
-    "documents": "Documents and photos",
-    "noDocuments": "No documents are linked to this object yet.",
-    "openMap": "Open the place in an external map",
-    "timeline": "Timeline"
+  "empty": {
+    "title": "No places on the map yet",
+    "text": "Historic sites will appear once the information is checked. The region's events are available in the timeline.",
+    "timeline": "Open the timeline"
   }
 }

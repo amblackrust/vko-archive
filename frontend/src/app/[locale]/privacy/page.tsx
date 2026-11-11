@@ -1,33 +1,37 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { localizedAlternates } from "@/lib/seo";
+import { pageMetadata } from "@/components/misc/metadata";
+import { Block, PageBody, SeeAlso } from "@/components/misc/page-layout";
+import { PageHeader } from "@/components/ui/page-header";
 
-const sections = ["data", "search", "cookies", "external", "contact"] as const;
+const SECTIONS = ["data", "search", "cabinet", "location", "cookies", "external", "contact"] as const;
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "contacts.privacy" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/privacy") };
-}
+export const generateMetadata = pageMetadata("misc.privacy", "/privacy");
 
+/** Политика конфиденциальности: какие данные сайт получает и куда передаёт. */
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("contacts.privacy");
+  const t = await getTranslations("misc.privacy");
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title") }]} />
-      <div className="container-page max-w-3xl space-y-8 pb-12">
-        <header className="space-y-3">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-        </header>
-        {sections.map((key) => (
-          <section key={key} className="space-y-2">
-            <h2 className="text-xl font-semibold">{t(`sections.${key}.title`)}</h2>
-            <p>{t(`sections.${key}.text`)}</p>
-          </section>
+      <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
+      <PageBody
+        aside={
+          <SeeAlso
+            title={t("more.title")}
+            items={[
+              { href: "/legal", label: t("more.legal"), text: t("more.legalText") },
+              { href: "/contacts", label: t("more.contacts") },
+            ]}
+          />
+        }
+      >
+        {SECTIONS.map((id) => (
+          <Block key={id} id={id} title={t(`sections.${id}.title`)}>
+            <p className="max-w-3xl">{t(`sections.${id}.text`)}</p>
+          </Block>
         ))}
-      </div>
+      </PageBody>
     </>
   );
 }

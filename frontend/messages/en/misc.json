@@ -1,59 +1,207 @@
 {
-  "publications": {
-    "title": "Publications, document collections and photo gallery",
-    "intro": "A selection of publications, collections of archival documents and photographs.",
-    "sections": {
-      "publications": "Publications",
-      "collections": "Document collections",
-      "photos": "Photo gallery"
-    },
-    "pending": "This section is being filled. Materials are published after agreement with the archive.",
-    "catalogLink": "Go to the electronic catalog"
+  "seo": {
+    "description": "State Archive of East Kazakhstan Region: documents, fonds, branches, history and reference information."
   },
   "calendar": {
-    "title": "Calendar of memorable dates",
-    "intro": "Memorable and historical dates by year and month.",
-    "yearLabel": "Year",
+    "title": "Calendar of memorial dates",
+    "lead": "Memorial and historical dates of East Kazakhstan, compiled by the archive. Choose a year and a month.",
+    "yearLabel": "Calendar year",
     "monthLabel": "Month",
     "wholeYear": "Whole year",
-    "noDay": "Day not specified",
-    "empty": "There are no memorable dates for the selected period.",
-    "range": "The calendar covers the years 2022–2026.",
-    "widgetTitle": "Calendar and weather",
-    "widgetWeather": "Weather will be connected through an external service. It is not available yet.",
-    "widgetNone": "No upcoming memorable dates this month.",
-    "widgetAll": "Full calendar of memorable dates"
+    "noDay": "during the month",
+    "today": "Today",
+    "empty": "No dates for this period",
+    "emptyText": "The archive's calendar has no entries for the selected period.",
+    "emptyLink": "All dates of {year}",
+    "source": "The calendar was compiled by the archive and provided for 2022–2026. The year of each event is given in the text of the date.",
+    "widgetTitle": "Today",
+    "widgetNone": "No upcoming memorial dates this month.",
+    "widgetAll": "Calendar of memorial dates"
+  },
+  "publications": {
+    "title": "Essays, collections and photo gallery",
+    "lead": "Publications by archive staff, collections of archival documents and photographs. The name of the section is to be agreed with the archive.",
+    "pending": {
+      "title": "This section is being filled",
+      "text": "The archive has not yet provided publications, collections or photographs. Below is what the section will contain and where similar materials are available now."
+    },
+    "parts": {
+      "title": "What the section will contain",
+      "meanwhile": "For now, see:",
+      "status": "Awaited from the archive",
+      "articles": {
+        "title": "Essays",
+        "text": "Articles and essays by archive staff on documents and the history of the region.",
+        "link": "archive news and events"
+      },
+      "collections": {
+        "title": "Collections of documents",
+        "text": "Collections published by the archive and themed selections of documents.",
+        "link": "collections of the Great Archive of Memory"
+      },
+      "photos": {
+        "title": "Photo gallery",
+        "text": "Photographs from the archive's fonds and pictures of the institution's events.",
+        "link": "photographs in the online catalogue"
+      }
+    },
+    "more": {
+      "title": "Similar sections",
+      "exhibitions": "Online exhibitions",
+      "exhibitionsText": "Exhibits with captions and sources.",
+      "newspapers": "Newspaper holdings",
+      "newspapersText": "Issues of the region's newspapers.",
+      "timeline": "Timeline of the region"
+    }
   },
   "symbols": {
     "title": "State symbols of the Republic of Kazakhstan",
-    "intro": "Open informational materials on the state symbols and official sources.",
-    "pending": "This section is being filled. Materials and links to official sources will be added after agreement with the client.",
-    "linksLink": "Useful links"
+    "lead": "The state symbols are the Flag, the Emblem and the Anthem. The brief notes follow the official website of the President of the Republic of Kazakhstan.",
+    "facts": {
+      "law": "Law",
+      "lawValue": "Constitutional Law “On State Symbols of the Republic of Kazakhstan” of 4 June 2007",
+      "day": "State Symbols Day",
+      "dayValue": "4 June",
+      "adopted": "Adopted",
+      "adoptedValue": "The Flag and the Emblem in 1992, the Anthem in 2006"
+    },
+    "flag": {
+      "title": "State Flag",
+      "text": "A rectangular sky-blue cloth. In the centre is a sun with rays and a soaring eagle beneath it; at the hoist is a vertical band with a national ornament. The sun, the eagle and the ornament are gold. The width of the flag is half its length.",
+      "authors": "Designed by the artist Shaken Niyazbekov.",
+      "link": "The Flag on the President's website"
+    },
+    "emblem": {
+      "title": "State Emblem",
+      "text": "The Emblem is circular. In the centre, on a blue background, is a shanyrak from which uyks spread like the rays of the sun; mythical winged horses stand on either side, a five-pointed star is at the top and the inscription “Qazaqstan” at the bottom. All the elements are gold.",
+      "authors": "Designed by the architects Zhandarbek Malibekov and Shot-Aman Ualikhanov.",
+      "link": "The Emblem on the President's website"
+    },
+    "anthem": {
+      "title": "State Anthem",
+      "text": "The Anthem is based on the song “Menin Qazaqstanym”. Parliament approved it on 6 January 2006; it was first performed on 11 January 2006.",
+      "authors": "Music by Shamshi Kaldayakov, lyrics by Zhumeken Nazhimedenov and Nursultan Nazarbayev.",
+      "link": "The Anthem on the President's website"
+    },
+    "sources": {
+      "title": "Official sources",
+      "text": "Full descriptions, images and a recording of the anthem are on the official resources.",
+      "akorda": "About the state symbols: website of the President of the Republic of Kazakhstan",
+      "law": "Constitutional Law “On State Symbols of the Republic of Kazakhstan”: Adilet",
+      "images": "Images of the symbols are not placed on this site: the reference images are published on the official resources."
+    }
   },
   "links": {
     "title": "Useful links",
-    "intro": "Verified links to official resources. External sites open in a new tab.",
-    "officialTitle": "Official resources",
-    "akorda": "Akorda — President of the Republic of Kazakhstan",
-    "akimat": "Akimat of the East Kazakhstan region",
-    "digitalization": "Department of Digitalization and Archives of the East Kazakhstan region",
-    "veterans": "Materials on World War II veterans",
+    "lead": "Official resources grouped by purpose. All links lead to external sites and open in a new tab.",
     "urlPending": "Link to be confirmed",
-    "servicesTitle": "Site services",
-    "converter": "Latin script converter",
-    "converterText": "External tool. A separate translation service is not developed on this site.",
-    "stats": "Site statistics",
-    "poll": "Poll",
-    "pollPending": "The poll is not connected yet. A poll is not an official request.",
-    "usefulTitle": "Useful links",
-    "pollOpen": "Take the survey",
-    "counts": {
-      "documents": "documents",
-      "funds": "funds",
-      "exhibitions": "exhibitions"
+    "groups": {
+      "state": "Government bodies",
+      "services": "Services, appeals and legislation",
+      "memory": "History and memory",
+      "tools": "Tools",
+      "added": "Added by the archive"
+    },
+    "items": {
+      "akorda": {
+        "label": "Akorda: official website of the President of the Republic of Kazakhstan",
+        "text": "Decrees, addresses, state symbols."
+      },
+      "akimat": {
+        "label": "Akimat of East Kazakhstan Region",
+        "text": "The akimat's official page on the gov.kz portal."
+      },
+      "department": {
+        "label": "Department of Digitalization and Archives of East Kazakhstan Region",
+        "text": "The authorised body that oversees the archive. The official address of its page is to be confirmed by the archive."
+      },
+      "egov": {
+        "label": "eGov.kz: electronic government",
+        "text": "Applications for an archival certificate and other public services."
+      },
+      "eotinish": {
+        "label": "e-Otinish: citizens' appeals",
+        "text": "Appeals, complaints and suggestions to government bodies."
+      },
+      "adilet": {
+        "label": "Adilet: legal information system",
+        "text": "Official texts of laws and orders in their current versions."
+      },
+      "veterans": {
+        "label": "Materials on veterans of the Great Patriotic War",
+        "text": "An open resource with information on veterans. The address is to be confirmed by the archive."
+      },
+      "converter": {
+        "label": "Converter of Kazakh text to the Latin script",
+        "text": "An external tool; the site has no service of its own. The address is to be confirmed by the archive."
+      }
+    },
+    "more": {
+      "title": "See also",
+      "services": "Archive services",
+      "servicesText": "What is handled where.",
+      "legal": "Legal acts",
+      "symbols": "State symbols"
+    },
+    "site": {
+      "title": "About the site",
+      "text": "Open figures, the rating and the survey. Visitors' personal data is not published.",
+      "stats": "The site in figures",
+      "statsMissing": "The figures are temporarily unavailable.",
+      "counts": {
+        "funds": "{count, plural, one {# fond} other {# fonds}}",
+        "documents": "{count, plural, one {# document} other {# documents}}",
+        "exhibitions": "{count, plural, one {# exhibition} other {# exhibitions}}"
+      },
+      "visitors": "Site visitors: {count}",
+      "visitorsOff": "The visitor counter is not published: the archive switches it on.",
+      "rating": "Website rating",
+      "ratingOn": "The block is switched on, but no rating source is connected yet: the data is awaited from the archive.",
+      "ratingOff": "Not published: the archive has not yet confirmed the source and reliability of the rating data.",
+      "survey": "Survey",
+      "surveyOpen": "Take the survey",
+      "surveyOff": "No survey is running at the moment.",
+      "surveyNote": "The survey is not an official appeal."
     }
   },
-  "seo": {
-    "description": "State Archive of the East Kazakhstan region: documents, funds, branches, history and reference information."
+  "privacy": {
+    "title": "Privacy policy",
+    "lead": "What data the site receives, why, and who it is passed to. The catalogue, news and reference sections are open without registration.",
+    "sections": {
+      "data": {
+        "title": "What data is needed for browsing",
+        "text": "None. Browsing the catalogue, exhibitions, news and reference sections requires no registration, and the site does not ask for personal data for this."
+      },
+      "search": {
+        "title": "Search queries and questions to the assistant",
+        "text": "Queries may be stored in anonymised form for statistics, without an IP address or a visitor identifier. The archive assistant runs on the archive's server: questions are not passed to external AI services."
+      },
+      "cabinet": {
+        "title": "Personal account",
+        "text": "Registration is voluntary. The account stores your e-mail address, your password in encrypted form and what you add yourself: favourites, selections and saved searches."
+      },
+      "location": {
+        "title": "Location and starting address",
+        "text": "Your location is requested only after you press the button on a branch page and is not sent to the archive's server. A starting address entered by hand is sent to the OpenStreetMap address search service (Nominatim). The starting point reaches an external map service only when you open directions through a link."
+      },
+      "cookies": {
+        "title": "Cookies and settings",
+        "text": "The browser stores the selected language, the colour theme and the settings of the version for visually impaired users. A session cookie is used only after you sign in to the personal account or the site management system."
+      },
+      "external": {
+        "title": "External sites",
+        "text": "eGov.kz, e-Otinish, Adilet, social networks and map services follow their own data processing rules."
+      },
+      "contact": {
+        "title": "Questions about data",
+        "text": "For questions about the processing of personal data, contact the archive: phone numbers and e-mail are in the Contacts section."
+      }
+    },
+    "more": {
+      "title": "See also",
+      "legal": "Legal acts",
+      "legalText": "Including the law “On Personal Data and Its Protection”.",
+      "contacts": "Archive contacts"
+    }
   }
 }

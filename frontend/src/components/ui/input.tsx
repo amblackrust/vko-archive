@@ -6,7 +6,7 @@ export function Input({ className, type = "text", ...props }: React.InputHTMLAtt
     <input
       type={type}
       className={cn(
-        "h-10 w-full rounded-md border bg-surface px-3 text-sm placeholder:text-muted-foreground disabled:opacity-50",
+        "h-11 w-full rounded-md border border-border-strong bg-surface px-3.5 text-[0.9375rem] placeholder:text-muted-foreground hover:border-primary disabled:opacity-50",
         className,
       )}
       {...props}

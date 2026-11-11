@@ -7,8 +7,10 @@ from seed.demo_catalog import seed_demo_catalog
 from seed.exhibitions import seed_exhibitions
 from seed.history_map import seed_history_map
 from seed.info_content import seed_info
-from seed.memory import seed_chronology, seed_collections, seed_persons
+from seed.memory import seed_chronology, seed_collections, seed_open_persons, seed_persons
 from seed.news_faq import seed_faq, seed_news
+from seed.open_materials import seed_open_materials
+from seed.real_funds import seed_real_funds
 
 
 def run(session: Session, storage_dir: Path, *, refresh: bool = False, info: bool = True, demo: bool = True) -> Report:
@@ -16,11 +18,16 @@ def run(session: Session, storage_dir: Path, *, refresh: bool = False, info: boo
     report = Report()
     if info:
         seed_info(session, report, storage_dir, refresh)
+        seed_real_funds(session, report, refresh)
         # Persons and chronology are taken from the calendar that seed_info has just seeded.
         seed_persons(session, report, refresh)
         seed_chronology(session, report, refresh)
     if demo:
         seed_demo_catalog(session, report, storage_dir, refresh)
+        # Exhibitions, collections, portrait persons, map objects and news covers use only the open
+        # materials (real images); nothing of the fictitious demo catalog is shown there.
+        seed_open_materials(session, report, storage_dir, refresh)
+        seed_open_persons(session, report, refresh)
         seed_collections(session, report, refresh)
         seed_exhibitions(session, report, refresh)
         seed_news(session, report, refresh)

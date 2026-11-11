@@ -1,41 +1,38 @@
-import { ImageOff } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { themeLabel } from "@/components/memory/labels";
 import { DemoBadge } from "@/components/ui/demo-badge";
-import { Link } from "@/lib/i18n/navigation";
+import { DemoTag } from "@/components/ui/demo-tag";
 import { fileUrl } from "@/lib/api/document";
-import type { ExhibitionItem } from "./api";
-import { ThemeLabel } from "./theme-label";
+import { Link } from "@/lib/i18n/navigation";
+import { thumbPath, type ExhibitionItem } from "./api";
+import { MediaImage } from "./media-image";
 
-/** Карточка выставки в списке: обложка (только открытая копия), тема, период, число экспонатов. */
-export function ExhibitionCard({ exhibition, locale }: { exhibition: ExhibitionItem; locale: string }) {
-  const t = useTranslations("exhibitions.card");
-  const cover = exhibition.cover?.preview_url ?? exhibition.cover?.url;
+/** Карточка выставки: обложка (только открытая копия), тема, период, число экспонатов. `heading` — уровень заголовка. */
+export function ExhibitionCard({ exhibition, locale, heading: Heading = "h2" }: {
+  exhibition: ExhibitionItem;
+  locale: string;
+  heading?: "h2" | "h3";
+}) {
+  const t = useTranslations("exhibitions");
+  const cover = thumbPath(exhibition.cover);
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface">
-      <div className="flex aspect-[16/9] items-center justify-center bg-surface-muted text-muted-foreground">
-        {cover ? (
-          // eslint-disable-next-line @next/next/no-img-element -- файл отдаёт backend с проверкой прав
-          <img src={fileUrl(cover)} alt="" loading="lazy" className="size-full object-cover" />
-        ) : (
-          <span className="flex flex-col items-center gap-1 text-sm">
-            <ImageOff className="size-6" aria-hidden />
-            {t("noCover")}
-          </span>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <h2 className="text-lg font-semibold" lang={exhibition.title_lang}>
-          <Link href={`/exhibitions/${exhibition.slug}`} className="hover:underline">
-            {exhibition.title}
-          </Link>
-        </h2>
-        <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          {exhibition.theme && <ThemeLabel theme={exhibition.theme} />}
+    <article className="card lift group relative flex h-full flex-col overflow-hidden">
+      <MediaImage src={cover && fileUrl(cover)} alt="" fallback={t("card.noCover")} className="aspect-[4/3] rounded-none border-0" />
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+          {exhibition.theme && <span>{themeLabel(t, "themes", exhibition.theme)}</span>}
           {exhibition.period && <span>{exhibition.period}</span>}
-          <span>{t("exhibits", { count: exhibition.exhibits_count })}</span>
+          {exhibition.is_demo && <DemoTag />}
           {exhibition.title_lang !== locale && <DemoBadge kind="noTranslation" />}
         </p>
-        <p className="line-clamp-3 text-sm" lang={exhibition.title_lang}>{exhibition.intro}</p>
+        <Heading className="text-xl" lang={exhibition.title_lang}>
+          {/* Ссылка растянута на всю карточку: обложка тоже нажимается. */}
+          <Link href={`/exhibitions/${exhibition.slug}`} className="after:absolute after:inset-0 group-hover:text-primary">{exhibition.title}</Link>
+        </Heading>
+        <p className="line-clamp-3 text-sm text-muted-foreground" lang={exhibition.title_lang}>{exhibition.intro}</p>
+        <p className="mt-auto pt-2">
+          <span className="rounded-full bg-primary-soft px-3 py-1 text-sm font-medium text-primary">{t("card.exhibits", { count: exhibition.exhibits_count })}</span>
+        </p>
       </div>
     </article>
   );

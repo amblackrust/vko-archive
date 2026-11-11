@@ -1,36 +1,52 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { HistoryExplorer } from "@/components/history-map/history-explorer";
+import { HistoryMapExplorer } from "@/components/history-map/history-map-explorer";
+import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/ui/page-header";
+import { UnavailableState } from "@/components/ui/state-view";
+import { attempt, fetchMapPoints } from "@/lib/api/memory";
 import { Link } from "@/lib/i18n/navigation";
-import { fetchMapPoints } from "@/lib/api/memory";
 import { localizedAlternates } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "historyMap" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/memory/map") };
+  return { title: t("title"), description: t("intro"), alternates: localizedAlternates(locale, "/memory/map") };
 }
 
-export default async function HistoryMapPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function HistoryMapPage({ params, searchParams }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("historyMap");
   const tm = await getTranslations("memory");
-  const { items, themes } = await fetchMapPoints(locale);
+  const data = await attempt(fetchMapPoints(locale));
+  if (!data) return <UnavailableState />;
+  const { kind, point } = await searchParams;
+
   return (
     <>
-      <Breadcrumbs items={[{ label: tm("breadcrumb"), href: "/memory" }, { label: t("breadcrumb") }]} />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-          <p className="max-w-3xl rounded-md border bg-accent-soft p-3 text-sm text-accent-soft-foreground">
-            {t("separate")} <Link href="/branches" className="font-medium underline">{t("toBranches")}</Link>. {t("approx")}
-          </p>
-        </header>
-        <HistoryExplorer points={items} kinds={themes} />
+      <PageHeader crumbs={[{ label: tm("breadcrumb"), href: "/memory" }, { label: t("breadcrumb") }]} title={t("title")} lead={t("intro")}>
+        {/* Требование заказчика: историческую карту нельзя принять за карту филиалов. */}
+        <Notice className="max-w-3xl">
+          {t("separate")} <Link href="/branches" className="text-link">{t("toBranches")}</Link>
+        </Notice>
+      </PageHeader>
+      <div className="container-page py-6 pb-16">
+        {data.items.length === 0 ? (
+          <div className="card max-w-2xl space-y-4 p-6">
+            <p className="text-lg font-semibold">{t("empty.title")}</p>
+            <p className="text-muted-foreground">{t("empty.text")}</p>
+            <Button asChild variant="outline"><Link href="/memory/timeline">{t("empty.timeline")}</Link></Button>
+          </div>
+        ) : (
+          <HistoryMapExplorer
+            points={data.items}
+            kinds={data.themes}
+            query={{ kind: typeof kind === "string" ? kind : undefined, point: typeof point === "string" ? point : undefined }}
+          />
+        )}
       </div>
     </>
   );

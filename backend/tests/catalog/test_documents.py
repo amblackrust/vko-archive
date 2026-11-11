@@ -5,9 +5,11 @@ from datetime import date
 import pytest
 
 from app.models import Branch, Tag
-from app.models.enums import BranchType, DescriptionStatus, FundType, WorkflowStatus
+from app.models.enums import BranchType, DescriptionStatus, FileAccess, FundType, RoleCode, WorkflowStatus
 from app.services import indexing
+from tests.admin.conftest import login
 from tests.catalog.conftest import doc, get, published_tree, token
+from tests.search.conftest import add_file
 
 
 def titles(body: dict) -> list[str]:
@@ -150,3 +152,43 @@ def test_titles_fall_back_between_languages(api, factory):
 )
 def test_bad_parameters_are_rejected(api, params):
     assert api.get("/api/catalog/documents", params=params).status_code == 422
+
+
+def test_list_items_have_a_thumbnail_only_for_files_open_to_everyone(api, factory):
+    word = token()
+    _, _, case = published_tree(factory)
+    shown = doc(factory, case, word, has_digital_copy=True)
+    add_file(factory, shown, position=0, master_path="masters/secret/a.pdf", mime="application/pdf")  # no preview
+    add_file(factory, shown, position=1, preview_path="previews/secret/closed.jpg", access=FileAccess.CLOSED)
+    first_open = add_file(factory, shown, position=2, preview_path="previews/secret/b.jpg")
+    add_file(factory, shown, position=3, preview_path="previews/secret/c.jpg")
+    hidden = {
+        access: doc(factory, case, word, file_access=access)
+        for access in (FileAccess.RESTRICTED, FileAccess.CLOSED, FileAccess.NEEDS_REVIEW)
+    }
+    hidden_files = [add_file(factory, d, preview_path="previews/secret/x.jpg") for d in hidden.values()]
+    unreviewed = doc(factory, case, word)  # an open document whose only copy is not reviewed yet
+    add_file(factory, unreviewed, preview_path="previews/secret/y.jpg", access=FileAccess.NEEDS_REVIEW)
+    bare = doc(factory, case, word)
+
+    expected = {str(d.id): None for d in (*hidden.values(), unreviewed, bare)}
+    expected[str(shown.id)] = f"/api/files/{first_open.id}?variant=preview"
+    for body in (get(api, "documents", title=word), get(api, f"cases/{case.id}")["documents"]):
+        assert {i["id"]: i["preview_url"] for i in body["items"]} == expected
+        assert "secret" not in str(body) and "preview_path" not in str(body)
+    card = get(api, f"documents/{bare.id}")
+    assert card["preview_url"] is None
+    assert {i["id"]: i["preview_url"] for i in card["related"]} == {k: v for k, v in expected.items() if k != str(bare.id)}
+
+    # Staff rights do not widen the public list, and the file route still decides on its own.
+    login(api, factory.user(RoleCode.ARCHIVIST).email)
+    assert {i["id"]: i["preview_url"] for i in get(api, "documents", title=word)["items"]} == expected
+    api.cookies.clear()
+    for file in hidden_files:
+        assert api.get(f"/api/files/{file.id}", params={"variant": "preview"}).status_code == 404
+
+    # Closing the copies takes the thumbnail away at once.
+    shown.file_access = FileAccess.RESTRICTED
+    factory.session.commit()
+    assert all(i["preview_url"] is None for i in get(api, "documents", title=word)["items"])
+    assert api.get(f"/api/files/{first_open.id}", params={"variant": "preview"}).status_code == 404

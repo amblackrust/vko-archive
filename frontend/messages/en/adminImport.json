@@ -1,6 +1,5 @@
 {
   "import": {
-    "title": "Catalog import and export",
     "intro": "Upload a CSV or XLSX file with document descriptions. First a check without writing, then the import.",
     "draftNotice": "Imported documents are created as drafts: the description and files get the “needs review” status and are never published automatically. Re-importing the same file creates no duplicates — rows are matched by archive code.",
     "file": "CSV or XLSX file",
@@ -10,7 +9,7 @@
     "archiveWide": "No branch (whole archive)",
     "atomic": "All or nothing",
     "atomicHint": "If any row has an error, nothing is written.",
-    "preview": "Check",
+    "preview": "Check the file",
     "recheck": "Check with the new mapping",
     "checking": "Checking the file…",
     "applying": "Importing…",
@@ -21,7 +20,6 @@
     "mapping": "Column mapping",
     "mappingHint": "Archive code and at least one title are required. Fund, inventory and file go together.",
     "column": "File column",
-    "field": "Catalog field",
     "ignore": "— do not import —",
     "result": "Check result",
     "resultApplied": "Import completed",
@@ -87,12 +85,22 @@
       "inventory_number": "Inventory no.",
       "case_number": "File no."
     },
-    "section": "Document import",
     "levels": {
       "fund": "Fund",
       "inventory": "Inventory",
       "case": "Case"
-    }
+    },
+    "stepsLabel": "Import steps",
+    "steps": {
+      "file": "File and options",
+      "check": "Check and column mapping",
+      "apply": "Import and report"
+    },
+    "chooseFile": "Choose a file first.",
+    "mappingChanged": "The mapping has changed. Check the file again to see the result.",
+    "appliedNotice": "Import finished. New documents are saved as drafts and wait for review.",
+    "truncated": "Showing the first {shown} of {total} rows. The full list of errors is in the report.",
+    "noProblems": "No rows with errors."
   },
   "export": {
     "title": "Catalog export",
@@ -105,14 +113,6 @@
     "download": "Download",
     "downloading": "Preparing the file…",
     "done": "The export file has been saved."
-  },
-  "workflow": {
-    "draft": "Draft",
-    "review": "In review",
-    "needs_changes": "Needs changes",
-    "approved": "Approved",
-    "published": "Published",
-    "archived": "Archived"
   },
   "errors": {
     "file_too_large": "The file exceeds the size limit.",
@@ -147,7 +147,6 @@
     "exists_not_editable": "The document is no longer a draft — the import does not change it.",
     "conflict": "Write conflict (the archive code is taken).",
     "version_conflict": "Someone changed this item at the same time. Reload the page.",
-    "ai_unavailable": "AI is unavailable right now. Try later or translate manually.",
     "translation_requires_draft": "Machine translation is only for drafts or items returned for changes.",
     "target_verified": "This language is already verified. Confirm overwriting.",
     "nothing_to_translate": "There is no text in the source language.",
@@ -155,12 +154,6 @@
     "not_machine_translation": "This language is not marked as machine-translated.",
     "invalid_language": "Choose different source and target languages.",
     "unknown_object_type": "Unknown item type.",
-    "ai_reason": {
-      "ollama_unavailable": "Reason: the Ollama service is not responding.",
-      "model_missing": "Reason: the model is not loaded in Ollama.",
-      "bad_response": "Reason: the model returned an unusable answer.",
-      "busy": "Reason: the AI is busy with other requests."
-    },
     "forbidden_create_hierarchy": "The fund, inventory or case is missing in the archive and you may not create it. Use an existing case or contact an administrator."
   },
   "translations": {
@@ -195,13 +188,11 @@
       "machine": "Machine",
       "missing": "Missing"
     },
-    "statusLabel": "{lang}: {status}",
     "columns": {
       "label": "Item",
       "workflow": "Status",
       "languages": "Translations"
     },
-    "open": "Open translations: {label}",
     "dialogTitle": "Item translations",
     "source": "From",
     "target": "To",
@@ -212,10 +203,9 @@
     "overwriteTitle": "Overwrite the verified translation?",
     "overwriteText": "This language was already verified by a person. The machine translation will replace it.",
     "overwrite": "Overwrite",
-    "verify": "Mark “{lang}” as verified",
+    "verify": "Mark the “{lang}” translation as verified",
     "verifyDone": "The translation is marked as verified.",
     "onlyDraft": "Machine translation is available for drafts and items returned for changes.",
-    "close": "Close",
     "empty": "Empty",
     "fieldNames": {
       "access_conditions": "Access conditions",
@@ -246,6 +236,18 @@
       "text": "Text",
       "title": "Title",
       "unit": "Unit"
-    }
+    },
+    "statusNeedsLang": "Choose a language first",
+    "badgesLabel": "Translations:",
+    "sameLang": "Choose a different language.",
+    "emptyList": "No items found",
+    "emptyListHint": "Change the item type, the language or the query.",
+    "verifyHint": "Read the machine translation and fix it in the item card if needed. Then mark the language as verified: the item cannot be published without it."
+  },
+  "title": "Catalog import and export",
+  "lead": "Load document descriptions from CSV or XLSX and export the catalogue to a file.",
+  "tabs": {
+    "import": "Import",
+    "export": "Export"
   }
 }

@@ -1,11 +1,14 @@
 {
   "title": "News and events",
-  "intro": "Archive news and announcements of exhibitions and events.",
-  "count": "Items found: {count}",
+  "lead": "Archive news, exhibition announcements and events at the branches.",
+  "count": "Items: {count}",
+  "empty": "There is no news yet.",
+  "noDate": "No date",
   "filter": {
-    "q": "Search news",
+    "label": "Search the news",
+    "q": "Words from the title or text",
     "category": "Category",
-    "sort": "Sort",
+    "sort": "Order",
     "all": "All categories",
     "newest": "Newest first",
     "oldest": "Oldest first",
@@ -15,17 +18,13 @@
   "categories": {
     "exhibitions": "Exhibitions",
     "events": "Events",
-    "memory": "Memory archive",
+    "memory": "Archive of Memory",
     "branches": "Branches",
     "site": "About the site"
   },
-  "card": {
-    "read": "Read",
-    "noDate": "No date"
-  },
   "detail": {
     "media": "Photos and video",
-    "externalVideo": "Video (external link)",
+    "externalVideo": "Video on an external site",
     "related": "Related materials",
     "relatedTypes": {
       "document": "Document",

@@ -1,16 +1,16 @@
 {
-  "title": "Electronic catalog",
-  "intro": "Fonds, inventories, case files and documents of the State Archive of East Kazakhstan Region. Only materials approved for publication are shown. Copies and requests cannot be ordered on this site; use eGov.kz.",
+  "title": "Electronic catalogue",
+  "intro": "Fonds, inventories, case files and documents of the State Archive of East Kazakhstan Region. Only materials approved for publication are shown. The site does not take orders or requests — use the eGov.kz portal for that.",
   "nav": {
     "label": "Catalog sections",
     "documents": "Documents",
     "funds": "Fonds",
     "inventories": "Inventories",
     "cases": "Case files",
-    "personalFunds": "Personal fonds"
+    "personalFunds": "Personal fonds",
+    "newspapers": "Newspapers"
   },
   "categories": {
-    "title": "Catalog categories",
     "historical": "Historical documents",
     "photos": "Photographs",
     "maps": "Maps and drawings",
@@ -20,37 +20,39 @@
     "audio_video": "Audio and video"
   },
   "filters": {
-    "title": "Filters",
     "apply": "Apply",
     "reset": "Reset filters",
-    "q": "General search",
-    "qPlaceholder": "Title, code, author, topic",
-    "titleField": "Document title",
-    "fund_number": "Fond number",
-    "inventory_number": "Inventory number",
-    "case_number": "Case number",
-    "period": "Historical period",
-    "year": "Year of creation",
-    "date_from": "Date not earlier than",
-    "date_to": "Date not later than",
-    "author": "Author or organization",
-    "topic": "Topic",
-    "place": "Locality",
-    "keyword": "Keyword",
-    "doc_type": "Document type",
-    "branch_id": "Archive branch",
-    "language": "Document language",
-    "fund_type": "Fond type",
-    "has_digital_copy": "Has digital copy",
-    "category": "Category",
-    "group": {
-      "search": "Search",
-      "code": "Reference code",
+    "active": "Applied conditions",
+    "remove": "Remove condition: {name}",
+    "heading": "Filters",
+    "toggle": "{count, plural, =0 {Filters} other {Filters: #}}",
+    "anyCategory": "All categories",
+    "groups": {
       "dates": "Dates",
-      "attributes": "Attributes"
+      "code": "Reference code",
+      "details": "Title, author, place"
     },
-    "active": "Applied filters",
-    "remove": "Remove filter: {name}"
+    "fields": {
+      "q": "Query",
+      "title": "Document title",
+      "author": "Author or organisation",
+      "place": "Locality",
+      "keyword": "Keyword",
+      "fund_number": "Fonds number",
+      "inventory_number": "Inventory number",
+      "case_number": "Case file number",
+      "year": "Year of creation",
+      "date_from": "Date not earlier than",
+      "date_to": "Date not later than",
+      "period": "Historical period",
+      "doc_type": "Document type",
+      "topic": "Topic",
+      "branch_id": "Archive branch",
+      "language": "Document language",
+      "fund_type": "Fonds type",
+      "category": "Category",
+      "has_digital_copy": "Has a digital copy"
+    }
   },
   "sort": {
     "label": "Sort by",
@@ -62,7 +64,6 @@
   },
   "results": {
     "count": "Found: {count}",
-    "page": "Page {page} of {pages}",
     "prev": "Previous",
     "next": "Next",
     "pagination": "Pagination"
@@ -97,47 +98,147 @@
     "newspaper": "Newspapers"
   },
   "access": {
-    "open": "Open",
+    "open": "Open access",
     "restricted": "Restricted access",
-    "closed": "Closed",
+    "closed": "Closed access",
     "needs_review": "Access to be confirmed"
   },
   "doc": {
-    "code": "Reference code",
-    "fund": "Fond",
-    "inventory": "Inventory",
-    "case": "Case",
-    "sheets": "{count} sheets",
-    "digitalCopy": "Digital copy available",
-    "noDigitalCopy": "No digital copy",
-    "openCard": "Open record"
+    "sheets": "{count, plural, one {# sheet} other {# sheets}}",
+    "digitalCopy": "Digital copy"
   },
   "tree": {
-    "fundsTitle": "Archive fonds",
+    "fundsTitle": "Archival fonds",
     "personalTitle": "Personal fonds",
     "inventoriesTitle": "Inventories",
     "casesTitle": "Case files",
-    "fundOf": "Fond No. {number}",
+    "fundOf": "Fonds No. {number}",
     "inventoryOf": "Inventory No. {number}",
-    "caseOf": "Case No. {number}",
+    "caseOf": "Case file No. {number}",
     "counts": {
-      "inventories": "Inventories: {count}",
-      "cases": "Cases: {count}",
+      "cases": "Case files: {count}",
       "documents": "Documents: {count}"
     },
     "years": "{from}–{to}",
-    "inventoriesInFund": "Inventories of the fond",
-    "casesInInventory": "Cases of the inventory",
-    "documentsInCase": "Documents of the case",
+    "inventoriesInFund": "Inventories of the fonds",
+    "casesInInventory": "Case files of the inventory",
+    "documentsInCase": "Documents of the case file",
     "sheetsCount": "Sheets: {count}",
-    "up": "Up one level",
-    "emptyFunds": "No fonds found.",
-    "emptyInventories": "This fond has no published inventories.",
-    "emptyCases": "This inventory has no published cases.",
-    "emptyDocuments": "This case has no documents approved for publication.",
+    "emptyCases": "This inventory has no published case files.",
+    "emptyDocuments": "This case file has no documents approved for publication.",
     "search": "Search by number or title",
     "searchSubmit": "Search",
-    "fundType": "Fond type: {type}",
-    "hierarchy": "Structure: archive → fond → inventory → case → document"
+    "inventoriesLead": "An inventory lists the case files of one fonds. This page shows every inventory entered in the electronic catalogue.",
+    "casesLead": "A case file is a folder of documents on one matter. This page shows every case file entered in the electronic catalogue.",
+    "cipher": {
+      "inventory": "Ф.{fund} Оп.{inventory}",
+      "case": "Ф.{fund} Оп.{inventory} Д.{case}"
+    },
+    "path": "Place in the archive structure",
+    "archive": "Archive",
+    "allFunds": "All fonds",
+    "facts": {
+      "title": "Details",
+      "fund": "Records creator",
+      "dates": "Date range",
+      "cases": "Case files in the inventory",
+      "documents": "Documents on the site",
+      "sheets": "Sheets in the case file"
+    },
+    "emptyList": "Nothing has been entered in the electronic catalogue yet.",
+    "nothingFound": "Nothing matches this query. Check the number or shorten the title.",
+    "searchReset": "Clear"
+  },
+  "funds": {
+    "intro": "The archive's actual list of fonds. Search by an organisation's current or any former name, by fonds number or by the year of the records.",
+    "searchLabel": "Search fonds",
+    "q": "Organisation name or fonds number",
+    "qPlaceholder": "For example: Pushkin library, city executive committee, Р-103",
+    "type": "Fonds type",
+    "any": "All",
+    "year": "Year of records",
+    "sort": {
+      "relevance": "Default",
+      "number": "By number",
+      "title": "By title",
+      "year": "By years"
+    },
+    "since": "since {year}",
+    "earlierNames": "{count, plural, one {# former name} other {# former names}}",
+    "partial": "access to some files is restricted",
+    "units": "{count, plural, one {# storage unit} other {# storage units}}",
+    "emptyTitle": "No fonds found",
+    "emptyText": "Try shortening the name to one or two words, or remove the year or type. The organisation may have had a different name — the search covers all former names.",
+    "sourceNote": "Source: lists of fonds published by the archive on e-arhiv.vko.gov.kz (data as of 2018). Classified fonds are not published.",
+    "facts": {
+      "years": "Years of records",
+      "units": "Storage units",
+      "type": "Fonds type",
+      "category": "Category",
+      "ownership": "Ownership",
+      "received": "First accession",
+      "storage": "Held at"
+    },
+    "categoryValue": "Category {category}",
+    "ownership": {
+      "state": "State",
+      "private": "Private"
+    },
+    "partialNote": "Access to some storage units of this fonds is restricted. The description is open; ask the archive about the conditions for working with the records.",
+    "namesTitle": "History of names",
+    "namesText": "What the records creator was called over the years. The fonds can be found by any of these names.",
+    "noDates": "dates not given",
+    "noInventories": "The inventories of this fonds have not yet been added to the electronic catalogue. Inventories and files can be consulted in the archive's reading room.",
+    "readingRoom": "Reading room rules",
+    "certificate": {
+      "title": "Need a certificate from this fonds?",
+      "text": "An archival certificate, copy or extract is issued free of charge within 11 working days. In the application give the fonds number {number} and the organisation's name.",
+      "link": "How to get a certificate"
+    },
+    "source": "Source of data: {source}",
+    "ask": {
+      "button": "Ask the assistant about this fonds",
+      "question": "Tell me about fonds No. {number}: whose records are these and which years do they cover?"
+    }
+  },
+  "newspapers": {
+    "title": "Newspaper holdings",
+    "intro": "Bound newspaper volumes kept by the archive: titles, publishers and years. The volumes are consulted in the reading room.",
+    "q": "Newspaper title or publisher",
+    "qPlaceholder": "For example: Rudny Altai",
+    "years": "{count, plural, one {Volumes for # year} other {Volumes for # years}}",
+    "volumes": "{count, plural, one {# volume} other {# volumes}}",
+    "empty": "No newspapers match these conditions. Try another title or year.",
+    "sourceNote": "Source: the list of newspapers published by the archive on e-arhiv.vko.gov.kz (as of 1 January 2018)."
+  },
+  "search": {
+    "label": "Search documents",
+    "field": "Title, reference code, author or topic",
+    "placeholder": "For example: приказ о пуске цеха",
+    "submit": "Search",
+    "invalid": "Some conditions in the address are invalid (for example, the year or a date), so the whole catalogue is shown."
+  },
+  "empty": {
+    "search": {
+      "label": "Search the whole site",
+      "text": "Semantic search finds documents, fonds, exhibitions and site pages even when the words do not match."
+    },
+    "funds": {
+      "label": "List of fonds",
+      "text": "Find an organisation by its current or former name."
+    },
+    "assistant": {
+      "label": "Ask the archive assistant",
+      "text": "Describe what you are looking for in your own words — the assistant suggests where it may be kept."
+    }
+  },
+  "view": {
+    "label": "List view",
+    "grid": "Grid",
+    "list": "List"
+  },
+  "recent": {
+    "title": "Recently viewed",
+    "clear": "Clear"
   }
 }

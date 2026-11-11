@@ -66,3 +66,7 @@ export const pageSeo = (page: PageDetail | null) => ({
   description: page?.seo_description || undefined,
   keywords: page?.seo_keywords || undefined,
 });
+
+/** Телефон приёмной (канцелярии) из контактов архива: общий справочный номер для страниц услуг. */
+export const receptionPhone = (contacts: Contacts | null) =>
+  contacts?.phones.find((phone) => /при[её]мная/i.test(phone.label))?.value ?? null;

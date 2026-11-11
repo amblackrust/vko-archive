@@ -11,6 +11,8 @@ Lang = Literal["kk", "ru", "en"]
 Category = Literal["historical", "photos", "maps", "written", "organizations", "personal", "audio_video"]
 FundTypeValue = Literal["organization", "personal", "party", "newspaper"]
 Sort = Literal["relevance", "date_asc", "date_desc", "code", "title"]
+FundSort = Literal["relevance", "number", "title", "year"]
+_YEAR = Field(default=None, ge=1000, le=2100)
 
 
 class CatalogFilters(BaseModel):
@@ -49,8 +51,19 @@ class PageParams(BaseModel):
 
 
 class FundListParams(PageParams):
+    """`q` looks in the number, the title and every former name; words of 4+ letters tolerate a typo."""
+
     type: FundTypeValue | None = None
     branch_id: uuid.UUID | None = None
+    category: int | None = Field(default=None, ge=1, le=3)
+    year: int | None = _YEAR  # the fund has documents of this year ...
+    year_from: int | None = _YEAR  # ... or of some year in this range
+    year_to: int | None = _YEAR
+    sort: FundSort = "relevance"  # without `q` relevance means "number"
+
+
+class NewspaperParams(PageParams):
+    year: int | None = _YEAR  # the archive keeps a volume of this year
 
 
 class Ref(BaseModel):
@@ -73,8 +86,10 @@ class DocumentItem(BaseModel):
     authors: str
     places: list[str]
     sheets_count: int | None
-    file_access: str  # status only; files are never linked from the catalog
+    file_access: str  # status only; the files themselves are listed on the document card
     has_digital_copy: bool
+    # Thumbnail of the first copy (/api/files/{id}?variant=preview), only while anonymous visitors may open that file.
+    preview_url: str | None = None
     branch_id: uuid.UUID | None
     is_demo: bool
     fund: Ref | None  # the chain is shown only while fund, inventory and case are all published
@@ -112,6 +127,11 @@ class DocumentsResponse(Pagination):
     sort: Sort  # effective sort
 
 
+class FormerName(BaseModel):
+    dates: str | None  # as written in the fund list: «1939-1945», «28.08.2001-»
+    name: str
+
+
 class FundItem(BaseModel):
     id: uuid.UUID
     number: str
@@ -126,6 +146,13 @@ class FundItem(BaseModel):
     inventory_count: int
     document_count: int
     href: str
+    former_names: list[FormerName]  # oldest first; the last one is the title
+    units_count: int | None
+    category: int | None
+    ownership: str | None  # state / private
+    first_received: date | None
+    restricted: str | None  # "partial": some storage units are not open; never a count of them
+    source: str | None
 
 
 class InventoryItem(BaseModel):
@@ -157,6 +184,27 @@ class CaseItem(BaseModel):
 
 class FundsResponse(Pagination):
     items: list[FundItem]
+    sort: FundSort  # effective sort
+
+
+class NewspaperYear(BaseModel):
+    year: int
+    volumes: int
+    note: str | None
+
+
+class NewspaperItem(BaseModel):
+    id: uuid.UUID
+    title: str
+    publisher: str | None
+    year_from: int
+    year_to: int
+    volumes_total: int
+    years: list[NewspaperYear]  # one entry per bound volume
+
+
+class NewspapersResponse(Pagination):
+    items: list[NewspaperItem]
 
 
 class InventoriesResponse(Pagination):
@@ -167,8 +215,14 @@ class CasesResponse(Pagination):
     items: list[CaseItem]
 
 
+class BranchRef(BaseModel):
+    name: str
+    href: str
+
+
 class FundDetail(FundItem):
     inventories: list[InventoryItem]
+    branch: BranchRef | None  # the published branch that holds the fund
 
 
 class InventoryDetail(InventoryItem):
@@ -193,6 +247,8 @@ class DocumentFile(BaseModel):
     url: str
     preview_url: str | None
     caption: str
+    provenance: str  # where the copy comes from (source page, changes made to it)
+    rights_note: str  # author and licence
     ocr_text: str | None
 
 

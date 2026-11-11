@@ -93,7 +93,7 @@ export function DocumentAiPanel({ documentId }: { documentId: string }) {
 
   const busy = status.kind === "streaming";
   return (
-    <section id="ask-document" aria-labelledby="ask-document-title" className="scroll-mt-24 space-y-4 rounded-lg border bg-surface p-5">
+    <section id="ask-document" aria-labelledby="ask-document-title" className="scroll-mt-24 space-y-4 card p-5">
       <header className="space-y-1">
         <h2 id="ask-document-title" className="flex items-center gap-2 text-xl font-semibold">
           <Sparkles className="size-5 text-primary" aria-hidden />

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, PT_Serif } from "next/font/google";
+import { Golos_Text, Literata } from "next/font/google";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { a11yInitScript } from "@/components/layout/a11y-init";
 import { AssistantWidget } from "@/components/ai/chat/assistant-widget";
 import { SiteSettingsProvider } from "@/components/layout/site-settings";
 import { SiteShell } from "@/components/layout/site-shell";
@@ -13,20 +14,24 @@ import { SITE_URL } from "@/lib/seo";
 import "../globals.css";
 
 // cyrillic-ext содержит казахские ә ғ қ ң ө ұ ү һ; і — в cyrillic.
-const sans = Inter({
+const sans = Golos_Text({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
   variable: "--font-sans-face",
   display: "swap",
 });
-const serif = PT_Serif({
+const reading = Literata({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
-  weight: ["400", "700"],
-  variable: "--font-serif-face",
+  variable: "--font-reading-face",
   display: "swap",
 });
 
+/**
+ * Языковые версии собираются заранее только в production-сборке. В режиме разработки список пуст: иначе
+ * dev-сервер при каждом новом адресе переписывает .next/prerender-manifest.json, и параллельные запросы
+ * портят этот файл (после чего все страницы отдают 500).
+ */
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+  return process.env.NODE_ENV === "production" ? routing.locales.map((locale) => ({ locale })) : [];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -53,7 +58,10 @@ export default async function LocaleLayout({
   const siteSettings = await fetchSiteSettings(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${serif.variable}`}>
+    <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${reading.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: a11yInitScript }} />
+      </head>
       <body>
         <NextIntlClientProvider>
           <ThemeProvider>

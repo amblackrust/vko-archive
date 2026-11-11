@@ -1,44 +1,57 @@
 "use client";
 
-import { ExternalLink, LocateFixed } from "lucide-react";
+import { LocateFixed } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { distanceKm, externalMapLinks, type LatLng, type TravelMode } from "./external-links";
+import { Field, SelectField } from "@/components/ui/field";
+import { MapLinks } from "./map-links";
+import { distanceKm, mapQuery, type LatLng, type TravelMode } from "./route-links";
 
-const modes: TravelMode[] = ["car", "walk", "transit", "bike"];
+const MODES: TravelMode[] = ["car", "walk", "transit", "bike"];
+
+interface Origin extends LatLng {
+  /** Найденный геокодером адрес; null — точка получена геолокацией. */
+  label: string | null;
+}
 
 /**
- * Внешние ссылки на 2GIS / Google Maps / Яндекс всегда доступны. Построение маршрута из
- * точки отправления — по желанию: геолокация только по явной кнопке, либо адрес (Nominatim).
- * Любой сбой оставляет только ссылки и адрес.
+ * Маршрут до подразделения. Ссылки на внешние карты работают сразу и всегда; точка отправления —
+ * по желанию: геолокация только по нажатию кнопки, при отказе — адрес вручную (геокодер Nominatim).
+ * Сбой геолокации или геокодера оставляет адрес, контакты и ссылки на месте.
  */
-export function RoutePanel({ address, destination }: { address: string; destination: LatLng | null }) {
+export function RoutePanel({ address, point, verified, heading: Heading = "h2" }: {
+  address: string;
+  /** Точка подразделения на карте; null — координат нет. */
+  point: LatLng | null;
+  /** Координаты подтверждены архивом: тогда маршрут строится к ним, иначе — к текстовому адресу. */
+  verified: boolean;
+  heading?: "h2" | "h3";
+}) {
   const t = useTranslations("map.route");
   const [mode, setMode] = useState<TravelMode>("car");
-  const [origin, setOrigin] = useState<LatLng | null>(null);
-  const [from, setFrom] = useState("");
+  const [origin, setOrigin] = useState<Origin | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const links = externalMapLinks(address, mode, origin);
+  const [from, setFrom] = useState("");
+
+  // После сбоя фокус уходит в поле адреса: это следующий шаг, который остаётся посетителю.
+  function fail(message: string) {
+    setError(message);
+    setBusy(false);
+    document.getElementById("route-from")?.focus();
+  }
 
   function locate() {
     setError(null);
-    if (!navigator.geolocation) {
-      setError(t("geoUnavailable"));
-      return;
-    }
+    if (!navigator.geolocation) return fail(t("geoUnavailable"));
     setBusy(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setOrigin({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      (position) => {
+        setOrigin({ lat: position.coords.latitude, lng: position.coords.longitude, label: null });
         setBusy(false);
       },
-      (err) => {
-        setError(err.code === err.PERMISSION_DENIED ? t("geoDenied") : t("geoUnavailable"));
-        setBusy(false);
-      },
+      (reason) => fail(reason.code === reason.PERMISSION_DENIED ? t("geoDenied") : t("geoUnavailable")),
       { timeout: 10000 },
     );
   }
@@ -50,62 +63,46 @@ export function RoutePanel({ address, destination }: { address: string; destinat
     setError(null);
     setBusy(true);
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`,
-        { signal: AbortSignal.timeout(8000) },
-      );
-      const found = (await response.json()) as { lat: string; lon: string }[];
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`, {
+        signal: AbortSignal.timeout(8000),
+      });
+      const found = (await response.json()) as { lat: string; lon: string; display_name?: string }[];
       if (!response.ok || found.length === 0) throw new Error("not found");
-      setOrigin({ lat: Number(found[0].lat), lng: Number(found[0].lon) });
-    } catch {
-      setError(t("geocodeFailed"));
-    } finally {
+      setOrigin({ lat: Number(found[0].lat), lng: Number(found[0].lon), label: found[0].display_name ?? query });
       setBusy(false);
+    } catch {
+      fail(t("geocodeFailed"));
     }
   }
 
-  const km = origin && destination ? distanceKm(origin, destination) : null;
-  const linkClass = "inline-flex min-h-9 items-center gap-1 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-surface-muted";
+  const km = origin && point ? Math.round(distanceKm(origin, point)) : null;
   return (
-    <section aria-label={t("title")} className="space-y-3 border-t pt-3">
-      <h3 className="text-sm font-semibold">{t("title")}</h3>
-      <div className="space-y-2">
-        <Button type="button" variant="outline" size="sm" onClick={locate} disabled={busy}>
+    <section aria-labelledby="route-title" className="space-y-4">
+      <div className="space-y-1">
+        <Heading id="route-title" className={Heading === "h2" ? "text-2xl" : "text-lg"}>{t("title")}</Heading>
+        <p className="text-sm text-muted-foreground">{t("text")}</p>
+      </div>
+
+      <div className="space-y-3 card p-4">
+        <Button type="button" variant="outline" className="h-11 w-full whitespace-normal sm:w-auto" onClick={locate} disabled={busy}>
           <LocateFixed aria-hidden /> {t("useLocation")}
         </Button>
-        <form onSubmit={geocode} className="flex gap-2">
-          <label htmlFor="route-from" className="sr-only">{t("addressLabel")}</label>
-          <Input id="route-from" value={from} onChange={(e) => setFrom(e.target.value)} placeholder={t("addressPlaceholder")} maxLength={200} />
-          <Button type="submit" variant="outline" size="sm" disabled={busy || !from.trim()}>{t("find")}</Button>
+        <form onSubmit={geocode} className="flex items-end gap-2">
+          <Field id="route-from" label={t("addressLabel")} placeholder={t("addressPlaceholder")} maxLength={200} value={from} onChange={(event) => setFrom(event.target.value)} className="min-w-0 flex-1" />
+          <Button type="submit" variant="outline" className="h-11" disabled={busy}>{t("find")}</Button>
         </form>
+        {error && <p role="alert" className="text-sm font-medium text-destructive">{error}</p>}
+        {origin && (
+          <p role="status" className="text-sm">
+            {origin.label ? t("originAddress", { address: origin.label }) : t("originLocation")}{" "}
+            {km != null && t(verified ? "distance" : "distanceApprox", { km })}
+          </p>
+        )}
       </div>
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      {origin && (
-        <p className="text-sm" role="status">
-          {km != null ? t("distance", { km: Math.round(km) }) : t("originSet")}
-        </p>
-      )}
-      <div className="space-y-2">
-        <label htmlFor="route-mode" className="block text-sm text-muted-foreground">{t("mode")}</label>
-        <select
-          id="route-mode"
-          value={mode}
-          onChange={(e) => setMode(e.target.value as TravelMode)}
-          className="h-10 w-full rounded-md border bg-surface px-3 text-sm"
-        >
-          {modes.map((m) => <option key={m} value={m}>{t(`modes.${m}`)}</option>)}
-        </select>
-      </div>
-      <ul className="flex flex-wrap gap-2">
-        {([["twoGis", links.twoGis], ["google", links.google], ["yandex", links.yandex]] as const).map(([id, href]) => (
-          <li key={id}>
-            <a href={href} target="_blank" rel="noopener noreferrer" className={linkClass}>
-              {t(`open.${id}`)} <ExternalLink className="size-3.5" aria-hidden />
-              <span className="sr-only">({t("external")})</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+
+      <SelectField label={t("mode")} value={mode} onChange={(event) => setMode(event.target.value as TravelMode)} options={MODES.map((value) => ({ value, label: t(`modes.${value}`) }))} className="max-w-xs" />
+      <MapLinks destination={verified && point ? `${point.lat},${point.lng}` : mapQuery(address)} mode={mode} origin={origin} />
+      <p className="text-sm text-muted-foreground">{t("modeNote")}</p>
     </section>
   );
 }

@@ -7,7 +7,7 @@
 
 | Что | Модель | Где |
 |---|---|---|
-| Ответы, разбор запроса | `OLLAMA_MODEL=qwen3.5:9b-q6k`, запасная `OLLAMA_FALLBACK_MODEL=qwen3.5:9b-q4_K_M` (выбирается сама, если основной нет) | `app/ai/ollama_client.py` |
+| Ответы, разбор запроса | `OLLAMA_MODEL=qwen3.5:9b`, запасная `OLLAMA_FALLBACK_MODEL=qwen3.5:4b` (выбирается сама, если основной нет) | `app/ai/ollama_client.py` |
 | Векторы (поиск, рекомендации) | `OLLAMA_EMBED_MODEL=bge-m3`, 1024 измерения | `app/ai/embeddings.py`, `search_entries.embedding` |
 
 Во всех вызовах `/api/chat`: `think: false` (+ вырезание `<think>…</think>`), `keep_alive: "30m"`, `temperature 0.1`,

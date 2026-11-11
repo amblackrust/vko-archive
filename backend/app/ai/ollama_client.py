@@ -1,7 +1,8 @@
 """Ollama client for the public AI features (T4.1): chat (plain / JSON schema / stream),
 embeddings, availability.
 
-- Every /api/chat call sends `"think": false` (Qwen3.5 is a thinking model) and
+- Every /api/chat call sends `"think": false` (Qwen3.5 is a thinking model; `OLLAMA_THINK=true` is for
+  builds that cannot switch reasoning off: Ollama then returns it in a separate field, which is dropped) and
   `keep_alive: "30m"`; `<think>…</think>` blocks are still removed from the output.
 - The chat model is OLLAMA_MODEL if it is pulled, else OLLAMA_FALLBACK_MODEL; the model
   list is cached for a minute. No model / Ollama down → `OllamaUnavailable`, never a
@@ -47,6 +48,9 @@ _state_lock = threading.Lock()
 _models_cache: dict[str, tuple[float, set[str]]] = {}  # ollama_url -> (time, model names)
 _last_failure = 0.0
 _slots: threading.BoundedSemaphore | None = None  # created on first use (size from settings)
+# Models whose runner cannot constrain output (HTTP 501 on `format`, e.g. the MLX build that the default
+# `qwen3.5:9b` tag resolves to on Apple Silicon): for them JSON is asked for in the prompt instead.
+_no_format: set[str] = set()
 
 
 class OllamaUnavailable(Exception):
@@ -76,6 +80,7 @@ def reset_state() -> None:
     global _last_failure, _slots
     with _state_lock:
         _models_cache.clear()
+        _no_format.clear()
         _last_failure = 0.0
         _slots = None
 
@@ -188,12 +193,13 @@ def _payload(settings: Settings, model: str, messages: list[dict[str, str]], str
         "model": model,
         "messages": messages,
         "stream": stream,
-        "think": False,
+        # A JSON-constrained call never reasons; a free-text one does only when the model cannot be told not to.
+        "think": settings.ollama_think and fmt is None,
         "keep_alive": KEEP_ALIVE,
         "options": {
             "temperature": TEMPERATURE,
             "num_ctx": settings.ollama_num_ctx,
-            "num_predict": settings.ollama_num_predict,
+            "num_predict": settings.ollama_num_predict + (settings.ollama_think_tokens if settings.ollama_think and fmt is None else 0),
         },
     }
     if fmt is not None:
@@ -219,6 +225,18 @@ def _fail(exc: httpx.HTTPError, what: str) -> OllamaUnavailable:
     return OllamaUnavailable("ollama_unavailable")
 
 
+def _unconstrained(messages: list[dict[str, str]], fmt: Any) -> list[dict[str, str]]:
+    """The same request for a runner without structured output: the schema goes into the prompt."""
+    schema = "" if fmt == "json" else f" по этой JSON-схеме:\n{json.dumps(fmt, ensure_ascii=False)}"
+    return [*messages, {"role": "system", "content": f"Ответь одним JSON-объектом{schema}\nБез пояснений и без markdown."}]
+
+
+def _json_object(text: str) -> str:
+    """The JSON object inside free text (code fences and stray words around it are dropped)."""
+    start, end = text.find("{"), text.rfind("}")
+    return text[start : end + 1] if 0 <= start < end else text
+
+
 def chat(
     messages: list[dict[str, str]],
     settings: Settings,
@@ -226,11 +244,13 @@ def chat(
     fmt: Any = None,
     timeout: float | None = None,
 ) -> str:
-    """Whole answer (think blocks removed). `fmt`: "json" or a JSON schema."""
+    """Whole answer (think blocks removed). `fmt`: "json" or a JSON schema; the caller validates the result."""
     model = chat_model(settings)
-    payload = _payload(settings, model, messages, False, fmt)
     with _generation_slot(settings):
-        for attempt in (1, 2):
+        retried = False
+        while True:
+            constrained = fmt is not None and model not in _no_format
+            payload = _payload(settings, model, messages if constrained or fmt is None else _unconstrained(messages, fmt), False, fmt if constrained else None)
             try:
                 with _client(settings, _timeout(settings, timeout or settings.ollama_chat_timeout_seconds)) as client:
                     response = client.post("/api/chat", json=payload)
@@ -238,15 +258,20 @@ def chat(
                     content = response.json()["message"]["content"]
                 if not isinstance(content, str):
                     raise OllamaUnavailable("bad_response")
-                return strip_think(content)
+                text = strip_think(content)
+                return text if constrained or fmt is None else _json_object(text)
             except httpx.HTTPError as exc:
-                if attempt == 1 and _server_down(exc):
+                if constrained and isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code == 501:
+                    logger.info("Model %s has no structured output: asking for JSON in the prompt", model)
+                    _no_format.add(model)
+                    continue
+                if not retried and _server_down(exc):
                     logger.info("Ollama chat failed (%s), retrying once", type(exc).__name__)
+                    retried = True
                     continue
                 raise _fail(exc, "chat") from exc
             except (ValueError, KeyError, TypeError) as exc:
                 raise OllamaUnavailable("bad_response") from exc
-    raise AssertionError("unreachable")
 
 
 class _ThinkFilter:

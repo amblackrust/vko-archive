@@ -1,30 +1,24 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { BranchesExplorer } from "@/components/map/branches-explorer";
+import { safe } from "@/components/misc/api";
+import { pageMetadata } from "@/components/misc/metadata";
+import { Unavailable } from "@/components/misc/state-help";
+import { PageHeader } from "@/components/ui/page-header";
 import { fetchBranches } from "@/lib/api/branches";
-import { localizedAlternates } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
+export const generateMetadata = pageMetadata("map", "/branches");
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "map" });
-  return { title: t("title"), alternates: localizedAlternates(locale, "/branches") };
-}
-
+/** Головной архив и филиалы: карта, список, карточка и маршрут в одном окне. */
 export default async function BranchesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("map");
-  const branches = await fetchBranches(locale);
+  const branches = await safe(fetchBranches(locale));
+  if (!branches) return <Unavailable />;
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title") }]} />
-      <div className="container-page space-y-6 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-        </header>
+      <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
+      <div className="container-page py-8 pb-16">
         <BranchesExplorer branches={branches} />
       </div>
     </>

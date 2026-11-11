@@ -15,18 +15,20 @@ access conditions. If Ollama or the model is unavailable the result has
 
 import json
 import logging
+import re
 import urllib.parse
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import Any
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai import guards, ollama_client, prompts, query_parser, rag
 from app.ai.ollama_client import OllamaUnavailable
 from app.config import Settings
 from app.models import Branch, Document, Fund
-from app.models.enums import FileAccess
+from app.models.enums import FileAccess, WorkflowStatus
 from app.repositories import search as search_repo
 from app.schemas.ai import (
     AiAnswer,
@@ -200,6 +202,10 @@ def _routes(branch: Branch, lang: str) -> list[RouteLink]:
     ]
 
 
+_LATIN_FUND_LETTERS = str.maketrans("РП", "RP")  # fund number prefixes «Р-» and suffix «П»
+FUND_NAMES_CHARS = 900  # room for about ten names; the context window is 8k tokens
+
+
 def _item(session: Session, ref: str, hit: SearchItem, lang: str) -> rag.ContextItem | None:
     """None if the object vanished since the search (deleted concurrently)."""
     kind = TYPE_WORDS[hit.type].get(lang) or TYPE_WORDS[hit.type]["ru"]
@@ -252,8 +258,19 @@ def _item(session: Session, ref: str, hit: SearchItem, lang: str) -> rag.Context
         if fund is None:
             return None
         years = f"{fund.dates_from or '…'}–{fund.dates_to or '…'}" if fund.dates_from or fund.dates_to else None
-        line = rag.field_line(kind, hit.title, f"фонд № {fund.number}", years, snippet)
-        return rag.ContextItem(source, line, codes=[f"Ф.{fund.number}", f"Фонд № {fund.number}", f"Фонд {fund.number}"])
+        # The card shows the fund number and years next to its title.
+        source = source.model_copy(update={"archive_code": fund.number, "date_text": years})
+        # Earlier names of the organisation (the last entry repeats the title): what people usually ask about.
+        earlier = "; ".join(f"{name.get('dates') or 'без дат'}: {name.get('name')}" for name in (fund.former_names or [])[:-1])
+        line = rag.field_line(
+            kind, hit.title, f"фонд № {fund.number}", years,
+            fund.units_count and f"единиц хранения: {fund.units_count}",
+            earlier and f"прежние названия: {rag.shorten(earlier, FUND_NAMES_CHARS)}",
+            _i18n(fund.annotation, lang) or (None if earlier else snippet),
+        )
+        # In English answers the model writes the number in Latin letters («fund R-103»): also a known code.
+        numbers = {fund.number, fund.number.translate(_LATIN_FUND_LETTERS)}
+        return rag.ContextItem(source, line, codes=[f"Фонд № {number}" for number in sorted(numbers)])
     return rag.ContextItem(source, rag.field_line(kind, hit.title, snippet))
 
 
@@ -279,6 +296,36 @@ def _top_hits(session: Session, settings: Settings, filters: AppliedFilters, lan
     hits = hits[: rag.MAX_ITEMS]
     search_log.log_search(session, query=filters.q, lang=lang, source="ai", results_count=len(hits))
     return hits
+
+
+# «фонд № Р-103», «қор 1079П», «fonds R-103»: the number names the fund exactly, and neither
+# full-text nor vector search finds a record by its number alone.
+_FUND_NUMBER_RE = re.compile(
+    r"(?:фонд\w*|қор\w*|fonds?|fund)\s*(?:№|#|n[o°]?\.?)?\s*([рпrp]\s?-?\s?\d{1,4}[а-яa-z]?|\d{1,4}\s?п?)(?![\w-])",
+    re.IGNORECASE,
+)
+
+
+def _numbered_funds(session: Session, query: str, lang: str, hits: list[SearchItem]) -> list[SearchItem]:
+    """Published funds named in the question by number, placed before the search hits."""
+    numbers: list[str] = []
+    for raw in _FUND_NUMBER_RE.findall(query):
+        number = re.sub(r"[\s-]", "", raw).upper().translate(str.maketrans("RP", "РП"))
+        numbers += [number, re.sub(r"^([РП])(\d)", r"\1-\2", number)]
+    if not numbers:
+        return hits
+    funds = session.scalars(
+        select(Fund).where(Fund.number.in_(numbers), Fund.workflow_status == WorkflowStatus.PUBLISHED).limit(3)
+    ).all()
+    found = [
+        SearchItem(
+            type="fund", id=fund.id, title=_i18n(fund.title, lang), lang=lang, snippet="",
+            href=f"/catalog/funds/{fund.id}", score=1e6, matched=["fts"],
+        )
+        for fund in funds
+    ]
+    ids = {item.id for item in found}
+    return (found + [hit for hit in hits if hit.id not in ids])[: rag.MAX_ITEMS]
 
 
 # --- prepared request -------------------------------------------------------------
@@ -365,8 +412,13 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
     parsed = parsed.model_copy(update={"lang": lang})
     base["parsed"] = parsed
 
-    if parsed.intent == "off_topic":
-        return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
+    # The model also files bare names of organisations and places under off-topic («библиотека Пушкина»),
+    # yet the archive keeps the funds of exactly such bodies. So its verdict is only a hint: the query is
+    # searched anyway and counts as off-topic when the catalogue has no word match for it either.
+    llm_off_topic = parsed.intent == "off_topic"
+    if llm_off_topic:
+        parsed = parsed.model_copy(update={"intent": "search"})
+        base["parsed"] = parsed
     if parsed.intent == "service" and not guard.service:
         # The fixed service answer only on a rule match (guards): the model also files
         # «покажи трудовую книжку» under service. Otherwise search, with the section in context.
@@ -378,7 +430,12 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
 
     filters = build_filters(parsed, query, groups)
     base["filters"] = filters
-    hits = _top_hits(session, settings, filters, lang)
+    hits = _numbered_funds(session, query, lang, _top_hits(session, settings, filters, lang))
+    if llm_off_topic:
+        # A vector neighbour exists for any text, so only word matches (full-text, trigram) count here.
+        hits = [hit for hit in hits if set(hit.matched) - {"vector"}]
+        if not hits:
+            return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
     items = [item for item in (_item(session, f"S{i}", hit, lang) for i, hit in enumerate(hits, 1)) if item]
     for number, item in enumerate(items, 1):
         item.source.ref = f"S{number}"

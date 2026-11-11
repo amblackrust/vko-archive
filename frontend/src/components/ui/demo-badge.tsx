@@ -13,7 +13,7 @@ export function DemoBadge({ kind = "noTranslation", className, ...props }: DemoB
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-sm border border-accent/40 bg-accent-soft px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-accent-soft-foreground",
+        "inline-flex items-center rounded-sm bg-surface-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground",
         className,
       )}
       {...props}

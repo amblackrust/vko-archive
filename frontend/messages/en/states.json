@@ -1,29 +1,44 @@
 {
   "notFound": {
-    "title": "Page not found",
-    "description": "This page does not exist or has been moved. Check the address or go to the home page."
+    "title": "This page does not exist",
+    "description": "There is nothing at this address: the page was removed or moved, or the link is wrong. Try the search or go to one of the sections."
   },
   "empty": {
     "title": "Nothing found",
-    "description": "Try changing your query or resetting the filters.",
+    "description": "Check the spelling, try other words or reset the filters.",
     "reset": "Reset filters"
   },
   "unavailable": {
     "title": "Material unavailable",
-    "description": "The material is hidden, unpublished or not published yet."
+    "description": "The material has been unpublished, is not published yet, or the archive's server is temporarily not responding. Try opening the page later."
   },
   "forbidden": {
     "title": "Access denied",
     "description": "You do not have permission to view this material. Access to restricted materials is limited."
   },
   "error": {
-    "title": "Something went wrong",
-    "description": "An unexpected error occurred. Try reloading the page.",
+    "title": "The page could not be shown",
+    "description": "An error occurred on the site. Try again; if that does not help, use the search or the sections below.",
     "retry": "Try again",
     "code": "Error code: {digest}"
   },
   "loading": {
     "label": "Loading content"
   },
-  "toHome": "Back to home"
+  "toHome": "Back to home",
+  "help": {
+    "searchTitle": "Search the archive",
+    "searchPlaceholder": "Title, surname, event or code",
+    "searchSubmit": "Search",
+    "searchHint": "The search covers the open materials of the site.",
+    "linksTitle": "Main sections",
+    "links": {
+      "catalog": "Online catalogue",
+      "funds": "Archival fonds",
+      "services": "Archive services",
+      "branches": "Branches and map",
+      "help": "How to use the site",
+      "contacts": "Contacts"
+    }
+  }
 }

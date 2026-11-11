@@ -1,49 +1,59 @@
-import { BookOpen, Camera, Library } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { localizedAlternates } from "@/lib/seo";
-import { Button } from "@/components/ui/button";
+import { pageMetadata } from "@/components/misc/metadata";
+import { Block, PageBody, SeeAlso } from "@/components/misc/page-layout";
+import { Pending } from "@/components/misc/pending";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/ui/page-header";
 import { Link } from "@/lib/i18n/navigation";
-import { StateView } from "@/components/ui/state-view";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "misc.publications" });
-  return { title: t("title"), description: t("intro"), alternates: localizedAlternates(locale, "/publications") };
-}
-
-const sections = [
-  { key: "publications", icon: BookOpen },
-  { key: "collections", icon: Library },
-  { key: "photos", icon: Camera },
+// Что появится в разделе и где похожие материалы есть уже сейчас.
+const PARTS = [
+  { id: "articles", href: "/news" },
+  { id: "collections", href: "/memory" },
+  { id: "photos", href: "/catalog?doc_type=photo" },
 ] as const;
 
+export const generateMetadata = pageMetadata("misc.publications", "/publications");
+
+/** Публицистика, сборники и фотогалерея: материалы заказчик не передал, страница честно показывает ожидание. */
 export default async function PublicationsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("misc.publications");
   return (
     <>
-      <Breadcrumbs items={[{ label: t("title") }]} />
-      <div className="container-page space-y-8 pb-12">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
-        </header>
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {sections.map(({ key, icon: Icon }) => (
-            <li key={key} className="flex items-center gap-3 rounded-lg border bg-surface p-4">
-              <Icon className="size-5 shrink-0 text-primary" aria-hidden />
-              <span className="font-medium">{t(`sections.${key}`)}</span>
-            </li>
-          ))}
-        </ul>
-        <StateView icon={BookOpen} as="h2" title={t("pending")}>
-          <Button asChild variant="outline">
-            <Link href="/catalog">{t("catalogLink")}</Link>
-          </Button>
-        </StateView>
-      </div>
+      <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
+      <PageBody
+        aside={
+          <SeeAlso
+            title={t("more.title")}
+            items={[
+              { href: "/exhibitions", label: t("more.exhibitions"), text: t("more.exhibitionsText") },
+              { href: "/catalog/newspapers", label: t("more.newspapers"), text: t("more.newspapersText") },
+              { href: "/memory/timeline", label: t("more.timeline") },
+            ]}
+          />
+        }
+      >
+        <Notice title={t("pending.title")}>{t("pending.text")}</Notice>
+        <Block id="parts" title={t("parts.title")}>
+          <ul className="card divide-y px-5">
+            {PARTS.map(({ id, href }) => (
+              <li key={id} className="grid gap-x-8 gap-y-2 py-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+                <div>
+                  <h3 className="text-lg">{t(`parts.${id}.title`)}</h3>
+                  <p className="mt-1 max-w-2xl text-[0.9375rem] text-muted-foreground">{t(`parts.${id}.text`)}</p>
+                  <p className="mt-2 text-[0.9375rem]">
+                    {t("parts.meanwhile")}{" "}
+                    <Link href={href} className="text-link">{t(`parts.${id}.link`)}</Link>
+                  </p>
+                </div>
+                <p><Pending>{t("parts.status")}</Pending></p>
+              </li>
+            ))}
+          </ul>
+        </Block>
+      </PageBody>
     </>
   );
 }

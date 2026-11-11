@@ -1,8 +1,10 @@
 """T2.4: «Архив памяти» — persons and chronology taken from the Календарь памятных дат (info/),
-plus demo collections built from the fictitious demo catalog.
+plus collections and three persons built on the open historical materials (seed/open_data.py).
 
-Persons and events are real public facts from the customer's calendar: only what the calendar
-states, with the calendar as the source. Biographies beyond that are not invented."""
+Calendar persons and events are real public facts from the customer's calendar: only what the
+calendar states, with the calendar as the source. The persons added with a portrait have a short
+editorial biography of well-established facts; what is not confirmed is said so in the text
+(the person model has no flag for that)."""
 
 from datetime import date
 
@@ -17,7 +19,9 @@ from app.models import (
     Person,
     WorkflowStatus,
 )
-from seed.common import Report, demo_document, i18n, translation_status, upsert
+from seed.common import Report, i18n, translation_status, upsert
+from seed.open_data import COLLECTIONS, PERSON_NOTE, PERSONS
+from seed.open_materials import credit, first_file, manifest, open_document
 
 PUBLISHED = WorkflowStatus.PUBLISHED
 CALENDAR_SOURCE = "Календарь памятных дат (info/)"
@@ -35,22 +39,6 @@ CALENDAR_PERSONS = [
 # Chronology: every dated calendar entry of the 2025 and 2026 calendars, in order of the event date.
 EVENT_CALENDAR_YEARS = (2025, 2026)
 EVENTS_LIMIT = 30
-
-# Demo collections: (slug, ru title, ru description, theme, period, demo document keys)
-COLLECTIONS = [
-    ("collection-ust-kamenogorsk", "Усть-Каменогорск в документах 1950–1960-х",
-     "Подборка вымышленных документов о городе: решения горсовета, планы, фотографии и газеты.",
-     "ust-kamenogorsk", "1950–1960-е",
-     ["d2-1-1-1", "d2-1-1-2", "d2-1-2-1", "d2-1-2-2", "d4-1-1-2"]),  # fmt: skip
-    ("collection-lead-zinc", "Свинцово-цинковый комбинат: цеха и люди",
-     "Вымышленные документы о строительстве и работе цехов комбината, фотографии и воспоминания.",
-     "lead-zinc", "1950–1980-е",
-     ["d1-1-1-1", "d1-1-2-1", "d1-2-1-1", "d1-2-1-3", "d1-2-3-1"]),  # fmt: skip
-    ("collection-education", "Образование в регионе",
-     "Вымышленные школьные документы и материалы о работе учителей.",
-     "education", "1960–1970-е",
-     ["d6-1-1-1", "d6-1-2-1", "d6-1-2-2", "d2-1-3-1", "d2-1-3-2"]),  # fmt: skip
-]
 
 
 def seed_persons(session: Session, report: Report, refresh: bool) -> None:
@@ -102,8 +90,34 @@ def seed_chronology(session: Session, report: Report, refresh: bool) -> None:
         )  # fmt: skip
 
 
+def seed_open_persons(session: Session, report: Report, refresh: bool) -> None:
+    """Persons whose portrait is among the open materials: the portrait is their photo and document."""
+    entries = manifest()
+    for slug, name, birth, death, portrait, bio, sources in PERSONS:
+        document = open_document(session, portrait)
+        entry = entries[portrait]
+        person = upsert(
+            session, report, Person, {"slug": slug},
+            {
+                "name": i18n(ru=name),
+                "birth_year": birth,
+                "death_year": death,
+                "years_text": f"{birth}–{death}",
+                "bio": i18n(ru=bio),
+                "photo_file_id": first_file(session, document).id,
+                "sources": [*sources, {"title": f"Портрет: {credit(entry)}", "url": entry["source_url"]}, PERSON_NOTE],
+                "is_demo": False,
+                "workflow_status": PUBLISHED,
+                "translation_status": translation_status(ru=name),
+            },
+            refresh,
+        )  # fmt: skip
+        if not person.documents:
+            person.documents = [document]
+
+
 def seed_collections(session: Session, report: Report, refresh: bool) -> None:
-    for slug, title, description, theme, period, keys in COLLECTIONS:
+    for slug, theme, period, title, description, items in COLLECTIONS:
         collection = upsert(
             session, report, Collection, {"slug": slug},
             {
@@ -111,16 +125,16 @@ def seed_collections(session: Session, report: Report, refresh: bool) -> None:
                 "theme": theme,
                 "period": period,
                 "description": i18n(ru=description),
-                "is_demo": True,
+                "is_demo": False,
                 "workflow_status": PUBLISHED,
                 "translation_status": translation_status(ru=title),
             },
             refresh,
         )  # fmt: skip
         session.flush()
-        for position, key in enumerate(keys):
+        for position, (file, note) in enumerate(items):
             upsert(
                 session, report, CollectionItem, {"collection_id": collection.id, "position": position},
-                {"item_type": "document", "item_id": demo_document(session, key).id},
+                {"item_type": "document", "item_id": open_document(session, file).id, "note": i18n(ru=note or "")},
                 refresh,
             )  # fmt: skip

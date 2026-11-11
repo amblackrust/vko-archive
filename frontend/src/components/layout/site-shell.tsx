@@ -5,15 +5,11 @@ import { usePathname } from "@/lib/i18n/navigation";
 import { Footer } from "./footer";
 import { Header } from "./header";
 
-/** Разделы без публичной шапки/подвала (у админки свой каркас). */
-export function useIsAdminArea() {
-  return usePathname().startsWith("/admin");
-}
-
 /** Общий каркас страницы: skip-link, шапка, <main id="main">, подвал. */
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("common");
-  if (useIsAdminArea()) return <>{children}</>;
+  // У админки свой каркас: без публичной шапки и подвала.
+  if (usePathname().startsWith("/admin")) return <>{children}</>;
   return (
     <div className="flex min-h-screen flex-col">
       <a

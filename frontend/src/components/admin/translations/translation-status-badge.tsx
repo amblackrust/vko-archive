@@ -1,35 +1,36 @@
 "use client";
 
+import { Bot, CircleCheck, CircleDashed, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-import type { TranslationStatus } from "./translations-api";
+import { localeLabels, type Locale } from "@/lib/i18n/routing";
+import { Badge, type Tone } from "../kit/badge";
+import { TRANSLATION_LANGS, type TranslationStatus } from "./translations-api";
 
-const styles: Record<TranslationStatus, string> = {
-  verified: "bg-accent-soft text-accent-soft-foreground",
-  machine: "border border-dashed border-primary text-primary",
-  missing: "bg-surface-muted text-muted-foreground",
+const styles: Record<TranslationStatus, { tone: Tone; icon: LucideIcon }> = {
+  verified: { tone: "success", icon: CircleCheck },
+  machine: { tone: "warning", icon: Bot },
+  missing: { tone: "neutral", icon: CircleDashed },
 };
 
-interface TranslationStatusBadgeProps {
-  lang: string;
-  status: TranslationStatus | undefined;
-  className?: string;
+/** Статус перевода одного языка: «KZ · Проверен / Машинный / Нет перевода». */
+export function TranslationStatusBadge({ lang, status = "missing" }: { lang: string; status: TranslationStatus | undefined }) {
+  const t = useTranslations("adminImport.translations.statuses");
+  const style = styles[status] ?? styles.missing;
+  return (
+    <Badge tone={style.tone}>
+      <span className="font-bold">{localeLabels[lang as Locale]?.short ?? lang}</span>
+      {t(status in styles ? status : "missing")}
+    </Badge>
+  );
 }
 
-/**
- * Бейдж статуса перевода одного языка: «KK · Проверен / Машинный / Нет перевода».
- * Переиспользуемый: таблица переводов, вкладки I18nField, формы объектов.
- */
-export function TranslationStatusBadge({ lang, status = "missing", className }: TranslationStatusBadgeProps) {
+/** Статусы перевода по всем трём языкам в строку. */
+export function TranslationBadges({ status, label = true }: { status: Record<string, string>; label?: boolean }) {
   const t = useTranslations("adminImport.translations");
-  const text = t(`statuses.${status}`);
   return (
-    <span
-      className={cn("inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs", styles[status], className)}
-      title={t("statusLabel", { lang: lang.toUpperCase(), status: text })}
-    >
-      <span className="font-semibold uppercase">{lang}</span>
-      <span>{text}</span>
-    </span>
+    <p className="flex flex-wrap items-center gap-1.5 text-sm">
+      {label && <span className="mr-1 text-muted-foreground">{t("badgesLabel")}</span>}
+      {TRANSLATION_LANGS.map((lang) => <TranslationStatusBadge key={lang} lang={lang} status={status[lang] as TranslationStatus | undefined} />)}
+    </p>
   );
 }

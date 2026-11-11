@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { API_URL } from "@/lib/api/client";
 
 /** Контракты backend/app/schemas/exhibitions.py и news.py. Тексты — plain text; файлы — только /api/files. */
@@ -20,6 +21,7 @@ export interface ExhibitionItem {
   cover: MediaRef | null;
   exhibits_count: number;
   is_demo: boolean;
+  /** Статус перевода вступления: verified, machine или missing. */
   translation_status: string;
 }
 
@@ -56,3 +58,10 @@ export async function fetchPublic<T>(path: string, params: URLSearchParams, lang
   if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
   return (await response.json()) as T;
 }
+
+/** Выставка с экспонатами. cache: generateMetadata и страница делят один запрос. Адрес не по шаблону API — сразу «не найдено». */
+export const fetchExhibition = cache(async (slug: string, lang: string) =>
+  /^[a-z0-9-]{1,255}$/.test(slug) ? fetchPublic<ExhibitionDetail>(`exhibitions/${slug}`, new URLSearchParams(), lang) : null);
+
+/** Адрес изображения для плитки: превью, а если его нет — сам файл. */
+export const thumbPath = (media: MediaRef | null) => media?.preview_url ?? media?.url ?? null;

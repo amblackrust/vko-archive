@@ -1,40 +1,34 @@
 {
-  "title": "Interactive timeline",
+  "title": "Timeline of the region's history",
   "breadcrumb": "Timeline",
-  "intro": "Events in the history of the region on a horizontal scale. Pick a decade, then a year, to see events, photos and documents.",
+  "intro": "Events in the history of East Kazakhstan by decade and year. Each event gives its date, place and source of information; linked documents open in the catalog.",
   "theme": {
-    "label": "Topic",
-    "all": "All topics",
+    "label": "Theme",
+    "all": "All themes",
     "people": "People",
     "institutions": "Institutions and organisations",
     "events": "Events"
   },
   "scale": {
-    "label": "Time scale by decades",
-    "years": "Years of the selected decade",
+    "label": "Decade",
     "all": "All years",
     "decade": "{decade}s",
-    "hint": "Left and right arrows switch decades, Enter or Space selects.",
-    "count": "events: {count}"
+    "count": "{count, plural, one {# event} other {# events}}",
+    "years": "Year",
+    "allYears": "All"
   },
   "list": {
-    "title": "Events",
+    "all": "All events",
+    "decade": "The {decade}s",
+    "year": "Year {year}",
     "count": "Events shown: {count}",
-    "empty": "No events in this period and topic.",
-    "reset": "Show all"
+    "reset": "Show all events",
+    "catalog": "Catalog for {year}",
+    "toMap": "Show on the historical map"
   },
-  "event": {
-    "open": "Details",
-    "close": "Collapse",
-    "place": "Place",
-    "date": "Date",
-    "sources": "Source",
-    "documents": "Documents and photos",
-    "noDocuments": "No archival documents are linked to this event yet: the date and information are given as stated in the source and are not confirmed by archive documents.",
-    "toCatalog": "Search the catalog for this year",
-    "toMap": "Show on map",
-    "approxDate": "Date not confirmed by a document"
-  },
-  "back": "Back to the Memory archive",
-  "error": "Could not load the timeline. Please try again later."
+  "empty": {
+    "title": "No events have been published yet",
+    "text": "The timeline grows as dates are checked against sources. Memorial dates of the region are collected in the calendar.",
+    "calendar": "Open the memorial dates calendar"
+  }
 }

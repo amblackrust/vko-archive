@@ -2,20 +2,56 @@
   "openSection": "Open",
   "external": "external site, opens in a new tab",
   "hero": {
-    "title": "Ask the archive in your own words",
-    "subtitle": "Describe what you are looking for: an event, a place, a person or a document. Search works in Kazakh, Russian and English.",
+    "title": "State Archive of East Kazakhstan Region",
+    "subtitle": "Keeping the documentary history of the region since 1940. Find a fonds, a document, an exhibition or a branch — in Kazakh, Russian and English.",
     "label": "Search the archive",
     "submit": "Search",
     "chipsLabel": "For example:",
     "advanced": "Advanced catalogue search",
     "e1": "Photos of Ust-Kamenogorsk in the 1960s",
-    "e2": "Certificate about my grandfather, who worked at the lead plant",
-    "e3": "How to get an archive certificate",
-    "e4": "Branch in Ridder"
+    "e2": "Pushkin Regional Library",
+    "e3": "How to get an archival certificate",
+    "e4": "Branch in Ridder",
+    "placeholder": "Organisation, event, place or reference code",
+    "stats": {
+      "founded": "year the archive was founded",
+      "funds": "fonds described in the catalogue",
+      "branches": "branches in towns and districts"
+    },
+    "photo": {
+      "alt": "Old postcard: wooden houses, trading rows and the cathedral of Ust-Kamenogorsk against the mountains",
+      "caption": "Ust-Kamenogorsk, view from the fire station. Early 20th-century postcard.",
+      "source": "Source: Wikimedia Commons, photo by {author}, {license}"
+    }
   },
   "catalog": {
     "title": "Electronic catalogue",
-    "text": "Archive documents by category. Open materials can be viewed online; for the rest the access status is shown."
+    "text": "Fonds, inventories, files and documents. Open materials can be viewed online; for the rest the access status is shown.",
+    "advanced": "Advanced search",
+    "open": "Open the catalogue",
+    "howto": "How to search the catalogue",
+    "structure": "How the catalogue is organised",
+    "featured": "Documents with a digital copy",
+    "categories": "Document categories",
+    "all": "All documents",
+    "levels": {
+      "funds": {
+        "name": "Fonds",
+        "hint": "records of one organisation or person"
+      },
+      "inventories": {
+        "name": "Inventories",
+        "hint": "lists of case files within a fonds"
+      },
+      "cases": {
+        "name": "Case files",
+        "hint": "folders of documents"
+      },
+      "documents": {
+        "name": "Documents",
+        "hint": "orders, letters, photographs, maps"
+      }
+    }
   },
   "explore": {
     "title": "History and events"
@@ -57,10 +93,10 @@
   },
   "branches": {
     "title": "Our branches",
-    "text": "The head archive and branches on the regional map: {count}.",
-    "all": "All branches, addresses and directions",
-    "mapLabel": "Mini-map of archive branches",
-    "tilesFailed": "The map did not load. The branch list on the right and the branches page are available."
+    "text": "The head archive and its branches on the map of the region: {count}.",
+    "all": "Addresses, contacts and directions",
+    "mapLabel": "Map of archive branches",
+    "tilesFailed": "The map did not load. The list of branches and the branches page are available."
   },
   "calendar": {
     "title": "Calendar of memorable dates",
@@ -68,10 +104,17 @@
     "empty": "Memorable dates for this month are not published yet."
   },
   "useful": {
-    "title": "Useful information"
+    "title": "Useful information",
+    "catalogHowto": "How to use the electronic catalogue",
+    "structure": "How fonds, inventories and files are organised",
+    "published": "Which materials are published on the site",
+    "branchesInfo": "Where to find information about branches",
+    "readingRoom": "Reading room rules",
+    "legal": "Laws and regulations",
+    "egov": "eGov.kz e-government portal"
   },
   "social": {
-    "title": "We are on social media"
+    "title": "The archive on social media"
   },
   "share": {
     "label": "Share",
@@ -82,5 +125,67 @@
     "copied": "Link copied",
     "copyManual": "Copy the link",
     "external": "external site, opens in a new tab"
+  },
+  "start": {
+    "title": "Where to start",
+    "fund": {
+      "title": "Find out where to look",
+      "text": "The navigator points to the organisation's fonds and the next steps."
+    },
+    "certificate": {
+      "title": "Get an archival certificate",
+      "text": "Procedure, documents and time limits. Applications are filed on eGov.kz."
+    },
+    "exhibitions": {
+      "title": "Visit an online exhibition",
+      "text": "Documents and photographs on the history of the region, with commentary."
+    },
+    "branch": {
+      "title": "Find a branch",
+      "text": "Addresses, phone numbers and directions to the archive and its branches."
+    }
+  },
+  "today": {
+    "title": "This day in the region's history",
+    "monthTitle": "Memorable dates: {month}",
+    "all": "Full calendar of memorable dates"
+  },
+  "exhibitions": {
+    "title": "Online exhibitions",
+    "text": "Documents and photographs with commentary and source references.",
+    "all": "All exhibitions"
+  },
+  "news": {
+    "title": "News and events",
+    "all": "All news",
+    "empty": "No news yet."
+  },
+  "tiles": {
+    "title": "Sections of the archive",
+    "credits": "Photographs from Wikimedia Commons:",
+    "history": {
+      "label": "Regional history",
+      "title": "Great Archive of Memory: collections, people and events of East Kazakhstan"
+    },
+    "catalog": {
+      "label": "Catalogue",
+      "title": "Fonds, inventories, files and documents"
+    },
+    "exhibitions": {
+      "label": "Exhibitions",
+      "title": "Online exhibitions with captions and sources"
+    },
+    "people": {
+      "label": "People",
+      "title": "People in the history of the region"
+    },
+    "branches": {
+      "label": "Branches",
+      "title": "The archive and its branches on the map"
+    },
+    "timeline": {
+      "label": "Timeline",
+      "title": "Events in the history of Ust-Kamenogorsk and the region, year by year"
+    }
   }
 }

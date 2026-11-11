@@ -1,6 +1,10 @@
 import { API_URL } from "./client";
+import type { FacetValue } from "./catalog";
 
 /** Контракты GET /api/search (backend/app/schemas/search.py). */
+
+/** Типы результатов в порядке вкладок страницы поиска. */
+export const SEARCH_TYPES = ["document", "fund", "collection", "exhibition", "news", "page", "branch"] as const;
 
 export interface SearchItem {
   type: string;
@@ -16,7 +20,7 @@ export interface SearchItem {
     archive_code: string | null;
     date_text: string | null;
     doc_type: string | null;
-    file_access: string;
+    file_access: "open" | "restricted" | "closed" | "needs_review";
     has_digital_copy: boolean;
   } | null;
 }
@@ -28,31 +32,19 @@ export interface SearchGroup {
 }
 
 export interface SearchResponse {
-  total: number;
   groups: SearchGroup[];
+  /** `type` — число результатов каждого типа по запросу, независимо от выбранной вкладки. */
+  facets: { type: FacetValue[] };
+  /** false — смысловой поиск недоступен, найдено только по словам. */
   semantic: boolean;
 }
 
-export interface SearchQuery {
-  q: string;
-  lang: string;
-  types?: string[];
-  doc_type?: string[];
-  period?: string[];
-  per_group?: number;
-  offset?: number;
-  log?: boolean;
-}
-
-export async function fetchSearch(query: SearchQuery, signal: AbortSignal): Promise<SearchResponse> {
-  const params = new URLSearchParams({ q: query.q, lang: query.lang });
-  for (const key of ["types", "doc_type", "period"] as const) {
-    for (const value of query[key] ?? []) params.append(key, value);
+/** Поиск для серверного рендера страницы; undefined — API недоступен. */
+export async function fetchSearch(params: URLSearchParams): Promise<SearchResponse | undefined> {
+  try {
+    const response = await fetch(`${API_URL}/api/search?${params}`, { cache: "no-store" });
+    return response.ok ? ((await response.json()) as SearchResponse) : undefined;
+  } catch {
+    return undefined;
   }
-  if (query.per_group) params.set("per_group", String(query.per_group));
-  if (query.offset) params.set("offset", String(query.offset));
-  if (query.log === false) params.set("log", "false");
-  const response = await fetch(`${API_URL}/api/search?${params}`, { signal });
-  if (!response.ok) throw new Error(`search ${response.status}`);
-  return response.json();
 }

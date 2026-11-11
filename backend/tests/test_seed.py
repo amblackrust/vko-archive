@@ -33,7 +33,8 @@ def _count(session: Session, model) -> int:
 
 def test_seed_is_idempotent(db_session: Session, storage: Path) -> None:
     first = run(db_session, storage)
-    tables = ("branches", "pages", "memorial_dates", "documents", "digital_files", "funds", "legal_acts")
+    tables = ("branches", "pages", "memorial_dates", "documents", "digital_files", "funds", "newspapers", "legal_acts",
+              "exhibitions", "exhibits", "collections", "collection_items", "persons", "historical_events", "news")
     counts = {t: first.total(t) for t in tables}
     assert not first.existing  # empty test database: everything was created
 
@@ -61,15 +62,15 @@ def test_info_content(db_session: Session, storage: Path) -> None:
 
 def test_demo_catalog_requirements(db_session: Session, storage: Path) -> None:
     run(db_session, storage)
-    docs = db_session.scalars(select(Document)).all()
+    docs = db_session.scalars(select(Document).where(Document.is_demo)).all()  # the fictitious catalog only
     assert 40 <= len(docs) <= 50
-    assert all(d.is_demo and "ДЕМО" not in d.title["ru"] and "ДЕМО" not in d.archive_code for d in docs)
+    assert all("ДЕМО" not in d.title["ru"] and "ДЕМО" not in d.archive_code for d in docs)
     by_access = {a: sum(d.file_access == a for d in docs) for a in FileAccess}
     assert by_access[FileAccess.CLOSED] >= 5
     assert by_access[FileAccess.RESTRICTED] >= 3
     assert by_access[FileAccess.NEEDS_REVIEW] >= 3
 
-    fund_types = [f.type for f in db_session.scalars(select(Fund))]
+    fund_types = [f.type for f in db_session.scalars(select(Fund).where(Fund.is_demo))]
     assert 5 <= len(fund_types) <= 6
     assert fund_types.count(FundType.PERSONAL) >= 2
     assert FundType.PARTY in fund_types and FundType.NEWSPAPER in fund_types
@@ -109,6 +110,6 @@ def test_files_follow_document_access(db_session: Session, storage: Path) -> Non
     ).all()
     assert rows
     for file, document in rows:
-        assert file.access == document.file_access and file.is_demo
+        assert file.access == document.file_access and file.is_demo == document.is_demo
         assert (storage / file.master_path).read_bytes()
         assert not file.master_path.startswith("/")

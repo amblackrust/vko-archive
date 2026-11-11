@@ -1,26 +1,23 @@
-import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { ExternalLink } from "@/components/ui/external-link";
 
 const SERVICES = [
   { key: "egov", href: "https://egov.kz" },
   { key: "eotinish", href: "https://eotinish.kz" },
 ] as const;
 
-/** Явные внешние переходы: обращения и заявки оформляются на официальных порталах, не здесь. */
-export function ExternalServiceLinks() {
+/** Явные внешние переходы: заявления и обращения оформляются на государственных порталах, не на этом сайте. */
+export function ExternalServiceLinks({ only }: { only?: (typeof SERVICES)[number]["key"] }) {
   const t = useTranslations("services.external");
   return (
-    <div className="flex flex-wrap gap-3">
-      {SERVICES.map((service) => (
-        <Button key={service.key} asChild variant="outline">
-          <a href={service.href} target="_blank" rel="noopener noreferrer">
+    <ul className="flex flex-wrap gap-3">
+      {SERVICES.filter((service) => !only || service.key === only).map((service) => (
+        <li key={service.key}>
+          <ExternalLink href={service.href} className="min-h-11 items-center rounded-md border border-border-strong bg-surface px-4 text-sm font-semibold hover:border-primary hover:no-underline [&_svg]:mt-0">
             {t(service.key)}
-            <ExternalLink aria-hidden />
-            <span className="sr-only">{t("hint")}</span>
-          </a>
-        </Button>
+          </ExternalLink>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

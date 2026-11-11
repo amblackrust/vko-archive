@@ -1,0 +1,74 @@
+{
+  "title": "Where to look for records",
+  "lead": "Three steps: what you need, which organisation is involved and what to do next. The navigator searches the archive's actual list of fonds, including organisations' former names.",
+  "notice": "The navigator only tells you where records are kept and where to apply. Applications are not accepted on this site.",
+  "goal": {
+    "title": "What do you need?",
+    "work": {
+      "title": "Confirm employment or salary",
+      "text": "A certificate for a pension, benefit or employer."
+    },
+    "study": {
+      "title": "Confirm studies, an award or another event",
+      "text": "An archival certificate, a copy of an order or an extract."
+    },
+    "family": {
+      "title": "Learn your family history",
+      "text": "Where relatives lived and worked, and where to start."
+    },
+    "research": {
+      "title": "Study the history of an organisation or place",
+      "text": "For studies, research or local history."
+    }
+  },
+  "fund": {
+    "title": "Which organisation is it about?",
+    "titleFamily": "Where did the person work or study?",
+    "label": "Name of the organisation, institution or enterprise",
+    "placeholder": "For example: Pushkin library",
+    "hint": "One or two words are enough. It can be any name the organisation had over the years.",
+    "failed": "The catalogue is unavailable right now. Try later or open the list of fonds.",
+    "empty": "No such organisation was found in the list of fonds. See below for what you can do.",
+    "change": "Choose another"
+  },
+  "result": {
+    "title": "What to do next",
+    "found": "This organisation's records are listed in fonds No. {number}.",
+    "openFund": "Open the fonds record",
+    "noteTitle": "Note in the list of fonds",
+    "yearLabel": "In what year did you work or study there?",
+    "yearHint": "Organisations changed their names. In the application it is best to give the name used at that time.",
+    "nameThen": "In {year} the organisation was called:",
+    "nameUnknown": "The list has no name for {year}: give the current name and the years in the application.",
+    "notFoundTitle": "No fonds found — that does not mean there are no records",
+    "notFound": "Personnel records may have gone to the city personnel-records branch or to a district branch, and organisations that still exist keep their own. Ask the nearest branch of the archive.",
+    "branches": "Archive branches and contacts",
+    "nextTitle": "Your steps",
+    "next": {
+      "work": {
+        "a": "Apply for an archival certificate through eGov.kz, Government for Citizens or the archive's office.",
+        "b": "Give the organisation's name, your position and the years of work; attach a copy of your employment record book if you have one.",
+        "c": "The certificate is issued free of charge within 11 working days."
+      },
+      "study": {
+        "a": "Apply for an archival certificate, copy or extract through eGov.kz, Government for Citizens or the archive's office.",
+        "b": "Give the institution, the years and the event to be confirmed; attach any documents you have.",
+        "c": "The service is free; the time limit is 11 working days."
+      },
+      "family": {
+        "a": "Collect what is known: surnames, places, years of life and workplaces of your relatives.",
+        "b": "Check the catalogue for fonds of organisations and village councils of that area — they show which years are covered.",
+        "c": "Inventories and files of open fonds are consulted in the reading room; birth, marriage and death records are issued by the civil registry offices."
+      },
+      "research": {
+        "a": "Open the fonds record: the years, volume and history of names help judge what it may contain.",
+        "b": "Look at related materials on the site: exhibitions, collections and the timeline.",
+        "c": "Inventories and files are consulted in the archive's reading room — rules and opening hours are on the site."
+      }
+    },
+    "stateService": "How to get a certificate",
+    "egov": "Go to eGov.kz",
+    "readingRoom": "Reading room rules",
+    "catalog": "Open the catalogue"
+  }
+}

@@ -1,54 +1,39 @@
 import { API_URL } from "@/lib/api/client";
+import type { MemorialDate } from "@/lib/api/home";
 
-export interface MemorialCalendarItem {
-  day: number | null;
-  month: number;
-  event_year: number | null;
-  date_text: string | null;
-  text: string;
-  text_lang: string;
+/** Сбой одного запроса не должен ронять страницу: вместо исключения — null. */
+export async function safe<T>(promise: Promise<T>): Promise<T | null> {
+  try {
+    return await promise;
+  } catch {
+    return null;
+  }
 }
 
 /** month = null, когда запрошен весь год. */
 export interface MemorialCalendar {
   year: number;
   month: number | null;
-  items: MemorialCalendarItem[];
+  items: MemorialDate[];
 }
 
-/** Календарь памятных дат за год (и месяц). При сбое API — null: страница покажет состояние «недоступно». */
-export async function fetchMemorialCalendar(lang: string, year: number, month?: number): Promise<MemorialCalendar | null> {
+/** Календарь памятных дат за год (и месяц). При сбое API — null. */
+export async function fetchMemorialCalendar(lang: string, year: number, month?: number | null): Promise<MemorialCalendar | null> {
   const params = new URLSearchParams({ lang, year: String(year) });
   if (month) params.set("month", String(month));
-  try {
-    const response = await fetch(`${API_URL}/api/home/memorial-dates?${params}`, { cache: "no-store" });
-    return response.ok ? ((await response.json()) as MemorialCalendar) : null;
-  } catch {
-    return null;
-  }
+  return safe(
+    fetch(`${API_URL}/api/home/memorial-dates?${params}`, { cache: "no-store" }).then((response) => {
+      if (!response.ok) throw new Error(`memorial dates: ${response.status}`);
+      return response.json() as Promise<MemorialCalendar>;
+    }),
+  );
 }
 
-export interface SiteCounts {
-  documents: number | null;
-  funds: number | null;
-  exhibitions: number | null;
-}
-
-async function total(path: string): Promise<number | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/${path}`, { cache: "no-store" });
-    return response.ok ? ((await response.json()) as { total: number }).total : null;
-  } catch {
-    return null;
-  }
-}
-
-/** Публичные счётчики из открытых списков API (персональных данных нет). Недоступный счётчик — null. */
-export async function fetchSiteCounts(): Promise<SiteCounts> {
-  const [documents, funds, exhibitions] = await Promise.all([
-    total("catalog/documents?per_page=1"),
-    total("catalog/funds?per_page=1"),
-    total("exhibitions"),
-  ]);
-  return { documents, funds, exhibitions };
-}
+/** Число записей открытого списка API (документы, фонды, выставки); недоступный список — null. */
+export const fetchTotal = (path: string) =>
+  safe(
+    fetch(`${API_URL}/api/${path}`, { cache: "no-store" }).then((response) => {
+      if (!response.ok) throw new Error(`${path}: ${response.status}`);
+      return response.json().then((data: { total: number }) => data.total);
+    }),
+  );

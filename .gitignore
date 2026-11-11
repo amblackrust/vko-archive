@@ -11,3 +11,5 @@ backend/storage/masters/
 backend/storage/previews/
 *.tsbuildinfo
 backups/
+.env.local
+.claude/

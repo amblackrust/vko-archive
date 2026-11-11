@@ -23,14 +23,20 @@ from app.models import (
     Tag,
     WorkflowStatus,
 )
-from seed.common import Report, attach_file, i18n, translation_status, upsert
+from seed.common import MACHINE_KK_EN, Report, attach_file, i18n, jpeg_preview, translation_status, upsert
 from seed.demo_data import FUNDS, TAGS, Doc
 
 PUBLISHED = WorkflowStatus.PUBLISHED
+# A monospaced face with Cyrillic for the "typewritten" scans: Linux, then macOS, then Windows.
+# Without any of them the default bitmap font draws boxes instead of Cyrillic letters.
 FONT_CANDIDATES = (
     "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
     "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
     "/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf",
+    "/System/Library/Fonts/Supplemental/Courier New.ttf",
+    "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "C:/Windows/Fonts/cour.ttf",
+    "C:/Windows/Fonts/arial.ttf",
 )
 PROVENANCE = i18n(ru="Файл сгенерирован скриптом seed, реального архивного оригинала нет.")
 RIGHTS = i18n(ru="Вымышленный материал, права не затрагиваются.")
@@ -46,14 +52,6 @@ def _font(size: int) -> ImageFont.ImageFont:
 def _png(image: Image.Image) -> bytes:
     buffer = io.BytesIO()
     image.save(buffer, "PNG")
-    return buffer.getvalue()
-
-
-def _preview(image: Image.Image) -> bytes:
-    thumb = image.convert("RGB")
-    thumb.thumbnail((400, 400))
-    buffer = io.BytesIO()
-    thumb.save(buffer, "JPEG", quality=70)
     return buffer.getvalue()
 
 
@@ -109,7 +107,7 @@ def _store_files(session, report, storage_dir, doc: Doc, document: Document, bas
             preview_name = f"previews/seed/catalog/{base}-{number}.jpg"
             preview = storage_dir / preview_name
             preview.parent.mkdir(parents=True, exist_ok=True)
-            preview.write_bytes(_preview(image))
+            preview.write_bytes(jpeg_preview(image))
             attach_file(
                 session, report, storage_dir, position=number - 1, name=f"catalog/{base}-{number}.png",
                 data=_png(image), mime="image/png", pages=1, preview_path=preview_name,
@@ -130,8 +128,7 @@ def seed_demo_catalog(session: Session, report: Report, storage_dir: Path, refre
     for slug, ru, kk, en in TAGS:
         tags[slug] = upsert(
             session, report, Tag, {"slug": f"tag-{slug}"},
-            {"name": i18n(ru=ru, kk=kk, en=en), "workflow_status": PUBLISHED,
-             "translation_status": {"ru": "verified", "kk": "machine", "en": "machine"}},
+            {"name": i18n(ru=ru, kk=kk, en=en), "workflow_status": PUBLISHED, "translation_status": dict(MACHINE_KK_EN)},
             refresh,
         )  # fmt: skip
 

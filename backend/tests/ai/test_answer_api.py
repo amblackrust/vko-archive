@@ -171,6 +171,17 @@ def test_off_topic_and_injection_never_reach_the_model(api, model):
     assert model.parse_calls == [] and model.answer_calls == []
 
 
+def test_model_off_topic_verdict_yields_to_a_catalogue_match(api, factory, model):
+    """A bare organisation name is a search even when the model files it under off-topic;
+    with no word match in the catalogue the off-topic reply stays."""
+    word = _public_order(factory, model)
+    model.parse_json = model.parse_json.replace('"search"', '"off_topic"')
+    body = _answer(api, f"приказ {word}")
+    assert body["mode"] == "answer"
+    model.parse_json = _keywords(token()).replace('"search"', '"off_topic"')
+    assert _answer(api, "рецепт борща со сметаной")["mode"] == "off_topic"
+
+
 def test_service_question_links_egov_and_section(api, model):
     body = _answer(api, "как получить архивную справку?")
     assert body["mode"] == "service"
@@ -407,3 +418,12 @@ def test_bare_followup_inherits_subject_of_previous_question(api, factory, model
 def test_ambiguous_cyrillic_follows_kazakh_interface(api, model):
     assert api.post("/api/ai/answer", json={"q": "ал 1970 жылдарда ше?", "lang": "kk"}).json()["lang"] == "kk"
     assert api.post("/api/ai/answer", json={"q": "а в 1970-х?", "lang": "ru"}).json()["lang"] == "ru"
+
+
+def test_fund_number_regex_reads_common_spellings() -> None:
+    from app.services.ai import _FUND_NUMBER_RE
+
+    assert _FUND_NUMBER_RE.findall("Расскажи о фонде № Р-103: чьи это документы?") == ["Р-103"]
+    assert _FUND_NUMBER_RE.findall("что в фонде 1079П") == ["1079П"]
+    assert _FUND_NUMBER_RE.findall("fonds R-103, which years?") == ["R-103"]
+    assert _FUND_NUMBER_RE.findall("в каком фонде документы завода") == []

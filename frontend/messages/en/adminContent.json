@@ -1,16 +1,12 @@
 {
-  "sections": "Types",
-  "translations": "Translations",
-  "search": "Search",
-  "empty": "Nothing here.",
   "priceNote": "The price list is reference information with its legal basis. There is no payment or ordering on the site.",
-  "editItem": "Edit: {name}",
-  "deleteItem": "Delete: {name}",
   "content": {
-    "title": "Site content"
+    "title": "Site content",
+    "lead": "News, pages, questions and answers, legal acts, the price list and the calendar of memorial dates. An item reaches the site after approval."
   },
   "memory": {
-    "title": "Memory archive"
+    "title": "Memory archive",
+    "lead": "Collections, persons and timeline events. The link icon in a row opens the contents of a collection or the source documents."
   },
   "tabs": {
     "news": "News",
@@ -24,8 +20,6 @@
     "historical_event": "Timeline events"
   },
   "columns": {
-    "title": "Title",
-    "status": "Status",
     "number": {
       "news": "Slug",
       "page": "Key",
@@ -48,17 +42,6 @@
     "collection": "New collection",
     "person": "New person",
     "historical_event": "New event"
-  },
-  "edit": {
-    "news": "News item",
-    "page": "Page",
-    "faq": "Question",
-    "legal_act": "Legal act",
-    "price_list_item": "Price item",
-    "memorial_date": "Memorial date",
-    "collection": "Collection",
-    "person": "Person",
-    "historical_event": "Event"
   },
   "fields": {
     "slug": "Address (slug)",
@@ -161,29 +144,21 @@
     },
     "saved": "Links saved.",
     "empty": "Nothing added yet.",
-    "types": {
-      "document": "Document",
-      "person": "Person",
-      "historical_event": "Event"
-    },
     "up": "Move up: {name}",
     "down": "Move down: {name}",
     "remove": "Remove: {name}",
     "add": "Add",
-    "type": "Type",
     "search": "Search by title or code",
-    "find": "Find",
-    "nothing": "Nothing found.",
     "addItem": "Add",
     "note": "Item note: {name}",
-    "noteLabel": "Note"
+    "noteLabel": "Note",
+    "unsaved": "There are unsaved changes",
+    "emptyHint": "Find an item below and press “Add”."
   },
   "settings": {
     "title": "Site settings",
-    "tabSite": "Site",
-    "tabSynonyms": "Search synonyms",
     "intro": "Administrators only. Each group is saved separately; changes are written to the audit log.",
-    "saved": "Saved.",
+    "saved": "Saved: {group}.",
     "groups": {
       "social": "Social networks",
       "widgets": "Widgets",
@@ -206,9 +181,7 @@
       "whatsapp": "WhatsApp"
     },
     "widgets": {
-      "calendar_weather": "Calendar and weather",
-      "rating": "Rating",
-      "statistics": "Statistics"
+      "calendar_weather": "Calendar and weather"
     },
     "survey": {
       "enabled": "Show survey",
@@ -226,7 +199,12 @@
       "url": "Link {n} address",
       "remove": "Remove link {n}",
       "add": "Add link"
-    }
+    },
+    "tabs": {
+      "site": "Site",
+      "synonyms": "Search synonyms"
+    },
+    "unsaved": "There are unsaved changes"
   },
   "synonyms": {
     "title": "Search synonyms",
@@ -234,7 +212,7 @@
     "terms": "Terms",
     "note": "Note",
     "active": "Active",
-    "toggle": "Toggle group “{name}”",
+    "toggle": "Group “{name}”",
     "edit": "Edit group “{name}”",
     "delete": "Delete group “{name}”",
     "create": "New group",
@@ -245,7 +223,13 @@
     "empty": "No synonym groups.",
     "deleteTitle": "Delete the synonym group?",
     "deleteDescription": "Group “{name}” will stop expanding search queries.",
-    "deleteConfirm": "Delete"
+    "deleteConfirm": "Delete",
+    "on": "On",
+    "off": "Off",
+    "editTitle": "Synonym group",
+    "deleted": "Group deleted.",
+    "emptyHint": "Create a group so that the search finds different spellings of one name.",
+    "actions": "Actions"
   },
   "audit": {
     "title": "Audit log",
@@ -257,7 +241,6 @@
       "user": "User",
       "action": "Operation",
       "object": "Object",
-      "objectId": "ID",
       "result": "Result"
     },
     "results": {
@@ -271,35 +254,65 @@
       "object": "Object type",
       "result": "Result",
       "from": "From",
-      "to": "To"
+      "to": "To",
+      "title": "Filters",
+      "anyResult": "Any"
     },
     "apply": "Apply",
     "reset": "Reset",
-    "empty": "No records."
+    "empty": "No records.",
+    "lead": "Who did what and when in the administration panel. Passwords and secrets never reach the log.",
+    "system": "system",
+    "emptyHint": "Change the filters or reset them."
   },
   "roles": {
     "title": "Roles and permissions",
     "intro": "The role permission matrix. Only the main administrator can change it; changes apply immediately and are logged.",
     "permission": "Permission",
     "cell": "{permission} — {role}",
-    "saved": "Role permissions saved.",
+    "saved": "Permissions of the role “{role}” saved.",
     "superNote": "The main administrator has all permissions; only they manage roles.",
     "confirmTitle": "Change the role permissions?",
     "confirmDescription": "Permissions of role “{role}” change immediately for all its users.",
-    "confirm": "Save"
+    "confirm": "Save",
+    "loading": "Loading the permission matrix…",
+    "unsaved": "There are unsaved permission changes",
+    "discard": "Discard",
+    "save": "Save",
+    "changed": "changed",
+    "always": "always granted",
+    "modules": {
+      "ai": "AI tools",
+      "analytics": "Analytics",
+      "audit": "Audit log",
+      "branches": "Branches",
+      "catalog": "Catalogue",
+      "content": "Content, memory and exhibitions",
+      "files": "Files",
+      "settings": "Site settings",
+      "users": "Users",
+      "workflow": "Approval"
+    },
+    "actions": {
+      "use": "Use",
+      "view": "View",
+      "export": "Export",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "import": "Import",
+      "upload": "Upload",
+      "manage": "Manage",
+      "archive": "Archive",
+      "publish": "Publish",
+      "review": "Review and return",
+      "submit": "Submit for review"
+    }
   },
   "related": {
     "empty": "No related items.",
-    "types": {
-      "document": "Document",
-      "exhibition": "Exhibition",
-      "news": "News"
-    },
     "remove": "Remove: {name}",
-    "type": "Type",
     "search": "Search by title",
-    "find": "Find",
-    "nothing": "Nothing found.",
     "add": "Add"
   },
   "media": {
@@ -312,5 +325,19 @@
     "pickFile": "File uploaded to this news item",
     "addFile": "Add file",
     "filesAfterSave": "Files can be chosen after the news item is saved for the first time."
+  },
+  "emptyHint": {
+    "news": "Create the first news item.",
+    "page": "Create the first page.",
+    "faq": "Add the first question.",
+    "legal_act": "Add the first legal act.",
+    "price_list_item": "Add the first price list item.",
+    "memorial_date": "Add the first memorial date.",
+    "collection": "Create the first collection and add documents to it.",
+    "person": "Add the first person.",
+    "historical_event": "Add the first event."
+  },
+  "sections": {
+    "seo": "For search engines (SEO)"
   }
 }

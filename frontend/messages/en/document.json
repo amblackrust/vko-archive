@@ -1,63 +1,74 @@
 {
-  "pageTitle": "Document card",
+  "pageTitle": "Document",
   "breadcrumb": "Document",
   "fields": {
     "code": "Reference code",
     "fund": "Fonds",
     "inventory": "Inventory",
-    "case": "File",
+    "case": "Case file",
     "date": "Date",
+    "period": "Period",
     "type": "Document type",
     "language": "Language",
+    "author": "Author or organisation",
+    "places": "Places",
     "sheets": "Sheets",
     "storage": "Storage location",
     "branch": "Archive branch",
-    "access": "Access status",
+    "access": "Access",
     "digitalCopy": "Digital copy",
-    "author": "Author or organisation",
-    "places": "Places",
-    "period": "Period",
-    "topics": "Topics"
+    "topics": "Topics",
+    "yes": "Available",
+    "no": "None"
   },
-  "yes": "Available",
-  "no": "None",
   "sections": {
     "description": "Description",
     "historicalNote": "Historical note",
-    "viewer": "Document viewer",
     "details": "Document details",
-    "related": "Related materials",
-    "ocr": "Recognised text of the page"
+    "related": "Related documents"
+  },
+  "annotation": {
+    "title": "The document in brief",
+    "note": "The summary was prepared automatically and checked by an archive employee."
   },
   "actions": {
     "copyCode": "Copy reference code",
     "copied": "Code copied",
     "copyFailed": "Could not copy",
-    "share": "Share",
-    "linkCopied": "Link copied",
-    "shareFailed": "Could not share"
+    "cite": "Copy citation",
+    "cited": "Citation copied",
+    "print": "Print",
+    "accessed": "accessed"
   },
   "access": {
-    "open": "Open for viewing",
-    "restricted": "Restricted access",
-    "closed": "Closed",
-    "needs_review": "Access conditions being clarified"
-  },
-  "accessNotice": {
-    "restricted": "Files of this document are not published online: access is restricted.",
-    "closed": "Files of this document are closed for viewing on the website.",
-    "needs_review": "Access conditions for the files are being clarified, so they are not shown yet.",
-    "open": "This document has no published digital copy.",
+    "open": {
+      "title": "No digital copy on the site",
+      "text": "The description of this document is open, but its image has not been published. The original can be consulted in the archive's reading room."
+    },
+    "restricted": {
+      "title": "Access to this document is restricted",
+      "text": "The files of this document are not published online. The description is open; the document itself is issued only when the access conditions are met."
+    },
+    "closed": {
+      "title": "This document is closed for viewing",
+      "text": "The files of this document are not shown on the site: it contains information closed by law, such as personal data."
+    },
+    "needs_review": {
+      "title": "Access conditions are being confirmed",
+      "text": "The archive has not yet decided whether this document can be shown online, so its files are hidden for now."
+    },
     "conditions": "Access conditions",
-    "noConditions": "No access conditions are specified.",
-    "howTo": "The website does not accept applications or requests. For copies and certificates see the eGov.kz portal.",
-    "egov": "Go to eGov.kz"
+    "howTo": "This site does not accept applications or requests. An archival certificate, copy or extract is ordered on the e-government portal.",
+    "egov": "Go to eGov.kz",
+    "service": "How to get an archival certificate",
+    "readingRoom": "Reading room rules"
   },
   "viewer": {
-    "label": "Document viewer",
+    "title": "Document viewer",
+    "sheet": "Sheet {current} of {total}",
     "page": "Page {current} of {total}",
-    "prev": "Previous page",
-    "next": "Next page",
+    "prev": "Previous sheet",
+    "next": "Next sheet",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "zoomReset": "Reset zoom",
@@ -66,25 +77,32 @@
     "exitFullscreen": "Exit full screen",
     "download": "Download file",
     "open": "Open file",
-    "pages": "Pages",
+    "sheets": "Document sheets",
+    "pages": "File pages",
+    "sheetThumb": "Go to sheet {n}",
     "pageThumb": "Go to page {n}",
     "noPreview": "This file has no built-in preview.",
     "audio": "Audio recording",
-    "hint": "The wheel and buttons zoom, dragging pans the image, arrow keys turn pages.",
+    "hint": "Arrow keys turn sheets; the “+”, “−” and “0” keys change the zoom, as does the mouse wheel with Ctrl held. A zoomed sheet can be dragged; a double click zooms in and back.",
     "loadFailed": "Could not load the file.",
-    "loading": "Loading the document…"
+    "loading": "Loading the document…",
+    "ocr": "Recognised text of the sheet",
+    "ocrNote": "The text was recognised automatically and may contain errors."
   },
-  "related": {
-    "empty": "No related materials."
-  },
-  "empty": {
-    "title": "Nothing found",
-    "description": "The catalogue has no published materials for your request. Try changing the conditions.",
-    "removeHint": "Remove one of the conditions to widen the search:",
-    "similar": "You may have meant",
-    "tips": "Check the spelling, use fewer words or more general ones.",
-    "askAi": "Ask the AI assistant",
-    "askAiHint": "The AI can help phrase a query and find archive materials.",
-    "resetAll": "Reset all filters"
+  "similar": {
+    "title": "Similar materials",
+    "empty": "No similar materials yet.",
+    "error": "Could not load similar materials.",
+    "personal": "Take the documents I have viewed into account",
+    "personalHint": "Your viewing history is kept only in this browser and is deleted when you clear this box.",
+    "types": {
+      "document": "Document",
+      "fund": "Fonds",
+      "exhibition": "Exhibition",
+      "collection": "Collection",
+      "news": "News",
+      "page": "Site page",
+      "branch": "Branch"
+    }
   }
 }

@@ -4,6 +4,7 @@ parent chain); items never carry file paths, only the access status. Links are b
 
 import math
 import uuid
+from collections.abc import Sequence
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -15,6 +16,7 @@ from app.repositories import ai_tools as ai_tools_repo
 from app.repositories import catalog as repo
 from app.repositories import catalog_tree as tree
 from app.schemas.catalog import (
+    BranchRef,
     DocumentAnnotationPublic,
     DocumentDetail,
     DocumentFile,
@@ -35,6 +37,9 @@ from app.schemas.catalog import (
     InventoriesResponse,
     InventoryDetail,
     InventoryItem,
+    NewspaperItem,
+    NewspaperParams,
+    NewspapersResponse,
     PageParams,
     Ref,
 )
@@ -42,7 +47,7 @@ from app.repositories import files as files_repo
 from app.services import files as files_service
 from app.services import recommendations
 from app.services import search_log
-from app.services.authz import FILE_DOWNLOAD, AuthUser, authorize
+from app.services.authz import FILE_DOWNLOAD, AuthUser, FileTarget, authorize
 from app.services.errors import NotFound
 
 _FALLBACK = ("ru", "kk", "en")
@@ -81,7 +86,7 @@ def _case_ref(case_id: uuid.UUID, number: str, title: dict[str, str], lang: str)
     return _ref(f"/catalog/cases/{case_id}", number, title, case_id, lang)
 
 
-def _document_item(row: Any, lang: str) -> DocumentItem:
+def _document_item(row: Any, lang: str, preview_url: str | None) -> DocumentItem:
     document: Document = row.Document
     title, title_lang = pick(document.title, lang)
     in_chain = row.case_id is not None  # chain columns are NULL unless fund, inventory and case are published
@@ -100,12 +105,25 @@ def _document_item(row: Any, lang: str) -> DocumentItem:
         sheets_count=document.sheets_count,
         file_access=document.file_access.value,
         has_digital_copy=document.has_digital_copy,
+        preview_url=preview_url,
         branch_id=document.branch_id,
         is_demo=document.is_demo,
         fund=_fund_ref(row.fund_id, row.fund_number, row.fund_title, lang) if in_chain else None,
         inventory=_inventory_ref(row.inventory_id, row.inventory_number, row.inventory_title, lang) if in_chain else None,
         case=_case_ref(row.case_id, row.case_number, row.case_title, lang) if in_chain else None,
     )
+
+
+def document_items(session: Session, rows: Sequence[Any], lang: str) -> list[DocumentItem]:
+    """List items with a thumbnail: the preview of each document's first file that an anonymous
+    visitor may open (the same "file.download" rule; GET /api/files/{id} checks it again)."""
+    documents = {row.Document.id: row.Document for row in rows}
+    previews: dict[uuid.UUID, str] = {}
+    for file in files_repo.files_of_owners(session, "document", list(documents)):
+        target = FileTarget(file, document=documents[file.owner_id])
+        if file.owner_id not in previews and file.preview_path and authorize(None, FILE_DOWNLOAD, target):
+            previews[file.owner_id] = files_service.file_url(file.id, "preview")
+    return [_document_item(row, lang, previews.get(row.Document.id)) for row in rows]
 
 
 def _facet_values(rows: list[Any]) -> list[FacetValue]:
@@ -140,7 +158,7 @@ def search_documents(session: Session, filters: CatalogFilters) -> DocumentsResp
         search_log.log_search(session, query=query, lang=lang, source="catalog", results_count=total)
     return DocumentsResponse(
         **_page(total, filters.page, filters.per_page),
-        items=[_document_item(row, lang) for row in rows],
+        items=document_items(session, rows, lang),
         facets=facets,
         sort=sort,
     )
@@ -162,6 +180,13 @@ def _fund_item(fund: Fund, inventory_count: int, document_count: int, lang: str)
         inventory_count=inventory_count,
         document_count=document_count,
         href=f"/catalog/funds/{fund.id}",
+        former_names=fund.former_names,
+        units_count=fund.units_count,
+        category=fund.category,
+        ownership=fund.ownership,
+        first_received=fund.first_received,
+        restricted=fund.restricted,
+        source=fund.source,
     )
 
 
@@ -199,10 +224,20 @@ def _case_item(case: Case, inventory: Inventory, fund: Fund, document_count: int
 
 
 def list_funds(session: Session, params: FundListParams) -> FundsResponse:
-    total, rows = tree.list_funds(session, params.q, params.type, params.branch_id, params.page, params.per_page)
+    total, rows, sort = tree.list_funds(session, params)
     return FundsResponse(
         **_page(total, params.page, params.per_page),
         items=[_fund_item(r.Fund, r.inventory_count, r.document_count, params.lang) for r in rows],
+        sort=sort,
+    )
+
+
+def list_newspapers(session: Session, params: NewspaperParams) -> NewspapersResponse:
+    """Newspapers the archive keeps (its public list, no workflow): by title or publisher, by year."""
+    total, rows = tree.list_newspapers(session, params.q, params.year, params.page, params.per_page)
+    return NewspapersResponse(
+        **_page(total, params.page, params.per_page),
+        items=[NewspaperItem.model_validate(r.Newspaper, from_attributes=True) for r in rows],
     )
 
 
@@ -215,7 +250,8 @@ def get_fund(session: Session, fund_id: uuid.UUID, lang: str) -> FundDetail:
         _inventory_item(r.Inventory, row.Fund, r.case_count, r.document_count, lang)
         for r in tree.fund_inventories(session, fund_id)
     ]
-    return FundDetail(**fund_item.model_dump(), inventories=inventories)
+    branch = row.Branch and BranchRef(name=pick(row.Branch.name, lang)[0], href=f"/branches/{row.Branch.slug}")
+    return FundDetail(**fund_item.model_dump(), inventories=inventories, branch=branch)
 
 
 def list_inventories(session: Session, params: PageParams) -> InventoriesResponse:
@@ -254,7 +290,7 @@ def get_case(session: Session, case_id: uuid.UUID, params: PageParams) -> CaseDe
     filters = CatalogFilters(lang=params.lang, q=params.q, sort="code", page=params.page, per_page=params.per_page)
     total, rows, _ = repo.search_documents(session, filters, case_id=case_id)
     documents = DocumentPage(
-        **_page(total, params.page, params.per_page), items=[_document_item(r, params.lang) for r in rows]
+        **_page(total, params.page, params.per_page), items=document_items(session, rows, params.lang)
     )
     return CaseDetail(**item.model_dump(), documents=documents)
 
@@ -266,11 +302,11 @@ def _related(session: Session, row: Any, tags: list[Any], lang: str) -> list[Doc
     """Other public documents: nearest by embeddings first (T4.12), then the same case,
     then those sharing a topic (also the whole list when there are no vectors)."""
     document: Document = row.Document
-    found: dict[uuid.UUID, DocumentItem] = {}
+    found: dict[uuid.UUID, Any] = {}
     for related_id in recommendations.similar_document_ids(session, document, RELATED_LIMIT):
         related = repo.get_public_document(session, related_id)
         if related is not None:
-            found[related_id] = _document_item(related, lang)
+            found[related_id] = related
     queries = []
     if document.case_id is not None:
         queries.append(({"sort": "code"}, document.case_id))
@@ -280,8 +316,8 @@ def _related(session: Session, row: Any, tags: list[Any], lang: str) -> list[Doc
         filters = CatalogFilters(lang=lang, per_page=RELATED_LIMIT + 1, **extra)
         for related in repo.search_documents(session, filters, case_id=case_id)[1]:
             if related.Document.id != document.id and len(found) < RELATED_LIMIT:
-                found.setdefault(related.Document.id, _document_item(related, lang))
-    return list(found.values())
+                found.setdefault(related.Document.id, related)
+    return document_items(session, list(found.values()), lang)
 
 
 def _annotation(session: Session, document: Document, lang: str) -> DocumentAnnotationPublic | None:
@@ -317,6 +353,8 @@ def get_document(session: Session, user: AuthUser | None, document_id: uuid.UUID
             url=visible[file.id].url,
             preview_url=visible[file.id].preview_url,
             caption=pick(file.caption, lang)[0],
+            provenance=pick(file.provenance, lang)[0],
+            rights_note=pick(file.rights_note, lang)[0],
             ocr_text=file.ocr_text or None,
         )
         for file in files_repo.files_of_owner(session, "document", document.id)
@@ -324,7 +362,7 @@ def get_document(session: Session, user: AuthUser | None, document_id: uuid.UUID
     ]
     branch_names = repo.published_branch_names(session, [document.branch_id] if document.branch_id else [])
     return DocumentDetail(
-        **_document_item(row, lang).model_dump(),
+        **document_items(session, [row], lang)[0].model_dump(),
         historical_note=pick(document.historical_note, lang)[0],
         summary=pick(document.summary, lang)[0],
         storage_location=document.storage_location,

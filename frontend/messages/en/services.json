@@ -1,34 +1,197 @@
 {
   "external": {
-    "heading": "Official channels",
     "egov": "Go to eGov.kz",
-    "eotinish": "Go to e-Otinish",
-    "hint": "opens an external website"
+    "eotinish": "Go to e-Otinish"
   },
   "state": {
-    "notice": "This website does not accept applications. Use the official external services to apply.",
-    "title": "Government service",
-    "intro": "The legal basis and procedure for a government service in archival affairs. Informational section.",
+    "notice": "This site is for information only. Applications are not accepted here: apply through eGov.kz, the Government for Citizens corporation or the archive's office.",
+    "title": "Public service",
+    "intro": "How to obtain an archival certificate, a copy of an archival document or an extract: conditions, time limits, documents and the official channels for applying.",
     "lawsHeading": "Legal basis",
-    "law": "Law of the Republic of Kazakhstan «On Public Services»",
-    "rules": "Rules for providing public services in archival affairs (order of 29.05.2020 No. 159)",
-    "detailsHeading": "Conditions, documents, deadlines",
-    "detailsPending": "Conditions, the list of documents, deadlines, step-by-step instructions and requisites will be published after the archive approves them.",
+    "law": "Law of the Republic of Kazakhstan of 15 April 2013 No. 88-V “On Public Services”",
+    "rules": "Rules for the provision of public services in the field of archives — Order of the Minister of Culture and Sports of 29 May 2020 No. 159",
     "reportsHeading": "Reports on services provided",
-    "reportsPending": "Reports will be published after agreement with the archive.",
-    "contactsHeading": "Chancellery contacts",
-    "contactsText": "Addresses, phone numbers and opening hours are on the contacts page.",
-    "contactsLink": "Archive contacts"
+    "reportsPending": "Reports are published by the archive. This section will be filled once the customer provides them.",
+    "contactsHeading": "Archive office",
+    "contactsText": "Questions about applying — call the reception:",
+    "contactsLink": "All contacts and opening hours",
+    "translationNote": "Unofficial translation. The official text is published on the Adilet portal.",
+    "serviceName": "Issuing archival certificates, copies of archival documents or archival extracts",
+    "facts": {
+      "term": {
+        "label": "time limit",
+        "value": "11 working days"
+      },
+      "cost": {
+        "label": "cost",
+        "value": "Free of charge"
+      },
+      "result": {
+        "label": "result",
+        "value": "Certificate, copy or extract"
+      },
+      "form": {
+        "label": "form of service",
+        "value": "Electronic or paper"
+      }
+    },
+    "channels": {
+      "title": "Where to apply",
+      "text": "Choose the way that suits you. In every case the application is handled by the archive that holds the records.",
+      "egov": {
+        "title": "eGov.kz portal",
+        "text": "A request in the form of an electronic document signed with a digital signature. Copies of supporting documents are attached if available.",
+        "hours": "Around the clock. Applications filed at weekends are accepted on the next working day.",
+        "link": "Go to eGov.kz"
+      },
+      "gov4c": {
+        "title": "Government for Citizens",
+        "text": "An application in the prescribed form and an identity document (or a digital document). The officer issues a receipt.",
+        "hours": "Monday–Friday, 9:00–18:00; duty offices until 20:00 and on Saturday 9:00–13:00."
+      },
+      "office": {
+        "title": "Archive office or post",
+        "text": "An application in the prescribed form and an identity document. By post — a free-form application with the applicant's details and the information needed for the search.",
+        "hours": "Monday–Friday, 9:00–18:00, break 13:00–14:00.",
+        "link": "Archive address and contacts"
+      }
+    },
+    "steps": {
+      "title": "How an application is processed",
+      "apply": {
+        "title": "Application",
+        "text": "Through the portal, Government for Citizens, the office or by post."
+      },
+      "register": {
+        "title": "Registration",
+        "text": "Within one working day; an application received after 17:30 is registered the next day."
+      },
+      "check": {
+        "title": "Document check",
+        "text": "Two working days. If the set is incomplete, two working days are given to correct it."
+      },
+      "result": {
+        "title": "Result",
+        "text": "A certificate, copy or extract, or a reasoned reply — within 11 working days."
+      }
+    },
+    "documents": {
+      "title": "Documents required",
+      "application": "An application in the form of Appendix 1 to the Rules (on the portal — an electronic request with a digital signature).",
+      "identity": "An identity document or a digital document from the digital documents service.",
+      "proxy": "For a representative — a notarised power of attorney; for an organisation — a document confirming authority.",
+      "supporting": "If available — documents or copies confirming the requested information: employment record book, diploma, order."
+    },
+    "tip": {
+      "title": "First check where the records are kept",
+      "text": "Find the organisation's fonds in the catalogue by its current or former name. In the application give the organisation's name, the position and the years of work or study — the search will be faster.",
+      "link": "Find an organisation's fonds"
+    },
+    "refusals": {
+      "title": "Grounds for refusal",
+      "invalid": "The documents submitted, or the information in them, are unreliable.",
+      "requirements": "The applicant or the materials submitted do not meet the requirements of Article 19-1 of the Law on Public Services.",
+      "consent": "No consent to access restricted personal data required to provide the service."
+    },
+    "other": {
+      "title": "Other services under these Rules",
+      "apostille": "Apostille of archival certificates, copies and extracts issued by state archives and sent abroad.",
+      "export": "Permission for the temporary export of National Archival Fonds documents from the Republic of Kazakhstan.",
+      "note": "The conditions for these services are in Appendices 2 and 3 to Order No. 159."
+    },
+    "checked": "Checked against the official publication on the Adilet portal on 12 November 2026 (version as amended on 24 June 2026, No. 300-НҚ).",
+    "allActs": "All laws and regulations",
+    "externalHeading": "Official services",
+    "externalText": "Applications for the service are filed on eGov.kz. Appeals, complaints and proposals go through e-Otinish. The links lead to external government portals."
+  },
+  "index": {
+    "title": "Archive services",
+    "lead": "What you can get from the archive and where it is handled. This site gives only the procedure, the documents and links to official services.",
+    "notice": {
+      "title": "This site takes no applications or payments",
+      "text": "There are no application, order or payment forms here. Applications are submitted through eGov.kz, the Government for Citizens corporation or the archive's office."
+    },
+    "routes": {
+      "title": "What you need and where to go",
+      "certificate": {
+        "title": "Archival certificate, copy or extract",
+        "text": "A public service: confirmation of employment, salary, studies and other facts from the archive's records. The procedure, time limits and list of documents are on the service page.",
+        "where": "Free of charge. Apply on eGov.kz"
+      },
+      "paid": {
+        "title": "Paid services",
+        "text": "Work and services the archive performs under its price list. The approved price list is awaited from the archive.",
+        "where": "At the archive, under the price list"
+      },
+      "readingRoom": {
+        "title": "Working with documents in the reading room",
+        "text": "Opening hours, how to prepare for a visit, and the rules. There is no booking or ordering of files on this site.",
+        "where": "In the archive building"
+      },
+      "legal": {
+        "title": "Legal acts",
+        "text": "Laws and orders on archives, public services and personal data, with their status.",
+        "where": "Official texts are on Adilet"
+      },
+      "compliance": {
+        "title": "Compliance and anti-corruption",
+        "text": "The compliance officer, the service's documents and how to report a violation.",
+        "where": "Appeals go through e-Otinish"
+      }
+    },
+    "external": {
+      "title": "Official services",
+      "text": "The links lead to government portals and open in a new tab."
+    },
+    "office": {
+      "title": "Archive office",
+      "phone": "Reception phone",
+      "hours": "Opening hours",
+      "address": "Address",
+      "link": "All contacts"
+    }
   },
   "paid": {
     "title": "Paid services",
-    "intro": "Informational notes on paid services of the state archives of East Kazakhstan Region.",
+    "lead": "A reference page: which document sets the prices for the archive's services and where to check the cost. Nothing is ordered or paid for here.",
     "notice": "Services cannot be ordered or paid for on this website. The information is provided for reference.",
-    "resolutionHeading": "Resolution on approving the price list",
-    "resolution": "On approving the price list for goods (works, services) provided by the state archives of the Digitalization and Archives Department of East Kazakhstan Region",
-    "requisitesPending": "The number, date and update date of the resolution are being clarified.",
-    "priceHeading": "Price list",
-    "pricePending": "The text of the price list is not yet published on this website. Please check current prices with the archive via the contacts.",
-    "contactsLink": "Archive contacts"
+    "decree": {
+      "title": "Resolution approving the price list",
+      "text": "Prices for goods, work and services of the region's state archives are set by the resolution:",
+      "name": "“On approving the price list for goods (works, services) sold by the state archives of the Department of Digitalization and Archives of East Kazakhstan Region”",
+      "pendingTitle": "The text of the resolution is awaited from the archive",
+      "pending": "The materials handed over do not include the number, date or text of the resolution. Once the archive provides them, the requisites, the file and a link to the official publication will appear here."
+    },
+    "price": {
+      "title": "Price list",
+      "text": "Prices are published only from the approved price list."
+    },
+    "table": {
+      "caption": "Price list of the archive's paid services",
+      "name": "Service",
+      "unit": "Unit",
+      "price": "Price, tenge",
+      "pending": "The approved price list is awaited from the archive. Until it arrives, no prices are published on this site.",
+      "onRequest": "to be confirmed"
+    },
+    "ask": {
+      "title": "How to find out the cost now",
+      "text": "Call the archive's reception or write an e-mail: the staff will tell you the current price and how to pay.",
+      "link": "All contacts and opening hours"
+    },
+    "facts": {
+      "priceList": "Price list",
+      "priceListValue": "Awaited from the archive",
+      "payment": "Payment on this site",
+      "paymentValue": "Not accepted",
+      "phone": "Reception phone"
+    },
+    "more": {
+      "title": "See also",
+      "state": "Archival certificate: free of charge",
+      "stateText": "A public service: certificates, copies and extracts.",
+      "legal": "Legal acts",
+      "compliance": "Compliance and anti-corruption"
+    }
   }
 }

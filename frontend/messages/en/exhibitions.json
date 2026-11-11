@@ -1,9 +1,10 @@
 {
   "title": "Online exhibitions",
-  "intro": "Thematic selections of archival documents: an introduction, exhibits with captions and a link to the catalog card.",
+  "intro": "Archival documents and photographs arranged into a story. Every exhibit has a caption, a source and a link to its catalog card.",
   "count": "Exhibitions found: {count}",
   "filter": {
-    "q": "Search by title",
+    "label": "Search exhibitions",
+    "q": "Word in a title or description",
     "theme": "Theme",
     "period": "Period",
     "all": "All",
@@ -13,32 +14,50 @@
   "themes": {
     "ust-kamenogorsk": "City history",
     "industry": "Industry",
-    "education": "Education"
+    "education": "Education",
+    "maps": "Maps",
+    "travellers": "Travellers and explorers"
   },
   "card": {
     "exhibits": "Exhibits: {count}",
     "noCover": "No cover"
   },
+  "empty": {
+    "title": "No exhibitions have been published yet",
+    "text": "The archive is preparing the first displays. Documents and photographs by theme are collected in the Great Archive of Memory.",
+    "memory": "Open the Archive of Memory"
+  },
   "detail": {
-    "exhibitsTitle": "Exhibits",
-    "empty": "This exhibition has no published exhibits yet.",
-    "open": "View exhibit",
     "start": "Start viewing",
-    "noImage": "No image, or access to the copy is restricted"
+    "machine": "The introduction was translated automatically and has not yet been checked by archive staff.",
+    "exhibitsTitle": "Exhibits",
+    "exhibitsText": "Exhibits follow the order set by the curator. Any of them can be opened separately and enlarged.",
+    "empty": "This exhibition has no published exhibits yet.",
+    "others": "Other exhibitions",
+    "noImage": "No image, or access to the copy is restricted",
+    "video": "Video exhibit"
   },
   "exhibit": {
+    "crumb": "Exhibit {n}",
     "counter": "Exhibit {n} of {total}",
+    "nav": "Move between exhibits",
+    "prev": "Previous",
+    "next": "Next",
+    "back": "Back to the exhibition",
     "caption": "Caption",
     "source": "Source",
     "code": "Archive code",
+    "video": "Video",
+    "videoOnly": "This exhibit is a video on an external site. The link is given in the exhibit details.",
     "toDocument": "Go to the document in the catalog",
-    "video": "Video (external link)",
-    "prev": "Previous",
-    "next": "Next",
-    "back": "Back to exhibition",
+    "all": "All exhibits of the exhibition"
+  },
+  "viewer": {
+    "stage": "Exhibit image. When enlarged, move it with the arrow keys",
+    "zoom": "Image zoom",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "zoomReset": "Reset zoom",
-    "zoomLabel": "Zoom {percent}%"
+    "hint": "The + and − keys change the zoom, 0 restores the original size. Drag an enlarged image to move it. The left and right arrow keys move between exhibits."
   }
 }

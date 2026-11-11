@@ -5,17 +5,16 @@ test.describe("Сценарий 9. Негативные случаи", () => {
   test("пустая выдача: понятное сообщение", async ({ page }) => {
     await page.goto("/ru/catalog?q=" + encodeURIComponent("zzzzqqqq несуществующее"));
     await expect(page.getByText("Ничего не найдено").first()).toBeVisible();
-    // Умный поиск: «завода» в демо-данных нет, ИИ честно говорит, что ничего не нашёл.
-    await page.goto("/ru/search?q=" + encodeURIComponent("завод"));
+    // Поиск по сайту: бессмысленный запрос не подменяется «похожими» записями.
+    await page.goto("/ru/search?q=" + encodeURIComponent("zzzzqqqq xxyyzz"));
     await expect(page.getByText("Ничего не найдено").first()).toBeVisible({ timeout: 90_000 });
-    await expect(page.getByText("Источники")).toHaveCount(0);
     await expect(page.locator('main a[href*="/catalog/documents/"]')).toHaveCount(0);
   });
 
   test("несуществующий документ и файл: 404 без утечек", async ({ page }) => {
     const missing = "00000000-0000-4000-8000-000000000000";
     await page.goto(`/ru/catalog/documents/${missing}`);
-    await expect(page.getByText("Страница не найдена")).toBeVisible();
+    await expect(page.getByText("Страница не существует")).toBeVisible();
     const api = await publicApi();
     expect((await api.get(`/api/files/${missing}`)).status()).toBe(404);
     expect((await api.get(`/api/catalog/documents/${missing}`)).status()).toBe(404);
@@ -59,8 +58,8 @@ test.describe("Сценарий 9. Негативные случаи", () => {
   test("Ollama выключена: поиск остаётся рабочим, сообщение без технических деталей", async ({ page }) => {
     await page.route("**/api/ai/**", (route) => route.fulfill({ status: 503, json: { detail: "ai_unavailable" } }));
     await page.goto("/ru/search?q=" + encodeURIComponent("приказ цех"));
-    await expect(page.getByText(/^Документы \(\d+\)/)).toBeVisible({ timeout: 90_000 });
-    await expect(page.getByText("Не удалось получить ответ")).toBeVisible();
+    await expect(page.getByRole("heading", { name: /^Документы/ })).toBeVisible({ timeout: 90_000 });
+    await expect(page.getByText("Помощник сейчас недоступен. Поиск работает без него.")).toBeVisible();
     await expect(page.getByText(/Traceback|ECONNREFUSED|localhost:11434|Internal Server Error/)).toHaveCount(0);
     // На карточке документа вопросы ИИ отключены, сама карточка работает.
     await page.goto(`/ru/catalog/documents/${await documentId(DEMO_CODES.order31)}`);

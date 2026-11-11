@@ -1,56 +1,104 @@
-"""T2.4: news (7) and FAQ (20 questions in 5 topics). News items about the archive's own
-activity are fictitious; FAQ answers only describe the site and facts from info/ (contacts,
-hours) or the ТЗ. No services, forms or orders are offered: the site is informational only."""
+"""T2.4: news (9) and FAQ (20 questions in 5 topics). The news are written for the prototype
+(is_demo, like every text the archive did not issue itself) but announce only what really exists
+on the site: the fund lists, the exhibitions, the calendar, the branches of resolution № 142.
+FAQ answers only describe the site and facts from info/ (contacts, hours) or the ТЗ. No services,
+forms or orders are offered: the site is informational only."""
 
 from datetime import UTC, datetime
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models import FAQ, News, WorkflowStatus
+from app.models import FAQ, Exhibition, News, WorkflowStatus
 from seed.common import Report, i18n, upsert
+from seed.open_materials import credit, first_file, manifest, open_document
 
 PUBLISHED = WorkflowStatus.PUBLISHED
 NO_TRANSLATION = {"ru": "verified", "kk": "missing", "en": "missing"}
 
-# (slug, category, title, summary, published date, body)
+
+def _exhibition_news(slug: str, day: int, title: str, summary: str, body: str, cover: str) -> tuple:
+    return (f"news-{slug}", "exhibitions", title, summary, datetime(2026, 11, day, tzinfo=UTC),
+            f"<p>{body} У каждого экспоната указаны автор, лицензия и источник; по ссылке «К документу в каталоге» "
+            "открывается его карточка. Изображения взяты из открытых источников и в фонды архива не входят.</p>",
+            cover, slug)  # fmt: skip
+
+
+# (slug, category, title, summary, published date, body, cover image of the open materials, exhibition slug)
 NEWS = [
-    ("news-exhibition-ust-kamenogorsk", "exhibitions",
-     "Открыта онлайн-выставка «Усть-Каменогорск: история города в архивных документах»",
-     "Выставка составлена из вымышленных документов.",
-     datetime(2026, 3, 2, tzinfo=UTC),
-     "<p>Выставка знакомит с вымышленными документами 1950–1960-х годов о Усть-Каменогорске. "
-     "Каждый экспонат сопровождается подписью и архивным шифром.</p>"),  # fmt: skip
+    ("news-funds-lists", "site",
+     "В каталоге опубликованы перечни фондов архива",
+     "1 653 фонда и 119 газет из открытых списков архива — с поиском по номерам и названиям.",
+     datetime(2026, 11, 11, tzinfo=UTC),
+     "<p>В электронный каталог загружены открытые перечни Государственного архива ВКО, размещённые на действующем "
+     "сайте архива: 1 500 фондов основного списка, 153 партийных фонда и перечень из 119 газет с подшивками за "
+     "1935–2017 годы. Сведения приведены по состоянию на 2018 год.</p>"
+     "<p>Фонд можно найти по номеру, по нынешнему или прежнему названию организации. В перечнях есть только названия "
+     "и учётные сведения: описи, дела и документы этих фондов в прототип не загружались. Секретные фонды в каталог "
+     "не включены.</p>", None, None),
+    _exhibition_news(
+        "exhibition-ust-kamenogorsk", 12,
+        "Онлайн-выставка «Старый Усть-Каменогорск: гравюра, открытки и сохранившиеся здания»",
+        "Гравюра 1891 года, дореволюционные открытки и современные снимки памятников архитектуры.",
+        "На выставке десять экспонатов: вид Усть-Каменогорска из книги Джорджа Кеннана (1891), две дореволюционные "
+        "открытки, герб Семипалатинской области и фотографии зданий старого города.",
+        "oskemen-view-from-cathedral-postcard.jpg"),
+    _exhibition_news(
+        "exhibition-travellers", 12,
+        "Онлайн-выставка «Алтай, Зайсан и Аблайкит глазами путешественников»",
+        "Гравюры, фотографии и карта 1786–1914 годов.",
+        "Десять экспонатов: Аблайкит в изданиях П. С. Палласа и Г. И. Спасского, Зайсанский пост на снимке 1875 года, "
+        "маршрутная карта экспедиции О. Финша и А. Брема, Алтай на фотографиях и гравюрах 1885–1891 годов, снимок "
+        "С. И. Борисова.",
+        "altai-kazakh-eagle-hunter-borisov-1911.jpg"),
+    _exhibition_news(
+        "exhibition-semipalatinsk-maps", 11,
+        "Онлайн-выставка «Семипалатинская область на старых картах»",
+        "Четыре карты 1876–1903 годов, герб области и виды мест, отмеченных на картах.",
+        "Восемь экспонатов: карта волостей 1893 года, карта из атласа А. Ф. Маркса, маршрутные карты Дж. Кеннана и "
+        "экспедиции О. Финша и А. Брема, герб Семипалатинской области 1878 года.",
+        "map-semipalatinsk-oblast-marks-atlas.jpg"),
+    _exhibition_news(
+        "exhibition-industry", 11,
+        "Онлайн-выставка «Промышленный и современный Восточный Казахстан»",
+        "Современные фотографии 2013–2024 годов: ГЭС, металлургические предприятия, Риддер.",
+        "Десять современных фотографий: Усть-Каменогорская ГЭС, Бухтарминское водохранилище, металлургические "
+        "предприятия Усть-Каменогорска, город Риддер и панорамы областного центра. Это снимки наших дней, а не "
+        "архивные документы.",
+        "oskemen-hydro-station-2017.jpg"),
+    ("news-memory-collections", "memory",
+     "В «Архиве памяти» — восемь коллекций и историческая карта",
+     "Тематические коллекции, три биографические справки и двенадцать мест на карте.",
+     datetime(2026, 11, 12, tzinfo=UTC),
+     "<p>В разделе «Архив памяти» собраны восемь тематических коллекций: история края, Усть-Каменогорск и другие "
+     "населённые пункты, промышленность, личности, наука и изучение края, культура, годы войны, край в разные эпохи. "
+     "Добавлены краткие справки о Джордже Кеннане, Павле Бажове и Лавре Корнилове; сведения, не подтверждённые "
+     "документами, в них оговорены. На исторической карте отмечены двенадцать мест, показанных на изображениях.</p>"
+     "<p>Коллекции составлены из открытых материалов Wikimedia Commons; в фонды архива эти изображения не входят.</p>",
+     "ablaikit-spassky-1818.jpg", None),
     ("news-calendar-2026", "events",
-     "Опубликован Календарь памятных дат на 2026 год",
-     "Календарь включает даты, связанные с историей региона.",
-     datetime(2026, 1, 12, tzinfo=UTC),
-     "<p>Календарь памятных дат на 2026 год доступен в разделе «Архив памяти».</p>"),  # fmt: skip
-    ("news-collection-education", "memory",
-     "Новая подборка «Образование в регионе»",
-     "Подборка вымышленных школьных документов.",
-     datetime(2026, 4, 9, tzinfo=UTC),
-     "<p>В подборку вошли вымышленные школьные документы и материалы о работе учителей.</p>"),  # fmt: skip
-    ("news-exhibition-industry", "exhibitions",
-     "Онлайн-выставка «Промышленное развитие Восточного Казахстана»",
-     "Экспонаты — вымышленные документы о цехах комбината.",
-     datetime(2026, 4, 20, tzinfo=UTC),
-     "<p>Выставка показывает вымышленные приказы, планы и фотографии цехов комбината.</p>"),  # fmt: skip
-    ("news-branches-map", "branches",
-     "Карта филиалов обновлена",
-     "Координаты филиалов приблизительные и требуют уточнения.",
-     datetime(2026, 5, 6, tzinfo=UTC),
-     "<p>На карте отмечены филиалы. Координаты пока приблизительные, точные адреса и маршруты "
-     "уточняйте в карточке филиала и по телефону.</p>"),  # fmt: skip
-    ("news-education-exhibition", "exhibitions",
-     "Онлайн-выставка «История образования в регионе»",
-     "Выставка на вымышленных школьных документах.",
-     datetime(2026, 6, 15, tzinfo=UTC),
-     "<p>Выставка рассказывает о школах и учителях на вымышленных материалах.</p>"),  # fmt: skip
+     "Календарь памятных дат на 2026 год — на сайте",
+     "Календарь архива и составленная по нему хронология.",
+     datetime(2026, 11, 10, tzinfo=UTC),
+     "<p>Календарь памятных дат на 2026 год, подготовленный архивом, доступен в разделе «Календарь памятных дат»; "
+     "там же размещены календари за 2022–2025 годы. По датам календаря составлены хронология и первые биографические "
+     "справки «Архива памяти».</p>", None, None),
+    ("news-branches-142", "branches",
+     "Созданы девять районных филиалов архива",
+     "Постановление акимата области № 142 от 2 июня 2026 года: девять новых филиалов, четыре переименованы.",
+     datetime(2026, 6, 5, tzinfo=UTC),
+     "<p>Постановлением Восточно-Казахстанского областного акимата от 2 июня 2026 года № 142 «О некоторых вопросах "
+     "архивных учреждений Восточно-Казахстанской области» при Государственном архиве ВКО созданы девять филиалов: "
+     "Глубоковский, Катон-Карагайский, Курчумский, Тарбагатайский, Уланский и Шемонаихинский районные филиалы, "
+     "филиалы районов Марқакөл, Самар и Үлкен Нарын.</p>"
+     "<p>Этим же постановлением переименованы четыре филиала: Усть-Каменогорский городской филиал по личному составу, "
+     "Риддерский городской филиал, филиал района Алтай и Зайсанский районный филиал. Текст постановления размещён "
+     "в разделе нормативных документов, адреса и контакты филиалов — в разделе «Филиалы».</p>", None, None),
     ("news-catalog-guide", "site",
      "Как пользоваться электронным каталогом",
      "Поиск, фильтры и статусы доступа — в справке сайта.",
-     datetime(2026, 7, 1, tzinfo=UTC),
-     "<p>В справке описаны поиск, фильтры по фонду и периоду и статусы доступа к файлам.</p>"),  # fmt: skip
+     datetime(2026, 11, 10, tzinfo=UTC),
+     "<p>В справке описаны поиск, фильтры по фонду и периоду и статусы доступа к файлам.</p>", None, None),
 ]  # fmt: skip
 
 # (topic, [(question, answer), ...]); topics are the FAQ category keys.
@@ -121,7 +169,11 @@ FAQ_TOPICS = [
 
 
 def seed_news(session: Session, report: Report, refresh: bool) -> None:
-    for slug, category, title, summary, published_at, body in NEWS:
+    entries = manifest()
+    for slug, category, title, summary, published_at, body, cover, exhibition_slug in NEWS:
+        if cover:  # an image under a free licence is shown with its credit
+            body += f"<p>Изображение: «{entries[cover]['title_ru']}». {credit(entries[cover])}.</p>"
+        exhibition = session.scalar(select(Exhibition.id).where(Exhibition.slug == exhibition_slug))
         upsert(
             session, report, News, {"slug": slug},
             {
@@ -129,6 +181,8 @@ def seed_news(session: Session, report: Report, refresh: bool) -> None:
                 "title": i18n(ru=title),
                 "summary": i18n(ru=summary),
                 "body": i18n(ru=body),
+                "cover_file_id": first_file(session, open_document(session, cover)).id if cover else None,
+                "related": [{"type": "exhibition", "id": str(exhibition)}] if exhibition else [],
                 "published_at": published_at,
                 "is_demo": True,
                 "workflow_status": PUBLISHED,
