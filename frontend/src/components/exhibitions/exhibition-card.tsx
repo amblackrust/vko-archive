@@ -33,7 +33,6 @@ export function ExhibitionCard({ exhibition, locale }: { exhibition: ExhibitionI
           {exhibition.theme && <ThemeLabel theme={exhibition.theme} />}
           {exhibition.period && <span>{exhibition.period}</span>}
           <span>{t("exhibits", { count: exhibition.exhibits_count })}</span>
-          {exhibition.is_demo && <DemoBadge />}
           {exhibition.title_lang !== locale && <DemoBadge kind="noTranslation" />}
         </p>
         <p className="line-clamp-3 text-sm" lang={exhibition.title_lang}>{exhibition.intro}</p>

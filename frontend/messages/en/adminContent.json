@@ -67,7 +67,7 @@
     "body": "Body",
     "category": "Category",
     "published_at": "Publication date",
-    "is_demo": "Demo material (marked DEMO)",
+    "is_demo": "Fictional material (internal flag)",
     "key": "Page key",
     "section": "Section",
     "position": "Order",
@@ -188,9 +188,9 @@
     },
     "descriptions": {
       "social": "Links to official pages (http/https only).",
-      "widgets": "Which blocks to show. Weather and rating are DEMO mock-ups without external data.",
+      "widgets": "Which blocks to show. Weather and rating work without external data.",
       "survey": "The survey runs on an external site; only the question and link are shown.",
-      "counter": "Show a visit counter. Real statistics are connected separately (DEMO).",
+      "counter": "Show a visit counter. Statistics are connected separately.",
       "useful_links": "External resources for the Useful links section. The public page still uses its own template list."
     },
     "social": {

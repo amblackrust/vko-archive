@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { cabinetFetch, type Subscriptions, type Topic } from "./api";
 import { useCabinetList } from "./use-cabinet-data";
 
@@ -13,9 +12,6 @@ export function SubscriptionsPanel() {
   return (
     <section aria-labelledby="subs-title" className="space-y-3">
       <h2 id="subs-title" className="text-xl font-semibold">{t("subscriptions.title")}</h2>
-      <p className="flex items-center gap-2 text-sm text-muted-foreground">
-        <DemoBadge kind="demoIntegration" /> {t("subscriptions.demo")}
-      </p>
       {error && <p role="alert" className="text-sm text-destructive">{t(error)}</p>}
       <ul className="space-y-2">
         {TOPICS.map((topic) => {

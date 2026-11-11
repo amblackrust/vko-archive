@@ -42,7 +42,6 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ loc
         <header className="space-y-3">
           <h1 className="break-words text-3xl font-bold" lang={exhibition.title_lang}>
             {exhibition.title}
-            {exhibition.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
           <p className="flex flex-wrap items-center gap-3 text-muted-foreground">
             {exhibition.theme && <ThemeLabel theme={exhibition.theme} />}

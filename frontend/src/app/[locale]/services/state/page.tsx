@@ -2,7 +2,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ExternalServiceLinks } from "@/components/services/external-links";
 import { InfoNotice } from "@/components/services/info-notice";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
 
@@ -40,7 +39,6 @@ export default async function StateServicePage({ params }: { params: Promise<{ l
         <section aria-labelledby="state-details" className="space-y-3 rounded-lg border bg-surface-muted p-5">
           <h2 id="state-details" className="flex flex-wrap items-center gap-3 text-xl font-semibold">
             {t("detailsHeading")}
-            <DemoBadge kind="badge" />
           </h2>
           <p>{t("detailsPending")}</p>
         </section>

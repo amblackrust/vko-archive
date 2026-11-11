@@ -11,7 +11,6 @@ import { RelatedDocuments } from "@/components/document/related";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { PersonalRecommendations } from "@/components/recommendations/personal-recommendations";
 import { DocumentViewer } from "@/components/viewer/document-viewer";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { catalogFetch } from "@/lib/api/catalog";
 import type { DocumentDetail } from "@/lib/api/document";
 import { localizedAlternates } from "@/lib/seo";
@@ -54,7 +53,6 @@ export default async function DocumentPage({ params }: Props) {
         <header className="space-y-3">
           <h1 className="break-words text-3xl font-bold" lang={doc.title_lang}>
             {doc.title}
-            {doc.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
           {doc.archive_code && (
             <p className="text-muted-foreground">

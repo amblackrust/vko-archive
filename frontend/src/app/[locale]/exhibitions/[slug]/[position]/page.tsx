@@ -5,7 +5,6 @@ import { ExhibitImage } from "@/components/exhibitions/exhibit-image";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ShareButtons } from "@/components/layout/share-buttons";
 import { Button } from "@/components/ui/button";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { NotFoundState, UnavailableState } from "@/components/ui/state-view";
 import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
@@ -55,7 +54,6 @@ export default async function ExhibitPage({ params }: { params: Promise<{ locale
           <p className="text-sm text-muted-foreground">{t("exhibit.counter", { n: exhibit.position, total })}</p>
           <h1 className="break-words text-3xl font-bold">
             {exhibit.title}
-            {exhibit.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
         </header>
 

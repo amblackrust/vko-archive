@@ -1,7 +1,6 @@
 import { FileImage } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { DocumentCard } from "@/components/catalog/document-card";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { fileUrl } from "@/lib/api/document";
 import type { MemoryDocument } from "@/lib/api/memory";
@@ -45,7 +44,6 @@ export function DocumentGallery({ items }: { items: MemoryDocument[] }) {
             <div className="space-y-1 p-3">
               <h3 className="text-sm font-semibold leading-snug" lang={item.title_lang}>{item.title}</h3>
               <p className="text-xs text-muted-foreground">{[item.date_text, item.archive_code].filter(Boolean).join(" · ")}</p>
-              {item.is_demo && <DemoBadge />}
             </div>
           </Link>
         </li>

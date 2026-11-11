@@ -172,7 +172,6 @@ function EventCard({ event, expanded, onToggle, themeName }: { event: Historical
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
         <span className="font-mono text-foreground">{event.date_text ?? event.year}</span>
         {event.theme && <span>{themeName(event.theme)}</span>}
-        {event.is_demo && <DemoBadge />}
         {event.translation_missing && <DemoBadge kind="noTranslation" />}
       </div>
       <h3 className="mt-1 text-lg font-semibold leading-snug" lang={event.title_lang}>

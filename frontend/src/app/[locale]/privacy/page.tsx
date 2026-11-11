@@ -20,9 +20,6 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
       <div className="container-page max-w-3xl space-y-8 pb-12">
         <header className="space-y-3">
           <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="rounded-md border border-accent/40 bg-accent-soft p-3 text-sm text-accent-soft-foreground">
-            {t("notice")}
-          </p>
         </header>
         {sections.map((key) => (
           <section key={key} className="space-y-2">

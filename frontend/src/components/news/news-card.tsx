@@ -18,7 +18,6 @@ export function NewsCard({ item, locale }: { item: NewsItem; locale: string }) {
         <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           {date ? <time dateTime={item.published_at ?? undefined}>{date}</time> : <span>{t("card.noDate")}</span>}
           {item.category && <span>{t.has(`categories.${item.category}`) ? t(`categories.${item.category}`) : item.category}</span>}
-          {item.is_demo && <DemoBadge />}
           {item.title_lang !== locale && <DemoBadge kind="noTranslation" />}
         </p>
         <h2 className="text-lg font-semibold" lang={item.title_lang}>

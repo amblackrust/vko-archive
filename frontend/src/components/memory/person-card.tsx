@@ -9,7 +9,6 @@ export function PersonCard({ item }: { item: PersonItem }) {
     <article className="h-full rounded-lg border bg-surface p-4">
       <h3 className="text-lg font-semibold leading-snug">
         <Link href={item.href} className="hover:underline" lang={item.name_lang}>{item.name}</Link>
-        {item.is_demo && <DemoBadge className="ml-2 align-middle" />}
         {item.translation_missing && <DemoBadge kind="noTranslation" className="ml-2 align-middle" />}
       </h3>
       {item.years_text && <p className="mt-1 text-sm text-muted-foreground">{t("years")}: {item.years_text}</p>}

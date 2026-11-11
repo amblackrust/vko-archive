@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import type { CaseItem, FundItem, InventoryItem } from "@/lib/api/catalog";
 import { enumLabel } from "./labels";
@@ -38,7 +37,6 @@ export function TreeCard({ entry }: { entry: Entry }) {
       </p>
       <h3 className="mt-1 text-lg font-semibold leading-snug">
         <Link href={item.href} className="hover:underline" lang={item.title_lang}>{item.title || heading}</Link>
-        {item.is_demo && <DemoBadge className="ml-2 align-middle" />}
       </h3>
       {entry.kind !== "fund" && (
         <p className="mt-1 text-sm text-muted-foreground">

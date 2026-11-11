@@ -69,7 +69,6 @@ export function Footer() {
           {settings?.counter.enabled && (
             <p>{t("counter", { count: settings.counter.value })}</p>
           )}
-          <p className="font-medium text-accent">{t("prototype")}</p>
           <Link href="/privacy" className="hover:underline">{t("privacy")}</Link>
         </div>
       </div>

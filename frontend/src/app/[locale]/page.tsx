@@ -6,7 +6,6 @@ import { LinkCards, type LinkCard } from "@/components/home/link-cards";
 import { socialEntries } from "@/components/layout/social-data";
 import { SocialLinks } from "@/components/layout/social-links";
 import { BranchMap } from "@/components/map/branch-map-loader";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { fetchBranches, type Branch } from "@/lib/api/branches";
 import { catalogFetch, type DocumentsResponse } from "@/lib/api/catalog";
 import { fetchMemorialDates } from "@/lib/api/home";
@@ -130,9 +129,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </a>
               ))}
             </div>
-            <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <DemoBadge kind="demoIntegration" /> {t("social.feedStub")}
-            </p>
           </div>
         </HomeSection>
       </div>

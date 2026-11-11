@@ -33,9 +33,6 @@ export default async function ReadingRoomPage({ params }: { params: Promise<{ lo
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">{t("readingRoom.rulesTitle")}</h2>
-          <p className="rounded-md border border-accent/40 bg-accent-soft p-3 text-sm text-accent-soft-foreground">
-            {t("readingRoom.rulesNotice")}
-          </p>
           <ol className="list-decimal space-y-2 pl-5">
             {rules.map((rule) => (
               <li key={rule}>{rule}</li>

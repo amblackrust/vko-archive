@@ -45,7 +45,6 @@ export default async function NewsItemPage({ params }: { params: Promise<{ local
           <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {date && <time dateTime={item.published_at ?? undefined}>{date}</time>}
             {item.category && <span>{t.has(`categories.${item.category}`) ? t(`categories.${item.category}`) : item.category}</span>}
-            {item.is_demo && <DemoBadge />}
             {item.body_lang !== locale && <DemoBadge kind="noTranslation" />}
           </p>
           <h1 className="break-words text-3xl font-bold" lang={item.title_lang}>{item.title}</h1>

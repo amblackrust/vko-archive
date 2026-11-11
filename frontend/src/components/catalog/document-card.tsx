@@ -1,6 +1,5 @@
 import { Image as ImageIcon, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import type { DocumentItem } from "@/lib/api/catalog";
 import { enumLabel, periodLabel } from "./labels";
@@ -19,7 +18,6 @@ export function DocumentCard({ item }: { item: DocumentItem }) {
     <article className="rounded-lg border bg-surface p-4">
       <h3 className="text-lg font-semibold leading-snug">
         <Link href={item.href} className="hover:underline" lang={item.title_lang}>{item.title}</Link>
-        {item.is_demo && <DemoBadge className="ml-2 align-middle" />}
       </h3>
       {item.archive_code && (
         <p className="mt-1 text-sm text-muted-foreground">

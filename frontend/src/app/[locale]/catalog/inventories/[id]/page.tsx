@@ -4,7 +4,6 @@ import { ListSearch } from "@/components/catalog/list-search";
 import { Pagination } from "@/components/catalog/pagination";
 import { TreeCard } from "@/components/catalog/tree-card";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { catalogFetch, listPage, type InventoryDetail, type SearchParams } from "@/lib/api/catalog";
 import { localizedAlternates } from "@/lib/seo";
@@ -49,7 +48,6 @@ export default async function InventoryPage({
           </p>
           <h1 className="text-3xl font-bold" lang={inventory.title_lang}>
             {inventory.title || t("tree.inventoryOf", { number: inventory.number })}
-            {inventory.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
           <p className="text-sm text-muted-foreground">
             {[inventory.dates_text, t("tree.counts.cases", { count: inventory.case_count }), t("tree.counts.documents", { count: inventory.document_count })]

@@ -84,7 +84,7 @@
     "dates_to": "End year",
     "branch_id": "Branch",
     "annotation": "Annotation",
-    "is_demo": "Demo data (marked “DEMO”)",
+    "is_demo": "Fictional data (internal flag)",
     "dates_text": "Dates (text)",
     "sheets_count": "Number of sheets",
     "archive_code": "Archive code",

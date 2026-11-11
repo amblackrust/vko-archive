@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { TreeCard } from "@/components/catalog/tree-card";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { catalogFetch, type FundDetail } from "@/lib/api/catalog";
 import { localizedAlternates } from "@/lib/seo";
 
@@ -33,7 +32,6 @@ export default async function FundPage({ params }: { params: Promise<{ locale: s
           <p className="text-sm text-muted-foreground">{t("tree.fundOf", { number: fund.number })}</p>
           <h1 className="text-3xl font-bold" lang={fund.title_lang}>
             {fund.title}
-            {fund.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
           <p className="text-sm text-muted-foreground">
             {t("tree.fundType", { type: t(`fundTypes.${fund.type}`) })}

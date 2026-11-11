@@ -37,7 +37,6 @@ export default async function CollectionPage({ params, searchParams }: Props) {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold" lang={collection.title_lang}>
             {collection.title}
-            {collection.is_demo && <DemoBadge className="ml-3 align-middle" />}
             {collection.translation_missing && <DemoBadge kind="noTranslation" className="ml-2 align-middle" />}
           </h1>
           <p className="text-sm text-muted-foreground">

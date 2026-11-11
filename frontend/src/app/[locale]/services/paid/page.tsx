@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNotice } from "@/components/services/info-notice";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
 
@@ -36,7 +35,6 @@ export default async function PaidServicesPage({ params }: { params: Promise<{ l
         <section aria-labelledby="paid-price" className="space-y-3 rounded-lg border bg-surface-muted p-5">
           <h2 id="paid-price" className="flex flex-wrap items-center gap-3 text-xl font-semibold">
             {t("priceHeading")}
-            <DemoBadge kind="badge" />
           </h2>
           <p>
             {t("pricePending")}{" "}

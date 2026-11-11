@@ -4,7 +4,6 @@ import { DocumentCard } from "@/components/catalog/document-card";
 import { ListSearch } from "@/components/catalog/list-search";
 import { Pagination } from "@/components/catalog/pagination";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { catalogFetch, listPage, type CaseDetail, type SearchParams } from "@/lib/api/catalog";
 import { localizedAlternates } from "@/lib/seo";
@@ -50,7 +49,6 @@ export default async function CasePage({
           </p>
           <h1 className="text-3xl font-bold" lang={item.title_lang}>
             {item.title || t("tree.caseOf", { number: item.number })}
-            {item.is_demo && <DemoBadge className="ml-3 align-middle" />}
           </h1>
           <p className="text-sm text-muted-foreground">
             {[

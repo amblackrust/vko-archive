@@ -69,7 +69,6 @@ export function HistoryExplorer({ points, kinds }: { points: HistoricalEvent[]; 
             <div className="space-y-3">
               <h3 className="text-xl font-semibold" lang={current.title_lang}>
                 {current.title}
-                {current.is_demo && <DemoBadge className="ml-2 align-middle" />}
                 <DemoBadge kind="approxCoords" className="ml-2 align-middle" />
               </h3>
               {current.description && <p>{current.description}</p>}

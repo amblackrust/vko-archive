@@ -4,23 +4,56 @@
   "nav": {
     "title": "Site navigation",
     "items": {
-      "catalog": { "label": "Electronic catalogue", "text": "Search and browse descriptions of published documents" },
-      "branches": { "label": "Branches", "text": "Addresses, contacts and routes to the archive's units" },
-      "about": { "label": "About the archive", "text": "History, structure and management of the institution" },
-      "faq": { "label": "Questions and answers", "text": "Codes, access statuses and working with the catalogue" },
-      "readingRoom": { "label": "Reading room", "text": "Opening hours and rules for viewing materials" },
-      "contacts": { "label": "Contacts", "text": "Phones, e-mail and the archive's working hours" }
+      "catalog": {
+        "label": "Electronic catalogue",
+        "text": "Search and browse descriptions of published documents"
+      },
+      "branches": {
+        "label": "Branches",
+        "text": "Addresses, contacts and routes to the archive's units"
+      },
+      "about": {
+        "label": "About the archive",
+        "text": "History, structure and management of the institution"
+      },
+      "faq": {
+        "label": "Questions and answers",
+        "text": "Codes, access statuses and working with the catalogue"
+      },
+      "readingRoom": {
+        "label": "Reading room",
+        "text": "Opening hours and rules for viewing materials"
+      },
+      "contacts": {
+        "label": "Contacts",
+        "text": "Phones, e-mail and the archive's working hours"
+      }
     }
   },
   "catalog": {
     "title": "Catalogue structure",
     "intro": "The catalogue describes documents in a hierarchy. Each level belongs to the next: archive, fund, inventory, case, document.",
     "levels": {
-      "archive": { "label": "Archive", "text": "The institution that keeps the funds. The top of the hierarchy." },
-      "fund": { "label": "Fund", "text": "A set of documents from one source: an organisation or a person." },
-      "inventory": { "label": "Inventory", "text": "A list of the cases within a fund." },
-      "case": { "label": "Case", "text": "A group of documents united by a common feature." },
-      "document": { "label": "Document", "text": "A single described item with a code and a date; a digital copy where available." }
+      "archive": {
+        "label": "Archive",
+        "text": "The institution that keeps the funds. The top of the hierarchy."
+      },
+      "fund": {
+        "label": "Fund",
+        "text": "A set of documents from one source: an organisation or a person."
+      },
+      "inventory": {
+        "label": "Inventory",
+        "text": "A list of the cases within a fund."
+      },
+      "case": {
+        "label": "Case",
+        "text": "A group of documents united by a common feature."
+      },
+      "document": {
+        "label": "Document",
+        "text": "A single described item with a code and a date; a digital copy where available."
+      }
     }
   },
   "search": {
@@ -58,7 +91,6 @@
     "hoursLabel": "Opening hours",
     "hoursUnavailable": "Please check the opening hours with the archive's contacts.",
     "rulesTitle": "Rules of use",
-    "rulesNotice": "The rules below are a draft for the prototype. The final reading room regulation is approved by the archive.",
     "rules": [
       "Before your visit, check the reading room's opening hours and contacts.",
       "Materials are viewed on site, in the reading room.",
@@ -70,6 +102,10 @@
   "translation": {
     "fallback": "No translation available. The text is shown in {lang}.",
     "machine": "Machine translation, needs review.",
-    "langName": { "kk": "Kazakh", "ru": "Russian", "en": "English" }
+    "langName": {
+      "kk": "Kazakh",
+      "ru": "Russian",
+      "en": "English"
+    }
   }
 }

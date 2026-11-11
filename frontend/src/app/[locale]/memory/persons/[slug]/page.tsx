@@ -31,7 +31,6 @@ export default async function PersonPage({ params }: Props) {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold" lang={person.name_lang}>
             {person.name}
-            {person.is_demo && <DemoBadge className="ml-3 align-middle" />}
             {person.translation_missing && <DemoBadge kind="noTranslation" className="ml-2 align-middle" />}
           </h1>
           {person.years_text && <p className="text-muted-foreground">{t("persons.years")}: {person.years_text}</p>}

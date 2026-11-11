@@ -1,7 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CabinetApp } from "@/components/cabinet/cabinet-app";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { DemoBadge } from "@/components/ui/demo-badge";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -22,9 +21,6 @@ export default async function CabinetPage({ params }: { params: Promise<{ locale
           <h1 className="text-3xl font-bold">{t("title")}</h1>
           <p className="max-w-3xl text-muted-foreground">{t("intro")}</p>
           <p className="max-w-3xl text-sm text-muted-foreground">{t("noRequests")}</p>
-          <p className="flex items-center gap-2 text-sm">
-            <DemoBadge /> {t("demoNotice")}
-          </p>
         </header>
         <CabinetApp />
       </div>

@@ -71,8 +71,7 @@
     "title": "Useful information"
   },
   "social": {
-    "title": "We are on social media",
-    "feedStub": "The post feed is connected when social network APIs are available. For now, links to the archive pages are provided."
+    "title": "We are on social media"
   },
   "share": {
     "label": "Share",

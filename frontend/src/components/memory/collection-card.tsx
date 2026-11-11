@@ -10,7 +10,6 @@ export function CollectionCard({ item }: { item: CollectionItem }) {
     <article className="flex h-full flex-col rounded-lg border bg-surface p-4">
       <h3 className="text-lg font-semibold leading-snug">
         <Link href={item.href} className="hover:underline" lang={item.title_lang}>{item.title}</Link>
-        {item.is_demo && <DemoBadge className="ml-2 align-middle" />}
         {item.translation_missing && <DemoBadge kind="noTranslation" className="ml-2 align-middle" />}
       </h3>
       <p className="mt-1 text-sm text-muted-foreground">

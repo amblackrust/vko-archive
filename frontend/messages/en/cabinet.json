@@ -2,7 +2,6 @@
   "title": "Personal cabinet",
   "intro": "Optional section: favorites, personal selections, search history and subscriptions. The whole site works without registration.",
   "noRequests": "The cabinet has no applications, orders, payments or request statuses. Requests to the archive are filed only through eGov.kz and e-Otinish.",
-  "demoNotice": "DEMO: do not enter real personal data. A made-up address such as name@example.kz will do.",
   "loading": "Loading…",
   "unavailable": "The cabinet is temporarily unavailable. The rest of the site works without it.",
   "auth": {
@@ -70,8 +69,7 @@
   "subscriptions": {
     "title": "Subscriptions",
     "news": "News and events",
-    "exhibitions": "New online exhibitions",
-    "demo": "DEMO: notification delivery is not connected; a subscription only remembers your interest."
+    "exhibitions": "New online exhibitions"
   },
   "password": {
     "title": "Change password",

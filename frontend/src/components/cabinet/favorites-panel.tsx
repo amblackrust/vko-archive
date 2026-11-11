@@ -2,7 +2,6 @@
 
 import { X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { cabinetFetch, type FavoriteItem } from "./api";
 import { useCabinetList } from "./use-cabinet-data";
@@ -22,7 +21,6 @@ export function FavoritesPanel() {
             <span className="min-w-0">
               <span className="mr-2 text-xs uppercase text-muted-foreground">{t(`favorites.types.${item.type}`)}</span>
               <Link href={item.href} className="break-words text-primary hover:underline">{item.title}</Link>
-              {item.is_demo && <DemoBadge className="ml-2" />}
             </span>
             <button
               type="button"
