@@ -2,6 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 const sections = [
   { key: "history", href: "/about/history" },
@@ -11,6 +12,12 @@ const sections = [
   { key: "compliance", href: "/compliance" },
   { key: "contacts", href: "/contacts" },
 ] as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "about" });
+  return { title: t("title"), alternates: localizedAlternates(locale, "/about") };
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

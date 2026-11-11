@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { NotFoundState, UnavailableState } from "@/components/ui/state-view";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 async function load(slug: string, locale: string): Promise<ExhibitionDetail | null | undefined> {
   try {
@@ -18,6 +19,16 @@ async function load(slug: string, locale: string): Promise<ExhibitionDetail | nu
 }
 
 /** Просмотр экспоната: изображение с зумом, подпись, источник, шифр, переход к документу, пред./след. */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string; position: string }> }) {
+  const { locale, slug, position } = await params;
+  const exhibition = await load(slug, locale);
+  const index = /^\d{1,4}$/.test(position) ? Number(position) - 1 : -1;
+  return {
+    title: exhibition?.exhibits[index]?.title,
+    alternates: localizedAlternates(locale, `/exhibitions/${slug}/${position}`),
+  };
+}
+
 export default async function ExhibitPage({ params }: { params: Promise<{ locale: string; slug: string; position: string }> }) {
   const { locale, slug, position } = await params;
   setRequestLocale(locale);

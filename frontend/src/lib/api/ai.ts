@@ -57,6 +57,29 @@ export class RateLimitedError extends Error {
   }
 }
 
+/** Читает поток NDJSON построчно и отдаёт каждое событие в onEvent. Общий для всех потоковых ответов ИИ. */
+export async function readNdjson(
+  body: ReadableStream<Uint8Array>,
+  onEvent: (event: { type: string; [key: string]: unknown }) => void,
+): Promise<void> {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  const handleLine = (line: string) => {
+    if (line.trim()) onEvent(JSON.parse(line));
+  };
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+    lines.forEach(handleLine);
+  }
+  buffer += decoder.decode();
+  handleLine(buffer);
+}
+
 interface StreamHandlers {
   onMeta?: (meta: AiMeta) => void;
   onDelta: (text: string) => void;
@@ -84,29 +107,12 @@ export async function streamAnswer(
   }
   if (!response.ok || !response.body) throw new Error(`ai stream ${response.status}`);
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
   let result: AiResult | null = null;
-
-  function handleLine(line: string) {
-    if (!line.trim()) return;
-    const event = JSON.parse(line);
-    if (event.type === "meta") handlers.onMeta?.(event);
-    else if (event.type === "delta") handlers.onDelta(event.text);
-    else if (event.type === "done") result = event.result;
-  }
-
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-    lines.forEach(handleLine);
-  }
-  buffer += decoder.decode();
-  handleLine(buffer);
+  await readNdjson(response.body, (event) => {
+    if (event.type === "meta") handlers.onMeta?.(event as unknown as AiMeta);
+    else if (event.type === "delta") handlers.onDelta(event.text as string);
+    else if (event.type === "done") result = event.result as AiResult;
+  });
   if (!result) throw new Error("ai stream ended without result");
   return result;
 }

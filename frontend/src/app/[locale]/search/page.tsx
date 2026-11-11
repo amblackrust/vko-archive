@@ -4,11 +4,12 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SmartSearch } from "@/components/search/smart-search";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "search" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/search") };
 }
 
 export default async function SearchPage({

@@ -3,11 +3,12 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { InfoNotice } from "@/components/services/info-notice";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "services.paid" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/services/paid") };
 }
 
 /** Справочные сведения о платных услугах. Прейскурант не загружен в каталог: показываем, где его уточнить. */

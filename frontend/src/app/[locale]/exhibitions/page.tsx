@@ -4,6 +4,7 @@ import { fetchPublic, type ExhibitionList } from "@/components/exhibitions/api";
 import { ExhibitionCard } from "@/components/exhibitions/exhibition-card";
 import { ExhibitionFilter } from "@/components/exhibitions/exhibition-filter";
 import { EmptyState, UnavailableState } from "@/components/ui/state-view";
+import { localizedAlternates } from "@/lib/seo";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -14,7 +15,7 @@ function first(value: string | string[] | undefined): string {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "exhibitions" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/exhibitions") };
 }
 
 export default async function ExhibitionsPage({

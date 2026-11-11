@@ -1,7 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { localizedAlternates } from "@/lib/seo";
 
 const sections = ["data", "search", "cookies", "external", "contact"] as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "contacts.privacy" });
+  return { title: t("title"), alternates: localizedAlternates(locale, "/privacy") };
+}
 
 export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

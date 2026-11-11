@@ -8,6 +8,7 @@ import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { fetchCollection } from "@/lib/api/memory";
 import { cn } from "@/lib/utils";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,7 @@ type Props = { params: Promise<{ locale: string; slug: string }>; searchParams: 
 export async function generateMetadata({ params }: Props) {
   const { locale, slug } = await params;
   const collection = await fetchCollection(slug, locale);
-  return { title: collection?.title };
+  return { title: collection?.title, alternates: localizedAlternates(locale, `/memory/collections/${slug}`) };
 }
 
 export default async function CollectionPage({ params, searchParams }: Props) {

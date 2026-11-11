@@ -5,6 +5,13 @@ import { Pagination } from "@/components/catalog/pagination";
 import { TreeCard } from "@/components/catalog/tree-card";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { catalogFetch, listPage, type FundItem, type List, type SearchParams } from "@/lib/api/catalog";
+import { localizedAlternates } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "catalog" });
+  return { title: t("tree.fundsTitle"), alternates: localizedAlternates(locale, "/catalog/funds") };
+}
 
 export default async function FundsPage({
   params,

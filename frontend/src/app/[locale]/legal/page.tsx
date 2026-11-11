@@ -4,6 +4,7 @@ import { LegalActFilter } from "@/components/legal/act-filter";
 import { legalFetch, LEGAL_STATUSES, type LegalActsResponse } from "@/components/legal/api";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { EmptyState, UnavailableState } from "@/components/ui/state-view";
+import { localizedAlternates } from "@/lib/seo";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -14,7 +15,7 @@ function first(value: string | string[] | undefined): string {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "legal" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/legal") };
 }
 
 /** Нормативные акты из каталога (опубликованные) и перечень из ТЗ, который в каталог ещё не загружен. */

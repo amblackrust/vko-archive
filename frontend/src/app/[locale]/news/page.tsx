@@ -6,6 +6,7 @@ import type { NewsList } from "@/components/news/api";
 import { NewsCard } from "@/components/news/news-card";
 import { NewsFilter } from "@/components/news/news-filter";
 import { EmptyState, UnavailableState } from "@/components/ui/state-view";
+import { localizedAlternates } from "@/lib/seo";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -16,7 +17,7 @@ function first(value: string | string[] | undefined): string {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "news" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/news") };
 }
 
 export default async function NewsPage({

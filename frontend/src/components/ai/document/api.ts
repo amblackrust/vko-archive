@@ -1,3 +1,4 @@
+import { readNdjson } from "@/lib/api/ai";
 import { API_URL } from "@/lib/api/client";
 
 /** Контракт режима «ИИ по документу» (backend: POST /api/ai/documents/{id}/answer/stream, schemas/ai.py). */
@@ -69,24 +70,11 @@ export async function askDocument(
   }
   if (!response.ok || !response.body) throw new Error(`document AI: HTTP ${response.status}`);
 
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
   let result: DocumentAiResult | null = null;
-  const handle = (line: string) => {
-    if (!line.trim()) return;
-    const event = JSON.parse(line) as { type: string; text?: string; result?: DocumentAiResult };
-    if (event.type === "delta" && event.text) onDelta(event.text);
-    if (event.type === "done" && event.result) result = event.result;
-  };
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += value;
-    const lines = buffer.split("\n");
-    buffer = lines.pop() ?? "";
-    lines.forEach(handle);
-  }
-  handle(buffer);
+  await readNdjson(response.body, (event) => {
+    if (event.type === "delta" && event.text) onDelta(event.text as string);
+    if (event.type === "done" && event.result) result = event.result as DocumentAiResult;
+  });
   if (result === null) throw new Error("document AI: stream ended without result");
   return result;
 }

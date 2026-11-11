@@ -11,6 +11,7 @@ import { DemoBadge } from "@/components/ui/demo-badge";
 import { NotFoundState, UnavailableState } from "@/components/ui/state-view";
 import { fileUrl } from "@/lib/api/document";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 async function load(slug: string, locale: string): Promise<NewsDetail | null | undefined> {
   try {
@@ -23,7 +24,7 @@ async function load(slug: string, locale: string): Promise<NewsDetail | null | u
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   const item = await load(slug, locale);
-  return { title: item?.title };
+  return { title: item?.title, alternates: localizedAlternates(locale, `/news/${slug}`) };
 }
 
 export default async function NewsItemPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {

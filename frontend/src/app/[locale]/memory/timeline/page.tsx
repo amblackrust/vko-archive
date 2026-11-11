@@ -2,13 +2,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Timeline } from "@/components/timeline/timeline";
 import { fetchTimeline } from "@/lib/api/memory";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "timeline" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/memory/timeline") };
 }
 
 export default async function TimelinePage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ event?: string }> }) {

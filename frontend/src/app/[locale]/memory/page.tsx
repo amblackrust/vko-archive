@@ -6,13 +6,14 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Link } from "@/lib/i18n/navigation";
 import { fetchCollections, fetchPersons } from "@/lib/api/memory";
 import { History, MapPinned } from "lucide-react";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "memory" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/memory") };
 }
 
 // Направление ТЗ §5.6 -> тема коллекции (если коллекции по нему уже есть).

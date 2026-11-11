@@ -5,11 +5,12 @@ import { legalFetch, type CompliancePage as CompliancePageData } from "@/compone
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "compliance" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/compliance") };
 }
 
 /** Комплаенс-служба: открытые материалы и комплаенс-офицер. Тексты страницы — из БД (санитизированный HTML). */

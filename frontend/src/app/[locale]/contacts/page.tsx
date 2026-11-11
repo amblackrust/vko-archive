@@ -3,6 +3,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { SocialLinks } from "@/components/layout/social-links";
 import { fetchContacts } from "@/lib/api/content";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 const links = [
   { key: "branches", href: "/branches" },
@@ -14,6 +15,12 @@ const links = [
 /** `tel:` для номеров вида «8 (7232) 25-13-22»: берём последние 10 цифр и добавляем код +7. */
 function telHref(value: string): string {
   return `tel:+7${value.replace(/\D/g, "").slice(-10)}`;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "contacts" });
+  return { title: t("title"), alternates: localizedAlternates(locale, "/contacts") };
 }
 
 export default async function ContactsPage({ params }: { params: Promise<{ locale: string }> }) {

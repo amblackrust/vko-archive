@@ -3,13 +3,14 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { HistoryExplorer } from "@/components/history-map/history-explorer";
 import { Link } from "@/lib/i18n/navigation";
 import { fetchMapPoints } from "@/lib/api/memory";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "historyMap" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/memory/map") };
 }
 
 export default async function HistoryMapPage({ params }: { params: Promise<{ locale: string }> }) {

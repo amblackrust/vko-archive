@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CatalogStructure } from "@/components/help/catalog-structure";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 const navItems = [
   { key: "catalog", href: "/catalog" },
@@ -11,6 +12,12 @@ const navItems = [
   { key: "readingRoom", href: "/help/reading-room" },
   { key: "contacts", href: "/contacts" },
 ] as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "help" });
+  return { title: t("title"), alternates: localizedAlternates(locale, "/help") };
+}
 
 export default async function HelpPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -4,6 +4,14 @@ import { TreeCard } from "@/components/catalog/tree-card";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { catalogFetch, type FundDetail } from "@/lib/api/catalog";
+import { localizedAlternates } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; id: string }> }) {
+  const { locale, id } = await params;
+  const t = await getTranslations({ locale, namespace: "catalog" });
+  const x = await catalogFetch<FundDetail>(`funds/${encodeURIComponent(id)}`, new URLSearchParams(), locale);
+  return { title: x ? x.title : t("title"), alternates: localizedAlternates(locale, `/catalog/funds/${id}`) };
+}
 
 export default async function FundPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;

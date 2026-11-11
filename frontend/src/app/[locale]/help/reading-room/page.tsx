@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Link } from "@/lib/i18n/navigation";
 import { fetchContacts } from "@/lib/api/content";
+import { localizedAlternates } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "help" });
+  return { title: t("readingRoom.title"), alternates: localizedAlternates(locale, "/help/reading-room") };
+}
 
 export default async function ReadingRoomPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

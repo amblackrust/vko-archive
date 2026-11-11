@@ -7,6 +7,14 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { catalogFetch, listPage, type InventoryDetail, type SearchParams } from "@/lib/api/catalog";
+import { localizedAlternates } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; id: string }> }) {
+  const { locale, id } = await params;
+  const t = await getTranslations({ locale, namespace: "catalog" });
+  const x = await catalogFetch<InventoryDetail>(`inventories/${encodeURIComponent(id)}`, new URLSearchParams(), locale);
+  return { title: x ? x.title || t("tree.inventoryOf", { number: x.number }) : t("title"), alternates: localizedAlternates(locale, `/catalog/inventories/${id}`) };
+}
 
 export default async function InventoryPage({
   params,

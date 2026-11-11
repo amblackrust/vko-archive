@@ -2,13 +2,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { BranchesExplorer } from "@/components/map/branches-explorer";
 import { fetchBranches } from "@/lib/api/branches";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "map" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/branches") };
 }
 
 export default async function BranchesPage({ params }: { params: Promise<{ locale: string }> }) {

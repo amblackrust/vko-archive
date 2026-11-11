@@ -14,6 +14,7 @@ import { DocumentViewer } from "@/components/viewer/document-viewer";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { catalogFetch } from "@/lib/api/catalog";
 import type { DocumentDetail } from "@/lib/api/document";
+import { localizedAlternates } from "@/lib/seo";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props) {
   const { locale, id } = await params;
   const doc = await load(locale, id);
   const t = await getTranslations({ locale, namespace: "document" });
-  return { title: doc?.title ?? t("pageTitle") };
+  return { title: doc?.title ?? t("pageTitle"), alternates: localizedAlternates(locale, `/catalog/documents/${id}`) };
 }
 
 export default async function DocumentPage({ params }: Props) {

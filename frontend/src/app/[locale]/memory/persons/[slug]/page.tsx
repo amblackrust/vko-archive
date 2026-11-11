@@ -6,6 +6,7 @@ import { EditorialNote, SourceList } from "@/components/memory/source-block";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
 import { fetchPerson } from "@/lib/api/memory";
+import { localizedAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ type Props = { params: Promise<{ locale: string; slug: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale, slug } = await params;
   const person = await fetchPerson(slug, locale);
-  return { title: person?.name };
+  return { title: person?.name, alternates: localizedAlternates(locale, `/memory/persons/${slug}`) };
 }
 
 export default async function PersonPage({ params }: Props) {

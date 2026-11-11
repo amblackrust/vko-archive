@@ -4,11 +4,12 @@ import { ExternalServiceLinks } from "@/components/services/external-links";
 import { InfoNotice } from "@/components/services/info-notice";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "services.state" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/services/state") };
 }
 
 /** Информационный раздел госуслуги: нормативная основа и внешние каналы. Заявления здесь не принимаются. */

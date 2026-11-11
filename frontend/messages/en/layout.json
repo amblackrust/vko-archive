@@ -49,7 +49,10 @@
       "historyMap": "Historical map of the region",
       "exhibitions": "Online exhibitions",
       "news": "News and events",
-      "publications": "Essays and collections"
+      "publications": "Essays and collections",
+      "calendar": "Memorial dates calendar",
+      "symbols": "State symbols",
+      "links": "Useful links"
     }
   },
   "contactsBlock": {

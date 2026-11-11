@@ -46,6 +46,9 @@ export const navGroups: NavGroup[] = [
     items: [
       { id: "news", href: "/news" },
       { id: "publications", href: "/publications" },
+      { id: "calendar", href: "/calendar" },
+      { id: "symbols", href: "/symbols" },
+      { id: "links", href: "/links" },
     ],
   },
 ];

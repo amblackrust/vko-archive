@@ -11,6 +11,7 @@ import { DemoBadge } from "@/components/ui/demo-badge";
 import { NotFoundState, UnavailableState } from "@/components/ui/state-view";
 import { fileUrl } from "@/lib/api/document";
 import { Link } from "@/lib/i18n/navigation";
+import { localizedAlternates } from "@/lib/seo";
 
 async function load(slug: string, locale: string): Promise<ExhibitionDetail | null | undefined> {
   try {
@@ -23,7 +24,7 @@ async function load(slug: string, locale: string): Promise<ExhibitionDetail | nu
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   const exhibition = await load(slug, locale);
-  return { title: exhibition?.title };
+  return { title: exhibition?.title, alternates: localizedAlternates(locale, `/exhibitions/${slug}`) };
 }
 
 export default async function ExhibitionPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {

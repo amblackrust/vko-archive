@@ -9,11 +9,12 @@ import { Pagination } from "@/components/catalog/pagination";
 import { SortLinks } from "@/components/catalog/sort-links";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { catalogFetch, catalogParams, type DocumentsResponse, type SearchParams } from "@/lib/api/catalog";
+import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "catalog" });
-  return { title: t("title") };
+  return { title: t("title"), alternates: localizedAlternates(locale, "/catalog") };
 }
 
 export default async function CatalogPage({
