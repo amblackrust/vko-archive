@@ -304,7 +304,7 @@ erDiagram
 
 - `backend/tests/` — pytest на реальной PostgreSQL; тестовая база (`TEST_DATABASE_URL`) пересоздаётся каждой сессией (п. 12).
 - `frontend/e2e/` — Playwright: `npm run e2e` поднимает отдельный стенд (API :8201, web :3201, база `vko_archive_e2e`)
-  и гасит его после прогона (см. `docs/handoff/B25.md`).
+  и гасит его после прогона .
 - `Makefile` — `make dev`, `make env`, `make migrate`, `make test`, `make backup`.
 
 ## 11. Ограничения прототипа

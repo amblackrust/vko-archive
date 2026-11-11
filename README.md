@@ -265,7 +265,6 @@ docker compose exec -T db sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | что из `info/`, что демо, что написано для прототипа |
 | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) | подготовка, учётки по ролям, сценарий защиты |
 | [docs/OPEN_ISSUES.md](docs/OPEN_ISSUES.md) | открытые вопросы и хвосты |
-| [PLAN.md](PLAN.md) | план работ (этапы и таски) |
 | [READINESS.md](READINESS.md) | статус готовности: реализовано, частично, макет |
 
 ## Лицензия
