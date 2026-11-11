@@ -20,6 +20,8 @@
     "logout": "Sign out"
   },
   "nav": {
+    "import": "Import and export",
+    "translations": "Translations",
     "dashboard": "Dashboard",
     "users": "Users"
   },

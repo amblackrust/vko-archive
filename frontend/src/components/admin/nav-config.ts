@@ -1,4 +1,5 @@
 import { LayoutDashboard, Users, type LucideIcon } from "lucide-react";
+import { FileSpreadsheet, Languages } from "lucide-react";
 import { can, type Me } from "@/lib/api/admin";
 
 export interface AdminNavItem {
@@ -15,6 +16,8 @@ export interface AdminNavItem {
 export const adminNav: AdminNavItem[] = [
   { key: "dashboard", href: "/admin", icon: LayoutDashboard },
   { key: "users", href: "/admin/users", icon: Users, anyOf: ["users.view"] },
+  { key: "import", href: "/admin/import", icon: FileSpreadsheet, anyOf: ["catalog.import", "catalog.export"] },
+  { key: "translations", href: "/admin/translations", icon: Languages, anyOf: ["catalog.view", "content.view", "branches.view"] },
 ];
 
 export function visibleNav(me: Me): AdminNavItem[] {
