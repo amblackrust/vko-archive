@@ -14,7 +14,8 @@ def _http_url(value: str | None) -> str | None:
     return value or None
 
 
-HttpUrl = Annotated[str | None, AfterValidator(_http_url), Field(max_length=1024)]
+# max_length sits on the str inside: on `str | None` pydantic raises TypeError (HTTP 500) for null.
+HttpUrl = Annotated[Annotated[str, Field(max_length=1024)] | None, AfterValidator(_http_url)]
 Slug = Annotated[str, Field(min_length=1, max_length=100, pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")]
 
 
