@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     # (more → fast «busy» refusal), requests per IP per minute to /api/ai/parse and /answer*.
     ollama_num_predict: int = 400
     ai_max_concurrent_generations: int = 2
+    # OCR fallback when Tesseract is not installed: a vision model of Ollama (empty = none).
+    ollama_vision_model: str = ""
+    # Staff tools (analysis JSON, report) answer longer than the public chat.
+    ollama_staff_num_predict: int = 1200
     ai_rate_limit_per_minute: int = 10
     # The first embed call may load bge-m3 into memory (several seconds).
     ollama_embed_timeout_seconds: float = 30.0
