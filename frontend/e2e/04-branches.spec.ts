@@ -10,7 +10,6 @@ test.describe("Сценарий 4. Поиск филиала", () => {
     await page.getByRole("link", { name: "Страница филиала" }).click();
     await expect(page).toHaveURL(/\/branches\/branch-ridder/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Риддер");
-    await expect(page.getByText("Координаты приблизительные").first()).toBeVisible();
     for (const name of [/2GIS/, /Google Maps/, /Яндекс Картах/]) {
       const link = page.getByRole("link", { name });
       await expect(link).toHaveAttribute("target", "_blank");

@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
-/** Выпадающее меню верхней панели: закрывается по Esc, щелчку вне меню и после выбора ссылки или пункта с data-close. */
-export function Menu({ label, trigger, className, children }: {
+/** Выпадающее меню шапки (сайт и админка): закрывается по Esc, щелчку вне меню и после выбора ссылки или пункта с data-close. */
+export function Menu({ label, trigger, className, panelClassName, children }: {
   label: string;
   trigger: React.ReactNode;
   className?: string;
+  panelClassName?: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -34,7 +35,7 @@ export function Menu({ label, trigger, className, children }: {
       </button>
       {open && (
         <div
-          className="absolute right-0 top-full z-40 mt-2 w-64 rounded-lg border bg-surface p-1.5 shadow-[0_16px_40px_-12px_rgb(18_26_43/0.3)] animate-in fade-in zoom-in-95 duration-150"
+          className={cn("absolute right-0 top-full z-40 mt-2 w-64 rounded-lg border bg-surface p-1.5 shadow-[0_16px_40px_-12px_rgb(18_26_43/0.3)] animate-in fade-in zoom-in-95 duration-150", panelClassName)}
           onClick={(event) => {
             if ((event.target as HTMLElement).closest("a, [data-close]")) setOpen(false);
           }}

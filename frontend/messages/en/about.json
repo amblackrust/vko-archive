@@ -18,7 +18,7 @@
     "title": "What the archive does",
     "text": "The archive takes in records of the region's organisations and residents, keeps them safe and registered, appraises the value of documents, prepares finding aids and publications, receives researchers in the reading room and issues archival certificates.",
     "unitsTitle": "Departments",
-    "unitsText": "The department names show the main lines of work. Heads, phone numbers and e-mail are on the structure page.",
+    "unitsText": "Heads of departments, phone numbers and e-mail are on the structure page.",
     "items": {
       "store": {
         "title": "Custody",
@@ -78,23 +78,6 @@
       "text": "Address, phone numbers, e-mail, opening hours of the archive and the reading room."
     }
   },
-  "pending": {
-    "title": "Sections being filled",
-    "text": "The documents handed over by the archive do not include these materials yet. They will appear here once agreed with the archive.",
-    "status": "Awaited from the archive",
-    "mission": {
-      "label": "Mission and objectives",
-      "text": "The official statement of the institution's mission and objectives."
-    },
-    "reports": {
-      "label": "Activity reports",
-      "text": "Annual reports and reports on public services provided."
-    },
-    "gallery": {
-      "label": "Photo gallery of the institution",
-      "text": "Photographs of the building, the repositories and archive events."
-    }
-  },
   "management": {
     "title": "Management",
     "link": "Full structure and contacts"
@@ -105,16 +88,13 @@
     "toc": "By decade",
     "decade": "{decade}s",
     "opening": "Beginning",
-    "source": "The text of the historical note was provided by the archive. The years on the left are set automatically, from the first date named in each paragraph.",
-    "timeline": "Regional timeline in the Great Archive of Memory"
+    "timeline": "Regional timeline in the Great Archive of Memory",
+    "timelineText": "The region's history by decade and year.",
+    "more": "What else to see"
   },
   "structure": {
     "title": "Management and structure",
-    "lead": "Who runs the archive and its departments, and how to reach them.",
-    "toc": "Units",
-    "more": "See also",
-    "noContacts": "No phone number or e-mail is given in the archive's records.",
-    "source": "Information on the structure was provided by the archive."
+    "lead": "Who runs the archive and its departments, and how to reach them."
   },
   "photo": "Ust-Kamenogorsk on an early 20th-century postcard. Photo: {author}, {license}",
   "units": {

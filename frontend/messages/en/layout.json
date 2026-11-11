@@ -100,8 +100,7 @@
   "privacy": "Privacy policy",
   "copyright": "© {year} {name}",
   "home": {
-    "title": "State Archive of East Kazakhstan Region",
-    "stub": "The home page will be built in a later stage. The site skeleton works: language, theme, menu and system states."
+    "title": "State Archive of East Kazakhstan Region"
   },
   "counter": "Visitors: {count}",
   "parentOrg": "Department of Digitalization and Archives of East Kazakhstan Region",

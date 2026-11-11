@@ -19,7 +19,7 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <PageHeader crumbs={[{ label: t("title"), href: "/cabinet" }, { label: t("emailConfirm.title") }]} title={t("emailConfirm.title")} lead={t("emailConfirm.lead")} />
-      <div className="container-page py-8 lg:py-10">
+      <div className="container-page pb-16 pt-2">
         <EmailConfirm token={typeof token === "string" ? token : ""} />
       </div>
     </>

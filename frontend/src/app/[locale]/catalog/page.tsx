@@ -113,7 +113,8 @@ export default async function CatalogPage({ params, searchParams }: { params: Pr
             {invalid && <Notice tone="warning">{t("search.invalid")}</Notice>}
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
               <h2 id="catalog-results" aria-live="polite" className="text-xl">{t("results.count", { count: data.total })}</h2>
-              <div className="flex flex-wrap items-center gap-3">
+              {/* На телефоне сортировка и вид выдачи помещаются в одну строку: список сортировки там уже. */}
+              <div className="flex w-full items-center justify-between gap-3 sm:w-auto [&_select]:max-sm:w-40">
                 <SortSelect
                   key={query.toString()}
                   form={CATALOG_FORM}

@@ -1,14 +1,13 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ActRow, STATUS_ICONS } from "@/components/legal/act-row";
+import { ActRow, STATUS_DOTS } from "@/components/legal/act-row";
 import { legalFetch, LEGAL_STATUSES, type CompliancePage, type LegalActsResponse } from "@/components/legal/api";
 import { safe } from "@/components/misc/api";
 import { pageMetadata } from "@/components/misc/metadata";
 import { PageBody, SeeAlso } from "@/components/misc/page-layout";
 import { Unavailable } from "@/components/misc/state-help";
+import { GovServiceCard } from "@/components/ui/brand";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "@/components/ui/external-link";
 import { Field, SelectField } from "@/components/ui/field";
-import { Notice } from "@/components/ui/notice";
 import { PageHeader } from "@/components/ui/page-header";
 import { RecordList } from "@/components/ui/record-list";
 import { EmptyState } from "@/components/ui/state-view";
@@ -43,26 +42,25 @@ export default async function LegalPage({ params, searchParams }: { params: Prom
     <>
       <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
       <PageBody
+        className="pt-4"
         aside={
           <>
             <section aria-labelledby="legal-statuses">
               <h2 id="legal-statuses" className="mb-3 text-base">{t("legend.title")}</h2>
               <dl className="card divide-y px-5 text-[0.9375rem]">
-                {LEGAL_STATUSES.map((value) => {
-                  const Icon = STATUS_ICONS[value];
-                  return (
-                    <div key={value} className="py-3">
-                      <dt className="flex items-center gap-1.5 font-medium"><Icon className="size-4" aria-hidden />{t(`status.${value}`)}</dt>
-                      <dd className="mt-0.5 text-sm text-muted-foreground">{t(`legend.${value}`)}</dd>
-                    </div>
-                  );
-                })}
+                {LEGAL_STATUSES.map((value) => (
+                  <div key={value} className="py-3">
+                    <dt className="flex items-center gap-2 font-medium"><span className={`size-2 shrink-0 rounded-full ${STATUS_DOTS[value]}`} aria-hidden />{t(`status.${value}`)}</dt>
+                    <dd className="mt-0.5 text-sm text-muted-foreground">{t(`legend.${value}`)}</dd>
+                  </div>
+                ))}
               </dl>
             </section>
-            <Notice title={t("official.title")}>
-              <p>{t("official.text")}</p>
-              <p className="mt-2"><ExternalLink href="https://adilet.zan.kz" className="text-primary underline underline-offset-[3px]">{t("official.link")}</ExternalLink></p>
-            </Notice>
+            <section aria-labelledby="legal-official">
+              <h2 id="legal-official" className="mb-2 text-base">{t("official.title")}</h2>
+              <p className="mb-3 text-[0.9375rem] text-muted-foreground">{t("official.text")}</p>
+              <GovServiceCard id="adilet" compact />
+            </section>
             <SeeAlso
               title={t("more.title")}
               items={[
@@ -84,7 +82,7 @@ export default async function LegalPage({ params, searchParams }: { params: Prom
         </form>
 
         <section aria-labelledby="legal-list" aria-live="polite" className="space-y-4">
-          <h2 id="legal-list" className="text-base font-semibold">{t("count", { count: acts.length })}</h2>
+          <h2 id="legal-list" className="text-xl">{t("count", { count: acts.length })}</h2>
           {acts.length === 0 ? (
             <EmptyState resetHref="/legal" as="h2" />
           ) : (

@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CipherChip } from "@/components/catalog/cipher-chip";
-import { CaseRow, CipherPath, Level, LevelList } from "@/components/catalog/hierarchy";
-import { DemoBadge } from "@/components/ui/demo-badge";
-import { DemoTag } from "@/components/ui/demo-tag";
+import { CaseTile, LevelLead, LevelList, TileGrid } from "@/components/catalog/hierarchy";
+import { KeyFacts } from "@/components/ui/facts";
 import { PageHeader } from "@/components/ui/page-header";
 import { UnavailableState } from "@/components/ui/state-view";
 import { catalogLoad, listPage, type InventoryDetail, type SearchParams } from "@/lib/api/catalog";
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: Props) {
   return { title: item ? [cipher, item.title].filter(Boolean).join(". ") : t("title"), alternates: localizedAlternates(locale, `/catalog/inventories/${id}`) };
 }
 
-/** Опись: путь по шифру, дела описи с поиском, сведения об описи. */
+/** Опись: шифр и фонд в шапке, полоса сведений, дела описи плитками. */
 export default async function InventoryPage({ params, searchParams }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
@@ -43,27 +42,25 @@ export default async function InventoryPage({ params, searchParams }: Props) {
         ]}
         title={inventory.title || label}
         titleLang={foreign ? inventory.title_lang : undefined}
-        meta={
-          <>
-            <CipherChip>{t("tree.cipher.inventory", { fund: inventory.fund.number, inventory: inventory.number })}</CipherChip>
-            {inventory.is_demo && <DemoTag />}
-            {foreign && <DemoBadge kind="noTranslation" />}
-          </>
-        }
+        meta={<CipherChip>{t("tree.cipher.inventory", { fund: inventory.fund.number, inventory: inventory.number })}</CipherChip>}
+        lead={<LevelLead fund={inventory.fund} />}
       />
-      <Level
-        path={<CipherPath fund={inventory.fund} inventory={inventory} />}
-        facts={[
-          { label: t("tree.facts.fund"), value: inventory.fund.title },
-          { label: t("tree.facts.dates"), value: inventory.dates_text },
-          { label: t("tree.facts.cases"), value: inventory.case_count },
-          { label: t("tree.facts.documents"), value: inventory.document_count },
-        ]}
-      >
-        <LevelList heading={t("tree.casesInInventory")} pathname={inventory.href} query={query} list={inventory.cases} empty={t("tree.emptyCases")}>
-          {inventory.cases.items.map((item) => <CaseRow key={item.id} item={item} />)}
+      <div className="container-page space-y-10 pb-16">
+        <KeyFacts
+          items={[
+            { label: t("tree.facts.fundNumber"), value: <span className="cipher">{inventory.fund.number}</span> },
+            { label: t("tree.facts.inventoryNumber"), value: <span className="cipher">{inventory.number}</span> },
+            { label: t("tree.facts.dates"), value: inventory.dates_text },
+            { label: t("tree.facts.cases"), value: inventory.case_count },
+            { label: t("tree.facts.documents"), value: inventory.document_count },
+          ]}
+        />
+        <LevelList heading={t("tree.casesInInventory")} pathname={inventory.href} query={query} list={inventory.cases} empty={t("tree.emptyCases")} search={inventory.case_count > 8}>
+          <TileGrid count={inventory.cases.items.length} more={{ href: inventory.fund.href, title: t("tree.otherInventories"), text: inventory.fund.title }}>
+            {inventory.cases.items.map((item) => <CaseTile key={item.id} item={item} />)}
+          </TileGrid>
         </LevelList>
-      </Level>
+      </div>
     </>
   );
 }

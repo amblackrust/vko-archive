@@ -78,7 +78,7 @@ test.describe("Сценарий 6. Редактор -> согласование 
     await expect(page.getByRole("link", { name: "Журнал действий" })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Роли и права" })).toHaveCount(0);
     // Язык интерфейса — выпадающим списком, выход — в меню учётной записи.
-    await page.getByRole("button", { name: "Язык интерфейса" }).click();
+    await page.getByRole("button", { name: "Язык сайта" }).click();
     await expect(page.getByRole("link", { name: /Қазақша/ })).toBeVisible();
     await page.keyboard.press("Escape");
     await page.getByRole("button", { name: "Учётная запись" }).click();

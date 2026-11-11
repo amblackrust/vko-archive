@@ -25,7 +25,8 @@
     "description": "Description",
     "historicalNote": "Historical note",
     "details": "Document details",
-    "related": "Related documents"
+    "related": "Related documents",
+    "place": "Place in the archive"
   },
   "annotation": {
     "title": "The document in brief",
@@ -54,11 +55,11 @@
       "text": "The files of this document are not shown on the site: it contains information closed by law, such as personal data."
     },
     "needs_review": {
-      "title": "Access conditions are being confirmed",
-      "text": "The archive has not yet decided whether this document can be shown online, so its files are hidden for now."
+      "title": "The document files are not published",
+      "text": "The image of this document is not shown on the site. The description is open; the original is consulted in the archive reading room."
     },
     "conditions": "Access conditions",
-    "howTo": "This site does not accept applications or requests. An archival certificate, copy or extract is ordered on the e-government portal.",
+    "howTo": "An archival certificate, copy or extract is requested on the e-government portal.",
     "egov": "Go to eGov.kz",
     "service": "How to get an archival certificate",
     "readingRoom": "Reading room rules"
@@ -91,10 +92,10 @@
   },
   "similar": {
     "title": "Similar materials",
-    "empty": "No similar materials yet.",
+    "empty": "No similar materials.",
     "error": "Could not load similar materials.",
-    "personal": "Take the documents I have viewed into account",
-    "personalHint": "Your viewing history is kept only in this browser and is deleted when you clear this box.",
+    "personal": "Take into account the documents I have viewed",
+    "personalHint": "Your viewing history is kept only in this browser and is deleted when you turn this off.",
     "types": {
       "document": "Document",
       "fund": "Fonds",
@@ -103,6 +104,7 @@
       "news": "News",
       "page": "Site page",
       "branch": "Branch"
-    }
+    },
+    "personalOn": "Viewed documents are taken into account. Turn off"
   }
 }

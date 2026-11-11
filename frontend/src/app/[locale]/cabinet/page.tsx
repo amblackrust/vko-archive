@@ -19,7 +19,7 @@ export default async function CabinetPage({ params, searchParams }: { params: Pr
   return (
     <>
       <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("intro")} />
-      <div className="container-page py-8 lg:py-10">
+      <div className="container-page pb-16 pt-2">
         <CabinetApp section={active} />
       </div>
     </>

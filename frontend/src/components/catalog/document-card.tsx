@@ -1,6 +1,5 @@
 import { FileText } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { DemoTag } from "@/components/ui/demo-tag";
 import type { DocumentItem } from "@/lib/api/catalog";
 import { fileUrl } from "@/lib/api/document";
 import { Link } from "@/lib/i18n/navigation";
@@ -27,7 +26,6 @@ export function DocumentCard({ item }: { item: DocumentItem }) {
       <div className="flex flex-1 flex-col p-4">
         <p className="cipher flex flex-wrap items-center gap-2 text-sm font-semibold text-primary">
           {item.archive_code ?? "—"}
-          {item.is_demo && <DemoTag />}
         </p>
         <h3 className="mt-1.5 line-clamp-2 text-[1.0625rem] font-semibold leading-snug" lang={foreign ? item.title_lang : undefined}>
           <Link href={item.href} className="after:absolute after:inset-0 group-hover:text-primary">{item.title}</Link>

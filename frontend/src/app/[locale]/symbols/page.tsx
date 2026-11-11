@@ -1,9 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { InfoStrip, PageSection, PageStack } from "@/components/misc/blocks";
 import { pageMetadata } from "@/components/misc/metadata";
-import { Block, PageBody } from "@/components/misc/page-layout";
+import { SourceCard } from "@/components/misc/source-card";
 import { ExternalLink } from "@/components/ui/external-link";
-import { FactList } from "@/components/ui/facts";
-import { LinkList } from "@/components/ui/link-list";
 import { PageHeader } from "@/components/ui/page-header";
 
 // Официальные страницы о символах на сайте Президента (akorda.kz) и текст закона в «Әділет»; адреса проверены.
@@ -17,7 +16,7 @@ const SYMBOLS = [
 
 export const generateMetadata = pageMetadata("misc.symbols", "/symbols");
 
-/** Государственные символы: краткие сведения по официальным источникам и ссылки на них. */
+/** Государственные символы: три равные карточки с краткими сведениями по официальным источникам и ссылки на них. */
 export default async function SymbolsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -26,40 +25,33 @@ export default async function SymbolsPage({ params }: { params: Promise<{ locale
   return (
     <>
       <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
-      <PageBody
-        aside={
-          <FactList
-            items={[
-              { label: t("facts.law"), value: t("facts.lawValue") },
-              { label: t("facts.day"), value: t("facts.dayValue") },
-              { label: t("facts.adopted"), value: t("facts.adoptedValue") },
-            ]}
-          />
-        }
-      >
-        <ul className="space-y-4">
+      <PageStack>
+        <ul className="grid gap-4 lg:grid-cols-3">
           {SYMBOLS.map(({ id, path }) => (
-            <li key={id} className="card grid gap-x-10 gap-y-2 p-6 lg:grid-cols-[13rem_minmax(0,1fr)]">
+            <li key={id} className="card row-span-4 grid grid-rows-subgrid gap-y-3 p-6 sm:p-8">
               <h2 className="text-2xl">{t(`${id}.title`)}</h2>
-              <div className="max-w-3xl space-y-3">
-                <p>{t(`${id}.text`)}</p>
-                <p className="text-sm text-muted-foreground">{t(`${id}.authors`)}</p>
-                <p><ExternalLink href={`${akorda}/${path}`} className="text-primary underline underline-offset-[3px]">{t(`${id}.link`)}</ExternalLink></p>
-              </div>
+              <p>{t(`${id}.text`)}</p>
+              <p className="border-t pt-3 text-[0.9375rem] text-muted-foreground">{t(`${id}.authors`)}</p>
+              <p><ExternalLink href={`${akorda}/${path}`} className="font-semibold text-primary">{t(`${id}.link`)}</ExternalLink></p>
             </li>
           ))}
         </ul>
 
-        <Block id="sources" title={t("sources.title")} text={t("sources.text")}>
-          <LinkList
-            items={[
-              { href: `${akorda}/about_state_symbols`, label: t("sources.akorda"), external: true },
-              { href: `https://adilet.zan.kz/${ADILET[locale] ?? "rus"}/docs/Z070000258_`, label: t("sources.law"), external: true },
-            ]}
-          />
-          <p className="max-w-3xl text-sm text-muted-foreground">{t("sources.images")}</p>
-        </Block>
-      </PageBody>
+        <InfoStrip
+          items={[
+            { label: t("facts.law"), value: t("facts.lawValue") },
+            { label: t("facts.day"), value: t("facts.dayValue") },
+            { label: t("facts.adopted"), value: t("facts.adoptedValue") },
+          ]}
+        />
+
+        <PageSection id="sources" title={t("sources.title")} text={t("sources.text")}>
+          <ul className="grid gap-4 lg:auto-rows-fr lg:grid-cols-2">
+            <li><SourceCard portal="akorda" href={`${akorda}/about_state_symbols`} title={t("sources.akorda")} /></li>
+            <li><SourceCard portal="adilet" href={`https://adilet.zan.kz/${ADILET[locale] ?? "rus"}/docs/Z070000258_`} title={t("sources.law")} /></li>
+          </ul>
+        </PageSection>
+      </PageStack>
     </>
   );
 }

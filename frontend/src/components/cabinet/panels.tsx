@@ -4,12 +4,11 @@ import { Plus, Trash2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DemoTag } from "@/components/ui/demo-tag";
 import { Input } from "@/components/ui/input";
-import { Notice } from "@/components/ui/notice";
+import { LinkTile } from "@/components/ui/link-tile";
 import { RecordList, RecordRow } from "@/components/ui/record-list";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useRouter } from "@/lib/i18n/navigation";
+import { useRouter } from "@/lib/i18n/navigation";
 import { cabinetFetch, type FavoriteItem, type SearchEntry, type Selection, type Subscriptions, type Topic } from "./api";
 import { ConfirmDialog, useCabinetList } from "./form";
 
@@ -21,7 +20,7 @@ function PanelShell({ id, error, loading, children }: { id: string; error: strin
   return (
     <section aria-labelledby={`cabinet-${id}`} className="space-y-5">
       <div className="max-w-3xl space-y-1">
-        <h2 id={`cabinet-${id}`} className="text-2xl">{t(`sections.${id}`)}</h2>
+        <h2 id={`cabinet-${id}`} className="text-2xl sm:text-3xl">{t(`sections.${id}`)}</h2>
         <p className="text-muted-foreground">{t(`${id}.lead`)}</p>
       </div>
       {error && <p role="alert" className="rounded-md border border-destructive/40 bg-destructive-soft px-4 py-3 text-sm">{t(`errors.${error}`)}</p>}
@@ -30,16 +29,18 @@ function PanelShell({ id, error, loading, children }: { id: string; error: strin
   );
 }
 
-/** Пустой раздел: что здесь появится и куда пойти, чтобы оно появилось. */
+/** Пустой раздел: что здесь появится, и плитки-переходы туда, где это можно найти. */
 function EmptyHint({ title, text, links }: { title: string; text: string; links?: { href: string; label: string }[] }) {
   return (
-    <div className="card max-w-2xl p-5 sm:p-6">
-      <p className="font-semibold">{title}</p>
-      <p className="mt-1 text-muted-foreground">{text}</p>
+    <div className="space-y-4">
+      <div className="card p-5 sm:p-6">
+        <p className="text-[1.0625rem] font-semibold">{title}</p>
+        <p className="mt-1 max-w-3xl text-muted-foreground">{text}</p>
+      </div>
       {links && (
-        <p className="mt-4 flex flex-wrap gap-2">
-          {links.map((link) => <Button key={link.href} asChild variant="outline" size="sm"><Link href={link.href}>{link.label}</Link></Button>)}
-        </p>
+        <ul className="grid auto-rows-fr gap-4 sm:grid-cols-3">
+          {links.map((link) => <li key={link.href}><LinkTile href={link.href} title={link.label} /></li>)}
+        </ul>
       )}
     </div>
   );
@@ -73,7 +74,7 @@ export function FavoritesPanel() {
               key={`${item.type}-${item.id}`}
               title={item.title}
               href={item.href}
-              meta={<>{t(`favorites.types.${item.type}`)}{item.is_demo && <DemoTag />}</>}
+              meta={<>{t(`favorites.types.${item.type}`)}</>}
               aside={<RemoveButton label={t("favorites.remove", { title: item.title })} onClick={() => void mutate(() => cabinetFetch(`/favorites/${item.type}/${item.id}`, { method: "DELETE" }))} />}
             />
           ))}
@@ -95,7 +96,7 @@ export function SelectionsPanel() {
   return (
     <PanelShell id="selections" error={error} loading={data === null && !error}>
       <form
-        className="flex max-w-2xl flex-wrap items-end gap-3"
+        className="card flex flex-wrap items-end gap-3 p-5"
         onSubmit={async (event) => {
           event.preventDefault();
           if (await mutate(() => cabinetFetch("/selections", { method: "POST", body: { title } }))) setTitle("");
@@ -109,51 +110,54 @@ export function SelectionsPanel() {
       </form>
 
       {data?.length === 0 && <EmptyHint title={t("selections.emptyTitle")} text={t("selections.emptyText")} />}
-      <div className="space-y-8">
+      <div className="space-y-5">
         {data?.map((selection) => {
           const free = favorites.filter((item) => !selection.documents.some((doc) => doc.id === item.id));
           return (
-            <section key={selection.id} aria-label={selection.title} className="space-y-3">
-              <div className="flex items-start justify-between gap-3">
+            <section key={selection.id} aria-label={selection.title} className="card overflow-hidden">
+              <div className="flex items-start justify-between gap-3 px-5 py-4 sm:px-6">
                 <div className="min-w-0">
                   <h3 className="break-words text-xl">{selection.title}</h3>
-                  <p className="text-sm text-muted-foreground">{t("selections.count", { count: selection.documents.length })}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{t("selections.count", { count: selection.documents.length })}</p>
                 </div>
                 <RemoveButton icon={Trash2} label={t("selections.delete", { title: selection.title })} onClick={() => setRemoving(selection)} />
               </div>
               {selection.documents.length > 0 && (
-                <RecordList>
+                <ul className="divide-y border-t">
                   {selection.documents.map((doc) => (
                     <RecordRow
                       key={doc.id}
                       code={doc.archive_code ?? undefined}
                       title={doc.title}
                       href={doc.href}
+                      heading="h4"
                       aside={<RemoveButton label={t("selections.removeDocument", { title: doc.title })} onClick={() => void mutate(() => cabinetFetch(`/selections/${selection.id}/items/${doc.id}`, { method: "DELETE" }))} />}
                     />
                   ))}
-                </RecordList>
+                </ul>
               )}
-              {free.length > 0 ? (
-                <form
-                  className="flex flex-wrap items-end gap-3"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    const id = String(new FormData(event.currentTarget).get("document"));
-                    void mutate(() => cabinetFetch(`/selections/${selection.id}/items`, { method: "POST", body: { document_id: id } }));
-                  }}
-                >
-                  <label className="block min-w-0 max-w-full text-sm sm:max-w-md">
-                    <span className="mb-1.5 block font-medium">{t("selections.addPick")}</span>
-                    <select name="document" className={`${control} w-full`}>
-                      {free.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
-                    </select>
-                  </label>
-                  <Button type="submit" variant="outline" className="h-11">{t("selections.add")}</Button>
-                </form>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t(favorites.length ? "selections.allAdded" : "selections.needFavorites")}</p>
-              )}
+              <div className="border-t bg-surface-muted/50 px-5 py-4 sm:px-6">
+                {free.length > 0 ? (
+                  <form
+                    className="flex flex-wrap items-end gap-3"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      const id = String(new FormData(event.currentTarget).get("document"));
+                      void mutate(() => cabinetFetch(`/selections/${selection.id}/items`, { method: "POST", body: { document_id: id } }));
+                    }}
+                  >
+                    <label className="block min-w-0 max-w-full flex-1 text-sm sm:max-w-md">
+                      <span className="mb-1.5 block font-medium">{t("selections.addPick")}</span>
+                      <select name="document" className={`${control} w-full`}>
+                        {free.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}
+                      </select>
+                    </label>
+                    <Button type="submit" variant="outline" className="h-11">{t("selections.add")}</Button>
+                  </form>
+                ) : (
+                  <p className="text-sm text-muted-foreground">{t(favorites.length ? "selections.allAdded" : "selections.needFavorites")}</p>
+                )}
+              </div>
             </section>
           );
         })}
@@ -183,7 +187,7 @@ export function SearchesPanel() {
   return (
     <PanelShell id="searches" error={error} loading={data === null && !error}>
       <form
-        className="flex max-w-2xl flex-wrap items-end gap-3"
+        className="card flex flex-wrap items-end gap-3 p-5"
         onSubmit={async (event) => {
           event.preventDefault();
           const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
@@ -235,19 +239,18 @@ export function SubscriptionsPanel() {
   const { data, error, busy, mutate } = useCabinetList<Subscriptions>("/subscriptions");
   return (
     <PanelShell id="subscriptions" error={error} loading={data === null && !error}>
-      <Notice className="max-w-2xl">{t("subscriptions.demo")}</Notice>
-      <fieldset className="max-w-2xl" disabled={busy}>
+      <fieldset disabled={busy}>
         <legend className="sr-only">{t("sections.subscriptions")}</legend>
-        <ul className="card divide-y px-5">
+        <ul className="grid auto-rows-fr gap-4 sm:grid-cols-2">
           {TOPICS.map((topic) => {
             const on = data?.topics.includes(topic) ?? false;
             return (
               <li key={topic}>
-                <label className="flex cursor-pointer items-start gap-3 py-4">
+                <label className="card flex h-full cursor-pointer items-start gap-3.5 p-5 transition-shadow has-[:checked]:shadow-[inset_0_0_0_2px_var(--primary)] sm:p-6">
                   <input type="checkbox" className="mt-1 size-5 shrink-0 accent-primary" checked={on} onChange={() => void mutate(() => cabinetFetch(`/subscriptions/${topic}`, { method: on ? "DELETE" : "PUT" }))} />
                   <span>
-                    <span className="block font-semibold">{t(`subscriptions.${topic}.title`)}</span>
-                    <span className="block text-sm text-muted-foreground">{t(`subscriptions.${topic}.text`)}</span>
+                    <span className="block text-[1.0625rem] font-semibold">{t(`subscriptions.${topic}.title`)}</span>
+                    <span className="mt-1 block text-[0.9375rem] text-muted-foreground">{t(`subscriptions.${topic}.text`)}</span>
                   </span>
                 </label>
               </li>

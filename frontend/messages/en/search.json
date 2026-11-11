@@ -6,7 +6,14 @@
   "submit": "Search",
   "start": {
     "title": "What you can search for",
-    "text": "Enter an organisation's name, a surname, an event, a year or a document reference code. Typos and word forms are taken into account."
+    "text": "Enter an organisation's name, a surname, an event, a year or a document reference code. Typos and word forms are taken into account.",
+    "examplesLabel": "For example:",
+    "examples": {
+      "a": "Zaysan",
+      "b": "school",
+      "c": "Риддер",
+      "d": "Аблайкит"
+    }
   },
   "next": {
     "catalog": {

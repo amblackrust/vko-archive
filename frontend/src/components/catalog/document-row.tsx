@@ -1,6 +1,4 @@
 import { useLocale, useTranslations } from "next-intl";
-import { DemoBadge } from "@/components/ui/demo-badge";
-import { DemoTag } from "@/components/ui/demo-tag";
 import { RecordRow } from "@/components/ui/record-list";
 import { Link } from "@/lib/i18n/navigation";
 import type { DocumentItem } from "@/lib/api/catalog";
@@ -20,7 +18,6 @@ export function DocumentRow({ item, fund = true }: { item: DocumentItem; fund?: 
       code={
         <>
           {item.archive_code ?? "—"}
-          {item.is_demo && <DemoTag />}
         </>
       }
       title={item.title}
@@ -34,7 +31,6 @@ export function DocumentRow({ item, fund = true }: { item: DocumentItem; fund?: 
           {item.sheets_count ? <span>{t("doc.sheets", { count: item.sheets_count })}</span> : null}
           {item.authors && <span>{item.authors}</span>}
           {item.places.length > 0 && <span>{item.places.join(", ")}</span>}
-          {foreign && <DemoBadge kind="noTranslation" />}
         </>
       }
       aside={item.file_access !== "open" ? <AccessBadge access={item.file_access} /> : undefined}

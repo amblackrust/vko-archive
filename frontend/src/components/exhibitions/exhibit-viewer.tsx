@@ -14,11 +14,13 @@ const STEPS = [1, 1.5, 2, 3, 4];
  * а изображение сдвигается её прокруткой (касание, стрелки в фокусе) или перетаскиванием мышью.
  * Клавиши «+», «−» и «0» меняют масштаб; пока он 100 %, стрелки влево и вправо листают экспонаты.
  */
-export function ExhibitViewer({ src, alt, prevHref, nextHref, children }: {
+export function ExhibitViewer({ src, alt, prevHref, nextHref, nav, children }: {
   src: string | null;
   alt: string;
   prevHref?: string;
   nextHref?: string;
+  /** Переходы к соседним экспонатам: стоят в одной строке с масштабом, сразу под изображением. */
+  nav?: React.ReactNode;
   /** Что показать в рамке, если изображения нет или оно не загрузилось. */
   children: React.ReactNode;
 }) {
@@ -75,7 +77,7 @@ export function ExhibitViewer({ src, alt, prevHref, nextHref, children }: {
         role={shown ? "group" : undefined}
         aria-label={shown ? t("stage") : undefined}
         style={zoom > 1 && base ? { height: base.height } : undefined}
-        className={cn("card flex min-h-72 overflow-auto", zoom > 1 && "cursor-grab")}
+        className={cn("card flex min-h-48 overflow-auto rounded-2xl sm:min-h-72", zoom > 1 && "cursor-grab")}
         onDoubleClick={() => zoomTo(step === 0 ? 2 : 0)}
         onPointerDown={(event) => {
           // Только мышь и только по самому изображению: касание и полосы прокрутки работают штатно.
@@ -107,9 +109,9 @@ export function ExhibitViewer({ src, alt, prevHref, nextHref, children }: {
           <div className="m-auto flex max-w-md flex-col items-center gap-3 p-6 text-center text-muted-foreground">{children}</div>
         )}
       </div>
-      {shown && (
-        <>
-          <div role="group" aria-label={t("zoom")} className="flex flex-wrap items-center gap-2" data-noprint>
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3" data-noprint>
+        {shown && (
+          <div role="group" aria-label={t("zoom")} className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="size-11" onClick={() => zoomTo(step - 1)} disabled={step === 0} aria-label={t("zoomOut")} title={t("zoomOut")}>
               <Minus aria-hidden />
             </Button>
@@ -117,15 +119,17 @@ export function ExhibitViewer({ src, alt, prevHref, nextHref, children }: {
             <Button variant="outline" size="icon" className="size-11" onClick={() => zoomTo(step + 1)} disabled={step === STEPS.length - 1} aria-label={t("zoomIn")} title={t("zoomIn")}>
               <Plus aria-hidden />
             </Button>
-            <Button variant="ghost" onClick={() => zoomTo(0)} disabled={step === 0}>
+            {/* На телефоне у сброса остаётся значок: подпись не помещается в одну строку с масштабом. */}
+            <Button variant="ghost" className="max-sm:size-11 max-sm:px-0" onClick={() => zoomTo(0)} disabled={step === 0} aria-label={t("zoomReset")} title={t("zoomReset")}>
               <RotateCcw aria-hidden />
-              {t("zoomReset")}
+              <span className="max-sm:hidden">{t("zoomReset")}</span>
             </Button>
           </div>
-          {/* Подсказка про клавиши нужна только там, где есть клавиатура. */}
-          <figcaption className="hidden text-sm text-muted-foreground md:block" data-noprint>{t("hint")}</figcaption>
-        </>
-      )}
+        )}
+        {nav}
+      </div>
+      {/* Подсказка про клавиши нужна только там, где есть клавиатура. */}
+      {shown && <figcaption className="hidden text-sm text-muted-foreground md:block" data-noprint>{t("hint")}</figcaption>}
     </figure>
   );
 }

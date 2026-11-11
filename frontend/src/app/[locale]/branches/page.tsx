@@ -18,7 +18,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ local
   return (
     <>
       <PageHeader crumbs={[{ label: t("title") }]} title={t("title")} lead={t("lead")} />
-      <div className="container-page py-8 pb-16">
+      <div className="container-page pb-12">
         <BranchesExplorer branches={branches} />
       </div>
     </>

@@ -3,13 +3,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Notice } from "@/components/ui/notice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TabsNav } from "@/components/ui/tabs-nav";
 import { AccountPanel } from "./account-panel";
 import { cabinetFetch, fetchMe, type VisitorMe } from "./api";
 import { AuthForm } from "./auth-form";
-import { errorCode } from "./form";
+import { errorCode, StatusNote } from "./form";
 import { FavoritesPanel, SearchesPanel, SelectionsPanel, SubscriptionsPanel } from "./panels";
 import { SECTIONS, type Section } from "./sections";
 
@@ -17,7 +16,7 @@ const FEATURES = ["favorites", "selections", "searches", "subscriptions"] as con
 
 type State = { status: "loading" } | { status: "unavailable" } | { status: "anonymous" } | { status: "user"; me: VisitorMe };
 
-/** Кабинет посетителя: без входа — форма и пояснение, после входа — рабочие разделы вкладками (раздел в адресе: ?section=…). */
+/** Кабинет посетителя: без входа — форма и четыре плитки «что даёт кабинет», после входа — рабочие разделы вкладками (раздел в адресе: ?section=…). */
 export function CabinetApp({ section }: { section: Section }) {
   const t = useTranslations("cabinet");
   const [state, setState] = useState<State>({ status: "loading" });
@@ -50,27 +49,26 @@ export function CabinetApp({ section }: { section: Section }) {
   if (state.status === "unavailable") {
     return (
       <div className="max-w-2xl space-y-4">
-        <Notice tone="warning" title={t("unavailable.title")}>{t("unavailable.text")}</Notice>
+        <StatusNote tone="warning" title={t("unavailable.title")}>{t("unavailable.text")}</StatusNote>
         <Button variant="outline" onClick={load}>{t("unavailable.retry")}</Button>
       </div>
     );
   }
   if (state.status === "anonymous") {
     return (
-      <div className="grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <AuthForm onSignedIn={(me) => setState({ status: "user", me })} />
-        <aside className="max-w-xl space-y-4">
-          <h2 className="text-xl">{t("features.title")}</h2>
-          <ul className="card divide-y px-5">
+        <section aria-labelledby="cabinet-features" className="flex flex-col gap-5">
+          <h2 id="cabinet-features" className="text-2xl sm:text-3xl">{t("features.title")}</h2>
+          <ul className="grid flex-1 auto-rows-fr gap-4 sm:grid-cols-2">
             {FEATURES.map((feature) => (
-              <li key={feature} className="py-3">
-                <p className="font-semibold">{t(`sections.${feature}`)}</p>
-                <p className="text-sm text-muted-foreground">{t(`features.${feature}`)}</p>
+              <li key={feature} className="card h-full p-5 sm:p-6">
+                <h3 className="text-[1.0625rem]">{t(`sections.${feature}`)}</h3>
+                <p className="mt-1.5 text-[0.9375rem] text-muted-foreground">{t(`features.${feature}`)}</p>
               </li>
             ))}
           </ul>
-          <Notice>{t("noRequests")}</Notice>
-        </aside>
+        </section>
       </div>
     );
   }
@@ -78,15 +76,16 @@ export function CabinetApp({ section }: { section: Section }) {
   const { me } = state;
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 card px-4 py-3 sm:px-5">
+      <div className="card flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-5 py-4 sm:px-6">
         <p className="min-w-0">
           <span className="block text-sm text-muted-foreground">{t("signedInAs")}</span>
-          <span className="break-words font-semibold">{me.display_name || me.email}</span>
-          {me.display_name && <span className="break-all text-muted-foreground"> · {me.email}</span>}
+          <span className="block break-words text-[1.0625rem] font-semibold">{me.display_name || me.email}</span>
+          {me.display_name && <span className="block break-all text-sm text-muted-foreground">{me.email}</span>}
         </p>
         <Button variant="outline" size="sm" onClick={() => void logout()}>{t("logout")}</Button>
       </div>
-      {!me.email_confirmed && <EmailBanner />}
+      {/* В разделе «Учётная запись» то же напоминание стоит у адреса почты. */}
+      {!me.email_confirmed && section !== "account" && <EmailBanner />}
       <TabsNav label={t("sectionsLabel")} active={section} items={SECTIONS.map((id) => ({ id, label: t(`sections.${id}`), href: id === SECTIONS[0] ? "/cabinet" : `/cabinet?section=${id}` }))} />
       {section === "favorites" && <FavoritesPanel />}
       {section === "selections" && <SelectionsPanel />}
@@ -128,9 +127,9 @@ export function ResendEmail() {
 function EmailBanner() {
   const t = useTranslations("cabinet");
   return (
-    <Notice tone="warning" title={t("email.unconfirmedTitle")}>
+    <StatusNote tone="warning" role="note" title={t("email.unconfirmedTitle")}>
       <p>{t("email.unconfirmedText")}</p>
-      <div className="mt-3"><ResendEmail /></div>
-    </Notice>
+      <div className="mt-3 text-foreground"><ResendEmail /></div>
+    </StatusNote>
   );
 }

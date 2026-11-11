@@ -1,9 +1,9 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { AnswerText } from "@/components/ai/chat/answer-text";
+import { TypingDots } from "@/components/ai/chat/assistant-mark";
 import { AnswerExtras } from "@/components/ai/chat/source-cards";
 import { useAnswer } from "@/components/ai/chat/use-answer";
 import { FilterChip } from "@/components/catalog/filter-chip";
@@ -17,9 +17,9 @@ import { addFilterHref, DOC_FILTERS, filterLabel, tabHref } from "./filters";
 const WITH_ANSWER = new Set(["answer", "service", "restricted"]);
 
 /**
- * Ответ помощника рядом с результатами поиска. Выдача от него не зависит: она уже на странице,
- * а блок только дописывает текст со ссылками на источники и предлагает условия, которые помощник
- * разобрал в запросе, — чипами-ссылками (применённые условия снимаются над результатами).
+ * Ответ помощника рядом с результатами поиска — в том же виде, что и в диалоге: текст с номерами источников,
+ * под ним карточки источников. Выдача от него не зависит: она уже на странице, а блок только дописывает ответ
+ * и предлагает условия, которые помощник разобрал в запросе, — чипами-ссылками (применённые снимаются над результатами).
  * На телефоне блок свёрнут до двух строк и не сдвигает выдачу, пока идёт ответ.
  * `current` — условия из адреса страницы (query string).
  */
@@ -60,12 +60,9 @@ export function AiAnswer({ query, current }: { query: string; current: string })
   const more = Boolean(text) || proposals.length > 0;
 
   return (
-    <section aria-labelledby={`${id}-title`} className="card p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 id={`${id}-title`} className="text-lg">{t("ai.title")}</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">{t("ai.label")}</p>
-        </div>
+    <section aria-labelledby={`${id}-title`} className="card p-5 sm:p-6">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id={`${id}-title`} className="text-xl">{t("ai.title")}</h2>
         {more && (
           <Button variant="outline" size="sm" className="lg:hidden" aria-expanded={open} aria-controls={`${id}-body`} onClick={() => setOpen(!open)}>
             {t(open ? "ai.hide" : "ai.show")}
@@ -73,16 +70,11 @@ export function AiAnswer({ query, current }: { query: string; current: string })
         )}
       </div>
 
-      <div id={`${id}-body`} aria-live="polite" aria-busy={busy} className="mt-3 min-h-12 text-[0.9375rem]">
-        {busy && !text && (
-          <p className="flex items-center gap-2 text-muted-foreground">
-            <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />
-            {t("ai.busy")}
-          </p>
-        )}
+      <div id={`${id}-body`} aria-live="polite" aria-busy={busy} className="mt-3 min-h-10 text-[0.9375rem]">
+        {busy && !text && <TypingDots label={t("ai.busy")} />}
         {quiet && <p className="text-muted-foreground">{quiet}</p>}
         {text && (
-          <div className={cn(!open && "max-lg:[&>p]:line-clamp-2")}>
+          <div className={cn(!open && "max-lg:[&>div]:line-clamp-2")}>
             <AnswerText text={text} sources={answer?.sources ?? []} />
           </div>
         )}
@@ -103,6 +95,7 @@ export function AiAnswer({ query, current }: { query: string; current: string })
           )}
         </div>
       </div>
+      <p className="mt-4 border-t pt-3 text-xs text-muted-foreground">{t("ai.label")}</p>
     </section>
   );
 }

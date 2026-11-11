@@ -1,11 +1,9 @@
-import { Compass, FileX2, Lock, SearchX, TriangleAlert, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface StateViewProps {
-  icon: LucideIcon;
   title: string;
   description?: string;
   /** Кнопки/ссылки действий под текстом. */
@@ -15,16 +13,14 @@ interface StateViewProps {
   as?: "h1" | "h2";
 }
 
-/** Базовая карточка системного состояния; тексты передаёт вызывающий. */
-export function StateView({ icon: Icon, title, description, children, className, as: Heading = "h1" }: StateViewProps) {
+/** Системное состояние: заголовок, пояснение и действия — по левому краю страницы, без декоративных значков. */
+export function StateView({ title, description, children, className, as: Heading = "h1" }: StateViewProps) {
+  const page = Heading === "h1";
   return (
-    <div className={cn("mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-16 text-center", className)}>
-      <span className="flex size-16 items-center justify-center rounded-full bg-surface-muted text-primary">
-        <Icon className="size-8" aria-hidden />
-      </span>
-      <Heading className="text-2xl font-semibold sm:text-3xl">{title}</Heading>
-      {description && <p className="text-muted-foreground">{description}</p>}
-      {children && <div className="mt-2 flex flex-wrap justify-center gap-3">{children}</div>}
+    <div className={cn(page ? "container-page py-14" : "card p-6 sm:p-8", className)}>
+      <Heading className={page ? "text-3xl sm:text-4xl" : "text-xl"}>{title}</Heading>
+      {description && <p className={cn("mt-3 max-w-2xl text-muted-foreground", page && "text-lg")}>{description}</p>}
+      {children && <div className="mt-6 flex flex-wrap gap-3">{children}</div>}
     </div>
   );
 }
@@ -41,7 +37,7 @@ function HomeButton() {
 export function NotFoundState() {
   const t = useTranslations("states.notFound");
   return (
-    <StateView icon={Compass} title={t("title")} description={t("description")}>
+    <StateView title={t("title")} description={t("description")}>
       <HomeButton />
     </StateView>
   );
@@ -57,7 +53,7 @@ interface EmptyStateProps {
 export function EmptyState({ resetHref, as }: EmptyStateProps) {
   const t = useTranslations("states.empty");
   return (
-    <StateView icon={SearchX} title={t("title")} description={t("description")} as={as} className="py-12">
+    <StateView title={t("title")} description={t("description")} as={as}>
       {resetHref && (
         <Button asChild variant="outline">
           <Link href={resetHref}>{t("reset")}</Link>
@@ -71,7 +67,7 @@ export function EmptyState({ resetHref, as }: EmptyStateProps) {
 export function UnavailableState() {
   const t = useTranslations("states.unavailable");
   return (
-    <StateView icon={FileX2} title={t("title")} description={t("description")}>
+    <StateView title={t("title")} description={t("description")}>
       <HomeButton />
     </StateView>
   );
@@ -81,7 +77,7 @@ export function UnavailableState() {
 export function ForbiddenState() {
   const t = useTranslations("states.forbidden");
   return (
-    <StateView icon={Lock} title={t("title")} description={t("description")}>
+    <StateView title={t("title")} description={t("description")}>
       <HomeButton />
     </StateView>
   );
@@ -95,7 +91,7 @@ interface ErrorStateProps {
 export function ErrorState({ onRetry, digest }: ErrorStateProps) {
   const t = useTranslations("states.error");
   return (
-    <StateView icon={TriangleAlert} title={t("title")} description={t("description")}>
+    <StateView title={t("title")} description={t("description")}>
       {onRetry && <Button onClick={onRetry}>{t("retry")}</Button>}
       <HomeButton />
       {digest && <p className="w-full text-xs text-muted-foreground">{t("code", { digest })}</p>}

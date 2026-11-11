@@ -1,44 +1,53 @@
 import { useTranslations } from "next-intl";
+import { ContactTile } from "@/components/about/contact-tile";
 import { MailLink, PhoneLink } from "@/components/misc/contact-links";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import type { Branch } from "@/lib/api/branches";
+import { cn } from "@/lib/utils";
 
-/** Сведения о подразделении строками. Чего архив не передал — сказано прямо, а не скрыто. */
+/** Сведения о подразделении строками — для карточки в окне карты. Показано только то, что есть в данных архива. */
 export function BranchFacts({ branch }: { branch: Branch }) {
   const t = useTranslations("map.card");
-  // Тексты из API помечаются своим языком; «нет данных» — текст интерфейса.
-  const text = (value: string, fallback = t("missing")) =>
-    value ? <span lang={branch.name_lang}>{value}</span> : <span className="text-muted-foreground">{fallback}</span>;
+  const text = (value: string) => <span lang={branch.name_lang}>{value}</span>;
   const rows: [string, React.ReactNode][] = [
-    [t("address"), branch.address ? <address className="not-italic" lang={branch.name_lang}>{branch.address}</address> : text("")],
-    [t("phone"), branch.phone ? <PhoneLink value={branch.phone} /> : text("")],
-    [t("email"), branch.email ? <MailLink value={branch.email} /> : text("")],
-    [t("hours"), text(branch.hours, t("hoursMissing"))],
-    [t("director"), text(branch.director)],
-    ...(branch.funds_summary ? [[t("funds"), text(branch.funds_summary)] as [string, React.ReactNode]] : []),
-    [
-      t("coords"),
-      branch.show_on_map && branch.lat != null && branch.lng != null ? (
-        <>
-          <span className="tabular-nums">{branch.lat.toFixed(4)}, {branch.lng.toFixed(4)}</span>
-          {!branch.coords_verified && (
-            <span className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <DemoBadge kind="approxCoords" />
-              {t("coordsApprox")}
-            </span>
-          )}
-        </>
-      ) : text("", t("notOnMap")),
-    ],
+    [t("address"), branch.address && <address className="not-italic" lang={branch.name_lang}>{branch.address}</address>],
+    [t("phone"), branch.phone && <PhoneLink value={branch.phone} className="font-semibold" />],
+    [t("email"), branch.email && <MailLink value={branch.email} />],
+    [t("hours"), branch.hours && text(branch.hours)],
+    [t("director"), branch.director && text(branch.director)],
+    [t("funds"), branch.funds_summary && text(branch.funds_summary)],
   ];
   return (
-    <dl className="card divide-y px-5">
-      {rows.map(([label, value]) => (
-        <div key={label} className="py-3">
+    <dl className="divide-y border-y">
+      {rows.filter(([, value]) => value).map(([label, value]) => (
+        <div key={label} className="py-2.5">
           <dt className="text-sm text-muted-foreground">{label}</dt>
           <dd className="mt-0.5 min-w-0 break-words">{value}</dd>
         </div>
       ))}
     </dl>
+  );
+}
+
+/**
+ * Контакты подразделения плитками — для его страницы: адрес во всю ширину, телефон и руководитель парой,
+ * почта и режим работы. `children` — плитки-переходы, которыми сетка заканчивается.
+ */
+export function BranchTiles({ branch, children }: { branch: Branch; children?: React.ReactNode }) {
+  const t = useTranslations("map.card");
+  const pair = Boolean(branch.phone && branch.director);
+  const wide = "sm:col-span-2 lg:col-span-1 xl:col-span-2";
+  return (
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      {branch.address && (
+        <li className={wide}>
+          <ContactTile label={t("address")} value={branch.address} lang={branch.name_lang} className="min-h-0 sm:min-h-0 [&>span:last-child]:text-xl" />
+        </li>
+      )}
+      {branch.phone && <li className={cn(!pair && wide)}><ContactTile kind="phone" label={t("phone")} value={branch.phone} /></li>}
+      {branch.director && <li className={cn(!pair && wide)}><ContactTile label={t("director")} value={branch.director} lang={branch.name_lang} /></li>}
+      {branch.email && <li className={wide}><ContactTile kind="mail" label={t("email")} value={branch.email} className="min-h-0 sm:min-h-0" /></li>}
+      {branch.hours && <li className={wide}><ContactTile label={t("hours")} value={branch.hours} lang={branch.name_lang} className="min-h-0 sm:min-h-0" /></li>}
+      {children}
+    </ul>
   );
 }

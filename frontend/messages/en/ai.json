@@ -37,7 +37,7 @@
     "open": "Archive assistant",
     "title": "Archive assistant",
     "description": "Answers from the archive's open materials",
-    "welcome": "I answer from open materials and show where the answer comes from. Applications are not accepted in the chat.",
+    "welcome": "I answer from the archive's open materials and show where the answer comes from.",
     "quickTitle": "Where to start",
     "quick": {
       "certificate": "How do I get an archival certificate?",

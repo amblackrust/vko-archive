@@ -1,10 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Timeline, type TimelineQuery } from "@/components/timeline/timeline";
-import { Button } from "@/components/ui/button";
+import { LinkTile } from "@/components/ui/link-tile";
 import { PageHeader } from "@/components/ui/page-header";
 import { UnavailableState } from "@/components/ui/state-view";
 import { attempt, fetchTimeline } from "@/lib/api/memory";
-import { Link } from "@/lib/i18n/navigation";
 import { localizedAlternates } from "@/lib/seo";
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -33,11 +32,10 @@ export default async function TimelinePage({ params, searchParams }: Props) {
       <PageHeader crumbs={[{ label: tm("breadcrumb"), href: "/memory" }, { label: t("breadcrumb") }]} title={t("title")} lead={t("intro")} />
       <div className="container-page py-6 pb-16">
         {data.items.length === 0 ? (
-          <div className="card max-w-2xl space-y-4 p-6">
-            <p className="text-lg font-semibold">{t("empty.title")}</p>
-            <p className="text-muted-foreground">{t("empty.text")}</p>
-            <Button asChild variant="outline"><Link href="/calendar">{t("empty.calendar")}</Link></Button>
-          </div>
+          <ul className="grid max-w-3xl auto-rows-fr gap-4 sm:grid-cols-2">
+            <li><LinkTile href="/calendar" title={t("empty.calendar")} /></li>
+            <li><LinkTile href="/memory" title={tm("title")} /></li>
+          </ul>
         ) : (
           <Timeline events={data.items} themes={data.themes} query={query} />
         )}

@@ -1,11 +1,11 @@
 "use client";
 
+import { ArrowRight, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "@/components/ui/external-link";
 import { Input } from "@/components/ui/input";
-import { Notice } from "@/components/ui/notice";
 import { API_URL } from "@/lib/api/client";
 import type { FundItem, List } from "@/lib/api/catalog";
 import { Link } from "@/lib/i18n/navigation";
@@ -31,14 +31,26 @@ function nameInYear(fund: FundItem, year: number): string | null {
   return match?.name ?? null;
 }
 
-function Step({ number, title, done, children }: { number: number; title: string; done: boolean; children: React.ReactNode }) {
+const fundYears = (fund: FundItem) =>
+  fund.dates_from && fund.dates_to && fund.dates_from !== fund.dates_to ? `${fund.dates_from}–${fund.dates_to}` : (fund.dates_from ?? fund.dates_to);
+
+/** Шаг навигатора: номер, вопрос и содержимое. Шаг, до которого посетитель ещё не дошёл, показан одним приглушённым заголовком. */
+function Step({ number, title, state, children }: { number: number; title: string; state: "done" | "current" | "pending"; children?: React.ReactNode }) {
+  const pending = state === "pending";
   return (
-    <li className={cn("border-t-2 pt-5", done ? "border-primary" : "border-border-strong")}>
-      <h2 className="flex items-baseline gap-3 text-xl">
-        <span className="text-base font-semibold tabular-nums text-primary">{number}</span>
+    <li aria-current={state === "current" ? "step" : undefined}>
+      <h2 className={cn("flex items-center gap-4 text-xl sm:text-2xl", pending && "text-muted-foreground")}>
+        <span
+          className={cn(
+            "grid size-10 shrink-0 place-items-center rounded-md text-lg font-bold tabular-nums",
+            pending ? "bg-surface text-muted-foreground shadow-card" : "bg-primary text-primary-foreground",
+          )}
+        >
+          {number}
+        </span>
         {title}
       </h2>
-      <div className="mt-4">{children}</div>
+      {children && <div className="mt-5">{children}</div>}
     </li>
   );
 }
@@ -84,104 +96,185 @@ export function Navigator() {
   const yearNumber = /^\d{4}$/.test(year) ? Number(year) : null;
   const nameThen = fund && yearNumber ? nameInYear(fund, yearNumber) : null;
   const needsCertificate = goal === "work" || goal === "study";
+  const notFound = funds !== null && funds.length === 0 && !failed;
+  const hasResult = goal !== null && (fund !== null || notFound);
+  const panel = "card h-full p-6 sm:p-8";
 
   return (
     <ol className="space-y-10">
-      <Step number={1} title={t("goal.title")} done={goal !== null}>
-        <div role="radiogroup" aria-label={t("goal.title")} className="grid gap-3 sm:grid-cols-2">
-          {GOALS.map((id) => (
-            <button
-              key={id}
-              type="button"
-              role="radio"
-              aria-checked={goal === id}
-              onClick={() => setGoal(id)}
-              className={cn("min-h-16 card p-4 text-left", goal === id ? "border-primary bg-surface-muted" : "border-border-strong hover:border-primary")}
-            >
-              <span className="block font-semibold">{t(`goal.${id}.title`)}</span>
-              <span className="mt-1 block text-sm text-muted-foreground">{t(`goal.${id}.text`)}</span>
-            </button>
-          ))}
-        </div>
+      <Step number={1} title={t("goal.title")} state={goal ? "done" : "current"}>
+        <fieldset>
+          <legend className="sr-only">{t("goal.title")}</legend>
+          <div className="grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-4">
+            {GOALS.map((id) => (
+              <label
+                key={id}
+                className={cn(
+                  "card lift relative flex h-full cursor-pointer flex-col gap-1.5 p-5 pr-12 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring",
+                  goal === id && "bg-primary-soft! shadow-[inset_0_0_0_2px_var(--primary)]!",
+                )}
+              >
+                <input type="radio" name="navigator-goal" value={id} checked={goal === id} onChange={() => setGoal(id)} className="peer sr-only" />
+                <span className="text-[1.0625rem] font-semibold leading-snug">{t(`goal.${id}.title`)}</span>
+                <span className="text-[0.9375rem] text-muted-foreground">{t(`goal.${id}.text`)}</span>
+                <span
+                  className="absolute right-4 top-5 grid size-5 place-items-center rounded-full border-2 border-border-strong after:size-2.5 after:rounded-full after:bg-primary after:opacity-0 peer-checked:border-primary peer-checked:after:opacity-100"
+                  aria-hidden
+                />
+              </label>
+            ))}
+          </div>
+        </fieldset>
       </Step>
 
-      {goal && (
-        <Step number={2} title={t(goal === "family" ? "fund.titleFamily" : "fund.title")} done={fund !== null}>
-          <label htmlFor="navigator-q" className="block text-sm font-medium">{t("fund.label")}</label>
-          <Input id="navigator-q" type="search" value={query} onChange={(event) => { setQuery(event.target.value); setFund(null); }} placeholder={t("fund.placeholder")} autoComplete="off" className="mt-1 h-11 max-w-2xl text-base" />
-          <p className="mt-1 text-sm text-muted-foreground">{t("fund.hint")}</p>
-          <div aria-live="polite" className="mt-4 max-w-3xl">
-            {failed && <p role="alert">{t("fund.failed")}</p>}
-            {funds && funds.length === 0 && !failed && <p>{t("fund.empty")}</p>}
-            {funds && funds.length > 0 && !fund && (
-              <ul className="card divide-y px-5 sm:px-6">
-                {funds.map((item) => (
-                  <li key={item.id}>
-                    <button type="button" onClick={() => setFund(item)} className="grid w-full gap-x-4 py-3 text-left hover:text-primary sm:grid-cols-[6rem_1fr]">
-                      <span className="cipher text-sm font-semibold text-primary">{item.number}</span>
-                      <span className="font-medium">{item.title}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {fund && (
-              <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span className="cipher font-semibold text-primary">{fund.number}</span>
-                <span className="font-medium">{fund.title}</span>
-                <button type="button" onClick={() => setFund(null)} className="text-link text-sm">{t("fund.change")}</button>
-              </p>
-            )}
-          </div>
-        </Step>
-      )}
-
-      {goal && (fund || (funds && funds.length === 0)) && (
-        <Step number={3} title={t("result.title")} done>
-          <div className="max-w-3xl space-y-5">
-            {fund ? (
-              <>
-                <p>{t("result.found", { number: fund.number })} <Link href={fund.href} className="text-link">{t("result.openFund")}</Link></p>
-                {fund.annotation && <Notice tone="warning" title={t("result.noteTitle")}>{fund.annotation}</Notice>}
-                {needsCertificate && fund.former_names.length > 1 && (
-                  <div className="card p-5">
-                    <label htmlFor="navigator-year" className="block font-semibold">{t("result.yearLabel")}</label>
-                    <p className="mt-1 text-sm text-muted-foreground">{t("result.yearHint")}</p>
-                    <Input id="navigator-year" inputMode="numeric" maxLength={4} value={year} onChange={(event) => setYear(event.target.value.replace(/\D/g, ""))} placeholder="1975" className="mt-3 h-11 w-28 text-base" />
-                    <p aria-live="polite" className="mt-3">
-                      {yearNumber && (nameThen ? <>{t("result.nameThen", { year: yearNumber })} <strong>{nameThen}</strong></> : t("result.nameUnknown", { year: yearNumber }))}
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <Notice title={t("result.notFoundTitle")}>
-                <p>{t("result.notFound")}</p>
-                <p className="mt-2"><Link href="/branches" className="text-link">{t("result.branches")}</Link></p>
-              </Notice>
-            )}
-            <div>
-              <h3 className="text-lg">{t("result.nextTitle")}</h3>
-              <ul className="mt-2 list-disc space-y-2 pl-5">
-                {(["a", "b", "c"] as const).map((key) => <li key={key}>{t(`result.next.${goal}.${key}`)}</li>)}
-              </ul>
+      <Step number={2} title={t(goal === "family" ? "fund.titleFamily" : "fund.title")} state={!goal ? "pending" : fund ? "done" : "current"}>
+        {goal && (
+          <div className="card p-5 sm:p-8">
+            <label htmlFor="navigator-q" className="block font-medium">{t("fund.label")}</label>
+            <div className="relative mt-2">
+              <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden />
+              <Input
+                id="navigator-q"
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setFund(null);
+                }}
+                placeholder={t("fund.placeholder")}
+                autoComplete="off"
+                aria-describedby="navigator-q-hint"
+                className="h-14 pl-12 text-base sm:text-lg"
+              />
             </div>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-              {needsCertificate ? (
-                <>
-                  <Button asChild><Link href="/services/state">{t("result.stateService")}</Link></Button>
-                  <ExternalLink href="https://egov.kz" className="font-semibold text-primary">{t("result.egov")}</ExternalLink>
-                </>
-              ) : (
-                <>
-                  <Button asChild><Link href="/help/reading-room">{t("result.readingRoom")}</Link></Button>
-                  <Link href="/catalog" className="text-link font-medium">{t("result.catalog")}</Link>
-                </>
+            <p id="navigator-q-hint" className="mt-2 text-[0.9375rem] text-muted-foreground">{t("fund.hint")}</p>
+            <div aria-live="polite">
+              {failed && <p role="alert" className="mt-5 font-medium">{t("fund.failed")}</p>}
+              {notFound && <p className="mt-5 font-medium">{t("fund.empty")}</p>}
+              {funds && funds.length > 0 && !fund && (
+                <ul className="mt-5 divide-y border-t">
+                  {funds.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        onClick={() => setFund(item)}
+                        className="group grid w-full gap-x-5 gap-y-0.5 py-3.5 text-left sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] sm:items-baseline"
+                      >
+                        <span className="cipher text-sm font-semibold text-primary">{item.number}</span>
+                        <span className="font-medium [text-wrap:pretty] group-hover:text-primary" lang={item.title_lang}>{item.title}</span>
+                        <span className="text-sm tabular-nums text-muted-foreground">{fundYears(item)}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {fund && (
+                <p className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-4">
+                  <span className="cipher text-sm font-semibold text-primary">{fund.number}</span>
+                  <span className="min-w-0 flex-1 basis-64 font-medium" lang={fund.title_lang}>{fund.title}</span>
+                  <button type="button" onClick={() => setFund(null)} className="text-link font-medium">{t("fund.change")}</button>
+                </p>
               )}
             </div>
           </div>
-        </Step>
-      )}
+        )}
+      </Step>
+
+      <Step number={3} title={t("result.title")} state={hasResult ? "current" : "pending"}>
+        {goal && hasResult && (
+          <div className="grid gap-4 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              {fund ? (
+                <section aria-labelledby="navigator-fund" className={cn(panel, "flex flex-col gap-5")}>
+                  <div>
+                    <p className="text-muted-foreground">{t("result.found", { number: fund.number })}</p>
+                    <h3 id="navigator-fund" className="mt-2 text-lg leading-snug sm:text-xl [text-wrap:pretty]" lang={fund.title_lang}>{fund.title}</h3>
+                  </div>
+                  <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-md border bg-border sm:grid-cols-3">
+                    <div className="bg-surface p-4">
+                      <dt className="text-sm text-muted-foreground">{t("result.number")}</dt>
+                      <dd className="cipher mt-0.5 text-lg font-bold text-primary">{fund.number}</dd>
+                    </div>
+                    {fundYears(fund) && (
+                      <div className="bg-surface p-4">
+                        <dt className="text-sm text-muted-foreground">{t("result.years")}</dt>
+                        <dd className="mt-0.5 text-lg font-bold tabular-nums">{fundYears(fund)}</dd>
+                      </div>
+                    )}
+                    {fund.units_count != null && (
+                      <div className="col-span-2 bg-surface p-4 sm:col-span-1">
+                        <dt className="text-sm text-muted-foreground">{t("result.units")}</dt>
+                        <dd className="mt-0.5 text-lg font-bold tabular-nums">{fund.units_count.toLocaleString("ru-RU")}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  {fund.annotation && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">{t("result.noteTitle")}</p>
+                      <p className="mt-1" lang={fund.title_lang}>{fund.annotation}</p>
+                    </div>
+                  )}
+                  {needsCertificate && fund.former_names.length > 1 && (
+                    <div className="rounded-md bg-surface-muted p-5">
+                      <label htmlFor="navigator-year" className="block font-semibold">{t("result.yearLabel")}</label>
+                      <p id="navigator-year-hint" className="mt-1 text-[0.9375rem] text-muted-foreground">{t("result.yearHint")}</p>
+                      <Input
+                        id="navigator-year"
+                        inputMode="numeric"
+                        maxLength={4}
+                        value={year}
+                        onChange={(event) => setYear(event.target.value.replace(/\D/g, ""))}
+                        placeholder="1975"
+                        aria-describedby="navigator-year-hint"
+                        className="mt-3 h-12 w-28 text-lg tabular-nums"
+                      />
+                      <p aria-live="polite" className="mt-3 empty:hidden">
+                        {yearNumber && (nameThen ? <>{t("result.nameThen", { year: yearNumber })} <strong lang={fund.title_lang}>{nameThen}</strong></> : t("result.nameUnknown", { year: yearNumber }))}
+                      </p>
+                    </div>
+                  )}
+                  <p className="mt-auto">
+                    <Button asChild variant="outline"><Link href={fund.href}>{t("result.openFund")} <ArrowRight aria-hidden /></Link></Button>
+                  </p>
+                </section>
+              ) : (
+                <section aria-labelledby="navigator-missing" className={cn(panel, "flex flex-col gap-4")}>
+                  <h3 id="navigator-missing" className="text-xl leading-snug">{t("result.notFoundTitle")}</h3>
+                  <p>{t("result.notFound")}</p>
+                  <p className="mt-auto">
+                    <Button asChild variant="outline"><Link href="/branches">{t("result.branches")} <ArrowRight aria-hidden /></Link></Button>
+                  </p>
+                </section>
+              )}
+            </div>
+
+            <section aria-labelledby="navigator-next" className={cn(panel, "flex flex-col gap-5 lg:col-span-5")}>
+              <h3 id="navigator-next" className="text-xl">{t("result.nextTitle")}</h3>
+              <ol className="space-y-4">
+                {(["a", "b", "c"] as const).map((key, index) => (
+                  <li key={key} className="flex gap-4">
+                    <span className="w-4 shrink-0 text-lg font-bold leading-snug tabular-nums text-primary" aria-hidden>{index + 1}</span>
+                    <span>{t(`result.next.${goal}.${key}`)}</span>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-5">
+                {needsCertificate ? (
+                  <>
+                    <Button asChild><Link href="/services/state">{t("result.stateService")}</Link></Button>
+                    <ExternalLink href="https://egov.kz" className="font-semibold text-primary">{t("result.egov")}</ExternalLink>
+                  </>
+                ) : (
+                  <>
+                    <Button asChild><Link href="/help/reading-room">{t("result.readingRoom")}</Link></Button>
+                    <Link href="/catalog" className="text-link font-medium">{t("result.catalog")}</Link>
+                  </>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+      </Step>
     </ol>
   );
 }

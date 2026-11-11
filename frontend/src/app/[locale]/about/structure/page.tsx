@@ -1,16 +1,17 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AboutNav } from "@/components/about/about-nav";
-import { parseStructure } from "@/components/about/structure";
+import { parseStructure, type Person } from "@/components/about/structure";
 import { TranslationNote } from "@/components/help/translation-note";
 import { safe } from "@/components/misc/api";
 import { MailLink, PhoneLink } from "@/components/misc/contact-links";
-import { PageBody, PageToc, SeeAlso } from "@/components/misc/page-layout";
 import { RichText } from "@/components/misc/rich-text";
 import { Unavailable } from "@/components/misc/state-help";
+import { LinkTile } from "@/components/ui/link-tile";
 import { PageHeader } from "@/components/ui/page-header";
 import { fetchPage, pageSeo } from "@/lib/api/content";
 import { localizedAlternates } from "@/lib/seo";
+import { cn } from "@/lib/utils";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -21,7 +22,23 @@ export async function generateMetadata({ params }: Props) {
   return { title: t("title"), description: t("lead"), ...(page?.lang === locale ? pageSeo(page) : {}), alternates: localizedAlternates(locale, "/about/structure") };
 }
 
-/** Руководство и отделы: должность, имя, телефон и e-mail ссылками; данные — из страницы CMS «structure». */
+const heading = "text-2xl sm:text-3xl";
+
+/** Телефон и почта сотрудника ссылками; прижаты к низу карточки, поэтому в ряду стоят на одной линии. */
+function PersonContacts({ person }: { person: Person }) {
+  if (!person.phone && !person.email) return null;
+  return (
+    <p className="mt-3 flex flex-col items-start gap-1.5 text-[0.9375rem]">
+      {person.phone && <PhoneLink value={person.phone} className="font-medium" />}
+      {person.email && <MailLink value={person.email} />}
+    </p>
+  );
+}
+
+/**
+ * Руководство и отделы: три равные карточки руководителей и ровная сетка отделов (руководитель, телефон, почта).
+ * Данные — из страницы CMS «structure»; якоря #unit-N — на них ссылается обзор раздела.
+ */
 export default async function StructurePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
@@ -29,7 +46,11 @@ export default async function StructurePage({ params }: Props) {
   const page = await fetchPage("structure", locale).catch(() => undefined);
   if (page === undefined) return <Unavailable />;
   if (!page) notFound();
-  const units = parseStructure(page.body);
+  const [management, ...departments] = parseStructure(page.body);
+  // Отдел с двумя сотрудниками занимает две ячейки; неполный последний ряд закрывают переходы в соседние разделы.
+  const span = (people: Person[]) => Math.min(people.length, 2);
+  const cells = departments.reduce((sum, unit) => sum + span(unit.people), 0);
+  const fillers = (["contacts", "branches"] as const).slice(0, (3 - (cells % 3)) % 3);
 
   return (
     <>
@@ -39,51 +60,56 @@ export default async function StructurePage({ params }: Props) {
         lead={t("structure.lead")}
       />
       <AboutNav active="structure" />
-      <PageBody
-        aside={
-          <>
-            {units.length > 1 && (
-              <div className="hidden lg:block" lang={page.lang}>
-                <PageToc title={t("structure.toc")} items={units.map((unit) => ({ id: unit.id, label: unit.name }))} />
-              </div>
-            )}
-            <SeeAlso
-              title={t("structure.more")}
-              items={[
-                { href: "/contacts", label: t("sections.contacts.label"), text: t("sections.contacts.text") },
-                { href: "/branches", label: t("sections.branches.label"), text: t("sections.branches.text") },
-              ]}
-            />
-          </>
-        }
-      >
+      <div className="container-page space-y-14 pb-16 pt-8">
         <TranslationNote requested={locale} actual={page.lang} status={page.translation_status} />
-        {units.length === 0 && <RichText html={page.body} lang={page.lang} />}
-        {units.map((unit) => (
-          <section key={unit.id} id={unit.id} aria-labelledby={`${unit.id}-title`} className="scroll-mt-28" lang={page.lang}>
-            <h2 id={`${unit.id}-title`} className="text-xl sm:text-2xl">{unit.name}</h2>
-            <ul className="card mt-4 divide-y px-5 sm:px-6">
-              {unit.people.map((person) => (
-                <li key={`${person.role}-${person.name}`} className="grid gap-x-6 gap-y-1 py-4 sm:grid-cols-[15rem_minmax(0,1fr)]">
-                  <p className="text-sm text-muted-foreground sm:pt-0.5">{person.role}</p>
-                  <div className="min-w-0">
-                    <p className="font-semibold">{person.name}</p>
-                    {person.phone || person.email ? (
-                      <p className="mt-1.5 flex flex-wrap gap-x-6 gap-y-1.5 text-[0.9375rem]">
-                        {person.phone && <PhoneLink value={person.phone} />}
-                        {person.email && <MailLink value={person.email} />}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-sm text-muted-foreground" lang={locale}>{t("structure.noContacts")}</p>
-                    )}
-                  </div>
+        {!management && <div className="card p-6 sm:p-10"><RichText html={page.body} lang={page.lang} /></div>}
+
+        {management && (
+          <section id={management.id} aria-labelledby={`${management.id}-title`} className="scroll-mt-28" lang={page.lang}>
+            <h2 id={`${management.id}-title`} className={heading}>{management.name}</h2>
+            <ul className="mt-6 grid auto-rows-fr gap-4 md:grid-cols-3">
+              {management.people.map((person) => (
+                <li key={`${person.role}-${person.name}`} className="card flex h-full flex-col p-6">
+                  <p className="text-sm text-muted-foreground">{person.role}</p>
+                  <p className="mt-1 text-lg font-bold leading-snug">{person.name}</p>
+                  <div className="mt-auto pt-2"><PersonContacts person={person} /></div>
                 </li>
               ))}
             </ul>
           </section>
-        ))}
-        <p className="max-w-3xl text-sm text-muted-foreground">{t("structure.source")}</p>
-      </PageBody>
+        )}
+
+        {departments.length > 0 && (
+          <section aria-labelledby="units-title">
+            <h2 id="units-title" className={heading}>{t("units.title")}</h2>
+            <ul className="mt-6 grid grid-flow-dense auto-rows-fr gap-4 md:grid-cols-2 xl:grid-cols-3" lang={page.lang}>
+              {departments.map((unit) => (
+                <li
+                  key={unit.id}
+                  id={unit.id}
+                  className={cn("card flex h-full scroll-mt-28 flex-col p-6 target:ring-2 target:ring-primary", span(unit.people) > 1 && "md:col-span-2")}
+                >
+                  <h3 className="text-[1.0625rem] leading-snug">{unit.name}</h3>
+                  <ul className={cn("mt-auto grid gap-x-8 gap-y-5 pt-6", span(unit.people) > 1 && "sm:grid-cols-2")}>
+                    {unit.people.map((person) => (
+                      <li key={`${person.role}-${person.name}`} className="min-h-[7.25rem] min-w-0">
+                        <p className="text-sm text-muted-foreground">{person.role}</p>
+                        <p className="mt-0.5 font-semibold leading-snug">{person.name}</p>
+                        <PersonContacts person={person} />
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+              {fillers.map((id, index) => (
+                <li key={id} lang={locale} className="hidden xl:block">
+                  <LinkTile href={id === "contacts" ? "/contacts" : "/branches"} title={t(`sections.${id}.label`)} text={t(`sections.${id}.text`)} accent={index === 0} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
     </>
   );
 }

@@ -24,8 +24,8 @@ from seed.open_data import COLLECTIONS, PERSON_NOTE, PERSONS
 from seed.open_materials import credit, first_file, manifest, open_document
 
 PUBLISHED = WorkflowStatus.PUBLISHED
-CALENDAR_SOURCE = "Календарь памятных дат (info/)"
-BIO_NOTE = " Подробная биография будет добавлена после проверки по источнику."
+CALENDAR_SOURCE = "Календарь памятных дат архива"
+BIO_NOTE = ""
 
 # (calendar slug, nominative name, birth year, death year, years text)
 CALENDAR_PERSONS = [

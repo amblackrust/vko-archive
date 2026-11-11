@@ -2,14 +2,12 @@
   "title": "News and events",
   "lead": "Archive news, exhibition announcements and events at the branches.",
   "count": "Items: {count}",
-  "empty": "There is no news yet.",
-  "noDate": "No date",
+  "empty": "No items.",
   "filter": {
     "label": "Search the news",
     "q": "Words from the title or text",
-    "category": "Category",
     "sort": "Order",
-    "all": "All categories",
+    "all": "All",
     "newest": "Newest first",
     "oldest": "Oldest first",
     "submit": "Show",
@@ -31,6 +29,9 @@
       "exhibition": "Exhibition",
       "news": "News"
     },
-    "back": "All news"
-  }
+    "back": "All news",
+    "other": "Other news",
+    "backText": "The archive's news and events feed."
+  },
+  "categoriesLabel": "News categories"
 }

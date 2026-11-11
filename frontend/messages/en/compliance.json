@@ -2,23 +2,20 @@
   "title": "Compliance service and anti-corruption",
   "lead": "Who is responsible for countering corruption at the archive, what has been done and which documents of the service are published.",
   "officer": "Compliance officer",
-  "officerMissing": "no data",
-  "phone": "Phone",
-  "phoneMissing": "The archive has not provided a separate phone number for the compliance officer. Call the reception:",
   "about": "About the service's work",
   "documents": {
     "title": "Documents of the service",
-    "text": "The archive's open documents: the regulation on the service, the action plan and the results of the corruption risk analysis.",
-    "empty": "No documents have been published yet."
+    "text": "The archive's open documents: the regulation on the service, the action plan and the results of the corruption risk analysis."
   },
   "report": {
     "title": "Report a violation",
-    "text": "A report of a corruption offence is an official appeal. It is submitted through e-Otinish or to the archive's office; this site does not accept appeals."
+    "text": "A report of a corruption offence is an official appeal. It is filed through e-Otinish or at the archive's office."
   },
   "more": {
     "title": "See also",
     "legal": "Legal acts",
     "paid": "Paid services",
     "contacts": "Archive contacts"
-  }
+  },
+  "receptionPhone": "Reception phone"
 }

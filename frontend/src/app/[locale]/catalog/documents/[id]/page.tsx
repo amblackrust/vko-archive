@@ -13,9 +13,6 @@ import { CardActions } from "@/components/document/card-actions";
 import { DocumentFacts } from "@/components/document/facts";
 import { ShareButtons } from "@/components/layout/share-buttons";
 import { SimilarMaterials } from "@/components/recommendations/similar-materials";
-import { DemoBadge } from "@/components/ui/demo-badge";
-import { DemoTag } from "@/components/ui/demo-tag";
-import { Notice } from "@/components/ui/notice";
 import { PageHeader } from "@/components/ui/page-header";
 import { RecordList } from "@/components/ui/record-list";
 import { UnavailableState } from "@/components/ui/state-view";
@@ -40,7 +37,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-/** Карточка документа: сначала просмотр (или условия доступа), затем описание и вопросы помощнику; сбоку — все поля записи. */
+/** Карточка документа: главное — просмотр (или условия доступа), под ним описание и вопросы помощнику; сбоку целиком — все поля записи. */
 export default async function DocumentPage({ params }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
@@ -63,7 +60,17 @@ export default async function DocumentPage({ params }: Props) {
         { label: c("tree.caseOf", { number: doc.case.number }), href: doc.case.href },
       ]
     : [];
-  const h2 = "text-2xl";
+  const h2 = "text-2xl sm:text-3xl";
+  const viewable = doc.files.length > 0;
+  // Связанные документы: рядом с просмотрщиком места нет — они идут ниже в две колонки; без просмотрщика заполняют основную колонку.
+  const related = doc.related.length > 0 && (
+    <section aria-labelledby="doc-related" className="space-y-5">
+      <h2 id="doc-related" className={h2}>{t("sections.related")}</h2>
+      <RecordList className={viewable ? "lg:grid lg:grid-cols-2 lg:divide-y-0 lg:[&>li]:border-t lg:[&>li:nth-child(-n+2)]:border-t-0 lg:[&>li:nth-child(even)]:border-l lg:[&>li:last-child:nth-child(odd)]:col-span-2" : undefined}>
+        {doc.related.map((item) => <DocumentRow key={item.id} item={item} fund={false} />)}
+      </RecordList>
+    </section>
+  );
 
   return (
     <>
@@ -77,8 +84,6 @@ export default async function DocumentPage({ params }: Props) {
           <>
             {doc.archive_code && <CipherChip><span className="sr-only">{t("fields.code")}: </span>{doc.archive_code}</CipherChip>}
             <AccessBadge access={doc.file_access} />
-            {doc.is_demo && <DemoTag />}
-            {foreign && <DemoBadge kind="noTranslation" />}
           </>
         }
         actions={
@@ -90,10 +95,10 @@ export default async function DocumentPage({ params }: Props) {
         }
       />
 
-      <div className="container-page space-y-14 py-8 pb-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="container-page space-y-14 pb-16 pt-2">
+        <div className="grid grid-cols-1 items-start gap-x-8 gap-y-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="min-w-0 space-y-10">
-            {doc.files.length > 0 ? (
+            {viewable ? (
               <DocumentViewer files={doc.files} title={doc.title} />
             ) : (
               <AccessPanel access={doc.file_access} conditions={doc.access_conditions} lang={doc.title_lang} />
@@ -110,28 +115,23 @@ export default async function DocumentPage({ params }: Props) {
                 <p className="reading whitespace-pre-line" lang={contentLang}>{doc.historical_note}</p>
               </section>
             )}
-            {doc.file_access === "open" && <DocumentAiPanel documentId={doc.id} />}
             {doc.annotation && (
               <section aria-labelledby="doc-annotation" className="max-w-3xl space-y-3">
                 <h2 id="doc-annotation" className={h2}>{t("annotation.title")}</h2>
                 <p className="reading whitespace-pre-line" lang={doc.annotation.lang}>{doc.annotation.text}</p>
-                <Notice>{doc.annotation.label}. {t("annotation.note")}</Notice>
+                <p className="text-sm text-muted-foreground">{doc.annotation.label}. {t("annotation.note")}</p>
               </section>
             )}
+            {doc.file_access === "open" && <DocumentAiPanel documentId={doc.id} />}
+            {!viewable && related}
           </div>
 
-          <aside aria-labelledby="doc-facts" className="space-y-3 self-start lg:sticky lg:top-24 lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto">
-            <h2 id="doc-facts" className="text-lg">{t("sections.details")}</h2>
+          <aside>
             <DocumentFacts doc={doc} />
           </aside>
         </div>
 
-        {doc.related.length > 0 && (
-          <section aria-labelledby="doc-related" className="space-y-4">
-            <h2 id="doc-related" className={h2}>{t("sections.related")}</h2>
-            <RecordList>{doc.related.map((item) => <DocumentRow key={item.id} item={item} />)}</RecordList>
-          </section>
-        )}
+        {viewable && related}
         <SimilarMaterials type="document" id={doc.id} types={["exhibition", "collection", "news"]} />
       </div>
     </>

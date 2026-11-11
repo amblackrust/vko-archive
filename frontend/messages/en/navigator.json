@@ -1,7 +1,6 @@
 {
   "title": "Where to look for records",
-  "lead": "Three steps: what you need, which organisation is involved and what to do next. The navigator searches the archive's actual list of fonds, including organisations' former names.",
-  "notice": "The navigator only tells you where records are kept and where to apply. Applications are not accepted on this site.",
+  "lead": "Three steps: what you need, which organisation it concerns and what to do next.",
   "goal": {
     "title": "What do you need?",
     "work": {
@@ -69,6 +68,13 @@
     "stateService": "How to get a certificate",
     "egov": "Go to eGov.kz",
     "readingRoom": "Reading room rules",
-    "catalog": "Open the catalogue"
+    "catalog": "Open the catalogue",
+    "number": "Fonds number",
+    "years": "Years covered",
+    "units": "Storage units"
+  },
+  "more": {
+    "title": "See also",
+    "certificate": "The public service: conditions, time limits, documents and where to apply."
   }
 }

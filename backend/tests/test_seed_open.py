@@ -39,7 +39,8 @@ def test_every_manifest_image_is_one_public_document(db_session: Session, storag
     fund = db_session.scalar(select(Fund).where(Fund.number == "ОИ-1"))
     # Real materials, but not the archive's: no demo flag, no branch, and the texts say so.
     assert not fund.is_demo and fund.branch_id is None and "Wikimedia Commons" in fund.title["ru"]
-    assert "не входят в фонды" in fund.annotation["ru"] and fund.source.startswith("commons.wikimedia.org")
+    assert "В фонды Государственного архива" in fund.annotation["ru"] and "не входят" in fund.annotation["ru"]
+    assert fund.source.startswith("commons.wikimedia.org")
     assert not db_session.scalars(select(Inventory).where(Inventory.fund_id == fund.id, Inventory.is_demo)).all()
     for file, entry in entries.items():
         document = documents[Path(file).stem]

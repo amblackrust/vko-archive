@@ -1,5 +1,4 @@
 import { useTranslations } from "next-intl";
-import { DemoTag } from "@/components/ui/demo-tag";
 import { RecordRow } from "@/components/ui/record-list";
 import type { FundItem } from "@/lib/api/catalog";
 import { enumLabel, fundYears } from "./labels";
@@ -21,7 +20,6 @@ export function FundRow({ fund }: { fund: FundItem }) {
           <span>{enumLabel(t, "fundTypes", fund.type)}</span>
           {earlier > 0 && <span>{t("funds.earlierNames", { count: earlier })}</span>}
           {fund.restricted === "partial" && <span>{t("funds.partial")}</span>}
-          {fund.is_demo && <DemoTag />}
         </>
       }
       aside={

@@ -1,9 +1,7 @@
 {
   "title": "Contacts",
-  "lead": "The head archive in Ust-Kamenogorsk: phone numbers by topic, address, e-mail and opening hours. Branch contacts are on the map.",
+  "lead": "The head archive in Ust-Kamenogorsk: phone numbers, address, e-mail and opening hours.",
   "phones": "Phone numbers",
-  "address": "Address and e-mail",
-  "mapsText": "Open the address in an external map service to get directions.",
   "onMap": "The archive and branches on the site map",
   "hours": "Archive opening hours",
   "readingRoomHours": "Reading room",
@@ -18,11 +16,18 @@
     "structure": "Management and departments",
     "structureText": "Phone numbers and e-mail of department heads.",
     "readingRoom": "Reading room",
-    "faq": "Questions and answers"
+    "faq": "Questions and answers",
+    "readingRoomText": "Opening hours, preparing for a visit, and the rules.",
+    "faqText": "About the catalogue, access to copies, branches and the site."
   },
   "appeals": {
     "title": "Applications and appeals",
-    "text": "This site has no application forms. Apply for an archival certificate on eGov.kz; send appeals, complaints and suggestions through e-Otinish.",
+    "text": "An application for an archival certificate is filed on eGov.kz; appeals, complaints and suggestions go through e-Otinish.",
     "link": "Which service is handled where"
-  }
+  },
+  "phonesText": "Phone numbers of the head archive in Ust-Kamenogorsk.",
+  "structureLink": "Phone numbers and e-mail of department heads",
+  "email": "E-mail",
+  "addressTitle": "Address and opening hours",
+  "routeTitle": "Get directions"
 }

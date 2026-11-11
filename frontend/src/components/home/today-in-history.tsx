@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { MemorialDates } from "@/lib/api/home";
 import { formatDayMonth, monthName } from "@/lib/dates";
@@ -5,7 +6,10 @@ import { Link } from "@/lib/i18n/navigation";
 
 const MAX_ITEMS = 3;
 
-/** Карточка «Этот день в истории»: сегодняшние памятные даты из календаря архива, а если их нет — ближайшие в месяце. */
+/**
+ * «Этот день в истории»: сегодняшние памятные даты из календаря архива, а если их нет — ближайшие в месяце.
+ * Каждая дата — плитка «год крупно, под ним событие»; плитки делят ширину поровну, сколько бы их ни было.
+ */
 export function TodayInHistory({ dates, locale }: { dates: MemorialDates; locale: string }) {
   const t = useTranslations("home.today");
   const now = new Date();
@@ -15,25 +19,24 @@ export function TodayInHistory({ dates, locale }: { dates: MemorialDates; locale
   if (items.length === 0) return null;
   const month = monthName(now.getMonth() + 1, locale);
   return (
-    <section aria-labelledby="home-today" className="container-page">
-      <div className="card grid overflow-hidden lg:grid-cols-[18rem_1fr]">
-        <div className="bg-primary-soft p-6 sm:p-8">
-          <p className="text-4xl font-bold tabular-nums text-primary">{formatDayMonth(now.getDate(), now.getMonth() + 1, locale)}</p>
-          <h2 id="home-today" className="mt-2 text-lg">{todays.length > 0 ? t("title") : t("monthTitle", { month })}</h2>
-          <Link href="/calendar" className="text-link mt-3 inline-block text-sm font-medium">{t("all")}</Link>
-        </div>
-        <ul className="divide-y px-6 sm:px-8">
-          {items.map((item, index) => (
-            <li key={index} className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6" lang={item.text_lang}>
-              <span className="font-semibold tabular-nums text-primary">
-                {item.day ? formatDayMonth(item.day, item.month, locale) : (item.date_text ?? month)}
-                {item.event_year ? `, ${item.event_year}` : ""}
-              </span>
-              <span>{item.text}</span>
-            </li>
-          ))}
-        </ul>
+    <section aria-labelledby="home-today" className="container-page py-10 lg:py-14">
+      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-2">
+        <h2 id="home-today" className="text-2xl sm:text-[1.75rem]">{todays.length > 0 ? t("title") : t("monthTitle", { month })}</h2>
+        <Link href="/calendar" className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline">
+          {t("all")} <ArrowRight className="size-4" aria-hidden />
+        </Link>
       </div>
+      <ul className="mt-6 grid auto-rows-fr gap-4 md:grid-cols-[repeat(auto-fit,minmax(18rem,1fr))]">
+        {items.map((item, index) => (
+          <li key={index} className="card flex gap-5 p-6" lang={item.text_lang}>
+            {item.event_year && <p className="text-3xl font-bold tabular-nums leading-none text-primary">{item.event_year}</p>}
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-muted-foreground">{item.day ? formatDayMonth(item.day, item.month, locale) : (item.date_text ?? month)}</p>
+              <p className="mt-1">{item.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

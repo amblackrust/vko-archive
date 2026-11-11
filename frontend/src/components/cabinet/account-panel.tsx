@@ -1,6 +1,5 @@
 "use client";
 
-import { CircleAlert, CircleCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -49,17 +48,17 @@ export function AccountPanel({ me, onDeleted }: { me: VisitorMe; onDeleted: () =
   return (
     <section aria-labelledby="cabinet-account" className="space-y-5">
       <div className="max-w-3xl space-y-1">
-        <h2 id="cabinet-account" className="text-2xl">{t("sections.account")}</h2>
+        <h2 id="cabinet-account" className="text-2xl sm:text-3xl">{t("sections.account")}</h2>
         <p className="text-muted-foreground">{t("account.lead")}</p>
       </div>
       <div className="card divide-y">
         <Block title={t("email.title")}>
           <p className="break-all font-semibold">{me.email}</p>
           {me.email_confirmed ? (
-            <p className="flex items-center gap-2 text-sm"><CircleCheck className="size-5 shrink-0 text-success" aria-hidden />{t("email.confirmed")}</p>
+            <p className="flex items-center gap-2.5 text-sm"><span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />{t("email.confirmed")}</p>
           ) : (
             <>
-              <p className="flex items-start gap-2 text-sm"><CircleAlert className="mt-0.5 size-5 shrink-0 text-accent" aria-hidden />{t("email.unconfirmedText")}</p>
+              <p className="flex items-start gap-2.5 text-sm"><span className="mt-[0.45em] size-2 shrink-0 rounded-full bg-accent" aria-hidden />{t("email.unconfirmedText")}</p>
               <ResendEmail />
             </>
           )}
@@ -71,7 +70,7 @@ export function AccountPanel({ me, onDeleted }: { me: VisitorMe; onDeleted: () =
             <TextInput label={t("password.new")} type="password" autoComplete="new-password" required minLength={10} maxLength={256} value={next} error={nextError} hint={<PasswordRules value={next} />} onChange={(event) => setNext(event.target.value)} />
             <p className="text-sm text-muted-foreground">{t("password.note")}</p>
             {failed && !currentError && !nextError && <p role="alert" className="text-sm text-destructive">{t(`errors.${failed}`)}</p>}
-            {result?.ok && <p role="status" className="flex items-center gap-2 text-sm"><CircleCheck className="size-5 shrink-0 text-success" aria-hidden />{t("password.done")}</p>}
+            {result?.ok && <p role="status" className="flex items-center gap-2.5 text-sm"><span className="size-2 shrink-0 rounded-full bg-success" aria-hidden />{t("password.done")}</p>}
             <Button type="submit" disabled={busy}>{t("password.submit")}</Button>
           </form>
         </Block>

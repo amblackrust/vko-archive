@@ -1,22 +1,18 @@
-import { useTranslations } from "next-intl";
-import { ExternalLink } from "@/components/ui/external-link";
+import { GovServiceCard, type GovService } from "@/components/ui/brand";
+import { cn } from "@/lib/utils";
 
-const SERVICES = [
-  { key: "egov", href: "https://egov.kz" },
-  { key: "eotinish", href: "https://eotinish.kz" },
-] as const;
+const SERVICES = ["egov", "eotinish"] as const;
 
-/** Явные внешние переходы: заявления и обращения оформляются на государственных порталах, не на этом сайте. */
-export function ExternalServiceLinks({ only }: { only?: (typeof SERVICES)[number]["key"] }) {
-  const t = useTranslations("services.external");
+/**
+ * Явные внешние переходы: заявления и обращения оформляются на государственных порталах, не на этом сайте.
+ * `only` — один портал из пары по умолчанию; `ids` — свой набор порталов (три и больше встают в три колонки).
+ */
+export function ExternalServiceLinks({ only, ids }: { only?: (typeof SERVICES)[number]; ids?: readonly GovService[] }) {
+  const list: readonly GovService[] = ids ?? SERVICES.filter((id) => !only || id === only);
   return (
-    <ul className="flex flex-wrap gap-3">
-      {SERVICES.filter((service) => !only || service.key === only).map((service) => (
-        <li key={service.key}>
-          <ExternalLink href={service.href} className="min-h-11 items-center rounded-md border border-border-strong bg-surface px-4 text-sm font-semibold hover:border-primary hover:no-underline [&_svg]:mt-0">
-            {t(service.key)}
-          </ExternalLink>
-        </li>
+    <ul className={cn("grid gap-4", list.length > 2 ? "lg:auto-rows-fr lg:grid-cols-3" : "sm:auto-rows-fr sm:grid-cols-2")}>
+      {list.map((id) => (
+        <li key={id}><GovServiceCard id={id} /></li>
       ))}
     </ul>
   );

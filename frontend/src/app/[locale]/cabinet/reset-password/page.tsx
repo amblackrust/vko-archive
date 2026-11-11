@@ -19,7 +19,7 @@ export default async function Page({ params, searchParams }: Props) {
   return (
     <>
       <PageHeader crumbs={[{ label: t("title"), href: "/cabinet" }, { label: t("reset.confirmTitle") }]} title={t("reset.confirmTitle")} lead={t("reset.confirmLead")} />
-      <div className="container-page py-8 lg:py-10">
+      <div className="container-page pb-16 pt-2">
         <PasswordResetConfirm token={typeof token === "string" ? token : ""} />
       </div>
     </>

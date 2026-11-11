@@ -27,8 +27,6 @@
     "toMap": "Show on the historical map"
   },
   "empty": {
-    "title": "No events have been published yet",
-    "text": "The timeline grows as dates are checked against sources. Memorial dates of the region are collected in the calendar.",
     "calendar": "Open the memorial dates calendar"
   }
 }

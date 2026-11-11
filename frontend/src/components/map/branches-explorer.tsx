@@ -1,26 +1,25 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { Field, SelectField } from "@/components/ui/field";
 import type { Branch, BranchType } from "@/lib/api/branches";
 import { Link } from "@/lib/i18n/navigation";
 import { BranchFacts } from "./branch-facts";
 import { BranchMap } from "./branch-map-loader";
-import { RoutePanel } from "./route-panel";
+import { MapLinks } from "./map-links";
+import { mapQuery } from "./route-links";
 
 const TYPES: BranchType[] = ["head", "district", "city", "personnel"];
 
 /**
- * Карта и список подразделений в одном окне. Слева — поиск и список (полная замена карте);
- * выбор в списке или на карте открывает на месте списка карточку с контактами и маршрутом.
+ * Карта и список подразделений одним окном на высоту экрана. Слева — поиск и список (полная замена карте);
+ * выбор в списке или на карте открывает на месте списка карточку: контакты, внешние карты и переход на страницу филиала.
  */
 export function BranchesExplorer({ branches }: { branches: Branch[] }) {
   const t = useTranslations("map");
-  const locale = useLocale();
   const [query, setQuery] = useState("");
   const [type, setType] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
@@ -42,9 +41,9 @@ export function BranchesExplorer({ branches }: { branches: Branch[] }) {
   }, [selected]);
 
   return (
-    <div className="grid gap-6 lg:h-[calc(100dvh-9rem)] lg:max-h-[54rem] lg:min-h-[38rem] lg:grid-cols-[24rem_minmax(0,1fr)] lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-0 lg:overflow-hidden lg:rounded-lg lg:bg-surface lg:shadow-card">
+    <div className="grid gap-6 lg:h-[calc(100dvh-15.75rem)] lg:min-h-[34rem] lg:grid-cols-[25rem_minmax(0,1fr)] lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-0 lg:overflow-hidden lg:rounded-3xl lg:bg-surface lg:shadow-card">
       {!current && (
-        <div className="space-y-3 lg:col-start-1 lg:row-start-1 lg:border-b lg:border-r lg:p-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:col-start-1 lg:row-start-1 lg:grid-cols-1 lg:border-b lg:border-r lg:p-6">
           <Field type="search" label={t("search.label")} placeholder={t("search.placeholder")} value={query} onChange={(event) => setQuery(event.target.value)} />
           <SelectField
             label={t("filter.label")}
@@ -55,53 +54,64 @@ export function BranchesExplorer({ branches }: { branches: Branch[] }) {
         </div>
       )}
 
-      <div className="h-80 overflow-hidden rounded-lg border sm:h-96 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-auto lg:rounded-none lg:border-0">
+      <div className="h-80 overflow-hidden rounded-2xl shadow-card sm:h-96 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:h-auto lg:rounded-none lg:shadow-none">
         <BranchMap branches={visible} selected={selected} onSelect={setSelected} label={t("map.label")} tileErrorText={t("map.tilesFailed")} />
       </div>
 
       {current ? (
-        <div ref={panel} tabIndex={-1} className="space-y-6 outline-none lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:overflow-y-auto lg:border-r lg:p-5">
-          <Button type="button" variant="outline" size="sm" className="min-h-11" onClick={() => setSelected(null)}>
-            <ArrowLeft aria-hidden /> {t("backToList")}
-          </Button>
-          <div className="space-y-2">
-            <h2 className="text-xl" lang={current.name_lang}>{current.name}</h2>
-            <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              {t(`types.${current.type}`)}
-              {current.name_lang !== locale && <DemoBadge kind="noTranslation" />}
-            </p>
-            {current.description && <p className="text-[0.9375rem]" lang={current.name_lang}>{current.description}</p>}
+        // key: без него React переиспользует узел списка вместе с его прокруткой.
+        <div key="card" ref={panel} tabIndex={-1} className="flex flex-col overflow-hidden rounded-2xl bg-surface shadow-card outline-none lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:rounded-none lg:border-r lg:bg-transparent lg:shadow-none">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 p-5 lg:overflow-y-auto lg:px-6 lg:pb-6 lg:pt-4">
+            <div>
+              <Button type="button" variant="ghost" size="sm" className="-ml-3 min-h-11 text-muted-foreground hover:text-foreground" onClick={() => setSelected(null)}>
+                <ArrowLeft aria-hidden /> {t("backToList")}
+              </Button>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">{t(`types.${current.type}`)}</p>
+              <h2 className="mt-1 text-2xl leading-tight" lang={current.name_lang}>{current.name}</h2>
+              {current.description && <p className="mt-2 text-[0.9375rem] text-muted-foreground" lang={current.name_lang}>{current.description}</p>}
+            </div>
+            <BranchFacts branch={current} />
+            <div className="space-y-3">
+              <h3 className="text-base">{t("route.title")}</h3>
+              <MapLinks destination={current.coords_verified && current.lat != null && current.lng != null ? `${current.lat},${current.lng}` : mapQuery(current.address)} />
+            </div>
           </div>
-          <BranchFacts branch={current} />
-          <RoutePanel key={current.slug} heading="h3" address={current.address} verified={current.coords_verified} point={current.lat != null && current.lng != null ? { lat: current.lat, lng: current.lng } : null} />
-          <p><Link href={current.href} className="text-link font-medium">{t("card.details")}</Link></p>
+          <div className="border-t p-5 lg:px-6 lg:py-4">
+            <Button asChild size="lg" className="w-full">
+              <Link href={current.href}>{t("card.details")} <ArrowRight aria-hidden /></Link>
+            </Button>
+          </div>
         </div>
       ) : (
-        <div className="min-h-0 lg:col-start-1 lg:row-start-2 lg:overflow-y-auto lg:border-r">
-          <p role="status" className="text-sm text-muted-foreground lg:px-5 lg:pt-4">{t("count", { count: visible.length })}</p>
+        <div key="list" className="min-h-0 lg:col-start-1 lg:row-start-2 lg:overflow-y-auto lg:border-r">
+          <p role="status" className="text-sm text-muted-foreground lg:px-6 lg:pt-4">{t("count", { count: visible.length })}</p>
           {visible.length === 0 ? (
-            <div className="space-y-3 py-6 lg:px-5">
+            <div className="space-y-3 py-6 lg:px-6">
               <p>{t("empty")}</p>
               <Button type="button" variant="outline" className="h-11" onClick={() => { setQuery(""); setType(""); }}>{t("reset")}</Button>
             </div>
           ) : (
-            <ul className="mt-3 divide-y rounded-lg bg-surface px-5 shadow-card lg:mt-2 lg:rounded-none lg:bg-transparent lg:px-0 lg:shadow-none">
+            <ul aria-label={t("list")} className="mt-3 divide-y overflow-hidden rounded-2xl bg-surface shadow-card lg:mt-2 lg:rounded-none lg:bg-transparent lg:shadow-none">
               {visible.map((b) => (
                 <li key={b.slug}>
                   <button
                     type="button"
                     id={`branch-${b.slug}`}
                     onClick={() => setSelected(b.slug)}
-                    className="group block w-full py-3 text-left lg:px-5 lg:hover:bg-surface-muted"
+                    className="group flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-surface-muted lg:px-6"
                   >
-                    <span className="block font-semibold group-hover:text-primary group-hover:underline" lang={b.name_lang}>{b.name}</span>
-                    <span className="mt-0.5 block text-sm text-muted-foreground" lang={b.name_lang}>{b.address || t("card.missing")}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold leading-snug group-hover:text-primary" lang={b.name_lang}>{b.name}</span>
+                      {b.address && <span className="mt-1 block text-sm text-muted-foreground" lang={b.name_lang}>{b.address}</span>}
+                    </span>
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden />
                   </button>
                 </li>
               ))}
             </ul>
           )}
-          {branches.some((b) => !b.coords_verified) && <p className="py-4 text-sm text-muted-foreground lg:px-5">{t("approxNote")}</p>}
         </div>
       )}
     </div>

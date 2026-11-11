@@ -22,11 +22,10 @@
     "title": "Places and sites",
     "count": "Places shown: {count}",
     "openMap": "Open the place on OpenStreetMap",
-    "timeline": "Event in the timeline"
+    "timeline": "Event in the timeline",
+    "back": "Back to the list of places"
   },
   "empty": {
-    "title": "No places on the map yet",
-    "text": "Historic sites will appear once the information is checked. The region's events are available in the timeline.",
     "timeline": "Open the timeline"
   }
 }

@@ -10,8 +10,6 @@
     "lawsHeading": "Legal basis",
     "law": "Law of the Republic of Kazakhstan of 15 April 2013 No. 88-V “On Public Services”",
     "rules": "Rules for the provision of public services in the field of archives — Order of the Minister of Culture and Sports of 29 May 2020 No. 159",
-    "reportsHeading": "Reports on services provided",
-    "reportsPending": "Reports are published by the archive. This section will be filled once the customer provides them.",
     "contactsHeading": "Archive office",
     "contactsText": "Questions about applying — call the reception:",
     "contactsLink": "All contacts and opening hours",
@@ -106,7 +104,7 @@
   },
   "index": {
     "title": "Archive services",
-    "lead": "What you can get from the archive and where it is handled. This site gives only the procedure, the documents and links to official services.",
+    "lead": "What you can get from the archive and where it is arranged.",
     "notice": {
       "title": "This site takes no applications or payments",
       "text": "There are no application, order or payment forms here. Applications are submitted through eGov.kz, the Government for Citizens corporation or the archive's office."
@@ -120,12 +118,12 @@
       },
       "paid": {
         "title": "Paid services",
-        "text": "Work and services the archive performs under its price list. The approved price list is awaited from the archive.",
+        "text": "Work and services the archive provides according to its price list.",
         "where": "At the archive, under the price list"
       },
       "readingRoom": {
         "title": "Working with documents in the reading room",
-        "text": "Opening hours, how to prepare for a visit, and the rules. There is no booking or ordering of files on this site.",
+        "text": "Opening hours, how to prepare for a visit, and the rules for working with documents.",
         "where": "In the archive building"
       },
       "legal": {
@@ -137,6 +135,11 @@
         "title": "Compliance and anti-corruption",
         "text": "The compliance officer, the service's documents and how to report a violation.",
         "where": "Appeals go through e-Otinish"
+      },
+      "navigator": {
+        "title": "Navigator: where to look for documents",
+        "text": "Three steps from your goal to the organisation's fonds: it shows where the records are kept and what to do next.",
+        "where": "Search across the list of fonds"
       }
     },
     "external": {
@@ -153,38 +156,17 @@
   },
   "paid": {
     "title": "Paid services",
-    "lead": "A reference page: which document sets the prices for the archive's services and where to check the cost. Nothing is ordered or paid for here.",
-    "notice": "Services cannot be ordered or paid for on this website. The information is provided for reference.",
+    "lead": "The archive provides paid work and services under a price list approved by the regional akimat. The reception will tell you the cost and how to pay.",
+    "notice": "Services are not arranged or paid for on this site.",
     "decree": {
-      "title": "Resolution approving the price list",
+      "title": "Who sets the prices",
       "text": "Prices for goods, work and services of the region's state archives are set by the resolution:",
-      "name": "“On approving the price list for goods (works, services) sold by the state archives of the Department of Digitalization and Archives of East Kazakhstan Region”",
-      "pendingTitle": "The text of the resolution is awaited from the archive",
-      "pending": "The materials handed over do not include the number, date or text of the resolution. Once the archive provides them, the requisites, the file and a link to the official publication will appear here."
-    },
-    "price": {
-      "title": "Price list",
-      "text": "Prices are published only from the approved price list."
-    },
-    "table": {
-      "caption": "Price list of the archive's paid services",
-      "name": "Service",
-      "unit": "Unit",
-      "price": "Price, tenge",
-      "pending": "The approved price list is awaited from the archive. Until it arrives, no prices are published on this site.",
-      "onRequest": "to be confirmed"
+      "name": "“On approving the price list for goods (works, services) sold by the state archives of the Department of Digitalization and Archives of East Kazakhstan Region”"
     },
     "ask": {
-      "title": "How to find out the cost now",
+      "title": "How to find out the cost",
       "text": "Call the archive's reception or write an e-mail: the staff will tell you the current price and how to pay.",
       "link": "All contacts and opening hours"
-    },
-    "facts": {
-      "priceList": "Price list",
-      "priceListValue": "Awaited from the archive",
-      "payment": "Payment on this site",
-      "paymentValue": "Not accepted",
-      "phone": "Reception phone"
     },
     "more": {
       "title": "See also",

@@ -42,10 +42,11 @@ export function RecentStrip() {
   return (
     <section aria-labelledby="catalog-recent" className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <h2 id="catalog-recent" className="text-sm font-semibold text-muted-foreground">{t("title")}</h2>
-      <ul className="flex min-w-0 flex-1 flex-wrap gap-2">
+      {/* На телефоне записи идут отдельной строкой под заголовком: рядом с ним названия сжимались до одного шифра. */}
+      <ul className="order-last flex w-full min-w-0 flex-wrap gap-2 sm:order-none sm:w-auto sm:flex-1">
         {items.map((item) => (
           <li key={item.href} className="min-w-0">
-            <Link href={item.href} title={item.title} className="flex max-w-72 items-center gap-2 rounded-full bg-surface px-3.5 py-1.5 text-sm shadow-card transition-colors hover:text-primary">
+            <Link href={item.href} title={item.title} className="flex max-w-full items-center sm:max-w-72 gap-2 rounded-full bg-surface px-3.5 py-1.5 text-sm shadow-card transition-colors hover:text-primary">
               <span className="cipher shrink-0 font-semibold text-primary">{item.code}</span>
               <span className="truncate">{item.title}</span>
             </Link>
@@ -62,7 +63,7 @@ export function RecentStrip() {
           }
           setItems([]);
         }}
-        className="text-sm font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
+        className="ml-auto text-sm font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground sm:ml-0"
       >
         {t("clear")}
       </button>

@@ -86,11 +86,6 @@
       "text": "The e-government portal: public services online."
     }
   },
-  "service": {
-    "title": "How to get an archive certificate",
-    "text": "This site only informs: the procedure, the list of documents and the time limits of the public service are described in the services section. The application is submitted on eGov.kz, not on this site.",
-    "cta": "Certificate procedure"
-  },
   "branches": {
     "title": "Our branches",
     "text": "The head archive and its branches on the map of the region: {count}.",
@@ -102,16 +97,6 @@
     "title": "Calendar of memorable dates",
     "today": "Today",
     "empty": "Memorable dates for this month are not published yet."
-  },
-  "useful": {
-    "title": "Useful information",
-    "catalogHowto": "How to use the electronic catalogue",
-    "structure": "How fonds, inventories and files are organised",
-    "published": "Which materials are published on the site",
-    "branchesInfo": "Where to find information about branches",
-    "readingRoom": "Reading room rules",
-    "legal": "Laws and regulations",
-    "egov": "eGov.kz e-government portal"
   },
   "social": {
     "title": "The archive on social media"
@@ -187,5 +172,9 @@
       "label": "Timeline",
       "title": "Events in the history of Ust-Kamenogorsk and the region, year by year"
     }
+  },
+  "portals": {
+    "title": "Government portals",
+    "text": "Applications and appeals are filed on official resources."
   }
 }

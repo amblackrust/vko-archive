@@ -42,7 +42,7 @@ def test_exhibitions_show_open_materials_with_a_source_line(db_session: Session,
     for exhibition in exhibitions:
         assert not exhibition.is_demo and exhibition.workflow_status == WorkflowStatus.PUBLISHED
         assert 6 <= len(exhibition.exhibits) <= 10
-        assert "Wikimedia Commons" in exhibition.intro["ru"] and "не входят в фонды" in exhibition.intro["ru"]
+        assert "Wikimedia Commons" in exhibition.intro["ru"] and "в фонды Государственного архива ВКО не входят" in exhibition.intro["ru"]
         cover = db_session.get(DigitalFile, exhibition.cover_file_id)
         assert cover is not None and cover.access == FileAccess.OPEN and not cover.is_demo
         assert [e.position for e in exhibition.exhibits] == list(range(1, len(exhibition.exhibits) + 1))
@@ -75,7 +75,7 @@ def test_memory_persons_and_chronology(db_session: Session, storage: Path) -> No
         assert [_is_open_material(d) for d in person.documents] == [True]
         assert db_session.get(DigitalFile, person.photo_file_id).owner_id == person.documents[0].id
         assert any(s.get("url", "").startswith("https://commons.wikimedia.org/") for s in person.sources)
-        assert any("документами архива" in s["title"] for s in person.sources)  # the editorial note
+        assert any("общедоступным биографическим сведениям" in s["title"] for s in person.sources)  # the editorial note
     # The unconfirmed birthplace is said in plain words: the person model has no flag for it.
     kornilov = persons["person-kornilov"].bio["ru"]
     assert "Усть-Каменогорск" in kornilov and "Каркаралинск" in kornilov and "не подтверждено" in kornilov

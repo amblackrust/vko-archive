@@ -17,7 +17,6 @@ test.describe("Сценарий 1. Поиск документа", () => {
     await page.getByRole("link", { name: /Фотография: первая смена цеха/ }).first().click();
     await expect(page).toHaveURL(new RegExp(`/catalog/documents/${OPEN_PHOTO_DOC}`));
     await expect(page.getByRole("heading", { level: 1 })).toContainText("первая смена цеха");
-    await expect(page.getByText("Демо-запись").first()).toBeVisible();
     await expect(page.getByText("Открытый доступ").first()).toBeVisible();
 
     const fileUrl = await page.getByRole("link", { name: "Открыть файл" }).getAttribute("href");

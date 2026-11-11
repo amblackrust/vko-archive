@@ -19,20 +19,13 @@
     "travellers": "Travellers and explorers"
   },
   "card": {
-    "exhibits": "Exhibits: {count}",
-    "noCover": "No cover"
-  },
-  "empty": {
-    "title": "No exhibitions have been published yet",
-    "text": "The archive is preparing the first displays. Documents and photographs by theme are collected in the Great Archive of Memory.",
-    "memory": "Open the Archive of Memory"
+    "exhibits": "Exhibits: {count}"
   },
   "detail": {
     "start": "Start viewing",
     "machine": "The introduction was translated automatically and has not yet been checked by archive staff.",
     "exhibitsTitle": "Exhibits",
     "exhibitsText": "Exhibits follow the order set by the curator. Any of them can be opened separately and enlarged.",
-    "empty": "This exhibition has no published exhibits yet.",
     "others": "Other exhibitions",
     "noImage": "No image, or access to the copy is restricted",
     "video": "Video exhibit"
@@ -59,5 +52,9 @@
     "zoomOut": "Zoom out",
     "zoomReset": "Reset zoom",
     "hint": "The + and − keys change the zoom, 0 restores the original size. Drag an enlarged image to move it. The left and right arrow keys move between exhibits."
+  },
+  "memory": {
+    "title": "Great Archive of Memory",
+    "text": "Thematic collections, people, a timeline and a historical map of the region"
   }
 }

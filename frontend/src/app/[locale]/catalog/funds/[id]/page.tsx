@@ -5,7 +5,7 @@ import { CipherChip } from "@/components/catalog/cipher-chip";
 import { InventoryRow } from "@/components/catalog/hierarchy";
 import { enumLabel, fundYears } from "@/components/catalog/labels";
 import { TrackRecent } from "@/components/catalog/recent";
-import { DemoTag } from "@/components/ui/demo-tag";
+import { Button } from "@/components/ui/button";
 import { FactList, KeyFacts } from "@/components/ui/facts";
 import { Notice } from "@/components/ui/notice";
 import { PageHeader } from "@/components/ui/page-header";
@@ -53,7 +53,6 @@ export default async function FundPage({ params }: Props) {
         meta={
           <>
             <CipherChip>{t("tree.fundOf", { number: fund.number })}</CipherChip>
-            {fund.is_demo && <DemoTag />}
           </>
         }
       >
@@ -109,12 +108,10 @@ export default async function FundPage({ params }: Props) {
 
           <aside className="space-y-6 lg:sticky lg:top-24">
             {!fund.is_demo && (
-              <div className="on-brand rounded-lg p-6">
+              <div className="card p-6">
                 <h2 className="text-lg">{t("funds.certificate.title")}</h2>
                 <p className="mt-2 text-[0.9375rem] text-muted-foreground">{t("funds.certificate.text", { number: fund.number })}</p>
-                <Link href="/services/state" className="mt-5 inline-flex h-11 items-center rounded-md bg-white px-5 text-[0.9375rem] font-semibold text-[#2536b0] transition-transform hover:-translate-y-0.5">
-                  {t("funds.certificate.link")}
-                </Link>
+                <Button asChild className="mt-5"><Link href="/services/state">{t("funds.certificate.link")}</Link></Button>
               </div>
             )}
             <AskAssistant question={t("funds.ask.question", { number: fund.number })} className="card lift flex w-full items-center gap-3 p-4 text-left font-semibold text-primary">

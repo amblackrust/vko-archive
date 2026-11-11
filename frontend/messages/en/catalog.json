@@ -1,6 +1,6 @@
 {
   "title": "Electronic catalogue",
-  "intro": "Fonds, inventories, case files and documents of the State Archive of East Kazakhstan Region. Only materials approved for publication are shown. The site does not take orders or requests — use the eGov.kz portal for that.",
+  "intro": "Fonds, inventories, case files and documents of the State Archive of East Kazakhstan Region.",
   "nav": {
     "label": "Catalog sections",
     "documents": "Documents",
@@ -101,7 +101,7 @@
     "open": "Open access",
     "restricted": "Restricted access",
     "closed": "Closed access",
-    "needs_review": "Access to be confirmed"
+    "needs_review": "File not published"
   },
   "doc": {
     "sheets": "{count, plural, one {# sheet} other {# sheets}}",
@@ -128,8 +128,8 @@
     "emptyDocuments": "This case file has no documents approved for publication.",
     "search": "Search by number or title",
     "searchSubmit": "Search",
-    "inventoriesLead": "An inventory lists the case files of one fonds. This page shows every inventory entered in the electronic catalogue.",
-    "casesLead": "A case file is a folder of documents on one matter. This page shows every case file entered in the electronic catalogue.",
+    "inventoriesLead": "An inventory lists the case files of one fonds.",
+    "casesLead": "A case file is a folder of documents on one matter.",
     "cipher": {
       "inventory": "Ф.{fund} Оп.{inventory}",
       "case": "Ф.{fund} Оп.{inventory} Д.{case}"
@@ -143,14 +143,20 @@
       "dates": "Date range",
       "cases": "Case files in the inventory",
       "documents": "Documents on the site",
-      "sheets": "Sheets in the case file"
+      "sheets": "Sheets in the case file",
+      "fundNumber": "Fonds number",
+      "inventoryNumber": "Inventory number"
     },
-    "emptyList": "Nothing has been entered in the electronic catalogue yet.",
+    "emptyList": "The catalogue has no published records.",
     "nothingFound": "Nothing matches this query. Check the number or shorten the title.",
-    "searchReset": "Clear"
+    "searchReset": "Clear",
+    "inventoriesPlaceholder": "For example: orders and minutes",
+    "casesPlaceholder": "For example: director's orders for 1952",
+    "otherInventories": "All inventories of the fonds",
+    "otherCases": "All case files of the inventory"
   },
   "funds": {
-    "intro": "The archive's actual list of fonds. Search by an organisation's current or any former name, by fonds number or by the year of the records.",
+    "intro": "Search by the current or a former name of the organisation, the fonds number or the year of the records.",
     "searchLabel": "Search fonds",
     "q": "Organisation name or fonds number",
     "qPlaceholder": "For example: Pushkin library, city executive committee, Р-103",
@@ -188,7 +194,7 @@
     "namesTitle": "History of names",
     "namesText": "What the records creator was called over the years. The fonds can be found by any of these names.",
     "noDates": "dates not given",
-    "noInventories": "The inventories of this fonds have not yet been added to the electronic catalogue. Inventories and files can be consulted in the archive's reading room.",
+    "noInventories": "The inventories and case files of this fonds are consulted in the archive's reading room.",
     "readingRoom": "Reading room rules",
     "certificate": {
       "title": "Need a certificate from this fonds?",
@@ -209,7 +215,10 @@
     "years": "{count, plural, one {Volumes for # year} other {Volumes for # years}}",
     "volumes": "{count, plural, one {# volume} other {# volumes}}",
     "empty": "No newspapers match these conditions. Try another title or year.",
-    "sourceNote": "Source: the list of newspapers published by the archive on e-arhiv.vko.gov.kz (as of 1 January 2018)."
+    "sourceNote": "Source: the list of newspapers published by the archive on e-arhiv.vko.gov.kz (as of 1 January 2018).",
+    "year": "Year of the volume",
+    "yearPlaceholder": "Year, e.g. 1961",
+    "columnTitle": "Newspaper and publisher"
   },
   "search": {
     "label": "Search documents",

@@ -3,9 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Notice } from "@/components/ui/notice";
 import { cabinetFetch, type VisitorMe } from "./api";
-import { errorCode, PasswordRules, TextInput } from "./form";
+import { errorCode, PasswordRules, StatusNote, TextInput } from "./form";
 
 type Mode = "login" | "register" | "reset";
 const EMAIL_ERRORS = ["email_taken", "invalid_email"];
@@ -58,14 +57,14 @@ export function AuthForm({ onSignedIn }: { onSignedIn: (me: VisitorMe) => void }
   const formError = error && ![...EMAIL_ERRORS, ...PASSWORD_ERRORS].includes(error) ? t(`errors.${error}`) : null;
 
   return (
-    <section aria-labelledby="cabinet-auth-title" className="card space-y-5 p-6 sm:p-8">
+    <section aria-labelledby="cabinet-auth-title" className="card h-full space-y-5 p-6 sm:p-8">
       <div className="space-y-1">
         <h2 id="cabinet-auth-title" className="text-2xl">{t(`auth.title.${mode}`)}</h2>
         <p className="text-muted-foreground">{t(`auth.lead.${mode}`)}</p>
       </div>
 
       {sent ? (
-        <Notice tone="success">{t("reset.requestSent")}</Notice>
+        <StatusNote tone="success" className="bg-surface-muted shadow-none">{t("reset.requestSent")}</StatusNote>
       ) : (
         <form onSubmit={submit} className="space-y-4">
           {formError && <p role="alert" className="rounded-md border border-destructive/40 bg-destructive-soft px-4 py-3 text-sm">{formError}</p>}

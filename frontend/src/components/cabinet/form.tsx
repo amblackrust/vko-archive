@@ -109,6 +109,28 @@ export function PasswordRules({ value }: { value: string }) {
   );
 }
 
+const DOTS = { info: "bg-primary", success: "bg-success", warning: "bg-accent" } as const;
+
+/** Сообщение о состоянии (письмо отправлено, адрес подтверждён, ссылка устарела): цветная точка, заголовок и пояснение. */
+export function StatusNote({ tone = "info", title, role = "status", className, children }: {
+  tone?: keyof typeof DOTS;
+  title?: string;
+  role?: "status" | "note";
+  className?: string;
+  children?: React.ReactNode;
+}) {
+  const dot = <span className={cn("mt-[0.5em] size-2 shrink-0 rounded-full", DOTS[tone])} aria-hidden />;
+  return (
+    <div role={role} className={cn("card flex items-start gap-3 p-5", className)}>
+      {dot}
+      <div className="min-w-0 space-y-1">
+        {title && <p className="font-semibold">{title}</p>}
+        {children && <div className={title ? "text-[0.9375rem] text-muted-foreground" : undefined}>{children}</div>}
+      </div>
+    </div>
+  );
+}
+
 interface ConfirmProps {
   title: string;
   text: string;

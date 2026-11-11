@@ -1,11 +1,9 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CatalogNav } from "@/components/catalog/catalog-nav";
-import { GetForm } from "@/components/catalog/get-form";
+import { HeroField, ListHero } from "@/components/catalog/list-hero";
+import { NewspaperRow, yearAxis } from "@/components/catalog/newspaper-row";
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
-import { PageHeader } from "@/components/ui/page-header";
 import { Pagination } from "@/components/ui/pagination";
-import { RecordList, RecordRow } from "@/components/ui/record-list";
 import { UnavailableState } from "@/components/ui/state-view";
 import { catalogList, listPage, type List, type NewspaperItem, type SearchParams } from "@/lib/api/catalog";
 import { Link } from "@/lib/i18n/navigation";
@@ -26,53 +24,45 @@ export default async function NewspapersPage({ params, searchParams }: { params:
   const data = await catalogList<List<NewspaperItem>>("newspapers", query, locale);
   if (!data) return <UnavailableState />;
   const year = Number(query.get("year")) || null;
+  const filtered = Boolean(query.get("q") || year);
+  const axis = yearAxis(data.items);
   return (
     <>
-      <PageHeader crumbs={[{ label: t("title"), href: "/catalog" }, { label: t("newspapers.title") }]} title={t("newspapers.title")} lead={t("newspapers.intro")} />
-      <div className="container-page space-y-6 py-8 pb-16">
+      <ListHero
+        crumbs={[{ label: t("title"), href: "/catalog" }, { label: t("newspapers.title") }]}
+        title={t("newspapers.title")}
+        lead={t("newspapers.intro")}
+        pathname="/catalog/newspapers"
+        formKey={query.toString()}
+        formLabel={t("newspapers.title")}
+        input={{ id: "newspapers-q", label: t("newspapers.q"), placeholder: t("newspapers.qPlaceholder"), value: query.get("q") ?? "" }}
+        submit={t("tree.searchSubmit")}
+        fields={<HeroField label={t("newspapers.year")} name="year" type="number" min={1900} max={2100} defaultValue={query.get("year") ?? ""} placeholder={t("newspapers.yearPlaceholder")} className="w-full sm:w-56" />}
+      />
+      <div className="container-page space-y-6 pb-16">
         <CatalogNav active="newspapers" />
-        <GetForm key={query.toString()} pathname="/catalog/newspapers" role="search" aria-label={t("newspapers.title")} className="grid gap-4 card p-5 sm:grid-cols-[1fr_8rem_auto] sm:items-end">
-          <Field label={t("newspapers.q")} name="q" type="search" defaultValue={query.get("q") ?? ""} placeholder={t("newspapers.qPlaceholder")} />
-          <Field label={t("funds.year")} name="year" type="number" min={1900} max={2100} defaultValue={query.get("year") ?? ""} placeholder="1961" />
-          <div className="flex gap-2">
-            <Button type="submit" className="h-11 px-6">{t("tree.searchSubmit")}</Button>
-            {(query.get("q") || year) && <Button asChild variant="outline" className="h-11"><Link href="/catalog/newspapers">{t("filters.reset")}</Link></Button>}
+        <section aria-labelledby="newspapers-results" className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+            <h2 id="newspapers-results" aria-live="polite" className="text-xl">{t("results.count", { count: data.total })}</h2>
+            {filtered && <Button asChild variant="outline" size="sm"><Link href="/catalog/newspapers">{t("filters.reset")}</Link></Button>}
           </div>
-        </GetForm>
-        <section aria-labelledby="newspapers-results">
-          <h2 id="newspapers-results" aria-live="polite" className="text-lg">{t("results.count", { count: data.total })}</h2>
           {data.items.length === 0 ? (
-            <p className="card mt-4 p-6 text-muted-foreground">{t("newspapers.empty")}</p>
+            <p className="card p-6 text-muted-foreground sm:p-8">{t("newspapers.empty")}</p>
           ) : (
-            <RecordList className="mt-4">
-              {data.items.map((item) => {
-                const years = [...new Set(item.years.map((entry) => entry.year))];
-                return (
-                  <RecordRow
-                    key={item.id}
-                    title={item.title}
-                    meta={item.publisher}
-                    aside={
-                      <>
-                        <span className="font-medium">{item.year_from === item.year_to ? item.year_from : t("tree.years", { from: item.year_from, to: item.year_to })}</span>
-                        <span className="text-muted-foreground">{t("newspapers.volumes", { count: item.volumes_total })}</span>
-                      </>
-                    }
-                  >
-                    <details className="mt-2 text-sm">
-                      <summary className="cursor-pointer font-medium text-primary">{t("newspapers.years", { count: years.length })}</summary>
-                      <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 tabular-nums">
-                        {years.map((value) => <li key={value} className={value === year ? "font-bold text-primary" : undefined}>{value}</li>)}
-                      </ul>
-                    </details>
-                  </RecordRow>
-                );
-              })}
-            </RecordList>
+            <div className="card overflow-hidden">
+              {/* Шапка списка: подписи колонок и шкала лет для полос. */}
+              <div className="hidden gap-x-8 border-b px-6 py-2.5 text-sm text-muted-foreground lg:grid lg:grid-cols-[minmax(0,1fr)_19rem]" aria-hidden>
+                <span>{t("newspapers.columnTitle")}</span>
+                <span className="flex justify-between tabular-nums">{axis.ticks.map((tick) => <span key={tick}>{tick}</span>)}</span>
+              </div>
+              <ul className="divide-y">
+                {data.items.map((item) => <NewspaperRow key={item.id} item={item} axis={axis} year={year} />)}
+              </ul>
+            </div>
           )}
+          <Pagination pathname="/catalog/newspapers" params={query} page={data.page} pages={data.pages} />
+          <p className="max-w-3xl text-sm text-muted-foreground">{t("newspapers.sourceNote")}</p>
         </section>
-        <Pagination pathname="/catalog/newspapers" params={query} page={data.page} pages={data.pages} />
-        <p className="max-w-3xl text-sm text-muted-foreground">{t("newspapers.sourceNote")}</p>
       </div>
     </>
   );

@@ -1,7 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { AccessBadge } from "@/components/catalog/access-badge";
 import { enumLabel } from "@/components/catalog/labels";
-import { DemoBadge } from "@/components/ui/demo-badge";
 import { RecordRow } from "@/components/ui/record-list";
 import type { SearchItem } from "@/lib/api/search";
 
@@ -25,7 +24,6 @@ export function ResultRow({ item }: { item: SearchItem }) {
           <>
             {doc?.date_text && <span>{doc.date_text}</span>}
             {doc?.doc_type && <span>{enumLabel(t, "docTypes", doc.doc_type)}</span>}
-            {foreign && <DemoBadge kind="noTranslation" />}
           </>
         )
       }

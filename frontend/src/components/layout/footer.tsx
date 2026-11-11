@@ -1,6 +1,5 @@
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { CalendarWidget } from "@/components/misc/calendar-widget";
 import { Link } from "@/lib/i18n/navigation";
 import { LogoMark } from "./logo";
 import { footerLinks } from "./nav-config";
@@ -24,15 +23,15 @@ export function Footer() {
       : govLinks.map((link) => ({ id: link.id, href: link.href, label: t(`govResources.${link.id}`) }));
   const heading = "text-sm font-semibold text-muted-foreground";
   return (
-    <footer className="on-brand mt-auto" data-noprint>
+    <footer className="mt-auto border-t bg-surface" data-noprint>
       <div className="container-page grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         <section>
           <div className="flex items-start gap-3">
-            <LogoMark className="mt-1 size-9 shrink-0" />
+            <LogoMark className="mt-1 size-9 shrink-0 text-primary" />
             <p className="max-w-xs text-lg font-bold leading-snug">{t("siteName")}</p>
           </div>
           <address className="mt-4 max-w-xs text-sm not-italic text-muted-foreground">{t("contactsBlock.addressValue")}</address>
-          <SocialLinks className="-ml-2 mt-3" />
+          <SocialLinks className="mt-4" />
         </section>
         <section>
           <h2 className={heading}>{t("contactsBlock.title")}</h2>
@@ -70,11 +69,6 @@ export function Footer() {
           </ul>
         </section>
       </div>
-      {settings?.widgets.calendar_weather !== false && (
-        <div className="container-page pb-10">
-          <CalendarWidget />
-        </div>
-      )}
       <div className="border-t">
         <div className="container-page flex flex-col gap-2 py-5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t("copyright", { year, name: t("siteName") })}</p>

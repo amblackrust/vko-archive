@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CipherChip } from "@/components/catalog/cipher-chip";
+import { DocumentCard } from "@/components/catalog/document-card";
 import { DocumentRow } from "@/components/catalog/document-row";
-import { CipherPath, Level, LevelList } from "@/components/catalog/hierarchy";
-import { DemoBadge } from "@/components/ui/demo-badge";
-import { DemoTag } from "@/components/ui/demo-tag";
+import { LevelLead, LevelList, TileGrid } from "@/components/catalog/hierarchy";
+import { KeyFacts } from "@/components/ui/facts";
 import { PageHeader } from "@/components/ui/page-header";
+import { RecordList } from "@/components/ui/record-list";
 import { UnavailableState } from "@/components/ui/state-view";
 import { catalogLoad, listPage, type CaseDetail, type SearchParams } from "@/lib/api/catalog";
 import { localizedAlternates } from "@/lib/seo";
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
   return { title: item ? [cipher, item.title].filter(Boolean).join(". ") : t("title"), alternates: localizedAlternates(locale, `/catalog/cases/${id}`) };
 }
 
-/** Дело: путь по шифру, документы дела с поиском, сведения о деле. */
+/** Дело: шифр, опись и фонд в шапке, полоса сведений, документы дела плитками с изображениями. */
 export default async function CasePage({ params, searchParams }: Props) {
   const { locale, id } = await params;
   setRequestLocale(locale);
@@ -44,27 +45,30 @@ export default async function CasePage({ params, searchParams }: Props) {
         ]}
         title={item.title || label}
         titleLang={foreign ? item.title_lang : undefined}
-        meta={
-          <>
-            <CipherChip>{t("tree.cipher.case", { fund: item.fund.number, inventory: item.inventory.number, case: item.number })}</CipherChip>
-            {item.is_demo && <DemoTag />}
-            {foreign && <DemoBadge kind="noTranslation" />}
-          </>
-        }
+        meta={<CipherChip>{t("tree.cipher.case", { fund: item.fund.number, inventory: item.inventory.number, case: item.number })}</CipherChip>}
+        lead={<LevelLead fund={item.fund} inventory={item.inventory} />}
       />
-      <Level
-        path={<CipherPath fund={item.fund} inventory={item.inventory} archiveCase={item} />}
-        facts={[
-          { label: t("tree.facts.fund"), value: item.fund.title },
-          { label: t("tree.facts.dates"), value: item.dates_text },
-          { label: t("tree.facts.sheets"), value: item.sheets_count },
-          { label: t("tree.facts.documents"), value: item.document_count },
-        ]}
-      >
-        <LevelList heading={t("tree.documentsInCase")} pathname={item.href} query={query} list={item.documents} empty={t("tree.emptyDocuments")}>
-          {item.documents.items.map((doc) => <DocumentRow key={doc.id} item={doc} fund={false} />)}
+      <div className="container-page space-y-10 pb-16">
+        <KeyFacts
+          items={[
+            { label: t("tree.facts.fundNumber"), value: <span className="cipher">{item.fund.number}</span> },
+            { label: t("tree.facts.inventoryNumber"), value: <span className="cipher">{item.inventory.number}</span> },
+            { label: t("tree.facts.dates"), value: item.dates_text },
+            { label: t("tree.facts.sheets"), value: item.sheets_count },
+            { label: t("tree.facts.documents"), value: item.document_count },
+          ]}
+        />
+        <LevelList heading={t("tree.documentsInCase")} pathname={item.href} query={query} list={item.documents} empty={t("tree.emptyDocuments")} search={item.document_count > 8}>
+          {/* Один-два документа — строками: плитка с изображением на полэкрана выглядела бы афишей. */}
+          {item.documents.items.length < 3 ? (
+            <RecordList>{item.documents.items.map((doc) => <DocumentRow key={doc.id} item={doc} fund={false} />)}</RecordList>
+          ) : (
+            <TileGrid quiet count={item.documents.items.length} min={3} more={{ href: item.inventory.href, title: t("tree.otherCases"), text: item.inventory.title }}>
+              {item.documents.items.map((doc) => <DocumentCard key={doc.id} item={doc} />)}
+            </TileGrid>
+          )}
         </LevelList>
-      </Level>
+      </div>
     </>
   );
 }

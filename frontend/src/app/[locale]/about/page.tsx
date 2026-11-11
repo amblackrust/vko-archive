@@ -27,16 +27,13 @@ const SECTIONS = [
   { id: "contacts", href: "/contacts" },
 ] as const;
 
-// Материалы, которые заказчик пока не передал: честно показываем как незаполненные.
-const PENDING = ["mission", "reports", "gallery"] as const;
-
 export const generateMetadata = pageMetadata("about", "/about");
 
 const tile = "card lift group flex h-full flex-col p-5";
 
 /**
  * Входная страница раздела: цифры из API, чем занят архив, руководство, отделы, начало истории и переходы.
- * Все блоки — сетки из равных плиток; пустые разделы честно помечены.
+ * Все блоки — сетки из равных плиток.
  */
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -151,20 +148,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                   <span className="text-[1.0625rem] font-semibold group-hover:text-primary">{t(`sections.${id}.label`)}</span>
                   <span className="mt-1.5 text-[0.9375rem] text-muted-foreground">{t(`sections.${id}.text`)}</span>
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section aria-labelledby="about-pending">
-          <h2 id="about-pending" className="text-xl">{t("pending.title")}</h2>
-          <p className="mt-2 max-w-3xl text-muted-foreground">{t("pending.text")}</p>
-          <ul className="mt-5 grid auto-rows-fr gap-4 md:grid-cols-3">
-            {PENDING.map((id) => (
-              <li key={id} className="flex h-full flex-col rounded-lg border border-dashed border-border-strong p-5">
-                <p className="font-semibold">{t(`pending.${id}.label`)}</p>
-                <p className="mt-1 text-[0.9375rem] text-muted-foreground">{t(`pending.${id}.text`)}</p>
-                <p className="mt-auto pt-3 text-sm font-medium text-muted-foreground">{t("pending.status")}</p>
               </li>
             ))}
           </ul>

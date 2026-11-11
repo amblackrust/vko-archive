@@ -99,11 +99,9 @@ export function QuickSearch() {
             setOpen(true);
           }}
           aria-label={t("search.label")}
-          className="flex h-11 items-center gap-3 rounded-md px-3 text-sm text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground 2xl:w-56 2xl:border 2xl:bg-surface-muted"
+          className="flex size-11 items-center justify-center rounded-md transition-colors hover:bg-surface-muted"
         >
-          <Search className="size-5 shrink-0" aria-hidden />
-          <span className="hidden flex-1 whitespace-nowrap 2xl:block">{t("search.placeholder")}</span>
-          <kbd className="hidden whitespace-nowrap rounded border bg-surface px-1.5 text-xs font-medium 2xl:block">Ctrl K</kbd>
+          <Search className="size-5" aria-hidden />
         </Link>
       </Dialog.Trigger>
       <Dialog.Portal>

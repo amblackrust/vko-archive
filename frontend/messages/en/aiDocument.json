@@ -1,17 +1,17 @@
 {
   "panel": {
     "title": "Ask about this document",
-    "intro": "The AI answers only from the open description and recognised text of this document and names the sheet. The answer is not an archival certificate.",
+    "intro": "The assistant answers from this document's description and recognised text. The answer is not an archival certificate.",
     "placeholder": "For example: when was the document issued?",
     "ask": "Ask",
-    "asking": "The AI is reading the document…",
-    "quickTitle": "Quick questions:",
+    "asking": "The assistant is reading the document…",
+    "quickTitle": "Quick questions",
     "quick": {
       "when": "When was the document issued?",
       "who": "Who signed the document?",
       "what": "What is this document about?"
     },
-    "unavailable": "AI is temporarily unavailable. The description and the recognised text of the document are on this page.",
+    "unavailable": "The assistant is temporarily unavailable. The description and recognised text of the document are on this page.",
     "error": "Could not get an answer. Please try again later.",
     "rateLimited": "Too many questions. Try again in {seconds} s.",
     "rateLimitedNoTime": "Too many questions. Try again a little later.",
@@ -20,6 +20,7 @@
     "links": {
       "egov": "eGov.kz portal",
       "eotinish": "e-Otinish portal"
-    }
+    },
+    "inputLabel": "Question about the document"
   }
 }

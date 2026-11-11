@@ -11,12 +11,9 @@ const PAGES = [
   "/news",
 ];
 
-/** Язык, тема и версия для слабовидящих собраны в боковом меню: его открывает последняя кнопка шапки. */
-async function openMenu(page: Page) {
-  await page.locator('header button[aria-haspopup="dialog"]').last().click();
-  const menu = page.getByRole("dialog");
-  await expect(menu).toBeVisible();
-  return menu;
+/** В шапке два выпадающих меню: первое — язык (полные названия), второе — «глаз»: тема и версия для слабовидящих. */
+async function openHeaderMenu(page: Page, index: 0 | 1) {
+  await page.locator('header button[aria-haspopup="true"]').nth(index).click();
 }
 
 test.describe("Сценарий 10. Язык и тема без потери состояния", () => {
@@ -30,8 +27,8 @@ test.describe("Сценарий 10. Язык и тема без потери с�
       await expect(html).not.toHaveClass(/dark/);
 
       for (const [code, name] of [["kk", "Қазақша"], ["en", "English"], ["ru", "Русский"]] as const) {
-        const menu = await openMenu(page);
-        await menu.getByRole("link", { name, exact: true }).click();
+        await openHeaderMenu(page, 0);
+        await page.locator("header").getByRole("link", { name: new RegExp(name) }).click();
         await expect(page).toHaveURL(new RegExp(`/${code}/`));
         await expect(html).toHaveAttribute("lang", code);
         // Тот же объект и те же фильтры.
@@ -40,21 +37,34 @@ test.describe("Сценарий 10. Язык и тема без потери с�
         await expect(page.getByText(/Application error|Internal Server Error/)).toHaveCount(0);
       }
 
-      // Тема: кнопки «Светлая / Тёмная / Как в системе» — первая группа в меню.
-      let menu = await openMenu(page);
-      await menu.getByRole("button", { name: "Тёмная", exact: true }).click();
+      // Тема: в окне «глаза» первая группа — «Светлая / Тёмная».
+      const theme = page.locator("header fieldset").first().getByRole("button");
+      await openHeaderMenu(page, 1);
+      await theme.nth(1).click();
       await expect(html).toHaveClass(/dark/);
       // Тема переживает смену языка и перезагрузку.
-      await menu.getByRole("link", { name: "English", exact: true }).click();
+      await page.keyboard.press("Escape");
+      await openHeaderMenu(page, 0);
+      await page.locator("header").getByRole("link", { name: /English/ }).click();
       await expect(page).toHaveURL(/\/en\//);
       await expect(html).toHaveClass(/dark/);
       await page.reload();
       await expect(html).toHaveClass(/dark/);
-      menu = await openMenu(page);
-      await menu.locator("fieldset").first().getByRole("button").first().click();
+      await openHeaderMenu(page, 1);
+      await theme.nth(0).click();
       await expect(html).not.toHaveClass(/dark/);
     });
   }
+
+  test("телефон: разделы открываются из меню на весь экран", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/ru");
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+    const menu = page.getByRole("dialog", { name: "Меню" });
+    await menu.locator("summary", { hasText: "Услуги" }).first().click();
+    await menu.getByRole("link", { name: "Где искать документы" }).click();
+    await expect(page).toHaveURL(/\/navigator$/);
+  });
 
   test("мобильная ширина: страница без горизонтальной прокрутки", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 800 });

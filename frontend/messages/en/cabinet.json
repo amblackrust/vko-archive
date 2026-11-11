@@ -77,7 +77,7 @@
   },
   "favorites": {
     "lead": "Items you marked with the “Add to favourites” button.",
-    "emptyTitle": "No favourites yet",
+    "emptyTitle": "Saved materials will appear here",
     "emptyText": "Open a document, an exhibition or a news item and press “Add to favourites” next to the title.",
     "toCatalog": "Open the catalogue",
     "toExhibitions": "Online exhibitions",
@@ -101,7 +101,7 @@
     "newTitle": "Name of the new selection",
     "placeholder": "For example: Family history",
     "create": "Create selection",
-    "emptyTitle": "No selections yet",
+    "emptyTitle": "Create your first selection",
     "emptyText": "Think of a name and press “Create selection”. Then add documents from favourites.",
     "count": "{count, plural, =0 {No documents} one {# document} other {# documents}}",
     "delete": "Delete the selection “{title}”",
@@ -128,7 +128,6 @@
   },
   "subscriptions": {
     "lead": "Tick the topics you are interested in.",
-    "demo": "Demonstration mode: subscriptions are saved in the account, but emails are not sent yet.",
     "news": {
       "title": "News and events",
       "text": "Archive announcements, events and publications."

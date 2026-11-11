@@ -2,17 +2,16 @@
 
 import { Suspense, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ArrowUpRight, Check, ChevronDown, Globe, LogOut, Menu as Menu2, Moon, Sun, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { ArrowUpRight, ChevronDown, LogOut, Menu as Menu2, Moon, Sun, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { LogoMark } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { Link, usePathname } from "@/lib/i18n/navigation";
-import { localeLabels, routing } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
 import { useAdmin, useMe } from "./admin-provider";
-import { Menu, menuItem } from "./kit/menu";
+import { LanguageMenu } from "@/components/layout/language-menu";
+import { Menu, menuItem } from "@/components/ui/menu";
 import { useToast } from "./kit/toast";
 import { useApiError } from "./kit/use-api-error";
 import { navItemFor, visibleNav } from "./nav-config";
@@ -79,36 +78,6 @@ function SiteLink({ className }: { className?: string }) {
       <ArrowUpRight className="size-4" aria-hidden />
       <span className="sr-only">({t("newTab")})</span>
     </Link>
-  );
-}
-
-/** Язык интерфейса: список с полными названиями; путь и параметры запроса сохраняются. */
-function LanguageMenu() {
-  const t = useTranslations("admin.shell");
-  const current = useLocale() as keyof typeof localeLabels;
-  const pathname = usePathname();
-  const query = useSearchParams().toString();
-  const href = query ? `${pathname}?${query}` : pathname;
-  return (
-    <Menu
-      label={t("language")}
-      trigger={
-        <>
-          <Globe className="size-4 text-muted-foreground" aria-hidden />
-          <span className="max-sm:hidden">{localeLabels[current].name}</span>
-          <span className="sm:hidden">{localeLabels[current].short}</span>
-          <ChevronDown className="size-4 text-muted-foreground" aria-hidden />
-        </>
-      }
-    >
-      <p className="px-3 pb-1 pt-1.5 text-xs font-semibold text-muted-foreground">{t("language")}</p>
-      {routing.locales.map((locale) => (
-        <Link key={locale} href={href} locale={locale} hrefLang={locale} lang={locale} aria-current={locale === current ? "true" : undefined} className={cn(menuItem, locale === current && "bg-primary-soft text-primary hover:bg-primary-soft")}>
-          <span className="flex-1">{localeLabels[locale].name}</span>
-          {locale === current ? <Check className="size-4" aria-hidden /> : <span className="text-xs text-muted-foreground">{localeLabels[locale].short}</span>}
-        </Link>
-      ))}
-    </Menu>
   );
 }
 

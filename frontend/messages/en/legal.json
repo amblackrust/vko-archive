@@ -22,8 +22,7 @@
   },
   "official": {
     "title": "Official texts",
-    "text": "Only the texts published in the Adilet legal information system are legally binding. Check the current version before relying on an act.",
-    "link": "Open adilet.zan.kz"
+    "text": "Only the texts published in the Adilet legal information system are legally binding. Check the current version before relying on an act."
   },
   "more": {
     "title": "See also",
@@ -33,14 +32,13 @@
     "complianceText": "The archive's internal anti-corruption documents."
   },
   "count": "Acts: {count}",
-  "checkedNote": "A check date is shown for acts compared with the official publication. For the other acts the status check and the Adilet link have not been entered yet.",
+  "checkedNote": "A check date is shown for acts verified against the official publication.",
   "row": {
     "number": "No. {number}",
     "date": "dated {date}",
     "checked": "checked on {date}",
     "adilet": "Official publication on Adilet",
     "file": "Open file",
-    "pages": "{count} pp.",
-    "noLinks": "The link to the official publication and the file have not been entered yet."
+    "pages": "{count} pp."
   }
 }

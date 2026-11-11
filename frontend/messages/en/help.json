@@ -1,6 +1,6 @@
 {
   "title": "How to use the site",
-  "lead": "The site is the archive's reference guide: a catalogue of fonds and documents, and information on services, branches and the history of the region. Applications, orders and payments are not accepted here.",
+  "lead": "The catalogue of fonds and documents, information on services, branches and regional history — and how to use it all.",
   "toc": "On this page",
   "nav": {
     "label": "For visitors section",
@@ -37,7 +37,6 @@
   "structure": {
     "title": "How the catalogue is organised",
     "text": "Documents are described level by level: each level sits inside the one before it. The archive code is built the same way.",
-    "note": "Many fonds on the site have no inventories or case files yet: the list of fonds has been loaded into the catalogue, and inventories, case files and documents are added later.",
     "levels": {
       "archive": {
         "label": "Archive",
@@ -115,7 +114,8 @@
       }
     },
     "toSearch": "Open the archive search",
-    "toCatalog": "Open the catalogue with filters"
+    "toCatalog": "Open the catalogue with filters",
+    "filtersText": "Filters narrow the results by the document's details. They can be combined."
   },
   "materials": {
     "title": "What materials are published",
@@ -150,7 +150,8 @@
         "text": "Historical dates of the region for 2022–2026."
       }
     },
-    "demoNote": "This tag marks demonstration records: fictional documents that show how the site works, not materials of the archive."
+    "search": "Search the archive",
+    "searchText": "One search box across all published materials."
   },
   "cipher": {
     "title": "How to read a code and a record",
@@ -162,7 +163,7 @@
       "case": "case file 1",
       "document": "document No. 1"
     },
-    "note": "The letter in a fond number is part of the number: write it together with the digits. The example is the code of a demonstration record in the catalogue.",
+    "note": "The letter in a fonds number is part of the number; write it together with the digits.",
     "fieldsTitle": "Fields of a document record",
     "fields": {
       "code": {
@@ -225,13 +226,13 @@
     "readingRoom": "Reading room",
     "assistant": "Archive assistant",
     "assistantText": "Answers questions with links to the materials it found.",
-    "contacts": "Archive contacts"
+    "contacts": "Archive contacts",
+    "readingRoomText": "Opening hours, how to prepare for a visit, and the rules for working with documents."
   },
   "faq": {
     "title": "Questions and answers",
-    "lead": "Short answers about the catalogue, access to copies, the branches and the site itself. No services are provided on the site.",
+    "lead": "Short answers about the catalogue, access to copies, branches and the site itself.",
     "toc": "Topics",
-    "empty": "No questions have been published yet.",
     "topics": {
       "catalog": "Catalogue and search",
       "access": "Access to copies",
@@ -247,13 +248,8 @@
   "readingRoom": {
     "title": "Reading room",
     "lead": "In the reading room, the archive's documents are consulted on site. This page gives the opening hours, how to prepare for a visit, and the rules.",
-    "notice": {
-      "title": "No booking or ordering of files on this site",
-      "text": "The site does not take visit requests, orders for files or applications. You can arrange a visit by calling the archive."
-    },
     "facts": {
       "hours": "Reading room opening hours",
-      "hoursMissing": "Check by calling the archive",
       "address": "Address",
       "phone": "Reception phone"
     },
@@ -261,7 +257,8 @@
       "funds": "Find a fond in the catalogue",
       "branches": "Branches and map",
       "certificate": "Need a certificate rather than access to files?",
-      "certificateText": "You apply for an archival certificate on eGov.kz; there is no need to come to the reading room."
+      "certificateText": "You apply for an archival certificate on eGov.kz; there is no need to come to the reading room.",
+      "fundsText": "Fonds number, years covered and former names of organisations."
     },
     "prepare": {
       "title": "How to prepare for a visit",
@@ -287,12 +284,12 @@
     },
     "regulation": {
       "title": "Reading room regulations",
-      "text": "The archive has not yet provided the current reading room regulations; they will appear on this page. The general procedure for using archival documents is set by the Rules for the acquisition, storage, registration and use of documents of the National Archival Fonds (order No. 215 of 9 August 2023).",
+      "text": "The use of archival documents is governed by the Rules for the acquisition, storage, registration and use of documents of the National Archival Fonds (Order No. 215 of 9 August 2023).",
       "link": "Legal acts"
     }
   },
   "translation": {
-    "fallback": "The text is shown in {lang}: there is no verified translation yet.",
+    "fallback": "The text is shown in {lang}.",
     "machine": "Machine translation, needs review.",
     "langName": {
       "kk": "Kazakh",

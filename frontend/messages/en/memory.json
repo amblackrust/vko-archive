@@ -4,38 +4,30 @@
   "intro": "A digital space for the historical heritage of East Kazakhstan Region: thematic collections of archival documents, biographies, a timeline of events and a historical map.",
   "ways": {
     "label": "Sections of the Archive of Memory",
-    "collections": {
-      "title": "Collections",
-      "text": "Documents and photographs grouped by theme"
-    },
-    "people": {
-      "title": "People",
-      "text": "Biographical notes with their sources"
-    },
     "timeline": {
       "title": "Timeline",
-      "text": "The region's history by decade and year"
+      "text": "The region's history by decade and year",
+      "count": "{count, plural, one {# event} other {# events}} in the region's history, by decade and year"
     },
     "map": {
       "title": "Historical map",
-      "text": "Historic sites and places of events"
+      "text": "Historic sites and places of events",
+      "count": "{count, plural, one {# place} other {# places}}: historic buildings, enterprises and heritage sites"
     },
     "exhibitions": {
       "title": "Online exhibitions",
-      "text": "Exhibits with captions and sources"
+      "text": "Exhibits with captions and sources",
+      "count": "{count, plural, one {# exhibition} other {# exhibitions}}: exhibits with captions and sources"
     }
   },
   "units": {
     "collections": "{count, plural, one {collection} other {collections}}",
     "people": "{count, plural, one {person} other {people}}",
-    "events": "{count, plural, one {event} other {events}}",
-    "places": "{count, plural, one {place} other {places}}",
-    "exhibitions": "{count, plural, one {exhibition} other {exhibitions}}"
+    "events": "{count, plural, one {event} other {events}}"
   },
   "directions": {
     "title": "Thematic areas",
-    "text": "Eleven areas in which the archive gathers materials for this section. Areas that already have materials open them; the rest are in preparation.",
-    "pending": "Materials in preparation",
+    "text": "The themes the materials of this section are grouped by.",
     "region": "History of East Kazakhstan Region",
     "ust-kamenogorsk": "History of Ust-Kamenogorsk and other settlements",
     "industry": "History of industrial enterprises",
@@ -76,18 +68,18 @@
     "text": "Selections of archival documents and photographs. Each document opens in the catalog with its archive code and fond details.",
     "found": "Collections found: {count}",
     "items": "{count, plural, one {# document} other {# documents}}",
-    "empty": "No collections have been published yet",
-    "emptyText": "The archive is preparing the first selections. You can already search documents in the electronic catalog.",
     "toCatalog": "Open the catalog",
     "noneFound": "No collections match these conditions",
     "noneFoundText": "Change the word or choose another theme and period.",
-    "showAll": "Show all collections"
+    "showAll": "Show all collections",
+    "toCatalogText": "All fonds, inventories, files and documents of the archive"
   },
   "people": {
     "title": "Historical figures",
     "text": "Biographical notes on people connected with the region's history. Each note names the source of its information.",
-    "empty": "No biographical notes have been published yet.",
-    "noneFound": "No people found for “{q}”."
+    "noneFound": "No people found for “{q}”.",
+    "inTimeline": "People in the timeline",
+    "inTimelineText": "Birth dates and memorial dates by decade and year"
   },
   "exhibitions": {
     "title": "Online exhibitions",
@@ -98,37 +90,28 @@
     "theme": "Theme",
     "period": "Period",
     "size": "Contents",
-    "editorial": "The collection description and the notes on documents are editorial texts. Details of the documents themselves — code, date, author, fond — are given with each document and on its catalog card.",
     "documents": "Documents in the collection",
-    "none": "This collection has no published documents yet.",
-    "toCatalog": "Go to the catalog",
     "view": "Document list view",
     "list": "List",
-    "gallery": "Gallery",
+    "gallery": "Grid",
     "sources": "Sources",
-    "sourcesText": "The documents of this collection are described in the catalog as part of the following fonds. Each link opens the fond description.",
-    "fund": "Fond {number}. {title}"
+    "fund": "Fond {number}. {title}",
+    "others": "Other collections",
+    "othersText": "All thematic collections of the Archive of Memory"
   },
   "person": {
     "bio": "Biographical note",
-    "editorial": "This note is an editorial text compiled from the sources named on this page.",
-    "noBio": "The biographical note is in preparation.",
     "documents": "Archival documents",
-    "noDocuments": "No archival documents are linked to this page yet: the information follows the stated source and is not confirmed by archive documents.",
     "search": "Search the archive for mentions",
     "sources": "Sources of information",
-    "sourcesText": "The origin of the information is stated for every biographical note.",
-    "all": "All people"
+    "all": "All people",
+    "others": "Other people"
   },
   "provenance": {
-    "noSource": "No source stated",
-    "unconfirmed": "Not confirmed by archive documents",
-    "unconfirmedHint": "The information follows the stated source. Archive documents that confirm it have not been linked to this entry yet.",
     "editorialNote": "Editors' note"
   },
   "documents": {
-    "fund": "Fond {number}",
-    "noImage": "No image to view"
+    "fund": "Fond {number}"
   },
   "event": {
     "date": "Date",

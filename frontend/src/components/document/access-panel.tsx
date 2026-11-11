@@ -1,36 +1,35 @@
 import { useTranslations } from "next-intl";
-import { ExternalLink } from "@/components/ui/external-link";
-import { Notice } from "@/components/ui/notice";
-import { Link } from "@/lib/i18n/navigation";
+import { GovServiceCard } from "@/components/ui/brand";
+import { LinkTile } from "@/components/ui/link-tile";
 import type { DocumentItem } from "@/lib/api/catalog";
 
 /**
- * Панель вместо просмотрщика, когда файлов для этого посетителя нет: что означает статус, условия доступа
- * из карточки и куда обращаться. Сайт заявок не принимает — только внешняя ссылка на eGov.kz.
+ * Блок на месте просмотрщика, когда файлов для этого посетителя нет: что означает статус, условия доступа из карточки
+ * и куда идти дальше — портал eGov.kz и страница услуги (или правила читального зала, если копии просто нет на сайте).
  */
 export function AccessPanel({ access, conditions, lang }: { access: DocumentItem["file_access"]; conditions: string; lang: string }) {
   const t = useTranslations("document.access");
-  if (access === "open") {
-    return (
-      <Notice title={t("open.title")} className="p-6 text-base">
-        <p>{t("open.text")}</p>
-        <p className="mt-2"><Link href="/help/reading-room" className="text-link">{t("readingRoom")}</Link></p>
-      </Notice>
-    );
-  }
+  const open = access === "open";
   return (
-    <Notice tone="locked" title={t(`${access}.title`)} className="p-6 text-base">
-      <p>{t(`${access}.text`)}</p>
-      {conditions && (
-        <p className="mt-3">
-          <span className="font-semibold">{t("conditions")}:</span> <span lang={lang} className="whitespace-pre-line">{conditions}</span>
-        </p>
+    <section aria-labelledby="doc-access" className="space-y-5">
+      <div className="card p-6 sm:p-8">
+        <h2 id="doc-access" className="text-xl sm:text-2xl">{t(`${access}.title`)}</h2>
+        <p className="mt-3 max-w-3xl text-muted-foreground">{t(`${access}.text`)}</p>
+        {!open && conditions && (
+          <dl className="mt-5 border-t pt-5">
+            <dt className="text-sm text-muted-foreground">{t("conditions")}</dt>
+            <dd lang={lang} className="mt-1 whitespace-pre-line font-medium">{conditions}</dd>
+          </dl>
+        )}
+      </div>
+      {open ? (
+        <LinkTile href="/help/reading-room" title={t("readingRoom")} />
+      ) : (
+        <ul className="grid auto-rows-fr gap-5 sm:grid-cols-2">
+          <li><GovServiceCard id="egov" /></li>
+          <li><LinkTile href="/services/state" title={t("service")} text={t("howTo")} /></li>
+        </ul>
       )}
-      <p className="mt-3">{t("howTo")}</p>
-      <p className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-        <ExternalLink href="https://egov.kz" className="font-semibold text-primary">{t("egov")}</ExternalLink>
-        <Link href="/services/state" className="text-link">{t("service")}</Link>
-      </p>
-    </Notice>
+    </section>
   );
 }
