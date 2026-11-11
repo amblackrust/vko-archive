@@ -59,6 +59,7 @@ def _out(report: import_export.ImportReport) -> ImportReportOut:
         fields=list(import_export.FIELDS),
         applied=report.applied,
         counts=report.counts,
+        hierarchy=report.hierarchy,
         rows=[
             ImportRow(
                 line=row.line,
@@ -67,6 +68,7 @@ def _out(report: import_export.ImportReport) -> ImportReportOut:
                 errors=[RowError(field=e["field"], code=e["code"] or "") for e in row.errors],
                 values=row.raw,
                 object_id=row.object_id,
+                creates=list(row.new_levels),
             )
             for row in report.rows
         ],
