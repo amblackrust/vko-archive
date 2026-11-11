@@ -46,7 +46,9 @@
     "stats": "Site statistics",
     "statsPending": "Public aggregates (page views and visitors) are being connected. Personal data is not disclosed.",
     "poll": "Poll",
-    "pollPending": "The poll is not connected yet. A poll is not an official request."
+    "pollPending": "The poll is not connected yet. A poll is not an official request.",
+    "usefulTitle": "Useful links",
+    "pollOpen": "Take the survey"
   },
   "seo": {
     "description": "State Archive of the East Kazakhstan region: documents, funds, branches, history and reference information."

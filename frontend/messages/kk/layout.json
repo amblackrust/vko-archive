@@ -74,7 +74,10 @@
   "social": {
     "title": "Әлеуметтік желілерде",
     "instagram": "Instagram @arhiv_vko",
-    "facebook": "Facebook vkoarhiv"
+    "facebook": "Facebook vkoarhiv",
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "whatsapp": "WhatsApp"
   },
   "govResources": {
     "title": "Мемлекеттік ресурстар",
@@ -89,5 +92,6 @@
   "home": {
     "title": "Шығыс Қазақстан облысының Мемлекеттік архиві",
     "stub": "Басты бет келесі кезеңде жасалады. Сайт қаңқасы: тіл, тақырып, мәзір және жүйелік күйлер жұмыс істейді."
-  }
+  },
+  "counter": "Келушілер: {count}"
 }

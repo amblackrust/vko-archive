@@ -1,5 +1,10 @@
+"use client";
+
+import { Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { SiteSettings } from "@/lib/api/site-settings";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "./site-settings";
 
 // Ссылки из info/Контакты.docx
 export const socialUrls = {
@@ -26,21 +31,31 @@ function FacebookIcon() {
   );
 }
 
+type Network = "instagram" | "facebook" | "telegram" | "youtube" | "whatsapp";
+
+/** Если настройки сайта недоступны, показываем официальные страницы из info/. */
+const defaultSocial: Record<string, { url: string | null; handle: string | null }> = {
+  instagram: { url: socialUrls.instagram, handle: "@arhiv_vko" },
+  facebook: { url: socialUrls.facebook, handle: null },
+};
+
+export function socialEntries(social: SiteSettings["social"] | undefined) {
+  return Object.entries(social ?? defaultSocial).filter(([, link]) => link.url) as [string, { url: string; handle: string | null }][];
+}
+
 export function SocialLinks({ className }: { className?: string }) {
   const t = useTranslations("layout.social");
+  const settings = useSiteSettings();
   const linkClass = "flex size-9 items-center justify-center rounded-md hover:bg-surface-muted";
   return (
     <ul className={cn("flex items-center gap-1", className)}>
-      <li>
-        <a href={socialUrls.instagram} target="_blank" rel="noopener noreferrer" aria-label={t("instagram")} className={linkClass}>
-          <InstagramIcon />
-        </a>
-      </li>
-      <li>
-        <a href={socialUrls.facebook} target="_blank" rel="noopener noreferrer" aria-label={t("facebook")} className={linkClass}>
-          <FacebookIcon />
-        </a>
-      </li>
+      {socialEntries(settings?.social).map(([network, link]) => (
+        <li key={network}>
+          <a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={t(network as Network)} className={linkClass}>
+            {network === "instagram" ? <InstagramIcon /> : network === "facebook" ? <FacebookIcon /> : <Globe className="size-5" aria-hidden />}
+          </a>
+        </li>
+      ))}
     </ul>
   );
 }

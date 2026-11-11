@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ExternalLinkItem } from "@/components/misc/external-link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { fetchSiteSettings } from "@/lib/api/site-settings";
 import { localizedAlternates } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -21,6 +22,9 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("misc.links");
+  const settings = await fetchSiteSettings(locale);
+  const usefulLinks = settings?.useful_links ?? [];
+  const survey = settings?.survey;
   return (
     <>
       <Breadcrumbs items={[{ label: t("title") }]} />
@@ -39,6 +43,17 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
           </ul>
         </section>
 
+        {usefulLinks.length > 0 && (
+          <section aria-labelledby="useful-links" className="space-y-4">
+            <h2 id="useful-links" className="text-xl font-semibold">{t("usefulTitle")}</h2>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {usefulLinks.map((link) => (
+                <ExternalLinkItem key={link.url} label={link.title} href={link.url} />
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section aria-labelledby="site-services" className="space-y-4">
           <h2 id="site-services" className="text-xl font-semibold">{t("servicesTitle")}</h2>
           <ul className="grid gap-3 sm:grid-cols-2">
@@ -51,7 +66,18 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-medium">{t(key)}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">{t(`${key}Pending`)}</p>
+                {key === "poll" && survey?.enabled ? (
+                  <>
+                    <p className="text-sm">{survey.question}</p>
+                    {survey.url && (
+                      <a href={survey.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline">
+                        {t("pollOpen")}
+                      </a>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-muted-foreground">{t(`${key}Pending`)}</p>
+                )}
               </div>
             ))}
           </div>

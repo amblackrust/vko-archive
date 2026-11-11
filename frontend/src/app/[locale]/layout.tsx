@@ -4,8 +4,10 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { AssistantWidget } from "@/components/ai/chat/assistant-widget";
+import { SiteSettingsProvider } from "@/components/layout/site-settings";
 import { SiteShell } from "@/components/layout/site-shell";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { fetchSiteSettings } from "@/lib/api/site-settings";
 import { routing } from "@/lib/i18n/routing";
 import { SITE_URL } from "@/lib/seo";
 import "../globals.css";
@@ -48,13 +50,16 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  const siteSettings = await fetchSiteSettings(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning className={`${sans.variable} ${serif.variable}`}>
       <body>
         <NextIntlClientProvider>
           <ThemeProvider>
-            <SiteShell>{children}</SiteShell>
+            <SiteSettingsProvider value={siteSettings}>
+              <SiteShell>{children}</SiteShell>
+            </SiteSettingsProvider>
             <AssistantWidget />
           </ThemeProvider>
         </NextIntlClientProvider>

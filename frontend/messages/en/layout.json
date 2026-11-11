@@ -74,7 +74,10 @@
   "social": {
     "title": "Follow us",
     "instagram": "Instagram @arhiv_vko",
-    "facebook": "Facebook vkoarhiv"
+    "facebook": "Facebook vkoarhiv",
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "whatsapp": "WhatsApp"
   },
   "govResources": {
     "title": "Government resources",
@@ -89,5 +92,6 @@
   "home": {
     "title": "State Archive of East Kazakhstan Region",
     "stub": "The home page will be built in a later stage. The site skeleton works: language, theme, menu and system states."
-  }
+  },
+  "counter": "Visitors: {count}"
 }

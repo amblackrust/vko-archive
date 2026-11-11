@@ -3,12 +3,13 @@ import { CategoryTiles } from "@/components/catalog/category-tiles";
 import { HeroSearch } from "@/components/home/hero-search";
 import { HomeSection } from "@/components/home/home-section";
 import { LinkCards, type LinkCard } from "@/components/home/link-cards";
-import { SocialLinks, socialUrls } from "@/components/layout/social-links";
+import { SocialLinks, socialEntries } from "@/components/layout/social-links";
 import { BranchMap } from "@/components/map/branch-map-loader";
 import { DemoBadge } from "@/components/ui/demo-badge";
 import { fetchBranches, type Branch } from "@/lib/api/branches";
 import { catalogFetch, type DocumentsResponse } from "@/lib/api/catalog";
 import { fetchMemorialDates } from "@/lib/api/home";
+import { fetchSiteSettings } from "@/lib/api/site-settings";
 import { Link } from "@/lib/i18n/navigation";
 
 export const dynamic = "force-dynamic";
@@ -26,10 +27,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const [catalog, branches, memorial] = await Promise.all([
+  const [catalog, branches, memorial, settings] = await Promise.all([
     safe(catalogFetch<DocumentsResponse>("documents", new URLSearchParams({ per_page: "1" }), locale)),
     safe<Branch[]>(fetchBranches(locale)),
     fetchMemorialDates(locale),
+    fetchSiteSettings(locale),
   ]);
 
   const sectionCards = (ids: string[], hrefs: Record<string, string>): LinkCard[] =>
@@ -39,7 +41,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   });
   const useful = [
     ...sectionCards(["help", "readingRoom", "legal"], { help: "/help", readingRoom: "/help/reading-room", legal: "/legal" }),
-    { id: "egov", title: t("cards.egov.title"), text: t("cards.egov.text"), href: "https://egov.kz", external: true },
+    ...(settings && settings.useful_links.length > 0
+      ? settings.useful_links.map((link) => ({ id: link.url, title: link.title, text: "", href: link.url, external: true }))
+      : [{ id: "egov", title: t("cards.egov.title"), text: t("cards.egov.text"), href: "https://egov.kz", external: true }]),
   ];
 
   return (
@@ -119,8 +123,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="space-y-3 rounded-lg border bg-surface p-5">
             <div className="flex flex-wrap items-center gap-3">
               <SocialLinks />
-              <a href={socialUrls.instagram} target="_blank" rel="noopener noreferrer" className="text-sm hover:underline">@arhiv_vko</a>
-              <a href={socialUrls.facebook} target="_blank" rel="noopener noreferrer" className="text-sm hover:underline">facebook.com/vkoarhiv</a>
+              {socialEntries(settings?.social).map(([network, link]) => (
+                <a key={network} href={link.url} target="_blank" rel="noopener noreferrer" className="text-sm hover:underline">
+                  {link.handle ?? link.url.replace(/^https?:\/\//, "")}
+                </a>
+              ))}
             </div>
             <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <DemoBadge kind="demoIntegration" /> {t("social.feedStub")}

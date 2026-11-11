@@ -1,6 +1,8 @@
 import { ExternalLink } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { CalendarWidget } from "@/components/misc/calendar-widget";
 import { Link } from "@/lib/i18n/navigation";
+import { useSiteSettings } from "./site-settings";
 import { SocialLinks } from "./social-links";
 
 const govLinks = [
@@ -11,7 +13,10 @@ const govLinks = [
 
 export function Footer() {
   const t = useTranslations("layout");
+  const locale = useLocale();
   const year = new Date().getFullYear();
+  const settings = useSiteSettings();
+  const usefulLinks = settings?.useful_links ?? [];
   return (
     <footer className="mt-auto border-t bg-surface-muted">
       <div className="container-page grid gap-8 py-10 md:grid-cols-2 lg:grid-cols-4">
@@ -38,10 +43,13 @@ export function Footer() {
         <section>
           <h2 className="font-serif text-base font-semibold">{t("govResources.title")}</h2>
           <ul className="mt-3 space-y-1 text-sm">
-            {govLinks.map((link) => (
+            {(usefulLinks.length > 0
+              ? usefulLinks.map((link) => ({ id: link.url, href: link.url, label: link.title }))
+              : govLinks.map((link) => ({ id: link.id, href: link.href, label: t(`govResources.${link.id}`) }))
+            ).map((link) => (
               <li key={link.id}>
                 <a href={link.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">
-                  {t(`govResources.${link.id}`)}
+                  {link.label}
                   <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                   <span className="sr-only">({t("govResources.external")})</span>
                 </a>
@@ -50,9 +58,17 @@ export function Footer() {
           </ul>
         </section>
       </div>
+      {settings?.widgets.calendar_weather !== false && (
+        <div className="container-page pb-8">
+          <CalendarWidget locale={locale} />
+        </div>
+      )}
       <div className="border-t">
         <div className="container-page flex flex-col gap-2 py-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{t("copyright", { year, name: t("siteName") })}</p>
+          {settings?.counter.enabled && (
+            <p>{t("counter", { count: settings.counter.value })}</p>
+          )}
           <p className="font-medium text-accent">{t("prototype")}</p>
           <Link href="/privacy" className="hover:underline">{t("privacy")}</Link>
         </div>

@@ -8,6 +8,9 @@ export interface PageDetail {
   body: string;
   lang: string;
   translation_status: string;
+  seo_title: string;
+  seo_description: string;
+  seo_keywords: string;
 }
 
 export interface FaqItem {
@@ -56,3 +59,10 @@ export const fetchFaqs = async (lang: string): Promise<FaqGroup[]> => {
 };
 
 export const fetchContacts = () => contentFetch<Contacts>("contacts");
+
+/** SEO-поля страницы из админки; пустые — не переопределяют заголовок и описание по умолчанию. */
+export const pageSeo = (page: PageDetail | null) => ({
+  title: page?.seo_title || page?.title,
+  description: page?.seo_description || undefined,
+  keywords: page?.seo_keywords || undefined,
+});

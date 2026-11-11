@@ -74,7 +74,10 @@
   "social": {
     "title": "Мы в соцсетях",
     "instagram": "Instagram @arhiv_vko",
-    "facebook": "Facebook vkoarhiv"
+    "facebook": "Facebook vkoarhiv",
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "whatsapp": "WhatsApp"
   },
   "govResources": {
     "title": "Государственные ресурсы",
@@ -89,5 +92,6 @@
   "home": {
     "title": "Государственный архив Восточно-Казахстанской области",
     "stub": "Главная страница будет реализована на следующем этапе. Скелет сайта: язык, тема, меню и системные состояния работают."
-  }
+  },
+  "counter": "Посетителей: {count}"
 }
