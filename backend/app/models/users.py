@@ -18,6 +18,8 @@ class User(UUIDPkMixin, TimestampMixin, Base):
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # In every session token (claim `sev`); logout increments it, revoking all issued tokens.
+    session_version: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     # Branch scope for branch administrators / archivists. use_alter breaks the
     # users <-> branches FK cycle (branches.created_by -> users).
     branch_id: Mapped[uuid.UUID | None] = mapped_column(

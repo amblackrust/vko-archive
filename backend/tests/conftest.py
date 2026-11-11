@@ -111,3 +111,13 @@ def no_ollama_embeddings(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr(indexing, "embed_texts", _unavailable)
     monkeypatch.setattr(search, "embed_query", lambda *args, **kwargs: None)
+
+
+@pytest.fixture(autouse=True)
+def reset_staff_login_limit() -> Iterator[None]:
+    """Every test logs in from the same test-client address: start each with a fresh window."""
+    from app.services import auth
+
+    auth.login_limiter.reset()
+    yield
+    auth.login_limiter.reset()

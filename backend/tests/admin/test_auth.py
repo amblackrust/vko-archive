@@ -117,15 +117,15 @@ def test_inactivity_timeout_and_max_session(api, factory):
     settings = get_settings()
     user = factory.user(RoleCode.EDITOR)
     long_ago = datetime.now(UTC) - timedelta(minutes=31)
-    stale = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0, now=long_ago)
+    stale = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0, sev=0, now=long_ago)
     assert security.decode_session_token(settings, stale) is None
 
-    fresh = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0)
+    fresh = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0, sev=0)
     assert security.decode_session_token(settings, fresh)["sub"] == str(user.id)
 
     # Renewal never extends a session past session_max_hours since login.
     old_login = datetime.now(UTC) - timedelta(hours=settings.session_max_hours, seconds=1)
-    capped = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0, auth_time=old_login)
+    capped = security.create_session_token(settings, user_id=str(user.id), csrf="x", pwv=0, sev=0, auth_time=old_login)
     assert security.decode_session_token(settings, capped) is None
 
 
@@ -199,7 +199,7 @@ def _request(method: str, token: str, csrf: str | None = None) -> Request:
 def test_optional_user_checks_csrf_on_unsafe_methods(factory):
     settings = get_settings()
     user = factory.user(RoleCode.EDITOR)
-    token = security.create_session_token(settings, user_id=str(user.id), csrf="c" * 20, pwv=0)
+    token = security.create_session_token(settings, user_id=str(user.id), csrf="c" * 20, pwv=0, sev=0)
     s = factory.session
     assert get_optional_user(_request("GET", token), s, settings).id == user.id
     assert get_optional_user(_request("POST", token), s, settings) is None

@@ -27,7 +27,7 @@ from app.models.enums import AuditResult, FileAccess
 from app.repositories import files as files_repo
 from app.schemas.admin_uploads import FilePatch, UploadedFile
 from app.services import admin_common as common
-from app.services import audit, indexing
+from app.services import audit, indexing, workflow
 from app.services.authz import AuthUser, require
 from app.services.errors import FileTooLarge, InvalidInput, NotFound, UnsupportedMedia as UnsupportedFile
 from app.services.files import file_url
@@ -260,7 +260,9 @@ def _load_file(session: Session, user: AuthUser, file_id: uuid.UUID, permission:
 
 
 def update_file(session: Session, user: AuthUser, file_id: uuid.UUID, body: dict[str, Any], *, ip: str | None) -> UploadedFile:
-    file, _owner_obj = _load_file(session, user, file_id, "files.upload", "edit", ip)
+    file, owner = _load_file(session, user, file_id, "files.upload", "edit", ip)
+    # Access, order and captions of a live object's files are public content.
+    workflow.require_live_edit(session, user, owner, ip=ip)
     values = common.parse(FilePatch, body)
     if any(v is None for v in values.values()):
         raise InvalidInput("invalid_input")
@@ -277,7 +279,8 @@ def update_file(session: Session, user: AuthUser, file_id: uuid.UUID, body: dict
 
 
 def delete_file(session: Session, settings: Settings, user: AuthUser, file_id: uuid.UUID, *, ip: str | None) -> None:
-    file, _owner_obj = _load_file(session, user, file_id, "files.delete", "edit", ip)
+    file, owner = _load_file(session, user, file_id, "files.delete", "edit", ip)
+    workflow.require_live_edit(session, user, owner, ip=ip)
     owner_type, owner_id = file.owner_type, file.owner_id
     master, preview = file.master_path, file.preview_path
     session.delete(file)

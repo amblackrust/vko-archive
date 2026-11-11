@@ -86,7 +86,8 @@ def login(body: LoginRequest, response: Response, session: DbSession, settings: 
 
 
 @router.post("/auth/logout", status_code=status.HTTP_204_NO_CONTENT)
-def logout(_: CurrentSession, settings: AppSettings) -> Response:
+def logout(visitor: CurrentVisitor, session: DbSession, settings: AppSettings) -> Response:
+    auth_service.logout(session, visitor)
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
     _clear_cookies(response, settings)
     return response

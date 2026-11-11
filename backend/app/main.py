@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
-from app.logging_config import configure_logging, log_requests
+from app.deps import BACKGROUND_HEADER
+from app.http_security import security_headers_middleware
+from app.logging_config import REQUEST_ID_HEADER, configure_logging, log_requests
 from app.routers import admin
 from app.routers.public import (
     ai,
@@ -20,6 +22,7 @@ from app.routers.public import (
     news,
     search,
 )
+from app.security import CSRF_HEADER
 from app.services.errors import (
     AccountLocked,
     Conflict,
@@ -64,15 +67,21 @@ def create_app() -> FastAPI:
     if settings.app_env != "development" and settings.jwt_secret is None:
         raise RuntimeError("JWT_SECRET is required outside development (generate one with `make env`)")
     configure_logging()
-    app = FastAPI(title="VKO State Archive API", version="0.1.0")
+    production = settings.app_env == "production"
+    # The interactive docs and the schema are a map of the API: development only.
+    hidden = {"docs_url": None, "redoc_url": None, "openapi_url": None} if production else {}
+    app = FastAPI(title="VKO State Archive API", version="0.1.0", **hidden)
+    app.middleware("http")(security_headers_middleware(production))
     app.middleware("http")(log_requests)
+    # Only the own frontend (exact origins, validated in Settings) and only what it sends.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["Retry-After"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+        allow_headers=["Content-Type", CSRF_HEADER, BACKGROUND_HEADER, REQUEST_ID_HEADER],
+        expose_headers=["Retry-After", REQUEST_ID_HEADER],
+        max_age=600,
     )
     app.add_exception_handler(ServiceError, _service_error_handler)
     app.include_router(health.router, prefix="/api")

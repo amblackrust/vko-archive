@@ -52,6 +52,15 @@ class Settings(BaseSettings):
     login_max_attempts: int = 5
     login_lock_minutes: int = 15
 
+    @field_validator("cors_origins")
+    @classmethod
+    def _check_cors_origins(cls, value: list[str]) -> list[str]:
+        # Credentials are allowed, so a wildcard would let any site call the API as the
+        # signed-in user (Starlette echoes the request origin for "*" with credentials).
+        if any(origin == "*" or not origin.startswith(("http://", "https://")) for origin in value):
+            raise ValueError("CORS_ORIGINS must list exact frontend origins (no wildcard)")
+        return [origin.rstrip("/") for origin in value]
+
     @field_validator("jwt_secret")
     @classmethod
     def _check_jwt_secret(cls, value: SecretStr | None) -> SecretStr | None:

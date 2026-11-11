@@ -5,6 +5,8 @@ password on /auth/password) lock the account for `login_lock_minutes`. Login ans
 locked, inactive or unknown account exactly like a wrong password (401, same argon2 work),
 so the response does not reveal which e-mails exist (docs/DECISIONS.md п.19, п.25).
 Every attempt (success or failure) is journaled; the password itself never is.
+Besides the per-account lockout, login attempts are capped per client IP (429 + Retry-After),
+so one address cannot try passwords across many accounts.
 """
 
 import hmac
@@ -22,7 +24,11 @@ from app.models.enums import AuditResult
 from app.repositories import users as users_repo
 from app.services import audit
 from app.services.authz import AuthUser, load_auth_user
-from app.services.errors import AccountLocked, CsrfFailed, InvalidCredentials, InvalidInput, NotAuthenticated
+from app.services.errors import AccountLocked, CsrfFailed, InvalidCredentials, InvalidInput, NotAuthenticated, RateLimited
+from app.services.rate_limit import RateLimiter
+
+LOGIN_PER_MINUTE = 20
+login_limiter = RateLimiter()
 
 
 @dataclass(frozen=True)
@@ -42,6 +48,7 @@ def _issue(settings: Settings, user: User, auth_user: AuthUser, csrf: str, auth_
         user_id=str(user.id),
         csrf=csrf,
         pwv=security.password_version(user.password_changed_at),
+        sev=user.session_version,
         auth_time=auth_time,
     )
     return AuthSession(user=auth_user, csrf=csrf, token=token)
@@ -62,6 +69,9 @@ def _is_locked(user: User, now: datetime) -> bool:
 
 
 def login(session: Session, settings: Settings, email: str, password: str, *, ip: str | None) -> AuthSession:
+    wait = login_limiter.hit(f"staff-login:{ip}", LOGIN_PER_MINUTE)
+    if wait is not None:
+        raise RateLimited(wait)
     email = normalize_email(email)
     now = datetime.now(UTC)
     user = users_repo.get_by_email(session, email, for_update=True)
@@ -124,6 +134,7 @@ def authenticate(
         user is None
         or not user.is_active
         or claims["pwv"] != security.password_version(user.password_changed_at)
+        or claims["sev"] != user.session_version
     ):
         raise NotAuthenticated()
     if method not in ("GET", "HEAD", "OPTIONS"):
@@ -135,6 +146,12 @@ def authenticate(
 
 
 def logout(session: Session, user: AuthUser, *, ip: str | None) -> None:
+    """Server-side revocation: every token of this user issued so far stops working
+    (logout ends the user's sessions on all devices)."""
+    db_user = users_repo.get_by_id(session, user.id, for_update=True)
+    if db_user is None:
+        raise NotAuthenticated()
+    db_user.session_version += 1
     audit.record(session, action_type="auth.logout", result=AuditResult.SUCCESS, user=user, ip=ip)
     session.commit()
 

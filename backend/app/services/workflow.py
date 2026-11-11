@@ -5,6 +5,10 @@ row under an optimistic lock (version), stores a snapshot in workflow_history (d
 snapshots = version history), journals the action and notifies the people involved.
 Publishing only changes workflow_status: it never touches documents.file_access or a
 file's own access, so a published document with closed files keeps them closed.
+
+Review cannot be bypassed afterwards: changing an approved or published object (any save
+that is not a transition, files included) needs `workflow.publish` on it, and an object
+with a machine translation that nobody has verified cannot be published.
 """
 
 import uuid
@@ -98,6 +102,9 @@ _MESSAGES: dict[str, dict[str, str]] = {
     "archive": {"kk": "Материал мұрағатқа жіберілді", "ru": "Материал архивирован", "en": "Item archived"},
     "restore": {"kk": "Материал қайтадан черновикке ауыстырылды", "ru": "Материал возвращён в черновики", "en": "Item restored to draft"},
 }
+# Changes to these reach the public (or are about to) without another review.
+LIVE_STATUSES = frozenset({S.APPROVED, S.PUBLISHED})
+
 # Never stored in snapshots: noisy or derived columns.
 _SNAPSHOT_EXCLUDE = frozenset({"updated_at", "version"})
 
@@ -142,6 +149,17 @@ def load_object(session: Session, object_type: str, object_id: uuid.UUID) -> tup
     return obj, module
 
 
+def require_live_edit(session: Session, user: AuthUser, obj: Any, *, ip: str | None) -> None:
+    """An approved or published object may be changed only by someone who may publish it:
+    otherwise an editor could change live content after (or instead of) the review."""
+    if obj.workflow_status in LIVE_STATUSES:
+        require(session, user, "workflow.publish", obj, ip=ip)
+
+
+def has_machine_translation(obj: Any) -> bool:
+    return "machine" in (getattr(obj, "translation_status", None) or {}).values()
+
+
 def save_with_version(
     session: Session,
     user: AuthUser,
@@ -152,12 +170,17 @@ def save_with_version(
     *,
     from_status: WorkflowStatus | None = None,
     comment: str | None = None,
+    ip: str | None = None,
 ) -> int:
     """Optimistic-lock update for any workflow object, recorded in the version history.
     Raises Conflict("version_conflict") if someone saved the object in the meantime
     (→ HTTP 409). For documents the branch is re-derived from the hierarchy.
     Usable by catalog/content CRUD; does not commit. Re-indexes the object for search
-    (call `indexing.embed_pending_background` as a BackgroundTask afterwards)."""
+    (call `indexing.embed_pending_background` as a BackgroundTask afterwards).
+    A save that is not a transition (`from_status` unset) of an approved/published object
+    needs `workflow.publish` (`require_live_edit`)."""
+    if from_status is None:
+        require_live_edit(session, user, obj, ip=ip)
     if isinstance(obj, Document):
         sync_document_branch(obj)
         values = {**values, "branch_id": obj.branch_id}
@@ -227,6 +250,9 @@ def transition(
     current = obj.workflow_status
     if current not in rule.sources:
         raise Conflict("invalid_transition")
+    if rule.target == S.PUBLISHED and has_machine_translation(obj):
+        # A machine translation is a draft until a person marks the language verified.
+        raise Conflict("unverified_translation")
     new_version = save_with_version(
         session, user, object_type, obj, expected_version,
         {"workflow_status": rule.target}, from_status=current, comment=comment,
@@ -286,6 +312,7 @@ def available_actions(user: AuthUser, object_type: str, obj: Any) -> list[str]:
         name
         for name, rule in TRANSITIONS.items()
         if obj.workflow_status in rule.sources
+        and not (rule.target == S.PUBLISHED and has_machine_translation(obj))
         and authorize(user, rule.permission, obj)
         and authorize(user, f"{module}.{rule.module_action}", obj)
     ]

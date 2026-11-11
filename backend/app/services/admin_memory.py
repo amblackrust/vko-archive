@@ -84,7 +84,7 @@ def set_items(session: Session, user: AuthUser, collection_id: uuid.UUID, body: 
             raise InvalidInput("unknown_link")
         if item.item_type == "document":
             require(session, user, "catalog.view", target, ip=ip)
-    workflow.save_with_version(session, user, "collection", collection, data["version"], {})
+    workflow.save_with_version(session, user, "collection", collection, data["version"], {}, ip=ip)
     collection.items.clear()
     session.flush()
     for position, item in enumerate(items):
@@ -117,7 +117,7 @@ def set_documents(
             raise InvalidInput("unknown_link")
         require(session, user, "catalog.view", document, ip=ip)
         documents.append(document)
-    workflow.save_with_version(session, user, name, obj, data["version"], {})
+    workflow.save_with_version(session, user, name, obj, data["version"], {}, ip=ip)
     obj.documents = documents
     audit.record(
         session, action_type=f"{name}.documents", result=AuditResult.SUCCESS, user=user,

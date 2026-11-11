@@ -123,6 +123,8 @@ def create(
 ) -> Any:
     """`scope(values)` returns the object the permission is checked on (a parent or a transient
     object carrying the branch); `prepare(values)` validates references and may adjust values."""
+    # Module right first: without it the caller learns nothing about the payload rules.
+    require(session, user, f"{spec.module}.create", ip=ip)
     values = parse(spec.input_model, body)
     for name in spec.text_required:
         if not filled(values.get(name)):
@@ -195,7 +197,7 @@ def update(
     if not changed:
         return obj
     try:
-        workflow.save_with_version(session, user, spec.kind, obj, expected, values)
+        workflow.save_with_version(session, user, spec.kind, obj, expected, values, ip=ip)
         audit.record(
             session, action_type=f"{spec.kind}.update", result=AuditResult.SUCCESS, user=user,
             object_type=spec.kind, object_id=obj.id, details={"fields": sorted(changed)}, ip=ip,

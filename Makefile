@@ -1,7 +1,7 @@
 BACKEND_VENV := backend/.venv
 PY := $(BACKEND_VENV)/bin/python
 
-.PHONY: dev env db-up db-down backend-install migrate backend-dev frontend-install frontend-dev test
+.PHONY: dev env db-up db-down backup backend-install migrate backend-dev frontend-install frontend-dev test
 
 ## One command: env files, database, deps, migrations, then backend + frontend in parallel.
 dev: env db-up backend-install migrate
@@ -32,6 +32,14 @@ db-up:
 db-down:
 	docker compose down
 
+## Database backup: pg_dump (custom format) into backups/; restore — see README.
+## The dump is written to *.part first and renamed only if pg_dump succeeded.
+backup:
+	@mkdir -p backups
+	@file=backups/vko_archive_$$(date +%Y%m%d_%H%M%S).dump; \
+	docker compose exec -T db sh -c 'pg_dump -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -Fc' > "$$file.part" \
+		&& mv "$$file.part" "$$file" && echo "backup: $$file"
+
 $(PY):
 	python3 -m venv $(BACKEND_VENV)
 
@@ -42,7 +50,7 @@ migrate:
 	cd backend && .venv/bin/alembic upgrade head
 
 backend-dev:
-	cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000
+	cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000 --no-access-log
 
 frontend-install:
 	cd frontend && npm install

@@ -96,3 +96,12 @@ def test_delete_account_removes_data_and_session(api: TestClient, engine) -> Non
     with Session(engine) as session:
         assert session.get(Visitor, body["id"]) is None
     assert api.get("/api/cabinet/me").status_code == 401
+
+
+def test_logout_revokes_the_token_on_the_server(api: TestClient) -> None:
+    register(api)
+    stolen = api.cookies.get("vko_visitor")
+    assert api.post(f"{AUTH}/logout").status_code == 204
+    api.cookies.clear()
+    api.cookies.set("vko_visitor", stolen)
+    assert api.get("/api/cabinet/me").status_code == 401

@@ -133,7 +133,7 @@ def reorder(session: Session, user: AuthUser, exhibition_id: uuid.UUID, body: di
     for position, ident in enumerate(ids):
         exhibit = exhibits[ident]
         if exhibit.position != position:
-            workflow.save_with_version(session, user, "exhibit", exhibit, exhibit.version, {"position": position})
+            workflow.save_with_version(session, user, "exhibit", exhibit, exhibit.version, {"position": position}, ip=ip)
     audit.record(
         session, action_type="exhibit.reorder", result=AuditResult.SUCCESS, user=user,
         object_type="exhibition", object_id=exhibition_id, details={"count": len(ids)}, ip=ip,

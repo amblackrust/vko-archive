@@ -15,10 +15,12 @@ def test_audit_requires_permission(api, factory):
 def test_audit_list_filters_and_export(api, factory):
     target = factory.user(RoleCode.EDITOR)
     api.post("/api/admin/auth/login", json={"email": target.email, "password": "wrong-password"})
-    factory.add(
+    # Not registered for cleanup: the journal is append-only in the database (migration 0007).
+    factory.session.add(
         AuditLog(actor="=HYPERLINK(\"x\")", action_type="settings.change", result=AuditResult.SUCCESS,
                  details={"key": "socials"}, object_type="site_setting", object_id="socials")
     )
+    factory.session.commit()
 
     superadmin = factory.user(RoleCode.SUPER_ADMIN)
     login(api, superadmin.email)

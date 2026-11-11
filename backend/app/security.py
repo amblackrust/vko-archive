@@ -1,8 +1,9 @@
 """Password hashing (argon2id) and admin session tokens (HS256 JWT in an httpOnly cookie).
 
 The token carries a CSRF value (`csrf`) that the client must echo in the X-CSRF-Token
-header on unsafe requests, and a password version (`pwv`) so that changing the password
-invalidates every other session. Inactivity timeout = token `exp`, renewed on each request;
+header on unsafe requests, a password version (`pwv`) so that changing the password
+invalidates every other session, and a session version (`sev`) that logout increments, so
+the server refuses every token issued before the logout. Inactivity timeout = token `exp`, renewed on each request;
 `auth_time` caps the total session length.
 """
 
@@ -67,6 +68,7 @@ def create_session_token(
     user_id: str,
     csrf: str,
     pwv: int,
+    sev: int,
     auth_time: datetime | None = None,
     now: datetime | None = None,
 ) -> str:
@@ -83,6 +85,7 @@ def create_session_token(
         "auth_time": int(auth_time.timestamp()),
         "csrf": csrf,
         "pwv": pwv,
+        "sev": sev,
     }
     return jwt.encode(payload, _key(settings), algorithm=JWT_ALGORITHM)
 
@@ -94,7 +97,7 @@ def decode_session_token(settings: Settings, token: str) -> dict[str, Any] | Non
             token,
             _key(settings),
             algorithms=[JWT_ALGORITHM],
-            options={"require": ["sub", "exp", "iat", "auth_time", "csrf", "pwv"]},
+            options={"require": ["sub", "exp", "iat", "auth_time", "csrf", "pwv", "sev"]},
         )
     except jwt.InvalidTokenError:
         return None
