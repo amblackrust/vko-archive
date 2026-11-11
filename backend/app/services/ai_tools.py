@@ -11,11 +11,13 @@
 """
 
 import logging
+import math
 import re
 import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from app.ai import embeddings, ollama_client, tools, tools_ocr
@@ -39,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 DUPLICATE_DISTANCE = 0.12  # cosine distance of descriptions: nearly the same text
 MAX_DUPLICATES = 5
+DRAFT_SCAN_LIMIT = 60  # newest unpublished documents compared by embeddings on each analysis
 RELATED_LIMIT = 6
 _CONTROL_RE = re.compile(r"[\x00-\x08\x0b\x0e-\x1f\x7f]")
 
@@ -109,8 +112,9 @@ def _staff_text(session: Session, user: AuthUser, document: Document, lang: str)
 
 
 def _duplicates(session: Session, user: AuthUser, settings: Settings, document: Document, files: list[DigitalFile]) -> list[DuplicateRef]:
-    """Same file (sha256) first, then documents with a nearly identical description (embeddings).
-    Only documents this employee may see; the vector index holds public documents only."""
+    """Same file (sha256) first, then documents with a nearly identical description (embeddings):
+    public ones from the vector index, drafts (not in the index) by embedding the newest of them
+    on the spot. Only documents this employee may see."""
     found: dict[uuid.UUID, DuplicateRef] = {}
     own = {file.id for file in files}
     for file in files:
@@ -133,7 +137,33 @@ def _duplicates(session: Session, user: AuthUser, settings: Settings, document: 
             other = others.get(object_id)
             if other is not None and object_id not in found and authorize(user, "catalog.view", other):
                 found[object_id] = DuplicateRef(**_ref(other), reason="similar", distance=round(distance, 4))
+    if vector is not None:
+        for other, distance in _similar_drafts(session, settings, document, vector):
+            if other.id not in found and authorize(user, "catalog.view", other):
+                found[other.id] = DuplicateRef(**_ref(other), reason="similar", distance=round(distance, 4))
     return list(found.values())[:MAX_DUPLICATES]
+
+
+def _similar_drafts(session: Session, settings: Settings, document: Document, vector: list[float]) -> list[tuple[Document, float]]:
+    drafts = repo.unpublished_documents(session, document.id, DRAFT_SCAN_LIMIT)
+    texts = [" ".join(filter(None, (pick(d.title, "ru")[0], pick(d.summary, "ru")[0]))) for d in drafts]
+    pairs = [(d, t) for d, t in zip(drafts, texts, strict=True) if t]
+    if not pairs:
+        return []
+    try:
+        vectors = embeddings.embed_texts([t for _, t in pairs], settings)
+    except embeddings.EmbeddingUnavailable:
+        return []
+    norm = math.sqrt(sum(x * x for x in vector))
+    scored = []
+    for (other, _), other_vector in zip(pairs, vectors, strict=True):
+        other_norm = math.sqrt(sum(x * x for x in other_vector))
+        if norm == 0 or other_norm == 0:
+            continue
+        distance = 1 - sum(a * b for a, b in zip(vector, other_vector, strict=True)) / (norm * other_norm)
+        if distance <= DUPLICATE_DISTANCE:
+            scored.append((other, distance))
+    return sorted(scored, key=lambda pair: pair[1])
 
 
 def analyze(session: Session, user: AuthUser, settings: Settings, document_id: uuid.UUID, lang: str, *, ip: str | None) -> AnalysisOut:
@@ -230,6 +260,39 @@ def ocr_file(session: Session, user: AuthUser, settings: Settings, file_id: uuid
     _journal(session, user, "ocr", "document", owner_id, ip, file_id=str(file_id), status=outcome.status, engine=outcome.engine)
     session.commit()
     return OcrProposal(file_id=file_id, status=outcome.status, engine=outcome.engine, reason=outcome.reason, text=outcome.text)  # type: ignore[arg-type]
+
+
+def auto_ocr(bind: Engine, settings: Settings, user: AuthUser, file_id: uuid.UUID) -> None:
+    """Background OCR of a file the employee has just uploaded (the upload was authorised).
+    Runs in its own session and stores the text as it is; it reaches the search index only when
+    someone opens the file, which is the reviewed step (`update_file`). Failures are recorded
+    in `ocr_status`, never raised: nobody is waiting for the result."""
+    with Session(bind) as session:
+        file = files_repo.get_file(session, file_id)
+        if file is None or file.owner_type != "document" or file.ocr_text:
+            return
+        path = files_service._resolve(settings.storage_dir, file.master_path)
+        if path is None:
+            return
+        mime = file.mime
+        file.ocr_status = OcrStatus.PENDING
+        session.commit()
+        try:
+            outcome = tools_ocr.recognize(path, mime, settings)
+        except Exception:  # an OCR crash must not leave the file "pending" forever
+            logger.exception("automatic OCR crashed")
+            outcome = tools_ocr.OcrOutcome("failed", reason="engine_error")
+        file = files_repo.get_file(session, file_id)
+        if file is None or file.ocr_status != OcrStatus.PENDING:  # deleted, or the employee applied a text meanwhile
+            return
+        if outcome.status == "done":
+            file.ocr_text = _CONTROL_RE.sub("", outcome.text).strip()
+            file.ocr_status = OcrStatus.DONE
+            indexing.reindex_file_owner(session, "document", file.owner_id)
+        else:
+            file.ocr_status = OcrStatus.UNAVAILABLE if outcome.status == "unavailable" else OcrStatus.FAILED
+        _journal(session, user, "ocr_auto", "document", file.owner_id, None, file_id=str(file_id), status=outcome.status, engine=outcome.engine)
+        session.commit()
 
 
 def apply_ocr(session: Session, user: AuthUser, file_id: uuid.UUID, text: str, *, ip: str | None) -> DigitalFile:

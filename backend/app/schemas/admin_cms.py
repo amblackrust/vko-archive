@@ -6,7 +6,7 @@ import datetime as dt
 from decimal import Decimal
 from typing import Annotated, Literal
 
-from pydantic import AfterValidator, BaseModel, ConfigDict, Field
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
 
 from app.models.enums import LegalActStatus
 from app.schemas.admin_common import LANGS, I18nText, StrictInput
@@ -34,6 +34,24 @@ class SourceLink(StrictInput):
     url: HttpUrl = None
 
 
+class NewsMediaIn(StrictInput):
+    """One gallery entry: a file uploaded to this news item, or an external https link."""
+
+    file_id: uuid.UUID | None = None
+    url: HttpUrl = None
+
+    @model_validator(mode="after")
+    def _one_source(self) -> "NewsMediaIn":
+        if (self.file_id is None) == (self.url is None):
+            raise ValueError("exactly one of file_id and url")
+        return self
+
+
+class NewsRelatedIn(StrictInput):
+    type: Literal["document", "exhibition", "news"]
+    id: uuid.UUID
+
+
 class NewsIn(StrictInput):
     slug: Slug
     title: I18nText
@@ -41,6 +59,8 @@ class NewsIn(StrictInput):
     body: RichText = {}
     category: Short = None
     cover_file_id: uuid.UUID | None = None
+    media: list[NewsMediaIn] = Field(default=[], max_length=30)
+    related: list[NewsRelatedIn] = Field(default=[], max_length=30)
     published_at: dt.datetime | None = None
     is_demo: bool = False
 

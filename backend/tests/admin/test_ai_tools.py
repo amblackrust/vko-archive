@@ -2,6 +2,7 @@
 The model is always a stub: no test reaches a real Ollama."""
 
 import json
+import shutil
 import uuid
 from pathlib import Path
 
@@ -201,7 +202,32 @@ def test_ocr_proposal_is_stored_only_on_apply(api, factory, model, storage, monk
     assert api.post(f"{BASE}/files/{file.id}/ocr/apply", json={"text": "x"}).status_code == 403
 
 
-def test_pdf_is_not_recognised(api, factory, storage, monkeypatch):
+def _text_pdf(path: Path, pages: int = 2) -> None:
+    from PIL import Image, ImageDraw, ImageFont
+
+    font = ImageFont.load_default(size=60)
+    images = []
+    for number in range(1, pages + 1):
+        image = Image.new("RGB", (800, 400), "white")
+        ImageDraw.Draw(image).text((40, 140), f"ARCHIVE PAGE {number}", fill="black", font=font)
+        images.append(image)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    images[0].save(path, "PDF", save_all=True, append_images=images[1:])
+
+
+@pytest.mark.skipif(shutil.which("tesseract") is None, reason="Tesseract is not installed")
+def test_pdf_pages_are_rasterised_and_recognised(api, factory, storage):
+    doc = public_document(factory)
+    _text_pdf(storage / "masters" / "a.pdf")
+    file = add_file(factory, doc, master_path="masters/a.pdf", mime="application/pdf")
+    _editor(api, factory)
+    body = api.post(f"{BASE}/files/{file.id}/ocr").json()
+    assert body["status"] == "done" and body["engine"] == "tesseract"
+    first, second = body["text"].split("\f")
+    assert "PAGE 1" in first.upper() and "PAGE 2" in second.upper()
+
+
+def test_broken_pdf_fails_with_a_reason(api, factory, storage, monkeypatch):
     monkeypatch.setattr(tools_ocr, "engine_name", lambda settings: "tesseract")
     doc = public_document(factory)
     (storage / "masters").mkdir(exist_ok=True)
@@ -209,7 +235,34 @@ def test_pdf_is_not_recognised(api, factory, storage, monkeypatch):
     file = add_file(factory, doc, master_path="masters/a.pdf", mime="application/pdf")
     _editor(api, factory)
     body = api.post(f"{BASE}/files/{file.id}/ocr").json()
+    assert body["status"] == "failed" and body["reason"] == "invalid_pdf"
+
+
+def test_other_types_are_not_recognised(api, factory, storage, monkeypatch):
+    monkeypatch.setattr(tools_ocr, "engine_name", lambda settings: "tesseract")
+    doc = public_document(factory)
+    (storage / "masters").mkdir(exist_ok=True)
+    (storage / "masters" / "a.mp3").write_bytes(b"ID3")
+    file = add_file(factory, doc, master_path="masters/a.mp3", mime="audio/mpeg")
+    _editor(api, factory)
+    body = api.post(f"{BASE}/files/{file.id}/ocr").json()
     assert body["status"] == "unavailable" and body["reason"] == "unsupported_type"
+
+
+def test_vision_engine_reads_through_the_public_client(api, factory, storage, monkeypatch):
+    monkeypatch.setattr(tools_ocr, "engine_name", lambda settings: "vision")
+    calls = []
+
+    def fake_vision(prompt, image, settings, *, model, max_tokens=2000):
+        calls.append(model)
+        return "Текст со скана"
+
+    monkeypatch.setattr(ollama_client, "vision_text", fake_vision)
+    doc = public_document(factory)
+    file = _png_file(factory, doc, storage)
+    _editor(api, factory)
+    body = api.post(f"{BASE}/files/{file.id}/ocr").json()
+    assert body["status"] == "done" and body["text"] == "Текст со скана" and len(calls) == 1
 
 
 def test_annotation_from_public_text_only_and_approval_flow(api, factory, model):
@@ -283,3 +336,26 @@ def test_collection_draft_reports_unavailable_embeddings(api, factory, model, mo
 def test_anonymous_has_no_access(api):
     api.cookies.clear()
     assert api.get(f"{BASE}/status").status_code == 401
+
+
+def test_similar_drafts_are_found_by_embeddings(api, factory, model, monkeypatch):
+    mine = factory.branch()
+    _, _, case = factory.catalog(mine)
+    _, _, other_case = factory.catalog(factory.branch())
+    draft = dict(workflow_status=WorkflowStatus.DRAFT)
+    doc = public_document(factory, case, title={"ru": "Альфа протокол"}, **draft)
+    twin = public_document(factory, case, title={"ru": "Альфа протокол заседания"}, **draft)
+    unrelated = public_document(factory, case, title={"ru": "Бета отчёт"}, **draft)
+    foreign = public_document(factory, other_case, title={"ru": "Альфа чужой протокол"}, **draft)
+
+    def fake_embed(texts, settings, **kwargs):
+        return [[1.0, 0.0, 0.0] if "Альфа" in text else [0.0, 1.0, 0.0] for text in texts]
+
+    monkeypatch.setattr(embeddings, "embed_texts", fake_embed)
+    _editor(api, factory, RoleCode.ARCHIVIST, branch_id=mine.id)
+    model.reply = json.dumps({k: [] for k in ("dates", "persons", "organizations", "places", "events", "topics", "tag_numbers")} | {"summary": ""})
+    body = api.post(f"{BASE}/documents/{doc.id}/analyze", json={}).json()
+    found = {d["id"]: d for d in body["duplicates"]}
+    assert set(found) == {str(twin.id)}  # not itself, not a different text, not another branch's draft
+    assert found[str(twin.id)]["reason"] == "similar" and found[str(twin.id)]["workflow_status"] == "draft"
+    assert str(unrelated.id) not in found and str(foreign.id) not in found

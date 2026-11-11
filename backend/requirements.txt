@@ -17,3 +17,4 @@ pypdf==7.0.1
 pillow==13.0.0
 nh3==0.3.7
 openpyxl==3.1.5
+pypdfium2==5.15.2

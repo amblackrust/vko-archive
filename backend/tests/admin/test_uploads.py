@@ -8,7 +8,7 @@ from sqlalchemy import select
 from app.config import Settings, get_settings
 from app.main import app
 from app.models import DigitalFile
-from app.models.enums import FileAccess, RoleCode
+from app.models.enums import FileAccess, OcrStatus, RoleCode
 from tests.admin.conftest import login
 
 URL = "/api/admin/uploads"
@@ -26,6 +26,28 @@ def storage(tmp_path):
 def _png() -> bytes:
     out = io.BytesIO()
     Image.new("RGB", (40, 30), "white").save(out, "PNG")
+    return out.getvalue()
+
+
+@pytest.fixture(autouse=True)
+def ocr_calls(monkeypatch):
+    """The background OCR of uploads never runs a real engine here; calls are recorded."""
+    from app.ai import tools_ocr
+
+    calls = []
+
+    def fake(path, mime, settings):
+        calls.append(mime)
+        return tools_ocr.OcrOutcome("done", "tesseract", "Распознано")
+
+    monkeypatch.setattr(tools_ocr, "recognize", fake)
+    return calls
+
+
+def _pdf(pages: int = 2) -> bytes:
+    out = io.BytesIO()
+    images = [Image.new("RGB", (300, 200), "white") for _ in range(pages)]
+    images[0].save(out, "PDF", save_all=True, append_images=images[1:])
     return out.getvalue()
 
 
@@ -101,3 +123,47 @@ def test_upload_permissions_and_branch_scope(api, factory, storage):
     assert _upload(api, other_doc, "demo-up-x.png", _png()).status_code == 403
     api.cookies.clear()
     assert _upload(api, other_doc, "demo-up-x.png", _png()).status_code in (401, 403)
+
+
+def test_pdf_upload_gets_first_page_preview_and_background_ocr(api, factory, storage, ocr_calls):
+    _, _, case = factory.catalog(None)
+    doc = factory.document(case)
+    _as(api, factory.user(RoleCode.ARCHIVIST))
+    r = _upload(api, doc, "demo-up-scan.pdf", _pdf(3))
+    assert r.status_code == 201, r.text
+    body = r.json()
+    assert body["mime"] == "application/pdf" and body["pages"] == 3 and body["preview_url"]
+    row = factory.session.get(DigitalFile, uuid.UUID(body["id"]))
+    assert (storage / row.preview_path).read_bytes()[:4] == b"RIFF"
+    # the preview follows the file's access rules: closed (needs_review) for the public, served to staff
+    anon = api.__class__(app, base_url="https://testserver")
+    assert anon.get(body["preview_url"]).status_code == 404
+    assert api.get(body["preview_url"]).status_code == 200
+    # the background task has run after the response
+    factory.session.refresh(row)
+    assert ocr_calls == ["application/pdf"] and row.ocr_text == "Распознано" and row.ocr_status == OcrStatus.DONE
+    _drop_files(factory)
+
+
+def test_unreadable_pdf_is_stored_without_preview(api, factory, storage, monkeypatch):
+    from app.services import pdf_render
+
+    def broken(*args, **kwargs):
+        raise pdf_render.PdfRenderError("PdfiumError")
+
+    monkeypatch.setattr(pdf_render, "first_page", broken)
+    _, _, case = factory.catalog(None)
+    doc = factory.document(case)
+    _as(api, factory.user(RoleCode.ARCHIVIST))
+    r = _upload(api, doc, "demo-up-bad.pdf", _pdf(1))
+    assert r.status_code == 201 and r.json()["preview_url"] is None
+    _drop_files(factory)
+
+
+def test_background_ocr_only_for_document_files(api, factory, storage, ocr_calls):
+    branch = factory.branch()
+    _as(api, factory.user(RoleCode.SUPER_ADMIN))
+    r = api.post(URL, params={"owner_type": "branch", "owner_id": str(branch.id), "filename": "demo-up-b.png"}, content=_png())
+    assert r.status_code == 201, r.text
+    assert ocr_calls == []
+    api.delete(f"{URL}/{r.json()['id']}")
