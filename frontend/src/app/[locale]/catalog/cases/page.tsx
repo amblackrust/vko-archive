@@ -33,7 +33,7 @@ export default async function CasesPage({
         <h1 className="text-3xl font-bold">{t("tree.casesTitle")}</h1>
         <CatalogNav active="cases" />
         <ListSearch path="/catalog/cases" params={query} />
-        <p className="font-medium">{t("results.count", { count: data.total })}</p>
+        <h2 className="font-medium">{t("results.count", { count: data.total })}</h2>
         <ul className="grid gap-3 md:grid-cols-2">
           {data.items.map((item) => (
             <li key={item.id}><TreeCard entry={{ kind: "case", item }} /></li>

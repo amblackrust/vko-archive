@@ -176,6 +176,8 @@ export function DocumentViewer({ files, title }: Props) {
             <img
               key={src}
               src={src}
+              fetchPriority="high"
+              decoding="async"
               alt={`${title} — ${label}`}
               draggable={false}
               onError={() => setFailed(true)}

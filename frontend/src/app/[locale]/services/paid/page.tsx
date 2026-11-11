@@ -40,7 +40,7 @@ export default async function PaidServicesPage({ params }: { params: Promise<{ l
           </h2>
           <p>
             {t("pricePending")}{" "}
-            <Link href="/contacts" className="text-primary hover:underline">{t("contactsLink")}</Link>
+            <Link href="/contacts" className="text-primary underline underline-offset-2">{t("contactsLink")}</Link>
           </p>
         </section>
       </div>

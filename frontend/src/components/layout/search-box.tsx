@@ -10,7 +10,7 @@ export function SearchBox({ className }: { className?: string }) {
   const t = useTranslations("layout.search");
   const locale = useLocale();
   return (
-    <form role="search" action={`/${locale}${searchHref}`} method="get" className={cn("flex gap-2", className)}>
+    <form role="search" aria-label={t("label")} action={`/${locale}${searchHref}`} method="get" className={cn("flex gap-2", className)}>
       <label htmlFor="site-search" className="sr-only">
         {t("label")}
       </label>

@@ -6,16 +6,19 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
 import type { Branch } from "@/lib/api/branches";
 
+// Область нажатия маркера не меньше 24 px (WCAG 2.5.8); видимый кружок меньше.
+const HIT = 24;
+
 // Свой маркер вместо картинок Leaflet по умолчанию (их пути ломаются в бандлере); цвета — токены темы.
 function markerIcon(selected: boolean, head: boolean) {
   const size = selected ? 22 : head ? 18 : 14;
   return L.divIcon({
     className: "",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: `<span style="display:block;width:${size}px;height:${size}px;border-radius:50%;border:3px solid var(--primary-foreground);background:${
+    iconSize: [HIT, HIT],
+    iconAnchor: [HIT / 2, HIT / 2],
+    html: `<span style="display:flex;width:${HIT}px;height:${HIT}px;align-items:center;justify-content:center"><span style="display:block;width:${size}px;height:${size}px;border-radius:50%;border:3px solid var(--primary-foreground);background:${
       selected ? "var(--accent)" : "var(--primary)"
-    };box-shadow:0 0 0 1px var(--primary)"></span>`,
+    };box-shadow:0 0 0 1px var(--primary)"></span></span>`,
   });
 }
 

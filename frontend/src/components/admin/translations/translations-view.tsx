@@ -29,6 +29,7 @@ function moduleOf(type: string) {
 export function TranslationsView() {
   const t = useTranslations("adminImport.translations");
   const tw = useTranslations("adminImport.workflow");
+  const tc = useTranslations("admin.common");
   const me = useMe();
   const types = TRANSLATION_OBJECT_TYPES.filter((type) => can(me, `${moduleOf(type)}.view`));
   const [objectType, setObjectType] = useState<string>(types[0] ?? "document");
@@ -79,7 +80,7 @@ export function TranslationsView() {
     },
     {
       key: "open",
-      header: "",
+      header: tc("actions"),
       className: "w-12",
       cell: (row) => (
         <Button size="icon" variant="ghost" aria-label={t("open", { label: row.label })} onClick={() => setOpenId(row.id)}>

@@ -67,7 +67,7 @@ function RolesContent() {
       <h1 className="font-serif text-2xl font-semibold">{t("title")}</h1>
       <p className="max-w-prose text-sm text-muted-foreground">{t("intro")}</p>
       {state && <Notice kind={state.kind}>{state.text}</Notice>}
-      <div className="overflow-x-auto rounded-lg border bg-surface">
+      <div className="overflow-x-auto rounded-lg border bg-surface" tabIndex={0} role="region" aria-label={t("title")}>
         <table className="w-full text-sm">
           <caption className="sr-only">{t("title")}</caption>
           <thead>

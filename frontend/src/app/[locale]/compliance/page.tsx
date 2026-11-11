@@ -32,7 +32,7 @@ export default async function CompliancePage({ params }: { params: Promise<{ loc
           {page.officer && <p className="font-medium">{t("officer", { name: page.officer })}</p>}
           <p className="text-sm text-muted-foreground">
             {t("phoneHint")}{" "}
-            <Link href="/contacts" className="text-primary hover:underline">{t("contactsLink")}</Link>
+            <Link href="/contacts" className="text-primary underline underline-offset-2">{t("contactsLink")}</Link>
           </p>
         </header>
 

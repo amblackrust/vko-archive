@@ -21,7 +21,7 @@ export function AnswerText({ text, sources }: { text: string; sources: AiSource[
           <Link
             key={index}
             href={source.href}
-            aria-label={source.title}
+            aria-label={`${part.slice(1)}: ${source.title}`}
             title={source.title}
             className="mx-0.5 rounded bg-accent-soft px-1 text-xs font-semibold text-accent-soft-foreground hover:underline"
           >

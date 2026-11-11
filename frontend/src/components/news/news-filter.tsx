@@ -15,7 +15,7 @@ export function NewsFilter({ q, category, sort, categories }: Props) {
   const tCategory = useTranslations("news.categories");
   const field = "h-10 rounded-md border bg-background px-3 font-normal";
   return (
-    <form method="get" role="search" className="grid gap-3 rounded-lg border bg-surface p-4 md:grid-cols-[1fr_12rem_12rem_auto] md:items-end">
+    <form method="get" role="search" className="grid gap-3 rounded-lg border bg-surface p-4 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_12rem_12rem_auto] lg:items-end">
       <label className="flex flex-col gap-1 text-sm font-medium">
         {t("q")}
         <input name="q" defaultValue={q} maxLength={200} className={field} />

@@ -54,7 +54,7 @@ export default async function StateServicePage({ params }: { params: Promise<{ l
           <h2 id="state-contacts" className="text-xl font-semibold">{t("contactsHeading")}</h2>
           <p>
             {t("contactsText")}{" "}
-            <Link href="/contacts" className="text-primary hover:underline">{t("contactsLink")}</Link>
+            <Link href="/contacts" className="text-primary underline underline-offset-2">{t("contactsLink")}</Link>
           </p>
         </section>
 

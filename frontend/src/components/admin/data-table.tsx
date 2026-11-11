@@ -46,7 +46,7 @@ export function DataTable<T>({ caption, columns, rows, rowKey, loading, error, o
     );
   }
   return (
-    <div className="overflow-x-auto rounded-lg border bg-surface" aria-busy={loading}>
+    <div className="overflow-x-auto rounded-lg border bg-surface" aria-busy={loading} tabIndex={0} role="region" aria-label={caption}>
       <table className="w-full min-w-[40rem] text-left text-sm">
         <caption className="sr-only">{caption}</caption>
         <thead className="bg-surface-muted text-xs uppercase tracking-wide text-muted-foreground">

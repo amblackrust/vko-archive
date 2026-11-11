@@ -17,7 +17,7 @@ export function ExhibitImage({ url, alt }: { url: string; alt: string }) {
     <figure className="space-y-2">
       <div className="max-h-[70vh] overflow-auto rounded-lg border bg-surface-muted" tabIndex={0} aria-label={alt}>
         {/* eslint-disable-next-line @next/next/no-img-element -- файл отдаёт backend с проверкой прав */}
-        <img src={fileUrl(url)} alt={alt} draggable={false} style={{ width: `${zoom * 100}%`, maxWidth: "none" }} className="mx-auto block h-auto select-none" />
+        <img src={fileUrl(url)} alt={alt} fetchPriority="high" decoding="async" draggable={false} style={{ width: `${zoom * 100}%`, maxWidth: "none" }} className="mx-auto block h-auto select-none" />
       </div>
       <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t("zoomLabel", { percent: zoom * 100 })}>
         <Button variant="outline" size="sm" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>

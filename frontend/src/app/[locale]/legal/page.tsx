@@ -63,7 +63,7 @@ export default async function LegalPage({
           <EmptyState resetHref="/legal" as="h2" />
         ) : (
           <section aria-live="polite" className="space-y-4">
-            <p className="font-medium">{t("count", { count: result.total })}</p>
+            <h2 className="font-medium">{t("count", { count: result.total })}</h2>
             <ul className="space-y-3">
               {result.items.map((act) => (
                 <li key={act.id}>

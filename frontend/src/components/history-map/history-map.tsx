@@ -6,16 +6,19 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, Tooltip, useMap } from "react-leaflet";
 import type { HistoricalEvent } from "@/lib/api/memory";
 
+// Область нажатия маркера не меньше 24 px (WCAG 2.5.8).
+const HIT = 24;
+
 // Исторические объекты — повёрнутые квадраты цвета accent: не путаются с круглыми маркерами карты филиалов.
 function pointIcon(selected: boolean) {
   const size = selected ? 20 : 15;
   return L.divIcon({
     className: "",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-    html: `<span style="display:block;width:${size}px;height:${size}px;transform:rotate(45deg);border:2px solid var(--accent-soft);background:${
+    iconSize: [HIT, HIT],
+    iconAnchor: [HIT / 2, HIT / 2],
+    html: `<span style="display:flex;width:${HIT}px;height:${HIT}px;align-items:center;justify-content:center"><span style="display:block;width:${size}px;height:${size}px;transform:rotate(45deg);border:2px solid var(--accent-soft);background:${
       selected ? "var(--primary)" : "var(--accent)"
-    };box-shadow:0 0 0 1px var(--accent-soft-foreground)"></span>`,
+    };box-shadow:0 0 0 1px var(--accent-soft-foreground)"></span></span>`,
   });
 }
 

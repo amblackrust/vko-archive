@@ -23,7 +23,7 @@ function QueryTable({ title, rows }: { title: string; rows: QueryStat[] }) {
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t("empty")}</p>
       ) : (
-        <div className="overflow-x-auto rounded-md border">
+        <div className="overflow-x-auto rounded-md border" tabIndex={0} role="region" aria-label={title}>
           <table className="w-full text-sm">
             <caption className="sr-only">{title}</caption>
             <thead className="bg-surface-muted text-left">
@@ -158,7 +158,7 @@ export function AnalyticsView() {
             {data.stale_pages.length === 0 ? (
               <p className="text-sm text-muted-foreground">{t("empty")}</p>
             ) : (
-              <div className="overflow-x-auto rounded-md border">
+              <div className="overflow-x-auto rounded-md border" tabIndex={0} role="region" aria-label={t("staleTitle")}>
                 <table className="w-full text-sm">
                   <caption className="sr-only">{t("staleTitle")}</caption>
                   <thead className="bg-surface-muted text-left">

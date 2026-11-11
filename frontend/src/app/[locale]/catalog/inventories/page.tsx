@@ -33,7 +33,7 @@ export default async function InventoriesPage({
         <h1 className="text-3xl font-bold">{t("tree.inventoriesTitle")}</h1>
         <CatalogNav active="inventories" />
         <ListSearch path="/catalog/inventories" params={query} />
-        <p className="font-medium">{t("results.count", { count: data.total })}</p>
+        <h2 className="font-medium">{t("results.count", { count: data.total })}</h2>
         <ul className="grid gap-3 md:grid-cols-2">
           {data.items.map((item) => (
             <li key={item.id}><TreeCard entry={{ kind: "inventory", item }} /></li>

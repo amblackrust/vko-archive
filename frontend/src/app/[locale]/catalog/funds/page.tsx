@@ -35,7 +35,7 @@ export default async function FundsPage({
         <h1 className="text-3xl font-bold">{title}</h1>
         <CatalogNav active={personal ? "personalFunds" : "funds"} />
         <ListSearch path="/catalog/funds" params={query} />
-        <p className="font-medium">{t("results.count", { count: data.total })}</p>
+        <h2 className="font-medium">{t("results.count", { count: data.total })}</h2>
         {data.items.length === 0 ? (
           <p className="text-muted-foreground">{t("tree.emptyFunds")}</p>
         ) : (

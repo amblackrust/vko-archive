@@ -16,7 +16,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
       <div className="container-page flex items-center gap-3 py-3">
-        <Link href="/" aria-label={t("homeLink")} className="flex min-w-0 items-center gap-3">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Landmark className="size-6" aria-hidden />
           </span>
