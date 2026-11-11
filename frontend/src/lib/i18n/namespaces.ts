@@ -30,4 +30,6 @@ export const namespaces = [
   "news",
   "cabinet",
   "misc",
+  "adminAi",
+  "adminContent",
 ] as const;
