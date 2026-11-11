@@ -197,7 +197,8 @@ def update(
     if not changed:
         return obj
     try:
-        workflow.save_with_version(session, user, spec.kind, obj, expected, values, ip=ip)
+        # Only the changed fields: forms resend everything, and the live-object rule looks at what changes.
+        workflow.save_with_version(session, user, spec.kind, obj, expected, changed, ip=ip)
         audit.record(
             session, action_type=f"{spec.kind}.update", result=AuditResult.SUCCESS, user=user,
             object_type=spec.kind, object_id=obj.id, details={"fields": sorted(changed)}, ip=ip,

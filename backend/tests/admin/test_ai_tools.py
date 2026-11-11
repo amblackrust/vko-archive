@@ -261,7 +261,7 @@ def test_annotation_refused_for_non_public_document_without_calling_the_model(ap
 
 def test_annotation_not_shown_after_unpublish(api, factory, model):
     doc = public_document(factory, summary={"ru": "Описание."})
-    _editor(api, factory)
+    _publisher(api, factory)  # approval needs workflow.publish
     model.reply = "Краткое содержание."
     api.post(f"{BASE}/documents/{doc.id}/annotations/generate", json={"lang": "ru"})
     api.post(f"{BASE}/documents/{doc.id}/annotations/ru/approve")
