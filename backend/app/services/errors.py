@@ -55,3 +55,11 @@ class Conflict(ServiceError):
 
 class InvalidInput(ServiceError):
     code = "invalid_input"
+
+
+class FileTooLarge(ServiceError):
+    code = "file_too_large"
+
+
+class UnsupportedMedia(ServiceError):
+    code = "unsupported_file_type"
