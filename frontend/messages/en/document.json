@@ -69,10 +69,10 @@
     "pages": "Pages",
     "pageThumb": "Go to page {n}",
     "noPreview": "This file has no built-in preview.",
-    "pdfNote": "PDF opens as a separate file.",
     "audio": "Audio recording",
     "hint": "The wheel and buttons zoom, dragging pans the image, arrow keys turn pages.",
-    "loadFailed": "Could not load the image."
+    "loadFailed": "Could not load the file.",
+    "loading": "Loading the document…"
   },
   "related": {
     "empty": "No related materials."

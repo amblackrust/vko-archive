@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DocumentAiPanel } from "@/components/ai/document/document-ai-panel";
@@ -17,8 +18,8 @@ import { localizedAlternates } from "@/lib/seo";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
-async function load(locale: string, id: string) {
-  return catalogFetch<DocumentDetail>(`documents/${encodeURIComponent(id)}`, new URLSearchParams(), locale);
+async function load(locale: string, id: string, session?: string) {
+  return catalogFetch<DocumentDetail>(`documents/${encodeURIComponent(id)}`, new URLSearchParams(), locale, session);
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -34,7 +35,9 @@ export default async function DocumentPage({ params }: Props) {
   const t = await getTranslations("document");
   const c = await getTranslations("catalog");
   // Скрытый, неопубликованный и несуществующий документ неотличимы: 404 без подробностей.
-  const doc = await load(locale, id);
+  // Сессия сотрудника (httpOnly cookie) передаётся в API: он увидит доступные ему закрытые файлы. Анонимам — как раньше.
+  const session = (await cookies()).get("vko_session")?.value;
+  const doc = await load(locale, id, session);
   if (!doc) notFound();
 
   const crumbs = [{ label: c("title"), href: "/catalog" }];

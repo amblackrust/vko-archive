@@ -5,11 +5,22 @@ import { ExternalLink, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { HistoryTurn } from "@/lib/api/ai";
 import { aiAvailable, askDocument, RateLimitedError, type DocumentAiResult } from "./api";
 import { AnswerText } from "./answer-text";
 
 const QUICK_QUESTIONS = ["when", "who", "what"] as const;
 const MAX_QUESTION = 500;
+// Пределы history на сервере (docs/AI.md): до 6 реплик, user <= 500, assistant <= 1500, всего <= 4000.
+const HISTORY_TURNS = 6;
+const HISTORY_ASSISTANT_CHARS = 1500;
+const HISTORY_TOTAL_CHARS = 4000;
+
+function trimHistory(turns: HistoryTurn[]): HistoryTurn[] {
+  const recent = turns.slice(-HISTORY_TURNS);
+  while (recent.length > 2 && recent.reduce((sum, turn) => sum + turn.text.length, 0) > HISTORY_TOTAL_CHARS) recent.splice(0, 2);
+  return recent;
+}
 
 type Status =
   | { kind: "idle" }
@@ -30,6 +41,7 @@ export function DocumentAiPanel({ documentId }: { documentId: string }) {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [available, setAvailable] = useState<boolean | null>(null);
   const controller = useRef<AbortController | null>(null);
+  const history = useRef<HistoryTurn[]>([]);
 
   useEffect(() => {
     const check = new AbortController();
@@ -57,7 +69,16 @@ export function DocumentAiPanel({ documentId }: { documentId: string }) {
         locale,
         (delta) => setStatus((prev) => (prev.kind === "streaming" ? { kind: "streaming", text: prev.text + delta } : prev)),
         current.signal,
+        trimHistory(history.current),
       );
+      // В историю попадают только настоящие ответы по документу, не сообщения о сбоях и отказах.
+      if (result.mode === "answer") {
+        history.current = trimHistory([
+          ...history.current,
+          { role: "user", text },
+          { role: "assistant", text: result.answer.slice(0, HISTORY_ASSISTANT_CHARS) },
+        ]);
+      }
       setStatus({ kind: "done", result });
       if (result.mode === "unavailable") setAvailable(false);
     } catch (error) {

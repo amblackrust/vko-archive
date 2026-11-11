@@ -147,11 +147,17 @@ export function withoutParam(params: URLSearchParams, key: string, value?: strin
   return out;
 }
 
-/** GET к каталогу; 404 -> null (материал скрыт или не существует). */
-export async function catalogFetch<T>(path: string, params: URLSearchParams, lang: string): Promise<T | null> {
+/**
+ * GET к каталогу; 404 -> null (материал скрыт или не существует). `session` — значение cookie сессии
+ * сотрудника (серверный рендер её сам не передаёт): с ней карточка содержит и закрытые файлы, доступные ему.
+ */
+export async function catalogFetch<T>(path: string, params: URLSearchParams, lang: string, session?: string): Promise<T | null> {
   const query = new URLSearchParams(params);
   query.set("lang", lang);
-  const response = await fetch(`${API_URL}/api/catalog/${path}?${query}`, { cache: "no-store" });
+  const response = await fetch(`${API_URL}/api/catalog/${path}?${query}`, {
+    cache: "no-store",
+    headers: session ? { Cookie: `vko_session=${session}` } : undefined,
+  });
   if (response.status === 404 || response.status === 422) return null;
   if (!response.ok) throw new Error(`catalog ${path}: ${response.status}`);
   return (await response.json()) as T;

@@ -1,4 +1,4 @@
-import { readNdjson } from "@/lib/api/ai";
+import { readNdjson, type HistoryTurn } from "@/lib/api/ai";
 import { API_URL } from "@/lib/api/client";
 
 /** Контракт режима «ИИ по документу» (backend: POST /api/ai/documents/{id}/answer/stream, schemas/ai.py). */
@@ -57,11 +57,12 @@ export async function askDocument(
   lang: string,
   onDelta: (text: string) => void,
   signal: AbortSignal,
+  history: HistoryTurn[] = [],
 ): Promise<DocumentAiResult> {
   const response = await fetch(`${API_URL}/api/ai/documents/${encodeURIComponent(documentId)}/answer/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ q, lang }),
+    body: JSON.stringify({ q, lang, history }),
     signal,
   });
   if (response.status === 429) {
