@@ -11,6 +11,7 @@ from app.config import Settings
 from app.deps import AppSettings, ClientIp, DbSession
 from app.models import Visitor
 from app.schemas.cabinet import (
+    ChangePasswordRequest,
     FavoriteItem,
     FavoriteRef,
     FavoriteStatus,
@@ -91,6 +92,14 @@ def logout(visitor: CurrentVisitor, session: DbSession, settings: AppSettings) -
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
     _clear_cookies(response, settings)
     return response
+
+
+@router.post("/auth/password", response_model=VisitorMe)
+def change_password(body: ChangePasswordRequest, response: Response, auth: CurrentSession, session: DbSession, settings: AppSettings) -> VisitorMe:
+    """Changes the password; the other sessions of the visitor sign out, this one is renewed."""
+    renewed = auth_service.change_password(session, settings, auth, body.current_password, body.new_password)
+    _set_cookies(response, settings, renewed)
+    return _me(renewed)
 
 
 @router.get("/me", response_model=VisitorMe)
