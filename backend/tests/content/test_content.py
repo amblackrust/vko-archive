@@ -47,8 +47,58 @@ def test_published_page_falls_back_to_ru_and_reports_status(client: TestClient, 
     assert response.status_code == 200
     assert response.json() == {
         "key": key, "title": "ДЕМО страница", "body": "<p>Текст</p>", "lang": "ru",
-        "translation_status": "verified",
+        "translation_status": "verified", "seo_title": "", "seo_description": "", "seo_keywords": "",
     }
+
+
+def test_page_returns_seo_fields_in_requested_language(client: TestClient, cms: Callable[[Any], None]):
+    key = _key()
+    cms(Page(
+        key=key, title={"ru": "Т"}, body={"ru": "x"}, workflow_status=WorkflowStatus.PUBLISHED,
+        seo_title={"ru": "СЕО", "kk": "СЕО-kk"}, seo_description={"ru": "Описание"},
+    ))
+    body = client.get(f"/api/pages/{key}", params={"lang": "kk"}).json()
+    assert (body["seo_title"], body["seo_description"], body["seo_keywords"]) == ("СЕО-kk", "Описание", "")
+
+
+def test_public_site_settings_expose_only_safe_fields(client: TestClient, engine: Engine):
+    keys = ("social", "widgets", "survey", "counter", "useful_links", "contacts")
+    session = Session(engine)
+    saved = {k: (row.value if (row := session.get(SiteSetting, k)) else None) for k in keys}
+    new = {
+        "social": {"instagram": {"url": "https://example.test/i", "handle": "@x"}, "facebook": {}},
+        "widgets": {"calendar_weather": False, "rating": True, "statistics": False},
+        "survey": {"enabled": True, "question": {"ru": "Вопрос?"}, "url": "https://example.test/s"},
+        "counter": {"enabled": True, "base_value": 42},
+        "useful_links": {"items": [{"title": {"ru": "Ссылка"}, "url": "https://example.test/l"}]},
+        "contacts": {"secret": "no"},
+    }
+    try:
+        for key, value in new.items():
+            row = session.get(SiteSetting, key)
+            if row is None:
+                session.add(SiteSetting(key=key, value=value))
+            else:
+                row.value = value
+        session.commit()
+        data = client.get("/api/site-settings", params={"lang": "en"}).json()
+        assert data == {
+            "social": {"instagram": {"url": "https://example.test/i", "handle": "@x"}},
+            "widgets": {"calendar_weather": False, "rating": True, "statistics": False},
+            "survey": {"enabled": True, "question": "Вопрос?", "url": "https://example.test/s"},
+            "counter": {"enabled": True, "value": 42},
+            "useful_links": [{"title": "Ссылка", "url": "https://example.test/l"}],
+        }
+    finally:
+        session.rollback()
+        for key, value in saved.items():
+            row = session.get(SiteSetting, key)
+            if value is None and row is not None:
+                session.delete(row)
+            elif row is not None:
+                row.value = value
+        session.commit()
+        session.close()
 
 
 def test_draft_and_unknown_pages_are_404_and_bad_key_is_422(client: TestClient, cms: Callable[[Any], None]):
