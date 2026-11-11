@@ -11,6 +11,7 @@ from app.models.cabinet import (
     VisitorSelection,
     VisitorSelectionItem,
     VisitorSubscription,
+    VisitorToken,
 )
 from app.models.catalog import Case, Document, Fund, Inventory, document_categories, document_tags
 from app.models.content import FAQ, Category, LegalAct, MemorialDate, News, Page, PriceListItem, SiteSetting, Tag
@@ -40,6 +41,7 @@ __all__ = [
     "VisitorSelection",
     "VisitorSelectionItem",
     "VisitorSubscription",
+    "VisitorToken",
     "EMBEDDING_DIM",
     "FAQ",
     "AuditLog",

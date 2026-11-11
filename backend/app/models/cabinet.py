@@ -27,9 +27,29 @@ class Visitor(UUIDPkMixin, TimestampMixin, Base):
     password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     # In every session token (claim `sev`); logout increments it, revoking all issued tokens.
     session_version: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    email_confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 Index("uq_visitors_email_lower", func.lower(Visitor.email), unique=True)
+
+TOKEN_PURPOSES = ("password_reset", "email_confirm")
+
+
+class VisitorToken(UUIDPkMixin, Base):
+    """One-time e-mail token (password reset / e-mail confirmation). Only the SHA-256 of the
+    token is stored: the database never holds a usable link."""
+
+    __tablename__ = "visitor_tokens"
+    __table_args__ = (CheckConstraint("purpose IN ('password_reset', 'email_confirm')", name="purpose"),)
+
+    visitor_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("visitors.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    purpose: Mapped[str] = mapped_column(String(16), nullable=False)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
 
 class VisitorFavorite(Base):
