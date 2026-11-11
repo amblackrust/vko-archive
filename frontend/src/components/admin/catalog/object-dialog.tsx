@@ -200,6 +200,7 @@ export function ObjectDialog({ kind, id, spec, createDefaults, branches, fileOwn
                   editing={editing}
                   ns={ns}
                   machine={machine}
+                  ownerId={object?.id}
                 />
                 {extra?.(object, change, values)}
                 <div className="flex justify-end gap-2">

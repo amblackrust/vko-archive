@@ -64,14 +64,14 @@ export function SettingForm<K extends SettingKey>({ name, value }: SettingFormPr
       </FormField>
     ));
   } else if (name === "widgets") {
-    fields = (["calendar_weather", "rating", "statistics"] as const).map((widget) => (
+    fields = (["calendar_weather"] as const).map((widget) => (
       <Check key={widget} label={t(`widgets.${widget}`)} checked={Boolean(v[widget])} onChange={(checked) => set({ [widget]: checked })} />
     ));
   } else if (name === "survey") {
     fields = (
       <>
         <Check label={t("survey.enabled")} checked={Boolean(v.enabled)} onChange={(checked) => set({ enabled: checked })} />
-        <I18nField label={t("survey.question")} value={(v.question as I18nValue) ?? {}} onChange={(question) => set({ question })} />
+        <I18nField textTranslate label={t("survey.question")} value={(v.question as I18nValue) ?? {}} onChange={(question) => set({ question })} />
         <FormField label={t("survey.url")} htmlFor={`${id}-url`} hint={t("survey.hint")}>
           <Input id={`${id}-url`} type="url" placeholder="https://" value={(v.url as string | null) ?? ""} onChange={(e) => set({ url: e.target.value || null })} />
         </FormField>
@@ -93,7 +93,7 @@ export function SettingForm<K extends SettingKey>({ name, value }: SettingFormPr
       <>
         {items.map((item, index) => (
           <div key={index} className="space-y-2 rounded-md border p-3">
-            <I18nField label={t("links.title", { n: index + 1 })} value={item.title} onChange={(title) => setItems(items.map((row, i) => (i === index ? { ...row, title } : row)))} />
+            <I18nField textTranslate label={t("links.title", { n: index + 1 })} value={item.title} onChange={(title) => setItems(items.map((row, i) => (i === index ? { ...row, title } : row)))} />
             <div className="flex gap-2">
               <Input type="url" required aria-label={t("links.url", { n: index + 1 })} placeholder="https://" value={item.url} onChange={(e) => setItems(items.map((row, i) => (i === index ? { ...row, url: e.target.value } : row)))} />
               <Button type="button" size="icon" variant="ghost" aria-label={t("links.remove", { n: index + 1 })} onClick={() => setItems(items.filter((_, i) => i !== index))}>

@@ -6,6 +6,9 @@ import { pickName } from "@/lib/api/admin";
 import type { I18nValue, Values } from "@/lib/api/admin-content";
 import { FormField, Select } from "../form-field";
 import { RichTextField } from "../cms/rich-text-field";
+import { LegalActField } from "../cms/legal-act-field";
+import { MediaField, type MediaEntry } from "../cms/media-field";
+import { RelatedField, type RelatedEntry } from "../cms/related-field";
 import { SourcesField } from "../cms/sources-field";
 import { PlacesField } from "./places-field";
 import { I18nField, type MachineTranslateProps } from "../i18n-field";
@@ -19,7 +22,10 @@ export type FieldSpec =
   | { name: string; type: "branch" }
   | { name: string; type: "lines" }
   | { name: string; type: "rich"; required?: boolean }
-  | { name: string; type: "sources" };
+  | { name: string; type: "sources" }
+  | { name: string; type: "media" }
+  | { name: string; type: "related" }
+  | { name: string; type: "legalAct" };
 
 export interface BranchChoice {
   id: string;
@@ -39,10 +45,12 @@ interface FieldsFormProps {
   ns?: string;
   /** Кнопка чернового перевода ИИ под i18n-полями (только для сохранённого черновика). */
   machine?: MachineTranslateProps;
+  /** Id сохранённого объекта: нужен полям, выбирающим его загруженные файлы. */
+  ownerId?: string;
 }
 
 /** Форма по описанию полей: подписи — adminCatalog.fields.<name>, варианты списков — adminCatalog.options.<name>.<value>. */
-export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing, ns = "adminCatalog", machine }: FieldsFormProps) {
+export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing, ns = "adminCatalog", machine, ownerId }: FieldsFormProps) {
   const t = useTranslations("adminCatalog");
   const tf = useTranslations(ns);
   const locale = useLocale();
@@ -74,6 +82,7 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                 label={label}
                 value={(value as I18nValue) ?? {}}
                 translationStatus={translationStatus}
+                machine={machine}
                 onChange={(next) => onChange(field.name, next)}
               />
             );
@@ -86,6 +95,27 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                 onChange={(next) => onChange(field.name, next as unknown as Values[string])}
               />
             );
+          case "media":
+            return (
+              <MediaField
+                key={field.name}
+                label={label}
+                ownerId={ownerId}
+                value={(value as unknown as MediaEntry[]) ?? []}
+                onChange={(next) => onChange(field.name, next as unknown as Values[string])}
+              />
+            );
+          case "related":
+            return (
+              <RelatedField
+                key={field.name}
+                label={label}
+                value={(value as unknown as RelatedEntry[]) ?? []}
+                onChange={(next) => onChange(field.name, next as unknown as Values[string])}
+              />
+            );
+          case "legalAct":
+            return <LegalActField key={field.name} id={id} label={label} value={(value as string | null) ?? null} onChange={(next) => onChange(field.name, next)} />;
           case "select":
             return (
               <FormField key={field.name} label={label} htmlFor={id}>

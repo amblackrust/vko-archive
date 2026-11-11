@@ -55,6 +55,12 @@ export const translationsApi = {
       method: "POST",
       body: { source_lang: source, target_lang: target, version, overwrite: overwrite ?? false },
     }),
+  /** Черновой перевод одной строки без сохранения (формы настроек сайта). 503 ai_unavailable — Ollama недоступна. */
+  text: (text: string, source: TranslationLang, target: TranslationLang) =>
+    adminRequest<{ text: string }>("/translations/text", {
+      method: "POST",
+      body: { text, source_lang: source, target_lang: target },
+    }),
   verify: (objectType: string, objectId: string, lang: TranslationLang, version: number) =>
     adminRequest<TranslationDetail>(`/translations/${encodeURIComponent(objectType)}/${encodeURIComponent(objectId)}/verify`, {
       method: "POST",

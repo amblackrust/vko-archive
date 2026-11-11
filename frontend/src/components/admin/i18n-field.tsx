@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { MachineTranslateButton } from "./translations/machine-translate-button";
+import { TextTranslateButton } from "./translations/text-translate-button";
 import type { TranslationDetail, TranslationLang } from "./translations/translations-api";
 
 /** Сохранённый объект в draft/needs_changes без несохранённых правок: только тогда можно переводить на сервере. */
@@ -26,10 +27,12 @@ interface I18nFieldProps {
   /** Статус перевода по языкам (verified / machine / missing) для пометки вкладок. */
   translationStatus?: Record<string, string>;
   machine?: MachineTranslateProps;
+  /** Для значений вне переводимых объектов (настройки сайта): перевод строки без сохранения. */
+  textTranslate?: boolean;
 }
 
 /** Поле с вкладками kk / ru / en (PLAN T6.11). Пустой язык отправляется как отсутствующий. */
-export function I18nField({ label, value, onChange, multiline, required, translationStatus, machine }: I18nFieldProps) {
+export function I18nField({ label, value, onChange, multiline, required, translationStatus, machine, textTranslate }: I18nFieldProps) {
   const t = useTranslations("adminCatalog.i18n");
   const id = useId();
   const [lang, setLang] = useState<(typeof FIELD_LANGS)[number]>("ru");
@@ -74,6 +77,15 @@ export function I18nField({ label, value, onChange, multiline, required, transla
         />
       ) : (
         <Input id={`${id}-${lang}`} lang={lang} value={value[lang] ?? ""} onChange={(e) => setText(e.target.value)} />
+      )}
+      {textTranslate && !machine && source && (
+        <TextTranslateButton
+          source={source as TranslationLang}
+          target={lang}
+          sourceText={value[source]}
+          targetText={value[lang] ?? ""}
+          onDone={setText}
+        />
       )}
       {machine && source && (
         <MachineTranslateButton

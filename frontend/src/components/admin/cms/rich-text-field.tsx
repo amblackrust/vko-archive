@@ -8,13 +8,16 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { FIELD_LANGS } from "../i18n-field";
+import { FIELD_LANGS, type MachineTranslateProps } from "../i18n-field";
+import { MachineTranslateButton } from "../translations/machine-translate-button";
+import type { TranslationLang } from "../translations/translations-api";
 
 interface RichTextFieldProps {
   label: string;
   value: Record<string, string>;
   onChange: (value: Record<string, string>) => void;
   translationStatus?: Record<string, string>;
+  machine?: MachineTranslateProps;
 }
 
 const EDITOR_STYLE =
@@ -104,12 +107,14 @@ function LangEditor({ lang, html, onHtml }: { lang: string; html: string; onHtml
 }
 
 /** Rich-text поле с вкладками kk / ru / en (TipTap). */
-export function RichTextField({ label, value, onChange, translationStatus }: RichTextFieldProps) {
+export function RichTextField({ label, value, onChange, translationStatus, machine }: RichTextFieldProps) {
   const t = useTranslations("adminCatalog.i18n");
   const id = useId();
   const [lang, setLang] = useState<(typeof FIELD_LANGS)[number]>("ru");
   const latest = useRef(value);
   latest.current = value;
+  // Источник перевода: первый заполненный язык, отличный от открытой вкладки.
+  const source = FIELD_LANGS.find((code) => code !== lang && value[code]?.trim());
   return (
     <div className="space-y-1.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -132,6 +137,14 @@ export function RichTextField({ label, value, onChange, translationStatus }: Ric
         </div>
       </div>
       <LangEditor key={lang} lang={lang} html={value[lang] ?? ""} onHtml={(html) => onChange({ ...latest.current, [lang]: html })} />
+      {machine && source && (
+        <MachineTranslateButton
+          {...machine}
+          source={source as TranslationLang}
+          target={lang}
+          targetStatus={translationStatus?.[lang] as "verified" | "machine" | "missing" | undefined}
+        />
+      )}
     </div>
   );
 }

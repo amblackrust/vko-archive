@@ -105,7 +105,10 @@
     "date_to": "Date to",
     "place": "Place",
     "lat": "Latitude",
-    "lng": "Longitude"
+    "lng": "Longitude",
+    "media": "Gallery (files and links)",
+    "related": "Related items",
+    "legal_act_id": "Legal act (from the register)"
   },
   "options": {
     "status": {
@@ -171,7 +174,9 @@
     "search": "Search by title or code",
     "find": "Find",
     "nothing": "Nothing found.",
-    "addItem": "Add"
+    "addItem": "Add",
+    "note": "Item note: {name}",
+    "noteLabel": "Note"
   },
   "settings": {
     "title": "Site settings",
@@ -282,5 +287,30 @@
     "confirmTitle": "Change the role permissions?",
     "confirmDescription": "Permissions of role “{role}” change immediately for all its users.",
     "confirm": "Save"
+  },
+  "related": {
+    "empty": "No related items.",
+    "types": {
+      "document": "Document",
+      "exhibition": "Exhibition",
+      "news": "News"
+    },
+    "remove": "Remove: {name}",
+    "type": "Type",
+    "search": "Search by title",
+    "find": "Find",
+    "nothing": "Nothing found.",
+    "add": "Add"
+  },
+  "media": {
+    "empty": "No gallery items.",
+    "file": "File",
+    "link": "Link",
+    "remove": "Remove: {name}",
+    "url": "External https link",
+    "addLink": "Add link",
+    "pickFile": "File uploaded to this news item",
+    "addFile": "Add file",
+    "filesAfterSave": "Files can be chosen after the news item is saved for the first time."
   }
 }

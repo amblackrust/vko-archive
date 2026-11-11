@@ -10,6 +10,7 @@ import { adminRequest, pickName } from "@/lib/api/admin";
 import { contentApi, type ContentObject, type ListItem } from "@/lib/api/admin-content";
 import { useCatalogError } from "../catalog/use-catalog-error";
 import { FormField, Select } from "../form-field";
+import { I18nField } from "../i18n-field";
 import { Notice } from "../notice";
 
 type ItemType = "document" | "person" | "historical_event";
@@ -146,12 +147,22 @@ export function LinksDialog({ kind, id, onClose }: LinksDialogProps) {
               ) : (
                 <ol className="space-y-1.5">
                   {links.map((link, index) => (
-                    <li key={`${link.type}-${link.id}`} className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm">
-                      <span className="rounded bg-surface-muted px-1.5 py-0.5 text-xs">{t(`types.${link.type}`)}</span>
-                      <span className="min-w-0 flex-1 truncate">{link.label}</span>
-                      <Button type="button" size="icon" variant="ghost" aria-label={t("up", { name: link.label })} disabled={index === 0} onClick={() => move(index, -1)}><ArrowUp /></Button>
-                      <Button type="button" size="icon" variant="ghost" aria-label={t("down", { name: link.label })} disabled={index === links.length - 1} onClick={() => move(index, 1)}><ArrowDown /></Button>
-                      <Button type="button" size="icon" variant="ghost" aria-label={t("remove", { name: link.label })} onClick={() => { setLinks(links.filter((_, i) => i !== index)); setSaved(false); }}><X /></Button>
+                    <li key={`${link.type}-${link.id}`} className="rounded-md border px-3 py-1.5 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded bg-surface-muted px-1.5 py-0.5 text-xs">{t(`types.${link.type}`)}</span>
+                        <span className="min-w-0 flex-1 truncate">{link.label}</span>
+                        <Button type="button" size="icon" variant="ghost" aria-label={t("up", { name: link.label })} disabled={index === 0} onClick={() => move(index, -1)}><ArrowUp /></Button>
+                        <Button type="button" size="icon" variant="ghost" aria-label={t("down", { name: link.label })} disabled={index === links.length - 1} onClick={() => move(index, 1)}><ArrowDown /></Button>
+                        <Button type="button" size="icon" variant="ghost" aria-label={t("remove", { name: link.label })} onClick={() => { setLinks(links.filter((_, i) => i !== index)); setSaved(false); }}><X /></Button>
+                      </div>
+                      {kind === "collection" && (
+                        <details className="mt-1" open={Object.values(link.note).some(Boolean)}>
+                          <summary className="cursor-pointer text-xs text-muted-foreground">{t("note", { name: link.label })}</summary>
+                          <div className="mt-1.5">
+                            <I18nField multiline label={t("noteLabel")} value={link.note} onChange={(note) => { setLinks(links.map((row, i) => (i === index ? { ...row, note } : row))); setSaved(false); }} />
+                          </div>
+                        </details>
+                      )}
                     </li>
                   ))}
                 </ol>
