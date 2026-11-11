@@ -4,53 +4,73 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design tokens. Направление: «цифровой музей» + архивная эстетика —
- * тёплая бумага, чернильный текст, глубокий синий и охра как акцент.
- * Пары фон/текст проверены на контраст WCAG AA (>= 4.5:1 для текста).
+ * Design tokens. Направление: «высокая печать» — хлопковая бумага, чёрная краска,
+ * вдавленный набор; единственный акцент — красная печать (--accent).
+ * Описание системы и правила для страниц: docs/DESIGN.md.
  */
 :root {
-  --background: #f7f4ee;
-  --foreground: #1d2433;
-  --surface: #ffffff;
-  --surface-muted: #efeae0;
-  --border: #d8d1c2;
-  --muted-foreground: #565d6b;
-  --primary: #1f3a5f;
-  --primary-foreground: #ffffff;
-  --accent: #7a4f0d;
-  --accent-soft: #f1e3c6;
-  --accent-soft-foreground: #5c3b05;
+  --background: #f3f2ee;
+  --foreground: #2b2a28;
+  --surface: #fbfaf7;
+  --surface-muted: #ebe9e3;
+  --border: #d3cfc5;
+  --muted-foreground: #57544e;
+  --primary: #2b2a28;
+  --primary-foreground: #fbfaf7;
+  --accent: #7b2d26;
+  --accent-soft: #f2e6e3;
+  --accent-soft-foreground: #5e211b;
   --destructive: #a31f2b;
   --destructive-foreground: #ffffff;
-  --warning-soft: #fbe9c0;
+  --warning-soft: #f4e8cc;
   --warning-soft-foreground: #5c3b05;
-  --ring: #1f3a5f;
+  --ring: #7b2d26;
+  --desk: #2a2825;
+  --desk-foreground: #e6e1d6;
+  --desk-muted: #a9a397;
+
+  /* Вдавленная печать краской: светлая кромка под буквой, тень над ней */
+  --press: 0 1px 0 rgba(255, 255, 255, 0.9), 0 -1px 0 rgba(0, 0, 0, 0.14);
+  --lift: 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04), 0 18px 30px -24px rgba(40, 30, 20, 0.45);
+  --lift-hover: 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06), 0 28px 40px -26px rgba(40, 30, 20, 0.5);
+  --well: inset 0 2px 4px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(0, 0, 0, 0.1), 0 1px 0 #fff;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .28 0 0 0 0 .25 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E");
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
-  --radius-lg: 0.875rem;
+  --radius-lg: 0.625rem;
 
   --space-section: 4rem;
-  --container-max: 76rem;
+  --container-max: 84rem;
 }
 
 .dark {
-  --background: #12151c;
-  --foreground: #ebe7df;
-  --surface: #1a1f29;
-  --surface-muted: #202633;
-  --border: #323a4a;
-  --muted-foreground: #a6adbb;
-  --primary: #8fb4e3;
-  --primary-foreground: #0f1a2b;
-  --accent: #e0b866;
-  --accent-soft: #3a2f17;
-  --accent-soft-foreground: #f0d9a3;
+  --background: #1f1d1b;
+  --foreground: #ece8df;
+  --surface: #282522;
+  --surface-muted: #302d29;
+  --border: #48433c;
+  --muted-foreground: #b3ac9f;
+  --primary: #ece8df;
+  --primary-foreground: #1f1d1b;
+  --accent: #e39a8f;
+  --accent-soft: #3b2522;
+  --accent-soft-foreground: #f2c9c2;
   --destructive: #ff8a93;
   --destructive-foreground: #2a0a0d;
   --warning-soft: #3a2f17;
   --warning-soft-foreground: #f0d9a3;
-  --ring: #8fb4e3;
+  --ring: #e39a8f;
+  --desk: #151413;
+  --desk-foreground: #e6e1d6;
+  --desk-muted: #a09a8e;
+
+  --press: 0 1px 0 rgba(0, 0, 0, 0.55), 0 -1px 0 rgba(255, 255, 255, 0.06);
+  --lift: 0 1px 1px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05), 0 18px 30px -24px rgba(0, 0, 0, 0.8);
+  --lift-hover: 0 1px 1px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08), 0 28px 40px -26px rgba(0, 0, 0, 0.85);
+  --well: inset 0 2px 4px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 0 rgba(255, 255, 255, 0.04);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
 }
 
 @theme inline {
@@ -70,13 +90,22 @@
   --color-warning-soft: var(--warning-soft);
   --color-warning-soft-foreground: var(--warning-soft-foreground);
   --color-ring: var(--ring);
+  --color-desk: var(--desk);
+  --color-desk-foreground: var(--desk-foreground);
+  --color-desk-muted: var(--desk-muted);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
 
+  --shadow-lift: var(--lift);
+  --shadow-lift-hover: var(--lift-hover);
+  --shadow-well: var(--well);
+  --ease-print: var(--ease);
+
   --font-sans: var(--font-sans-face), system-ui, sans-serif;
   --font-serif: var(--font-serif-face), Georgia, serif;
+  --font-caps: var(--font-caps-face), var(--font-serif-face), Georgia, serif;
 }
 
 @layer base {
@@ -84,25 +113,68 @@
     border-color: var(--border);
   }
   html {
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 2rem;
   }
   body {
-    background: var(--background);
+    background: var(--grain), var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-serif);
-    line-height: 1.2;
-  }
   :focus-visible {
     outline: 2px solid var(--ring);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
+}
+
+/*
+ * Публичная часть сайта набрана Cormorant Garamond. У гарнитуры маленький очко,
+ * поэтому шкала размеров Tailwind внутри .site-public крупнее стандартной:
+ * text-sm здесь ≈ 17 px, text-base ≈ 19 px. Админка (.site-admin) остаётся на Inter.
+ */
+.site-public {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  --text-xs: 0.9375rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 1.0625rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1.1875rem;
+  --text-base--line-height: 1.55;
+  --text-lg: 1.3125rem;
+  --text-lg--line-height: 1.45;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.875rem;
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 2.375rem;
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 1.02;
+  --text-5xl: 3.75rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 4.75rem;
+  --text-6xl--line-height: 0.98;
+  --text-7xl: 6rem;
+  --text-7xl--line-height: 0.95;
+}
+.site-public :where(h1, h2, h3, h4) {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.site-public :where(input, select, textarea, button) {
+  font-family: inherit;
+}
+/* В админке капитель общих компонентов (кнопки) набирается рабочим шрифтом. */
+.site-admin .caps {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 @layer utilities {
@@ -114,9 +186,93 @@
   }
   @media (min-width: 640px) {
     .container-page {
-      padding-inline: 1.5rem;
+      padding-inline: 2rem;
     }
   }
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Вдавленный набор для текста на бумаге. */
+  .press {
+    text-shadow: var(--press);
+  }
+  /* Крупные заголовки: краска с рельефной кромкой (SVG-фильтр #inked из SiteShell). */
+  .inked {
+    filter: url(#inked);
+  }
+  .dark .inked {
+    filter: none;
+    text-shadow: var(--press);
+  }
+  /* Капитель: навигация, подписи полей, даты, кнопки. */
+  .caps {
+    font-family: var(--font-caps);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .grain {
+    background-image: var(--grain);
+  }
+  /* Бумажный лист: карточки, панели. */
+  .sheet {
+    background: var(--grain), var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--lift);
+  }
+  /* Вдавленное поле: поиск, ввод. */
+  .well {
+    background: var(--surface);
+    box-shadow: var(--well);
+  }
+  /* Ссылка с постоянной тонкой линией; при наведении — цвет печати. */
+  .ink-link {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+    transition: color 0.2s, background-size 0.2s;
+  }
+  .ink-link:hover {
+    color: var(--accent);
+  }
+  /* Подчёркивание, выезжающее при наведении (пункты меню, переключатели). */
+  .rule-hover {
+    position: relative;
+  }
+  .rule-hover::after {
+    content: "";
+    position: absolute;
+    left: var(--rule-inset, 0);
+    right: var(--rule-inset, 0);
+    bottom: var(--rule-bottom, 2px);
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.3s var(--ease);
+  }
+  .rule-hover:hover::after,
+  .rule-hover[aria-expanded="true"]::after,
+  .rule-hover[aria-current="page"]::after {
+    transform: none;
+  }
+  .rule-hover[aria-current="page"]::after {
+    background: currentColor;
+    height: 1px;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-settle {
+  animation: settle 0.9s var(--ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

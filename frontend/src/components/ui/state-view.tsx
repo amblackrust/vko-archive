@@ -19,12 +19,10 @@ interface StateViewProps {
 /** Базовая карточка системного состояния; тексты передаёт вызывающий. */
 export function StateView({ icon: Icon, title, description, children, className, as: Heading = "h1" }: StateViewProps) {
   return (
-    <div className={cn("mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-16 text-center", className)}>
-      <span className="flex size-16 items-center justify-center rounded-full bg-surface-muted text-primary">
-        <Icon className="size-8" aria-hidden />
-      </span>
-      <Heading className="text-2xl font-semibold sm:text-3xl">{title}</Heading>
-      {description && <p className="text-muted-foreground">{description}</p>}
+    <div className={cn("mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-20 text-center", className)}>
+      <Icon className="size-10 text-muted-foreground" strokeWidth={1.25} aria-hidden />
+      <Heading className="inked text-3xl sm:text-4xl">{title}</Heading>
+      {description && <p className="press text-lg text-muted-foreground">{description}</p>}
       {children && <div className="mt-2 flex flex-wrap justify-center gap-3">{children}</div>}
     </div>
   );
@@ -109,7 +107,7 @@ export function PageSkeleton() {
   const t = useTranslations("states.loading");
   return (
     <div role="status" aria-label={t("label")} className="container-page py-10">
-      <Skeleton className="h-8 w-1/3" />
+      <Skeleton className="h-12 w-1/3" />
       <Skeleton className="mt-4 h-4 w-2/3" />
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (

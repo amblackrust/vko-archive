@@ -1,6 +1,6 @@
-import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
+import { cn } from "@/lib/utils";
 
 export interface Crumb {
   label: string;
@@ -8,23 +8,26 @@ export interface Crumb {
   href?: string;
 }
 
-/** Хлебные крошки; «Главная» добавляется автоматически. Последний элемент — текущая страница. */
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+/**
+ * Хлебные крошки; «Главная» добавляется автоматически. Последний элемент — текущая страница.
+ * `bare` — без собственного контейнера (внутри PageHeader).
+ */
+export function Breadcrumbs({ items, bare = false }: { items: Crumb[]; bare?: boolean }) {
   const t = useTranslations("common");
   const all: Crumb[] = [{ label: t("home"), href: "/" }, ...items];
   return (
-    <nav aria-label={t("breadcrumbs")} className="container-page py-3 text-sm">
-      <ol className="flex flex-wrap items-center gap-1 text-muted-foreground">
+    <nav aria-label={t("breadcrumbs")} className={cn("caps text-sm", !bare && "container-page pt-6")}>
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground">
         {all.map((crumb, i) => {
           const last = i === all.length - 1;
           return (
-            <li key={i} className="flex items-center gap-1">
+            <li key={i} className="flex min-w-0 items-center gap-2">
               {crumb.href && !last ? (
-                <Link href={crumb.href} className="hover:text-foreground hover:underline">{crumb.label}</Link>
+                <Link href={crumb.href} className="transition-colors hover:text-accent">{crumb.label}</Link>
               ) : (
-                <span aria-current="page" className="text-foreground">{crumb.label}</span>
+                <span aria-current="page" className="truncate text-foreground">{crumb.label}</span>
               )}
-              {!last && <ChevronRight className="size-3.5" aria-hidden />}
+              {!last && <span aria-hidden className="text-border">/</span>}
             </li>
           );
         })}
