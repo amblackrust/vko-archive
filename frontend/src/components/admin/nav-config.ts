@@ -1,5 +1,6 @@
 import { Building2, Images, Library, LayoutDashboard, Users, type LucideIcon } from "lucide-react";
 import { FileSpreadsheet, Languages } from "lucide-react";
+import { BookOpenText, History, Landmark, Settings, ShieldCheck } from "lucide-react";
 import { BarChart3, Sparkles } from "lucide-react";
 import { can, type Me } from "@/lib/api/admin";
 
@@ -21,9 +22,14 @@ export const adminNav: AdminNavItem[] = [
   { key: "exhibitions", href: "/admin/exhibitions", icon: Images, anyOf: ["content.view"] },
   { key: "users", href: "/admin/users", icon: Users, anyOf: ["users.view"] },
   { key: "import", href: "/admin/import", icon: FileSpreadsheet, anyOf: ["catalog.import", "catalog.export"] },
+  { key: "content", href: "/admin/content", icon: BookOpenText, anyOf: ["content.view"] },
+  { key: "memory", href: "/admin/memory", icon: Landmark, anyOf: ["content.view"] },
   { key: "translations", href: "/admin/translations", icon: Languages, anyOf: ["catalog.view", "content.view", "branches.view"] },
   { key: "aiTools", href: "/admin/ai-tools", icon: Sparkles, anyOf: ["ai.use"] },
   { key: "analytics", href: "/admin/analytics", icon: BarChart3, anyOf: ["analytics.view"] },
+  { key: "settings", href: "/admin/settings", icon: Settings, anyOf: ["settings.edit"] },
+  { key: "audit", href: "/admin/audit", icon: History, anyOf: ["audit.view"] },
+  { key: "roles", href: "/admin/roles", icon: ShieldCheck, superOnly: true },
 ];
 
 export function visibleNav(me: Me): AdminNavItem[] {

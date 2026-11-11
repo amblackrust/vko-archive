@@ -94,7 +94,7 @@ def conflict_from(exc: IntegrityError) -> Conflict:
     text = str(exc.orig)
     if "archive_code" in text:
         return Conflict("archive_code_taken")
-    if "slug" in text:
+    if "slug" in text or "pages_key" in text:
         return Conflict("slug_taken")
     if "date_range" in text:
         return Conflict("invalid_range")

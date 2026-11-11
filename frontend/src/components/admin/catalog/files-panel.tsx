@@ -13,8 +13,10 @@ import { useCatalogError } from "./use-catalog-error";
 
 const ACCEPT = ".pdf,.jpg,.jpeg,.png,.webp,.tif,.tiff,.mp3,.wav,.ogg,.oga,.flac,.m4a,.mp4,.m4v,.mov,.webm";
 
+export type FileOwner = "document" | "exhibit" | "exhibition" | "branch" | "news" | "person" | "collection" | "legal_act";
+
 interface FilesPanelProps {
-  ownerType: "document" | "exhibit" | "exhibition" | "branch";
+  ownerType: FileOwner;
   ownerId: string;
   canUpload: boolean;
   canDelete: boolean;

@@ -74,7 +74,12 @@ function query(params: Record<string, string | number | undefined>) {
 }
 
 /** kind: fund | inventory | case | document | branch | exhibition | exhibit — путь REST у каждого свой. */
+const CONTENT_KINDS = ["news", "page", "faq", "legal_act", "price_list_item", "memorial_date"];
+const MEMORY_KINDS = ["collection", "person", "historical_event"];
+
 function base(kind: string) {
+  if (CONTENT_KINDS.includes(kind)) return `/content/${kind}`;
+  if (MEMORY_KINDS.includes(kind)) return `/memory/${kind}`;
   if (kind === "branch") return "/branches";
   if (kind === "exhibition") return "/exhibitions";
   if (kind === "exhibit") return "/exhibits";

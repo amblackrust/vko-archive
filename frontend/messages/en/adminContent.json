@@ -1,1 +1,286 @@
-{}
+{
+  "sections": "Types",
+  "translations": "Translations",
+  "search": "Search",
+  "empty": "Nothing here.",
+  "priceNote": "The price list is reference information with its legal basis. There is no payment or ordering on the site.",
+  "editItem": "Edit: {name}",
+  "deleteItem": "Delete: {name}",
+  "content": {
+    "title": "Site content"
+  },
+  "memory": {
+    "title": "Memory archive"
+  },
+  "tabs": {
+    "news": "News",
+    "page": "Pages",
+    "faq": "FAQ",
+    "legal_act": "Legal acts",
+    "price_list_item": "Price list",
+    "memorial_date": "Calendar",
+    "collection": "Collections",
+    "person": "Persons",
+    "historical_event": "Timeline events"
+  },
+  "columns": {
+    "title": "Title",
+    "status": "Status",
+    "number": {
+      "news": "Slug",
+      "page": "Key",
+      "faq": "Topic",
+      "legal_act": "Number",
+      "price_list_item": "Act",
+      "memorial_date": "Date",
+      "collection": "Slug",
+      "person": "Slug",
+      "historical_event": "Slug"
+    }
+  },
+  "create": {
+    "news": "New news item",
+    "page": "New page",
+    "faq": "New question",
+    "legal_act": "New legal act",
+    "price_list_item": "New price item",
+    "memorial_date": "New date",
+    "collection": "New collection",
+    "person": "New person",
+    "historical_event": "New event"
+  },
+  "edit": {
+    "news": "News item",
+    "page": "Page",
+    "faq": "Question",
+    "legal_act": "Legal act",
+    "price_list_item": "Price item",
+    "memorial_date": "Memorial date",
+    "collection": "Collection",
+    "person": "Person",
+    "historical_event": "Event"
+  },
+  "fields": {
+    "slug": "Address (slug)",
+    "title": "Title",
+    "summary": "Summary",
+    "body": "Body",
+    "category": "Category",
+    "published_at": "Publication date",
+    "is_demo": "Demo material (marked DEMO)",
+    "key": "Page key",
+    "section": "Section",
+    "position": "Order",
+    "seo_title": "SEO: title",
+    "seo_description": "SEO: description",
+    "seo_keywords": "SEO: keywords",
+    "question": "Question",
+    "answer": "Answer",
+    "number": "Number",
+    "date": "Act date",
+    "issuer": "Issuing body",
+    "status": "Act status",
+    "adilet_url": "Link to adilet.zan.kz",
+    "actualized_at": "Updated on",
+    "name": "Name",
+    "unit": "Unit",
+    "price": "Price, KZT (reference only)",
+    "note": "Note",
+    "act_ref": "Basis (act)",
+    "year": "Calendar year",
+    "month": "Month (1–12)",
+    "day": "Day",
+    "event_year": "Event year",
+    "date_text": "Date as text",
+    "text": "Text",
+    "theme": "Theme",
+    "period": "Period",
+    "description": "Description",
+    "birth_year": "Birth year",
+    "death_year": "Death year",
+    "years_text": "Years of life (text)",
+    "bio": "Biography",
+    "sources": "Sources",
+    "date_from": "Date from",
+    "date_to": "Date to",
+    "place": "Place",
+    "lat": "Latitude",
+    "lng": "Longitude"
+  },
+  "options": {
+    "status": {
+      "active": "Active",
+      "amended": "Amended",
+      "expired": "Expired"
+    }
+  },
+  "errors": {
+    "duplicate_item": "The same item was added twice."
+  },
+  "rich": {
+    "toolbar": "Formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "h2": "Heading 2",
+    "h3": "Heading 3",
+    "bullets": "Bulleted list",
+    "numbered": "Numbered list",
+    "quote": "Quote",
+    "link": "Link",
+    "undo": "Undo",
+    "redo": "Redo",
+    "linkUrl": "Link address (empty to remove)",
+    "apply": "Apply",
+    "area": "Text, language {lang}"
+  },
+  "sources": {
+    "title": "Source {n} title",
+    "titlePlaceholder": "Source title",
+    "url": "Source {n} link",
+    "remove": "Remove source {n}",
+    "add": "Add source"
+  },
+  "links": {
+    "title": {
+      "collection": "Collection items",
+      "person": "Person documents",
+      "historical_event": "Event documents"
+    },
+    "hint": {
+      "collection": "Documents, persons and events of the collection, in list order.",
+      "person": "Archive documents confirming the person's data.",
+      "historical_event": "Archive documents confirming the event."
+    },
+    "manage": {
+      "collection": "Items: {name}",
+      "person": "Documents: {name}",
+      "historical_event": "Documents: {name}"
+    },
+    "saved": "Links saved.",
+    "empty": "Nothing added yet.",
+    "types": {
+      "document": "Document",
+      "person": "Person",
+      "historical_event": "Event"
+    },
+    "up": "Move up: {name}",
+    "down": "Move down: {name}",
+    "remove": "Remove: {name}",
+    "add": "Add",
+    "type": "Type",
+    "search": "Search by title or code",
+    "find": "Find",
+    "nothing": "Nothing found.",
+    "addItem": "Add"
+  },
+  "settings": {
+    "title": "Site settings",
+    "tabSite": "Site",
+    "tabSynonyms": "Search synonyms",
+    "intro": "Administrators only. Each group is saved separately; changes are written to the audit log.",
+    "saved": "Saved.",
+    "groups": {
+      "social": "Social networks",
+      "widgets": "Widgets",
+      "survey": "Survey",
+      "counter": "Visit counter",
+      "useful_links": "Useful links"
+    },
+    "descriptions": {
+      "social": "Links to official pages (http/https only).",
+      "widgets": "Which blocks to show. Weather and rating are DEMO mock-ups without external data.",
+      "survey": "The survey runs on an external site; only the question and link are shown.",
+      "counter": "Show a visit counter. Real statistics are connected separately (DEMO).",
+      "useful_links": "External resources for the Useful links section. The public page still uses its own template list."
+    },
+    "social": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "telegram": "Telegram",
+      "youtube": "YouTube",
+      "whatsapp": "WhatsApp"
+    },
+    "widgets": {
+      "calendar_weather": "Calendar and weather",
+      "rating": "Rating",
+      "statistics": "Statistics"
+    },
+    "survey": {
+      "enabled": "Show survey",
+      "question": "Survey question",
+      "url": "Survey link",
+      "hint": "External link only (https://…)."
+    },
+    "counter": {
+      "enabled": "Show counter",
+      "base": "Initial value",
+      "hint": "Added to the actual visit count."
+    },
+    "links": {
+      "title": "Link {n} title",
+      "url": "Link {n} address",
+      "remove": "Remove link {n}",
+      "add": "Add link"
+    }
+  },
+  "synonyms": {
+    "title": "Search synonyms",
+    "intro": "A group of terms is treated as equivalent: searching any one finds all of them.",
+    "terms": "Terms",
+    "note": "Note",
+    "active": "Active",
+    "toggle": "Toggle group “{name}”",
+    "edit": "Edit group “{name}”",
+    "delete": "Delete group “{name}”",
+    "create": "New group",
+    "minTerms": "At least two comma-separated terms are required.",
+    "saved": "Group saved.",
+    "termsField": "Terms, comma-separated",
+    "termsHint": "For example: Ust-Kamenogorsk, Өскемен, Усть-Каменогорск",
+    "empty": "No synonym groups.",
+    "deleteTitle": "Delete the synonym group?",
+    "deleteDescription": "Group “{name}” will stop expanding search queries.",
+    "deleteConfirm": "Delete"
+  },
+  "audit": {
+    "title": "Audit log",
+    "exporting": "Preparing the file…",
+    "exported": "File saved.",
+    "export": "Export CSV",
+    "columns": {
+      "ts": "Date and time",
+      "user": "User",
+      "action": "Operation",
+      "object": "Object",
+      "objectId": "ID",
+      "result": "Result"
+    },
+    "results": {
+      "success": "Success",
+      "failure": "Failure",
+      "denied": "Denied"
+    },
+    "filters": {
+      "q": "Search",
+      "action": "Operation type",
+      "object": "Object type",
+      "result": "Result",
+      "from": "From",
+      "to": "To"
+    },
+    "apply": "Apply",
+    "reset": "Reset",
+    "empty": "No records."
+  },
+  "roles": {
+    "title": "Roles and permissions",
+    "intro": "The role permission matrix. Only the main administrator can change it; changes apply immediately and are logged.",
+    "permission": "Permission",
+    "cell": "{permission} — {role}",
+    "saved": "Role permissions saved.",
+    "superNote": "The main administrator has all permissions; only they manage roles.",
+    "confirmTitle": "Change the role permissions?",
+    "confirmDescription": "Permissions of role “{role}” change immediately for all its users.",
+    "confirm": "Save"
+  }
+}

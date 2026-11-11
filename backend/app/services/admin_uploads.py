@@ -22,7 +22,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import Settings
-from app.models import Branch, DigitalFile, Document, Exhibit, Exhibition
+from app.models import Branch, Collection, DigitalFile, Document, Exhibit, Exhibition, LegalAct, News, Person
 from app.models.enums import AuditResult, FileAccess
 from app.repositories import files as files_repo
 from app.schemas.admin_uploads import FilePatch, UploadedFile
@@ -45,6 +45,10 @@ OWNERS: dict[str, tuple[type, str]] = {
     "exhibit": (Exhibit, "content"),
     "exhibition": (Exhibition, "content"),
     "branch": (Branch, "branches"),
+    "news": (News, "content"),
+    "person": (Person, "content"),
+    "collection": (Collection, "content"),
+    "legal_act": (LegalAct, "content"),
 }
 
 

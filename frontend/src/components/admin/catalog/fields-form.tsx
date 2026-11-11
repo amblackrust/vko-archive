@@ -5,16 +5,20 @@ import { Input } from "@/components/ui/input";
 import { pickName } from "@/lib/api/admin";
 import type { I18nValue, Values } from "@/lib/api/admin-content";
 import { FormField, Select } from "../form-field";
+import { RichTextField } from "../cms/rich-text-field";
+import { SourcesField } from "../cms/sources-field";
 import { I18nField } from "../i18n-field";
 
 export type FieldSpec =
   | { name: string; type: "text" | "date" | "slug"; required?: boolean; maxLength?: number; lockedOnEdit?: boolean }
-  | { name: string; type: "number"; required?: boolean }
+  | { name: string; type: "number"; required?: boolean; step?: string }
   | { name: string; type: "i18n" | "i18nArea"; required?: boolean }
   | { name: string; type: "select"; options: string[]; required?: boolean }
   | { name: string; type: "bool" }
   | { name: string; type: "branch" }
-  | { name: string; type: "lines" };
+  | { name: string; type: "lines" }
+  | { name: string; type: "rich"; required?: boolean }
+  | { name: string; type: "sources" };
 
 export interface BranchChoice {
   id: string;
@@ -30,17 +34,20 @@ interface FieldsFormProps {
   translationStatus?: Record<string, string>;
   /** Объект уже создан: поля lockedOnEdit недоступны. */
   editing: boolean;
+  /** Namespace подписей полей (fields.<name>, options.<name>.<value>); по умолчанию каталог. */
+  ns?: string;
 }
 
 /** Форма по описанию полей: подписи — adminCatalog.fields.<name>, варианты списков — adminCatalog.options.<name>.<value>. */
-export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing }: FieldsFormProps) {
+export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], translationStatus, editing, ns = "adminCatalog" }: FieldsFormProps) {
   const t = useTranslations("adminCatalog");
+  const tf = useTranslations(ns);
   const locale = useLocale();
   return (
     <div className="space-y-4">
       {spec.map((field) => {
         const id = `${idPrefix}-${field.name}`;
-        const label = t(`fields.${field.name}`);
+        const label = tf(`fields.${field.name}`);
         const value = values[field.name];
         switch (field.type) {
           case "i18n":
@@ -56,6 +63,25 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                 onChange={(next) => onChange(field.name, next)}
               />
             );
+          case "rich":
+            return (
+              <RichTextField
+                key={field.name}
+                label={label}
+                value={(value as I18nValue) ?? {}}
+                translationStatus={translationStatus}
+                onChange={(next) => onChange(field.name, next)}
+              />
+            );
+          case "sources":
+            return (
+              <SourcesField
+                key={field.name}
+                label={label}
+                value={(value as unknown as { title: string; url: string | null }[]) ?? []}
+                onChange={(next) => onChange(field.name, next as unknown as Values[string])}
+              />
+            );
           case "select":
             return (
               <FormField key={field.name} label={label} htmlFor={id}>
@@ -63,7 +89,7 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                   {!field.required && <option value="">—</option>}
                   {field.options.map((option) => (
                     <option key={option} value={option}>
-                      {t(`options.${field.name}.${option}`)}
+                      {tf(`options.${field.name}.${option}`)}
                     </option>
                   ))}
                 </Select>
@@ -116,6 +142,7 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                 <Input
                   id={id}
                   type="number"
+                  step={field.step}
                   required={field.required}
                   value={value === null || value === undefined ? "" : String(value)}
                   onChange={(e) => onChange(field.name, e.target.value === "" ? null : Number(e.target.value))}
@@ -131,7 +158,7 @@ export function FieldsForm({ idPrefix, spec, values, onChange, branches = [], tr
                   required={field.required}
                   maxLength={field.maxLength}
                   disabled={field.lockedOnEdit && editing}
-                  value={String(value ?? "")}
+                  value={field.type === "date" ? String(value ?? "").slice(0, 10) : String(value ?? "")}
                   onChange={(e) => onChange(field.name, e.target.value === "" && !field.required ? null : e.target.value)}
                 />
               </FormField>

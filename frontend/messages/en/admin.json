@@ -28,7 +28,12 @@
     "branches": "Branches",
     "exhibitions": "Exhibitions",
     "dashboard": "Dashboard",
-    "users": "Users"
+    "users": "Users",
+    "content": "Site content",
+    "memory": "Memory archive",
+    "settings": "Site settings",
+    "audit": "Audit log",
+    "roles": "Roles"
   },
   "session": {
     "title": "Your session is about to end",
