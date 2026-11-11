@@ -8,6 +8,9 @@ const closedPaths = ["/admin", "/cabinet", "/search"];
 export default function robots(): MetadataRoute.Robots {
   const disallow = [
     "/api",
+    // Админка под любым префиксом (в т.ч. без локали и с будущими локалями).
+    "/admin",
+    "/*/admin",
     ...routing.locales.flatMap((locale) => closedPaths.map((path) => `/${locale}${path}`)),
   ];
   return {
