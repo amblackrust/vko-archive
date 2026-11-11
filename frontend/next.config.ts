@@ -45,6 +45,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // E2E собирает отдельную копию (другой NEXT_PUBLIC_API_URL), не трогая основной .next.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
