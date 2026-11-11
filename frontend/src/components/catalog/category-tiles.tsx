@@ -25,7 +25,7 @@ export function CategoryTiles({ counts, active }: { counts: FacetValue[]; active
           const Icon = icons[value] ?? Archive;
           const selected = value === active;
           return (
-            <li key={value}>
+            <li key={value} className="min-w-0">
               <Link
                 href={selected ? "/catalog" : `/catalog?category=${value}`}
                 aria-current={selected ? "true" : undefined}
@@ -35,8 +35,8 @@ export function CategoryTiles({ counts, active }: { counts: FacetValue[]; active
                 )}
               >
                 <Icon className="size-5 shrink-0 text-primary" aria-hidden />
-                <span className="font-medium">{t(value)}</span>
-                <span className="ml-auto text-muted-foreground">{count}</span>
+                <span className="min-w-0 break-words font-medium">{t(value)}</span>
+                <span className="ml-auto shrink-0 text-muted-foreground">{count}</span>
               </Link>
             </li>
           );

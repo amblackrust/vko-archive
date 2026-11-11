@@ -193,7 +193,7 @@
     },
     "descriptions": {
       "social": "Links to official pages (http/https only).",
-      "widgets": "Which blocks to show. Weather and rating work without external data.",
+      "widgets": "Which blocks to show in the footer.",
       "survey": "The survey runs on an external site; only the question and link are shown.",
       "counter": "Show a visit counter. Statistics are connected separately.",
       "useful_links": "External resources for the Useful links section. The public page still uses its own template list."

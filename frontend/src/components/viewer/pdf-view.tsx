@@ -9,10 +9,17 @@ const MAX_CANVAS_SIDE = 4096;
 type PdfModule = typeof import("pdfjs-dist");
 let pdfModule: Promise<PdfModule> | null = null;
 
-/** pdf.js грузится только в браузере и только при первом PDF; worker — локальный файл из бандла (CSP worker-src 'self'). */
+const PDFJS_URL = "/vendor/pdfjs/pdf.min.mjs";
+
+/**
+ * pdf.js грузится только в браузере и только при первом PDF. Файлы закреплены в public/vendor/pdfjs
+ * (копия pdfjs-dist из package.json, обновляется `npm run vendor:pdfjs`): webpack Next ломает сборку
+ * pdf.js ("Object.defineProperty called on non-object"), поэтому библиотека и worker отдаются как есть
+ * с нашего origin (CSP script-src/worker-src 'self').
+ */
 function loadPdfjs(): Promise<PdfModule> {
-  pdfModule ??= import("pdfjs-dist").then((pdfjs) => {
-    pdfjs.GlobalWorkerOptions.workerPort = new Worker(new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url), { type: "module" });
+  pdfModule ??= (import(/* webpackIgnore: true */ PDFJS_URL) as Promise<PdfModule>).then((pdfjs) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdfjs/pdf.worker.min.mjs";
     return pdfjs;
   });
   return pdfModule;
