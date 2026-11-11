@@ -63,7 +63,7 @@ def test_demo_catalog_requirements(db_session: Session, storage: Path) -> None:
     run(db_session, storage)
     docs = db_session.scalars(select(Document)).all()
     assert 40 <= len(docs) <= 50
-    assert all(d.is_demo and "ДЕМО" in d.title["ru"] for d in docs)
+    assert all(d.is_demo and "ДЕМО" not in d.title["ru"] and "ДЕМО" not in d.archive_code for d in docs)
     by_access = {a: sum(d.file_access == a for d in docs) for a in FileAccess}
     assert by_access[FileAccess.CLOSED] >= 5
     assert by_access[FileAccess.RESTRICTED] >= 3

@@ -18,7 +18,7 @@ LANGS = ("kk", "ru", "en")
 
 # Demo document key 'd<fund>-<inventory>-<case>-<n>' (as in demo_catalog) -> its archive code.
 DEMO_DOC_CODES = {
-    f"d{fund.number[2:]}-{inv.number}-{case.number}-{n}": f"ДЕМО Ф.{fund.number} Оп.{inv.number} Д.{case.number} №{n}"
+    f"d{fund.number[2:]}-{inv.number}-{case.number}-{n}": f"Ф.{fund.number} Оп.{inv.number} Д.{case.number} №{n}"
     for fund in FUNDS
     for inv in fund.inventories
     for case in inv.cases

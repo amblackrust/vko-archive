@@ -43,7 +43,7 @@ def test_exhibitions_have_exhibits_with_open_files(db_session: Session, storage:
             # Exhibits only show open documents; the file must follow the document's access.
             assert document.file_access == FileAccess.OPEN and media.access == FileAccess.OPEN
             assert media.owner_id == document.id
-            assert exhibit.is_demo and "ДЕМО" in exhibit.title["ru"]
+            assert exhibit.is_demo and "ДЕМО" not in exhibit.title["ru"]
             assert exhibit.source["ru"].endswith(document.archive_code)
             assert (storage / media.master_path).read_bytes()
 
@@ -79,8 +79,8 @@ def test_collections_point_to_open_demo_documents(db_session: Session, storage: 
 def test_news_and_faq_counts(db_session: Session, storage: Path) -> None:
     run(db_session, storage)
     news = db_session.scalars(select(News)).all()
-    assert len(news) == 8
-    assert all("ДЕМО" in n.title["ru"] and n.published_at is not None for n in news)
+    assert len(news) == 7
+    assert all("ДЕМО" not in n.title["ru"] and n.published_at is not None for n in news)
 
     faqs = db_session.scalars(select(FAQ)).all()
     assert len(faqs) == 20

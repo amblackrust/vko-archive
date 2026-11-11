@@ -9,7 +9,7 @@ from app.models import Exhibit, Exhibition, WorkflowStatus
 from seed.common import Report, demo_document, demo_document_file, i18n, upsert
 
 PUBLISHED = WorkflowStatus.PUBLISHED
-SOURCE_PREFIX = "ДЕМО: вымышленный документ из демо-каталога, архивный шифр "
+SOURCE_PREFIX = "Вымышленный документ, архивный шифр "
 
 
 @dataclass(frozen=True)
@@ -29,14 +29,14 @@ EXHIBITIONS = [
         theme="ust-kamenogorsk",
         period="1950–1960-е",
         title=i18n(
-            ru="Усть-Каменогорск: история города в архивных документах (ДЕМО)",
-            kk="Өскемен: қала тарихы архив құжаттарында (ДЕМО)",
-            en="Ust-Kamenogorsk: the city's history in archival documents (DEMO)",
+            ru="Усть-Каменогорск: история города в архивных документах",
+            kk="Өскемен: қала тарихы архив құжаттарында",
+            en="Ust-Kamenogorsk: the city's history in archival documents",
         ),
         intro=i18n(
-            ru="ДЕМО: выставка на вымышленных документах о городе 1950–1960-х годов.",
-            kk="ДЕМО: 1950–1960 жылдардағы қала туралы ойдан шығарылған құжаттар көрмесі.",
-            en="DEMO: an exhibition of fictitious documents about the city in the 1950s and 1960s.",
+            ru="Выставка на вымышленных документах о городе 1950–1960-х годов.",
+            kk="1950–1960 жылдардағы қала туралы ойдан шығарылған құжаттар көрмесі.",
+            en="An exhibition of fictitious documents about the city in the 1950s and 1960s.",
         ),
         documents=("d2-1-1-1", "d2-1-1-2", "d2-1-2-1", "d2-1-2-2", "d2-1-3-1", "d4-1-1-1", "d4-1-1-2", "d1-2-1-2"),
     ),
@@ -45,14 +45,14 @@ EXHIBITIONS = [
         theme="industry",
         period="1950–1960-е",
         title=i18n(
-            ru="Промышленное развитие Восточного Казахстана (ДЕМО)",
-            kk="Шығыс Қазақстанның өнеркәсіптік дамуы (ДЕМО)",
-            en="Industrial development of East Kazakhstan (DEMO)",
+            ru="Промышленное развитие Восточного Казахстана",
+            kk="Шығыс Қазақстанның өнеркәсіптік дамуы",
+            en="Industrial development of East Kazakhstan",
         ),
         intro=i18n(
-            ru="ДЕМО: выставка на вымышленных документах о строительстве и работе цехов комбината.",
-            kk="ДЕМО: комбинат цехтарының құрылысы мен жұмысы туралы ойдан шығарылған құжаттар көрмесі.",
-            en="DEMO: an exhibition of fictitious documents on building and running the plant's workshops.",
+            ru="Выставка на вымышленных документах о строительстве и работе цехов комбината.",
+            kk="Комбинат цехтарының құрылысы мен жұмысы туралы ойдан шығарылған құжаттар көрмесі.",
+            en="An exhibition of fictitious documents on building and running the plant's workshops.",
         ),
         documents=("d1-1-1-1", "d1-1-1-2", "d1-1-2-1", "d1-1-2-2", "d1-1-3-2", "d1-2-1-1", "d1-2-1-3", "d1-2-2-1"),
     ),
@@ -61,14 +61,14 @@ EXHIBITIONS = [
         theme="education",
         period="1960–1970-е",
         title=i18n(
-            ru="История образования в регионе (ДЕМО)",
-            kk="Өңірдегі білім беру тарихы (ДЕМО)",
-            en="History of education in the region (DEMO)",
+            ru="История образования в регионе",
+            kk="Өңірдегі білім беру тарихы",
+            en="History of education in the region",
         ),
         intro=i18n(
-            ru="ДЕМО: выставка на вымышленных школьных документах и материалах об учителях.",
-            kk="ДЕМО: ойдан шығарылған мектеп құжаттары мен мұғалімдер туралы материалдар көрмесі.",
-            en="DEMO: an exhibition of fictitious school documents and materials about teachers.",
+            ru="Выставка на вымышленных школьных документах и материалах об учителях.",
+            kk="Ойдан шығарылған мектеп құжаттары мен мұғалімдер туралы материалдар көрмесі.",
+            en="An exhibition of fictitious school documents and materials about teachers.",
         ),
         documents=("d6-1-1-1", "d6-1-1-2", "d6-1-1-3", "d6-1-2-1", "d6-1-2-2", "d6-1-2-3", "d2-1-3-2"),
     ),
