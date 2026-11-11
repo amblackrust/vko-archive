@@ -39,5 +39,10 @@
       "page": "Page",
       "branch": "Branch"
     }
+  },
+  "annotation": {
+    "title": "Briefly about the document",
+    "note": "The summary was prepared by AI and checked by an archive employee.",
+    "badge": "AI"
   }
 }

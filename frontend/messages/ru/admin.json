@@ -20,6 +20,8 @@
     "logout": "Выйти"
   },
   "nav": {
+    "aiTools": "ИИ-инструменты",
+    "analytics": "Аналитика",
     "import": "Импорт и экспорт",
     "translations": "Переводы",
     "catalog": "Каталог",

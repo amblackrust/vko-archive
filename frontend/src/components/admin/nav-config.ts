@@ -1,5 +1,6 @@
 import { Building2, Images, Library, LayoutDashboard, Users, type LucideIcon } from "lucide-react";
 import { FileSpreadsheet, Languages } from "lucide-react";
+import { BarChart3, Sparkles } from "lucide-react";
 import { can, type Me } from "@/lib/api/admin";
 
 export interface AdminNavItem {
@@ -21,6 +22,8 @@ export const adminNav: AdminNavItem[] = [
   { key: "users", href: "/admin/users", icon: Users, anyOf: ["users.view"] },
   { key: "import", href: "/admin/import", icon: FileSpreadsheet, anyOf: ["catalog.import", "catalog.export"] },
   { key: "translations", href: "/admin/translations", icon: Languages, anyOf: ["catalog.view", "content.view", "branches.view"] },
+  { key: "aiTools", href: "/admin/ai-tools", icon: Sparkles, anyOf: ["ai.use"] },
+  { key: "analytics", href: "/admin/analytics", icon: BarChart3, anyOf: ["analytics.view"] },
 ];
 
 export function visibleNav(me: Me): AdminNavItem[] {

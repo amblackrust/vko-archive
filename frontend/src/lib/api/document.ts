@@ -21,6 +21,13 @@ export interface TagRef {
   href: string;
 }
 
+/** Утверждённая сотрудником аннотация ИИ («Кратко о документе»). */
+export interface DocumentAnnotation {
+  text: string;
+  lang: string;
+  label: string;
+}
+
 export interface DocumentDetail extends DocumentItem {
   historical_note: string;
   summary: string;
@@ -30,6 +37,7 @@ export interface DocumentDetail extends DocumentItem {
   tags: TagRef[];
   files: DocumentFile[];
   related: DocumentItem[];
+  annotation: DocumentAnnotation | null;
 }
 
 /** Абсолютный адрес файла для браузера: файлы отдаёт только backend (/api/files/{id}). */

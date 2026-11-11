@@ -8,10 +8,14 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.ai import rag
+from app.ai.prompts import AI_LABEL
 from app.models import Case, Document, Fund, Inventory
+from app.repositories import ai_tools as ai_tools_repo
 from app.repositories import catalog as repo
 from app.repositories import catalog_tree as tree
 from app.schemas.catalog import (
+    DocumentAnnotationPublic,
     DocumentDetail,
     DocumentFile,
     TagRef,
@@ -38,7 +42,7 @@ from app.repositories import files as files_repo
 from app.services import files as files_service
 from app.services import recommendations
 from app.services import search_log
-from app.services.authz import AuthUser
+from app.services.authz import FILE_DOWNLOAD, AuthUser, authorize
 from app.services.errors import NotFound
 
 _FALLBACK = ("ru", "kk", "en")
@@ -280,6 +284,22 @@ def _related(session: Session, row: Any, tags: list[Any], lang: str) -> list[Doc
     return list(found.values())
 
 
+def _annotation(session: Session, document: Document, lang: str) -> DocumentAnnotationPublic | None:
+    """The approved AI annotation in the card's language. One built from file text is shown only
+    while some file with recognised text is still open to anonymous visitors."""
+    annotation = ai_tools_repo.approved_annotation(session, document.id, lang)
+    if annotation is None:
+        return None
+    if annotation.uses_file_text and not any(
+        file.ocr_text and authorize(None, FILE_DOWNLOAD, files_service.file_target(session, file, document))
+        for file in files_repo.files_of_owner(session, "document", document.id)
+    ):
+        return None
+    codes = rag.parse_codes(document.archive_code or "")
+    text = rag.sanitize(annotation.text, set(), codes, []).strip()
+    return DocumentAnnotationPublic(text=text, lang=lang, label=AI_LABEL.get(lang, AI_LABEL["ru"])) if text else None
+
+
 def get_document(session: Session, user: AuthUser | None, document_id: uuid.UUID, lang: str) -> DocumentDetail:
     """Public document card. Not public (draft, needs review, do_not_publish) or unknown -> 404."""
     row = repo.get_public_document(session, document_id)
@@ -313,4 +333,5 @@ def get_document(session: Session, user: AuthUser | None, document_id: uuid.UUID
         tags=[TagRef(id=tag.id, name=pick(tag.name, lang)[0], href=f"/catalog?topic={tag.id}") for tag in tags],
         files=files,
         related=_related(session, row, tags, lang),
+        annotation=_annotation(session, document, lang),
     )

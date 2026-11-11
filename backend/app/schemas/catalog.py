@@ -202,6 +202,14 @@ class TagRef(BaseModel):
     href: str  # catalog filtered by this topic
 
 
+class DocumentAnnotationPublic(BaseModel):
+    """"Briefly about the document" (T4.10): AI text approved by a staff member."""
+
+    text: str
+    lang: str
+    label: str  # the AI mark, always shown with the text
+
+
 class DocumentDetail(DocumentItem):
     """Document card (T3.5). Only public documents exist here; restricted/closed ones come
     with the access conditions and an empty `files` list."""
@@ -214,3 +222,4 @@ class DocumentDetail(DocumentItem):
     tags: list[TagRef]
     files: list[DocumentFile]
     related: list[DocumentItem]
+    annotation: DocumentAnnotationPublic | None = None

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DocumentAiPanel } from "@/components/ai/document/document-ai-panel";
 import { AccessNotice } from "@/components/document/access-notice";
+import { AnnotationBlock } from "@/components/document/annotation-block";
 import { FavoriteButton } from "@/components/cabinet/favorite-button";
 import { CardActions } from "@/components/document/card-actions";
 import { ShareButtons } from "@/components/layout/share-buttons";
@@ -74,6 +75,7 @@ export default async function DocumentPage({ params }: Props) {
               <AccessNotice access={doc.file_access} conditions={doc.access_conditions} />
             )}
             {doc.file_access === "open" && <DocumentAiPanel documentId={doc.id} />}
+            {doc.annotation && <AnnotationBlock annotation={doc.annotation} />}
             {doc.summary && (
               <section aria-labelledby="summary-title" className="space-y-2">
                 <h2 id="summary-title" className="text-xl font-semibold">{t("sections.description")}</h2>

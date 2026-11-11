@@ -20,6 +20,8 @@
     "logout": "Sign out"
   },
   "nav": {
+    "aiTools": "AI tools",
+    "analytics": "Analytics",
     "import": "Import and export",
     "translations": "Translations",
     "catalog": "Catalog",

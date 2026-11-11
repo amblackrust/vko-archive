@@ -20,6 +20,8 @@
     "logout": "Шығу"
   },
   "nav": {
+    "aiTools": "ЖИ құралдары",
+    "analytics": "Аналитика",
     "import": "Импорт және экспорт",
     "translations": "Аудармалар",
     "catalog": "Каталог",

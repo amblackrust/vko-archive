@@ -1,6 +1,7 @@
 """All SQLAlchemy models. Importing this package registers every table on Base.metadata
 (used by Alembic autogenerate)."""
 
+from app.models.annotations import DocumentAnnotation
 from app.models.base import EMBEDDING_DIM, Base
 from app.models.branches import Branch
 from app.models.cabinet import (
@@ -52,6 +53,7 @@ __all__ = [
     "CollectionItem",
     "DescriptionStatus",
     "DigitalFile",
+    "DocumentAnnotation",
     "Document",
     "Exhibit",
     "Exhibition",

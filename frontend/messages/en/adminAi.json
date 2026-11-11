@@ -1,1 +1,172 @@
-{}
+{
+  "tools": {
+    "title": "AI tools",
+    "intro": "AI only suggests: nothing is changed or published without your confirmation. Always check the results.",
+    "aiOn": "AI is available",
+    "aiOff": "AI is unavailable (Ollama is not running or the model is not loaded). The rest of the admin works as usual.",
+    "ocr": {
+      "tesseract": "OCR: Tesseract (rus+kaz+eng)",
+      "vision": "OCR: Ollama vision model",
+      "none": "OCR unavailable: Tesseract is not installed and no vision model is configured"
+    },
+    "tabs": {
+      "document": "Document",
+      "collection": "Thematic selection"
+    },
+    "picker": {
+      "label": "Find a document",
+      "placeholder": "Archive code or title",
+      "empty": "Nothing found",
+      "list": "Search results",
+      "pick": "Select",
+      "selected": "Selected document",
+      "change": "Change"
+    },
+    "analysis": {
+      "title": "Document analysis",
+      "lang": "Language of suggestions",
+      "run": "Analyse",
+      "running": "AI is reading the document…",
+      "noText": "The document has no recognised text: AI saw the description only.",
+      "proposal": "AI suggestions (check before applying)",
+      "summary": "Short description",
+      "authors": "Author / organisation",
+      "dateText": "Date",
+      "places": "Places",
+      "tags": "Tags",
+      "found": "Found in the text",
+      "dates": "Dates",
+      "persons": "Names",
+      "organizations": "Organisations",
+      "events": "Events",
+      "topics": "Topics",
+      "none": "nothing found",
+      "choose": "— do not apply —",
+      "apply": "Apply selected",
+      "applying": "Saving…",
+      "nothing": "Select at least one field.",
+      "applied": "Saved (version {version}): {fields}. The document keeps its publication status.",
+      "fields": {
+        "summary": "description",
+        "authors": "author",
+        "date_text": "date",
+        "places": "places",
+        "tags": "tags"
+      },
+      "related": "Related materials",
+      "duplicates": "Possible duplicates",
+      "noDuplicates": "No duplicates found.",
+      "duplicateReason": {
+        "same_file": "same file (sha256)",
+        "similar": "similar description"
+      }
+    },
+    "ocrPanel": {
+      "title": "Text recognition (OCR)",
+      "noFiles": "The document has no files.",
+      "run": "Recognise",
+      "running": "Recognising…",
+      "unavailable": "Recognition unavailable: {reason}.",
+      "reasons": {
+        "no_engine": "Tesseract is not installed and no vision model is configured",
+        "unsupported_type": "only images are supported (JPG, PNG, TIFF, WebP)",
+        "engine_error": "engine error",
+        "file_too_large": "file too large",
+        "empty_result": "no text found",
+        "busy": "AI is busy, try later",
+        "ollama_unavailable": "Ollama unavailable",
+        "model_missing": "model not loaded",
+        "bad_response": "bad response"
+      },
+      "result": "Recognised text (you can edit it)",
+      "apply": "Save as the file's text",
+      "applied": "Text saved. It enters search only if the file is open to the public."
+    },
+    "annotation": {
+      "title": "“Briefly about the document” annotation",
+      "hint": "Built only from the public description and the text of open files. It appears on the document card after you approve it, marked as AI.",
+      "generate": "Generate a draft",
+      "regenerate": "Generate again",
+      "generating": "AI is writing the annotation…",
+      "save": "Save edit",
+      "approve": "Approve and show on the site",
+      "withdraw": "Remove from the site and delete",
+      "withdrawTitle": "Delete the annotation?",
+      "withdrawText": "The annotation will disappear from the document card.",
+      "draft": "Draft (not visible to visitors)",
+      "approved": "Approved: shown on the site",
+      "none": "No annotation.",
+      "saved": "Saved.",
+      "fileText": "File text was used: the annotation is hidden if the files stop being open."
+    },
+    "collection": {
+      "title": "Thematic selection draft",
+      "intro": "AI picks public documents on a topic and suggests a title and description. The draft is not saved anywhere: staff create the collection in the Memory section.",
+      "topic": "Topic",
+      "topicPlaceholder": "For example: building bridges over the Irtysh",
+      "run": "Pick materials",
+      "running": "Picking…",
+      "draftTitle": "Title",
+      "draftText": "Description",
+      "items": "Materials"
+    }
+  },
+  "analytics": {
+    "title": "Site analytics",
+    "intro": "Search data without personal data: no users, no IPs. Names, e-mails and numbers in queries are masked; queries asked only once are not shown.",
+    "period": "Period",
+    "days": "{n} d.",
+    "forbidden": "The Analyst role or an administrator is required to view analytics.",
+    "cards": {
+      "searches": "Search queries",
+      "zero": "Without results",
+      "rate": "Share without results",
+      "rare": "Rare queries (hidden)"
+    },
+    "perDay": "Queries per day",
+    "topQueries": "Popular queries",
+    "zeroQueries": "Queries without results (what the site lacks)",
+    "aiQuestions": "Questions to the AI assistant",
+    "staleTitle": "Pages not updated for over a year",
+    "columns": {
+      "query": "Query",
+      "count": "Times",
+      "avg": "Avg results",
+      "page": "Page",
+      "type": "Type",
+      "updated": "Updated"
+    },
+    "types": {
+      "page": "Page",
+      "faq": "FAQ item",
+      "price_list_item": "Price list item"
+    },
+    "empty": "No data for the period.",
+    "views": "Page views are not collected (the site has no trackers), so they are not part of the report.",
+    "recommendations": "Recommendations",
+    "rec": {
+      "few_data": "Little data so far: conclusions are preliminary.",
+      "improve_zero_results": "{rate}% of queries return nothing: check synonyms and document descriptions.",
+      "add_content_for": "Add materials on “{query}” (queries: {count}).",
+      "update_stale_pages": "Update outdated pages: {count}.",
+      "review_ai_questions": "Review the AI assistant questions: {count} recurring topics."
+    },
+    "ai": {
+      "title": "AI conclusion",
+      "run": "Write an AI conclusion",
+      "running": "AI is analysing…",
+      "off": "AI is unavailable now — use the recommendations above."
+    }
+  },
+  "errors": {
+    "ai_unavailable": "AI is unavailable now (Ollama is not running, the model is not loaded or busy). Try later.",
+    "not_public": "The document is not published or its description is not public.",
+    "no_source_text": "The document has no public text for an annotation.",
+    "nothing_to_apply": "No fields to apply.",
+    "unknown_tag": "One of the tags was not found.",
+    "empty_text": "The text is empty.",
+    "no_materials": "No public materials found for the topic.",
+    "version_conflict": "The document was changed elsewhere. Run the analysis again.",
+    "invalid_period": "Invalid period."
+  }
+}
