@@ -102,7 +102,7 @@ def prepare(session: Session, settings: Settings, document_id: uuid.UUID, reques
     context = _context(document, title, href, fragments, lang)
     messages = [
         {"role": "system", "content": prompts.document_system_prompt(lang)},
-        {"role": "user", "content": prompts.document_message(guard.query, context.text())},
+        {"role": "user", "content": prompts.document_message(guard.query, context.text(), guards.clean_history(request.history))},
     ]
     result = AiAnswer(**base, mode="answer", ai_generated=True, label=prompts.AI_LABEL[lang], answer="")
     return Prepared(result, context, messages, no_answer_texts=prompts.NO_INFO, **texts)

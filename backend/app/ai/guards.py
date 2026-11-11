@@ -100,3 +100,23 @@ def check(query: str) -> GuardResult:
 
 def is_off_topic(query: str) -> bool:
     return bool(_OFF_TOPIC.search(query))
+
+
+_MARKER = re.compile(r"\s*\[S\d+\]")
+
+
+def clean_history(history: list) -> list[tuple[str, str]]:
+    """Dialog history from the client as (role, text) pairs safe to show the model as data.
+    Injected instructions are cut out of every turn; user turns that are off-topic or empty
+    are dropped; source markers are removed from assistant turns (they point to old cards)."""
+    turns: list[tuple[str, str]] = []
+    for turn in history:
+        text = _SPACES.sub(" ", turn.text).strip()
+        if turn.role == "user":
+            result = check(text)
+            text = result.query if result.verdict == "ok" else ""
+        else:
+            text = _strip_injection(_MARKER.sub("", text))[0]
+        if text:
+            turns.append((turn.role, text))
+    return turns
