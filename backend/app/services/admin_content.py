@@ -47,6 +47,13 @@ def _check_legal_ref(session: Session, obj: Any, values: dict[str, Any]) -> None
         raise InvalidInput("unknown_link")
 
 
+def _check_news_media(session: Session, obj: Any, values: dict[str, Any]) -> None:
+    for entry in values.get("media") or []:
+        file_id = entry.get("file_id")
+        if file_id is not None and (obj is None or not repo.file_owned_by(session, uuid.UUID(file_id), "news", obj.id)):
+            raise InvalidInput("file_not_owned")
+
+
 def _spec(kind: str, model: type, schema: type, text: tuple[str, ...]) -> Spec:
     create_only = frozenset({"key"}) if kind == "page" else frozenset()
     return Spec(kind, model, schema, "content", text_required=text, create_only=create_only)
@@ -56,6 +63,7 @@ KINDS: dict[str, Kind] = {
     "news": Kind(
         _spec("news", News, NewsIn, ("title",)), lambda o: o.title, lambda o: o.slug, ("slug", "title"),
         ("-updated_at",), extra=lambda o: {"category": o.category}, html=("body",), files={"cover_file_id": "news"},
+        check=_check_news_media,
     ),
     "page": Kind(
         _spec("page", Page, PageIn, ("title",)), lambda o: o.title, lambda o: o.key, ("key", "title"),

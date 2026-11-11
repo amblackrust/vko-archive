@@ -27,7 +27,7 @@ from app.models.enums import AuditResult, FileAccess
 from app.repositories import files as files_repo
 from app.schemas.admin_uploads import FilePatch, UploadedFile
 from app.services import admin_common as common
-from app.services import audit, indexing, workflow
+from app.services import audit, indexing, pdf_render, workflow
 from app.services.authz import AuthUser, require
 from app.services.errors import FileTooLarge, InvalidInput, NotFound, UnsupportedMedia as UnsupportedFile
 from app.services.files import file_url
@@ -160,6 +160,18 @@ def _count_pdf_pages(source: Path) -> int:
         raise InvalidInput("invalid_file") from exc
 
 
+def _make_pdf_preview(source: Path, target: Path) -> None:
+    """WebP of the first page. Best effort: a PDF PDFium cannot draw is still stored, just without a preview."""
+    try:
+        page = pdf_render.first_page(source)
+        page.thumbnail((PREVIEW_PIXELS, PREVIEW_PIXELS))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        page.save(target, "WEBP", quality=80)
+    except (pdf_render.PdfRenderError, OSError, ValueError, Image.DecompressionBombError) as exc:
+        logger.warning("PDF preview failed: %s", type(exc).__name__)
+        target.unlink(missing_ok=True)
+
+
 def store(
     session: Session,
     settings: Settings,
@@ -187,6 +199,10 @@ def store(
         pages = _make_preview(temp, settings.storage_dir / preview_rel)
     elif kind.category == "pdf":
         pages = _count_pdf_pages(temp)
+        preview_rel = f"previews/uploads/{file_id.hex}.webp"
+        _make_pdf_preview(temp, settings.storage_dir / preview_rel)
+        if not (settings.storage_dir / preview_rel).exists():
+            preview_rel = None
     master.parent.mkdir(parents=True, exist_ok=True)
     os.replace(temp, master)
     try:

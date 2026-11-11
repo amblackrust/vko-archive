@@ -2,20 +2,21 @@
 vision model of Ollama (OLLAMA_VISION_MODEL) if it is pulled, else "unavailable".
 
 The result is a proposal: the caller shows it to the employee, nothing is stored here.
-Only images are read (no PDF renderer in the stack). Never raises for a missing engine.
+Images are read directly; a PDF is rasterised page by page (pypdfium2, first MAX_PDF_PAGES
+pages) and the pages' texts are joined with a form feed. Never raises for a missing engine.
 """
 
 import base64
 import logging
 import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
-
 from app.ai import ollama_client
 from app.config import Settings
+from app.services import pdf_render
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,8 @@ TESSERACT_LANGS = "rus+kaz+eng"
 TESSERACT_TIMEOUT_SECONDS = 180
 MAX_VISION_BYTES = 10 * 1024 * 1024
 IMAGE_MIMES = frozenset({"image/jpeg", "image/png", "image/tiff", "image/webp"})
+PDF_MIME = "application/pdf"
+MAX_PDF_PAGES = 50
 VISION_PROMPT = "Распознай весь текст на изображении документа. Выведи только текст, без пояснений и без форматирования."
 
 
@@ -42,7 +45,7 @@ def engine_name(settings: Settings) -> str | None:
         return "tesseract"
     if settings.ollama_vision_model:
         try:
-            if ollama_client._has(ollama_client._models(settings), settings.ollama_vision_model):
+            if ollama_client.has_model(settings, settings.ollama_vision_model):
                 return "vision"
         except ollama_client.OllamaUnavailable:
             return None
@@ -68,33 +71,40 @@ def _vision(path: Path, settings: Settings) -> OcrOutcome:
     if path.stat().st_size > MAX_VISION_BYTES:
         return OcrOutcome("failed", "vision", reason="file_too_large")
     image = base64.b64encode(path.read_bytes()).decode("ascii")
-    payload = {
-        "model": settings.ollama_vision_model,
-        "messages": [{"role": "user", "content": VISION_PROMPT, "images": [image]}],
-        "stream": False, "think": False, "keep_alive": ollama_client.KEEP_ALIVE,
-        "options": {"temperature": 0, "num_ctx": settings.ollama_num_ctx, "num_predict": 2000},
-    }
     try:
-        with ollama_client._generation_slot(settings):
-            with ollama_client._client(settings, settings.ollama_chat_timeout_seconds) as client:
-                response = client.post("/api/chat", json=payload)
-                response.raise_for_status()
-                text = response.json()["message"]["content"]
+        text = ollama_client.vision_text(VISION_PROMPT, image, settings, model=settings.ollama_vision_model)
     except ollama_client.OllamaUnavailable as exc:
         return OcrOutcome("failed", "vision", reason=exc.reason)
-    except (httpx.HTTPError, ValueError, KeyError, TypeError) as exc:
-        logger.warning("vision OCR failed: %s", type(exc).__name__)
-        return OcrOutcome("failed", "vision", reason="engine_error")
-    return OcrOutcome("done", "vision", ollama_client.strip_think(text) if isinstance(text, str) else "")
+    return OcrOutcome("done", "vision", text)
+
+
+def _recognize_pdf(path: Path, engine: str, settings: Settings) -> OcrOutcome:
+    with tempfile.TemporaryDirectory(prefix="ocr-") as directory:
+        try:
+            pages = pdf_render.render_pages(path, Path(directory), scale=pdf_render.OCR_SCALE, limit=MAX_PDF_PAGES)
+        except pdf_render.PdfRenderError as exc:
+            logger.warning("PDF rendering for OCR failed: %s", exc)
+            return OcrOutcome("failed", engine, reason="invalid_pdf")
+        texts = []
+        for page in pages:
+            outcome = _tesseract(page) if engine == "tesseract" else _vision(page, settings)
+            if outcome.status != "done":
+                return outcome
+            texts.append(outcome.text)
+    # A page without text stays an empty slot, so page numbers keep their place.
+    return OcrOutcome("done", engine, "\f".join(texts) if any(texts) else "")
 
 
 def recognize(path: Path, mime: str, settings: Settings) -> OcrOutcome:
     engine = engine_name(settings)
     if engine is None:
         return OcrOutcome("unavailable", reason="no_engine")
-    if mime not in IMAGE_MIMES:
+    if mime == PDF_MIME:
+        outcome = _recognize_pdf(path, engine, settings)
+    elif mime in IMAGE_MIMES:
+        outcome = _tesseract(path) if engine == "tesseract" else _vision(path, settings)
+    else:
         return OcrOutcome("unavailable", engine, reason="unsupported_type")
-    outcome = _tesseract(path) if engine == "tesseract" else _vision(path, settings)
     if outcome.status == "done" and not outcome.text:
         return OcrOutcome("failed", outcome.engine, reason="empty_result")
     return outcome

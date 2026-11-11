@@ -42,3 +42,13 @@ def documents_by_ids(session: Session, ids: list[uuid.UUID]) -> dict[uuid.UUID, 
     if not ids:
         return {}
     return {d.id: d for d in session.scalars(select(Document).where(Document.id.in_(ids)))}
+
+
+def unpublished_documents(session: Session, exclude_id: uuid.UUID, limit: int) -> list[Document]:
+    """Newest documents that are not yet public (draft, review, rework…): they have no vectors in the search index."""
+    live = (WorkflowStatus.APPROVED, WorkflowStatus.PUBLISHED)
+    stmt = (
+        select(Document).where(Document.id != exclude_id, Document.workflow_status.not_in(live))
+        .order_by(Document.updated_at.desc()).limit(limit)
+    )
+    return list(session.scalars(stmt))

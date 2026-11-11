@@ -147,6 +147,34 @@ def chat_model(settings: Settings) -> str:
     raise OllamaUnavailable("model_missing")
 
 
+def has_model(settings: Settings, name: str) -> bool:
+    """True if `name` is pulled in Ollama; OllamaUnavailable if Ollama cannot be reached."""
+    return _has(_models(settings), name)
+
+
+def vision_text(prompt: str, image_base64: str, settings: Settings, *, model: str, max_tokens: int = 2000) -> str:
+    """Text a vision model reads from one image (think blocks removed). Takes a generation slot."""
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt, "images": [image_base64]}],
+        "stream": False, "think": False, "keep_alive": KEEP_ALIVE,
+        "options": {"temperature": 0, "num_ctx": settings.ollama_num_ctx, "num_predict": max_tokens},
+    }
+    with _generation_slot(settings):
+        try:
+            with _client(settings, _timeout(settings, settings.ollama_chat_timeout_seconds)) as client:
+                response = client.post("/api/chat", json=payload)
+                response.raise_for_status()
+                content = response.json()["message"]["content"]
+        except httpx.HTTPError as exc:
+            raise _fail(exc, "vision") from exc
+        except (ValueError, KeyError, TypeError) as exc:
+            raise OllamaUnavailable("bad_response") from exc
+    if not isinstance(content, str):
+        raise OllamaUnavailable("bad_response")
+    return strip_think(content)
+
+
 def availability(settings: Settings) -> Availability:
     try:
         chat_model(settings)
