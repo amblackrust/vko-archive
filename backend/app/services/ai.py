@@ -126,7 +126,7 @@ def _decades(parsed: ParsedQuery) -> list[str]:
     return [f"{decade}s" for decade in range(period.from_ // 10 * 10, period.to + 1, 10)]
 
 
-def build_filters(parsed: ParsedQuery, text: str) -> AppliedFilters:
+def build_filters(parsed: ParsedQuery, text: str, synonym_groups: list[list[str]] | None = None) -> AppliedFilters:
     """Search parameters from the parsed query. Places/persons/topics/keywords become the
     full-text query (synonyms are expanded by the search); types and period — filters.
     A fallback parse searches the query text as is."""
@@ -135,6 +135,7 @@ def build_filters(parsed: ParsedQuery, text: str) -> AppliedFilters:
         # «где филиал в Риддере и как доехать»: the place picks the branch; the rest is noise.
         terms = parsed.places
     q = " ".join(terms) if parsed.source == "llm" and terms else text
+    labels = {p: query_parser.place_label(p, parsed.lang, synonym_groups or []) for p in parsed.places}
     return AppliedFilters(
         q=q,
         types=["branch"] if parsed.intent == "branch" else [],
@@ -143,13 +144,16 @@ def build_filters(parsed: ParsedQuery, text: str) -> AppliedFilters:
         period_range=parsed.period,
         places=parsed.places,
         persons=parsed.persons,
+        place_labels={place: label for place, label in labels.items() if label != place},
     )
 
 
 def _resolve_lang(text: str, ui_lang: str | None) -> str:
     if ui_lang and not any(ch.isalpha() for ch in text):
         return ui_lang
-    return query_parser.detect_lang(text)
+    detected = query_parser.detect_lang(text)
+    # Cyrillic without Kazakh-only letters is ambiguous: the kk interface decides.
+    return "kk" if detected == "ru" and ui_lang == "kk" else detected
 
 
 def parse(session: Session, settings: Settings, request: AiRequest) -> AiParseResponse:
@@ -157,18 +161,20 @@ def parse(session: Session, settings: Settings, request: AiRequest) -> AiParseRe
     lang = _resolve_lang(text, request.lang)
     guard = guards.check(text)
     available = ollama_client.availability(settings).available
+    groups = search_repo.active_synonym_groups(session)
     if guard.verdict != "ok":
         parsed = query_parser.fallback(guard.query or text).model_copy(
             update={"intent": "off_topic" if guard.verdict == "off_topic" else "search", "lang": lang}
         )
     elif available:
-        parsed = query_parser.parse(guard.query, settings, search_repo.active_synonym_groups(session))
+        parsed = query_parser.parse(guard.query, settings, groups)
     else:
         parsed = query_parser.fallback(guard.query)
     if guard.service:
         parsed = parsed.model_copy(update={"intent": "service"})
     return AiParseResponse(
-        query=text, lang=lang, ai_available=available, parsed=parsed, filters=build_filters(parsed, guard.query or text)
+        query=text, lang=lang, ai_available=available, parsed=parsed,
+        filters=build_filters(parsed, guard.query or text, groups),
     )
 
 
@@ -308,6 +314,26 @@ def _hints(filters: AppliedFilters | None) -> list[str]:
     return hints + ["rephrase", "browse_catalog", "ask_site_sections"]
 
 
+def _inherit_subject(parsed: ParsedQuery, previous: str, settings: Settings, groups: list[list[str]]) -> ParsedQuery:
+    """A bare follow-up («а за 1970-е?», «а в Риддере?») names no type, person, topic or
+    keyword: the small model does not reliably carry the subject over, so the missing places,
+    types, persons and topics come from the previous question."""
+    if parsed.source != "llm" or parsed.intent not in ("search", "site_help"):
+        return parsed
+    if parsed.doc_types or parsed.persons or parsed.topics or parsed.keywords:
+        return parsed
+    earlier = query_parser.parse(previous, settings, groups)
+    if earlier.source != "llm" or earlier.intent == "off_topic":
+        return parsed
+    return parsed.model_copy(
+        update={
+            "intent": earlier.intent if earlier.intent == "branch" else parsed.intent,
+            "places": parsed.places or earlier.places, "doc_types": earlier.doc_types,
+            "persons": earlier.persons, "topics": earlier.topics,
+        }
+    )
+
+
 def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepared:
     text = " ".join(request.q.split())
     lang = _resolve_lang(text, request.lang)
@@ -321,11 +347,16 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
     if guard.verdict == "off_topic":
         return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
     query = guard.query
+    history = guards.clean_history(request.history)
+    groups = search_repo.active_synonym_groups(session)
 
     if guard.service:
         parsed = query_parser.fallback(query).model_copy(update={"intent": "service"})
     elif available:
-        parsed = query_parser.parse(query, settings, search_repo.active_synonym_groups(session))
+        previous = [turn for role, turn in history if role == "user"]
+        parsed = query_parser.parse(query, settings, groups, previous)
+        if previous:
+            parsed = _inherit_subject(parsed, previous[-1], settings, groups)
     else:
         parsed = query_parser.fallback(query)
     parsed = parsed.model_copy(update={"lang": lang})
@@ -342,7 +373,7 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
         sources = [_section_item(f"S{i}", key, lang).source for i, key in enumerate(("state_service", "paid_services"), 1)]
         return Prepared(_fixed(base, "service", prompts.SERVICE, sources=sources, links=[EGOV]))
 
-    filters = build_filters(parsed, query)
+    filters = build_filters(parsed, query, groups)
     base["filters"] = filters
     hits = _top_hits(session, settings, filters, lang)
     items = [item for item in (_item(session, f"S{i}", hit, lang) for i, hit in enumerate(hits, 1)) if item]
@@ -365,7 +396,7 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
         return Prepared(_fixed(base, "unavailable", prompts.UNAVAILABLE, sources=[i.source for i in items]), context)
     messages = [
         {"role": "system", "content": prompts.system_prompt(lang)},
-        {"role": "user", "content": prompts.user_message(query, context.text())},
+        {"role": "user", "content": prompts.user_message(query, context.text(), history)},
     ]
     result = AiAnswer(**base, mode="answer", ai_generated=True, label=prompts.AI_LABEL[lang], answer="")
     return Prepared(result, context, messages)

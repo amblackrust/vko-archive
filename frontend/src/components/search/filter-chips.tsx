@@ -15,7 +15,7 @@ export function FilterChips({ filters, onRemove }: { filters: AiFilters; onRemov
     ...filters.types.map((v) => ({ kind: "types" as const, value: v, label: `${t("filters.type")}: ${t.has(`groups.${v}`) ? t(`groups.${v}`) : v}` })),
     ...filters.doc_type.map((v) => ({ kind: "doc_type" as const, value: v, label: `${t("filters.docType")}: ${enumLabel(tc, "docTypes", v)}` })),
     ...filters.period.map((v) => ({ kind: "period" as const, value: v, label: `${t("filters.period")}: ${periodLabel(tc, v)}` })),
-    ...filters.places.map((v) => ({ kind: "places" as const, value: v, label: `${t("filters.place")}: ${v}` })),
+    ...filters.places.map((v) => ({ kind: "places" as const, value: v, label: `${t("filters.place")}: ${filters.place_labels?.[v] ?? v}` })),
     ...filters.persons.map((v) => ({ kind: "persons" as const, value: v, label: `${t("filters.person")}: ${v}` })),
   ];
   if (chips.length === 0) return null;

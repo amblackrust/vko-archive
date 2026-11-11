@@ -6,7 +6,7 @@ import { Bot, Send, Square, Trash2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { AiResult } from "@/lib/api/ai";
+import type { AiResult, HistoryTurn } from "@/lib/api/ai";
 import { useIsAdminArea } from "@/components/layout/site-shell";
 import { AnswerText } from "./answer-text";
 import { AnswerExtras } from "./source-cards";
@@ -14,6 +14,21 @@ import { useAnswer, type AnswerState } from "./use-answer";
 
 const QUICK = ["certificate", "ridder", "photos", "hours"] as const;
 const MAX_MESSAGES = 20;
+const HISTORY_TURNS = 6;
+const HISTORY_USER_CHARS = 500;
+const HISTORY_ASSISTANT_CHARS = 1500;
+
+/** Последние реплики для сервера: только текст вопросов и ответов (без карточек), урезанный под лимиты API. */
+function historyOf(turns: Turn[]): HistoryTurn[] {
+  const history: HistoryTurn[] = [];
+  for (const turn of turns) {
+    history.push({ role: "user", text: turn.question.slice(0, HISTORY_USER_CHARS) });
+    if (turn.state.status === "done" && turn.state.result.ai_generated && turn.state.result.answer) {
+      history.push({ role: "assistant", text: turn.state.result.answer.slice(0, HISTORY_ASSISTANT_CHARS) });
+    }
+  }
+  return history.slice(-HISTORY_TURNS);
+}
 
 interface Turn {
   id: number;
@@ -74,7 +89,7 @@ function AssistantWidgetDialog() {
     if (!text || busy) return;
     setInput("");
     const id = nextId.current++;
-    const final = await ask(text);
+    const final = await ask(text, historyOf(turns));
     setTurns((prev) => [...prev, { id, question: text, state: final }].slice(-MAX_MESSAGES));
     endRef.current?.scrollIntoView({ block: "end" });
   }

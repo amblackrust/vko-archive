@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RateLimitedError, streamAnswer, type AiMeta, type AiResult } from "@/lib/api/ai";
+import { RateLimitedError, streamAnswer, type AiMeta, type AiResult, type HistoryTurn } from "@/lib/api/ai";
 
 export type AnswerState =
   | { status: "idle" }
@@ -27,7 +27,7 @@ export function useAnswer(lang: string, onMeta?: (meta: AiMeta) => void) {
   const cancel = useCallback(() => controller.current?.abort(), []);
 
   const ask = useCallback(
-    async (question: string): Promise<AnswerState> => {
+    async (question: string, history: HistoryTurn[] = []): Promise<AnswerState> => {
       controller.current?.abort();
       const own = new AbortController();
       controller.current = own;
@@ -49,6 +49,7 @@ export function useAnswer(lang: string, onMeta?: (meta: AiMeta) => void) {
             },
           },
           own.signal,
+          history,
         );
         final = { status: "done", result };
       } catch (error) {

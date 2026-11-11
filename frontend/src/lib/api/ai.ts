@@ -11,6 +11,8 @@ export interface AiFilters {
   period: string[];
   places: string[];
   persons: string[];
+  /** Каноническое название места → название на языке вопроса (kk/en); нет ключа — показывать как есть. */
+  place_labels?: Record<string, string>;
 }
 
 export interface AiSource {
@@ -48,6 +50,12 @@ export interface AiMeta {
   mode: AiMode;
   ai_available: boolean;
   filters: AiFilters | null;
+}
+
+/** Реплика диалога для уточняющих вопросов: только текст, без карточек. Сервер принимает до 6. */
+export interface HistoryTurn {
+  role: "user" | "assistant";
+  text: string;
 }
 
 /** Лимит запросов (429): сколько секунд подождать. */
@@ -94,11 +102,12 @@ export async function streamAnswer(
   lang: string,
   handlers: StreamHandlers,
   signal: AbortSignal,
+  history: HistoryTurn[] = [],
 ): Promise<AiResult> {
   const response = await fetch(`${API_URL}/api/ai/answer/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ q, lang }),
+    body: JSON.stringify({ q, lang, history }),
     signal,
   });
   if (response.status === 429) {

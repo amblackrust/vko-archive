@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 MAX_ITEMS = 8
 MAX_ITEM_CHARS = 80
 MIN_YEAR = 1700
+MAX_PREVIOUS = 2
+MAX_PREVIOUS_CHARS = 300
 
 _KK_LETTERS = re.compile(r"[әғқңөұүһі]", re.IGNORECASE)
 _CYRILLIC = re.compile(r"[а-яё]", re.IGNORECASE)
@@ -111,6 +113,21 @@ def normalize_place(place: str, synonym_groups: list[list[str]]) -> str:
     return best[1] if best else value
 
 
+def place_label(place: str, lang: str, synonym_groups: list[list[str]]) -> str:
+    """The place's name in the language of the question, from its synonym group: kk — the
+    first term with Kazakh letters, en — the first without Cyrillic; otherwise as is."""
+    if lang == "ru":
+        return place
+    for group in synonym_groups:
+        if group and group[0].lower() == place.lower():
+            for term in group:
+                if lang == "kk" and _KK_LETTERS.search(term):
+                    return term
+                if lang == "en" and not _CYRILLIC.search(term):
+                    return term
+    return place
+
+
 def _clean_list(values: list[str]) -> list[str]:
     result: list[str] = []
     for value in values:
@@ -162,10 +179,20 @@ def fallback(text: str) -> ParsedQuery:
     return ParsedQuery(intent="search", lang=detect_lang(text), source="fallback")
 
 
-def parse(text: str, settings: Settings, synonym_groups: list[list[str]]) -> ParsedQuery:
+def parser_input(text: str, previous_questions: list[str]) -> str:
+    """The parser sees at most the last two earlier user questions, as quoted data."""
+    if not previous_questions:
+        return text
+    quoted = "\n".join(f"- {q[:MAX_PREVIOUS_CHARS]}" for q in previous_questions[-MAX_PREVIOUS:])
+    return f"Предыдущие вопросы (данные):\n{quoted}\n\nТекущий запрос:\n{text}"
+
+
+def parse(
+    text: str, settings: Settings, synonym_groups: list[list[str]], previous_questions: list[str] | None = None
+) -> ParsedQuery:
     messages = [
         {"role": "system", "content": prompts.PARSER_PROMPT.format(doc_types=", ".join(DOC_TYPES))},
-        {"role": "user", "content": text},
+        {"role": "user", "content": parser_input(text, previous_questions or [])},
     ]
     try:
         raw = ollama_client.chat(messages, settings, fmt=JSON_SCHEMA, timeout=settings.ollama_parser_timeout_seconds)

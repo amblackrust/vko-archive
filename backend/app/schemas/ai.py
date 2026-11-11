@@ -1,7 +1,7 @@
 import uuid
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.schemas.search import Lang, ObjectType
 from app.services.indexing import DOC_TYPE_LABELS
@@ -45,12 +45,42 @@ class AppliedFilters(BaseModel):
     period_range: ParsedPeriod | None = None
     places: list[str] = Field(default_factory=list)
     persons: list[str] = Field(default_factory=list)
+    # canonical place → its name in the question's language (kk/en); a place absent here is
+    # shown as is. Search still works by the canonical name in `places` / `q`.
+    place_labels: dict[str, str] = Field(default_factory=dict)
+
+
+HISTORY_MAX_TURNS = 6
+HISTORY_USER_CHARS = 500
+HISTORY_ASSISTANT_CHARS = 1500
+HISTORY_TOTAL_CHARS = 4000
+
+
+class HistoryTurn(BaseModel):
+    """A previous message of the dialog: text only (no sources). Untrusted client data."""
+
+    role: Literal["user", "assistant"]
+    text: str = Field(max_length=HISTORY_ASSISTANT_CHARS)
+
+    @model_validator(mode="after")
+    def _limit_user_text(self) -> "HistoryTurn":
+        if self.role == "user" and len(self.text) > HISTORY_USER_CHARS:
+            raise ValueError(f"user turn is longer than {HISTORY_USER_CHARS} characters")
+        return self
 
 
 class AiRequest(BaseModel):
     q: str = Field(max_length=500)
     # Interface language: used only when the language of the query cannot be told.
     lang: Lang | None = None
+    # Last turns of the dialog (oldest first) for follow-up questions; optional.
+    history: list[HistoryTurn] = Field(default_factory=list, max_length=HISTORY_MAX_TURNS)
+
+    @model_validator(mode="after")
+    def _limit_history(self) -> "AiRequest":
+        if sum(len(turn.text) for turn in self.history) > HISTORY_TOTAL_CHARS:
+            raise ValueError(f"history is longer than {HISTORY_TOTAL_CHARS} characters")
+        return self
 
 
 class RouteLink(BaseModel):
