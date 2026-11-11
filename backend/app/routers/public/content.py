@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Path, Query
 
 from app.deps import DbSession
-from app.schemas.content import Contacts, FaqResponse, Lang, PageDetail
+from app.schemas.content import Contacts, FaqResponse, Lang, PageDetail, PublicSettings
 from app.services import content as content_service
 
 router = APIRouter(tags=["content"])
@@ -26,3 +26,9 @@ def faqs(session: DbSession, lang: Annotated[Lang, Query()] = "ru") -> FaqRespon
 @router.get("/contacts", response_model=Contacts)
 def contacts(session: DbSession) -> Contacts:
     return content_service.get_contacts(session)
+
+
+@router.get("/site-settings", response_model=PublicSettings)
+def site_settings(session: DbSession, lang: Annotated[Lang, Query()] = "ru") -> PublicSettings:
+    """Safe public subset of the site settings (social links, widgets, survey, counter, useful links)."""
+    return content_service.get_public_settings(session, lang)

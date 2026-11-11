@@ -17,6 +17,9 @@ class PageDetail(BaseModel):
     body: str
     lang: str
     translation_status: str
+    seo_title: str = ""
+    seo_description: str = ""
+    seo_keywords: str = ""
 
 
 class FaqItem(BaseModel):
@@ -50,3 +53,35 @@ class Contacts(BaseModel):
     email: str
     hours: str
     reading_room_hours: str
+
+
+class PublicSocialLink(BaseModel):
+    url: str | None
+    handle: str | None
+
+
+class PublicUsefulLink(BaseModel):
+    title: str
+    url: str
+
+
+class PublicSurvey(BaseModel):
+    enabled: bool
+    question: str
+    url: str | None
+
+
+class PublicCounter(BaseModel):
+    enabled: bool
+    value: int
+
+
+class PublicSettings(BaseModel):
+    """Safe subset of `site_settings` for the public site: social links, widget switches, survey,
+    counter and useful links. Contacts, compliance and everything else are not exposed here."""
+
+    social: dict[str, PublicSocialLink]
+    widgets: dict[str, bool]
+    survey: PublicSurvey
+    counter: PublicCounter
+    useful_links: list[PublicUsefulLink]
