@@ -100,18 +100,18 @@ def _store_files(session, report, storage_dir, doc: Doc, document: Document, bas
     common = {"owner_type": "document", "owner_id": document.id, "access": access, "is_demo": True,
               "refresh": refresh, "provenance": PROVENANCE, "rights_note": RIGHTS}  # fmt: skip
     if doc.kind == "audio":
-        attach_file(session, report, storage_dir, position=0, name=f"demo/{base}.wav", data=silent_wav(),
+        attach_file(session, report, storage_dir, position=0, name=f"catalog/{base}.wav", data=silent_wav(),
                     mime="audio/wav", caption=i18n(ru=doc.title), **common)  # fmt: skip
     elif doc.kind in ("scan", "photo"):
         pages = doc.pages or (f"{doc.title}\n\n{doc.summary}",)
         for number, text in enumerate(pages, 1):
             image = photo(doc.title) if doc.kind == "photo" else scan_page(text, number, len(pages))
-            preview_name = f"previews/seed/demo/{base}-{number}.jpg"
+            preview_name = f"previews/seed/catalog/{base}-{number}.jpg"
             preview = storage_dir / preview_name
             preview.parent.mkdir(parents=True, exist_ok=True)
             preview.write_bytes(_preview(image))
             attach_file(
-                session, report, storage_dir, position=number - 1, name=f"demo/{base}-{number}.png",
+                session, report, storage_dir, position=number - 1, name=f"catalog/{base}-{number}.png",
                 data=_png(image), mime="image/png", pages=1, preview_path=preview_name,
                 caption=i18n(ru=f"{doc.title}, л. {number}"),
                 # The OCR text is the page text itself: simulated OCR, labelled as such in the handoff.
@@ -138,7 +138,7 @@ def seed_demo_catalog(session: Session, report: Report, storage_dir: Path, refre
     for fund_data in FUNDS:
         fund = upsert(
             session, report, Fund, {"branch_id": head.id, "number": fund_data.number},
-            {"slug": f"demo-fund-{fund_data.number.lower()}", "type": FundType(fund_data.type),
+            {"slug": f"fund-{fund_data.number.lower()}", "type": FundType(fund_data.type),
              "title": i18n(ru=fund_data.title), "annotation": i18n(ru=fund_data.annotation),
              "dates_from": fund_data.year_from, "dates_to": fund_data.year_to, "is_demo": True,
              "workflow_status": PUBLISHED, "translation_status": translation_status(ru="x")},
@@ -172,7 +172,7 @@ def seed_demo_catalog(session: Session, report: Report, storage_dir: Path, refre
                     document = upsert(
                         session, report, Document, {"archive_code": code},
                         {
-                            "slug": f"demo-{fund.number}-{inventory.number}-{case.number}-{number}".lower(),
+                            "slug": f"doc-{fund.number}-{inventory.number}-{case.number}-{number}".lower(),
                             "case_id": case.id, "branch_id": head.id, "title": i18n(ru=doc.title),
                             "date_text": doc.date_text, "date_from": date.fromisoformat(doc.date_from),
                             "date_to": date.fromisoformat(doc.date_to) if doc.date_to else None,

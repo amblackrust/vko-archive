@@ -14,39 +14,39 @@ NO_TRANSLATION = {"ru": "verified", "kk": "missing", "en": "missing"}
 
 # (slug, category, title, summary, published date, body)
 NEWS = [
-    ("news-demo-exhibition-ust-kamenogorsk", "exhibitions",
+    ("news-exhibition-ust-kamenogorsk", "exhibitions",
      "Открыта онлайн-выставка «Усть-Каменогорск: история города в архивных документах»",
      "Выставка составлена из вымышленных документов.",
      datetime(2026, 3, 2, tzinfo=UTC),
      "<p>Выставка знакомит с вымышленными документами 1950–1960-х годов о Усть-Каменогорске. "
      "Каждый экспонат сопровождается подписью и архивным шифром.</p>"),  # fmt: skip
-    ("news-demo-calendar-2026", "events",
+    ("news-calendar-2026", "events",
      "Опубликован Календарь памятных дат на 2026 год",
      "Календарь включает даты, связанные с историей региона.",
      datetime(2026, 1, 12, tzinfo=UTC),
      "<p>Календарь памятных дат на 2026 год доступен в разделе «Архив памяти».</p>"),  # fmt: skip
-    ("news-demo-collection-education", "memory",
+    ("news-collection-education", "memory",
      "Новая подборка «Образование в регионе»",
      "Подборка вымышленных школьных документов.",
      datetime(2026, 4, 9, tzinfo=UTC),
      "<p>В подборку вошли вымышленные школьные документы и материалы о работе учителей.</p>"),  # fmt: skip
-    ("news-demo-exhibition-industry", "exhibitions",
+    ("news-exhibition-industry", "exhibitions",
      "Онлайн-выставка «Промышленное развитие Восточного Казахстана»",
      "Экспонаты — вымышленные документы о цехах комбината.",
      datetime(2026, 4, 20, tzinfo=UTC),
      "<p>Выставка показывает вымышленные приказы, планы и фотографии цехов комбината.</p>"),  # fmt: skip
-    ("news-demo-branches-map", "branches",
+    ("news-branches-map", "branches",
      "Карта филиалов обновлена",
      "Координаты филиалов приблизительные и требуют уточнения.",
      datetime(2026, 5, 6, tzinfo=UTC),
      "<p>На карте отмечены филиалы. Координаты пока приблизительные, точные адреса и маршруты "
      "уточняйте в карточке филиала и по телефону.</p>"),  # fmt: skip
-    ("news-demo-education-exhibition", "exhibitions",
+    ("news-education-exhibition", "exhibitions",
      "Онлайн-выставка «История образования в регионе»",
      "Выставка на вымышленных школьных документах.",
      datetime(2026, 6, 15, tzinfo=UTC),
      "<p>Выставка рассказывает о школах и учителях на вымышленных материалах.</p>"),  # fmt: skip
-    ("news-demo-catalog-guide", "site",
+    ("news-catalog-guide", "site",
      "Как пользоваться электронным каталогом",
      "Поиск, фильтры и статусы доступа — в справке сайта.",
      datetime(2026, 7, 1, tzinfo=UTC),
