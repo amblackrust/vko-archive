@@ -86,6 +86,20 @@ def test_demo_catalog_requirements(db_session: Session, storage: Path) -> None:
     assert any("14 марта 1972" in (text or "") for text in ocr)
 
 
+def test_seeded_slugs_and_paths_have_no_demo_word(db_session: Session, storage: Path) -> None:
+    from app.models import HistoricalEvent, News
+
+    run(db_session, storage)
+    slugs = [
+        *db_session.scalars(select(Document.slug)), *db_session.scalars(select(Fund.slug)),
+        *db_session.scalars(select(News.slug)), *db_session.scalars(select(HistoricalEvent.slug)),
+    ]
+    paths = [*db_session.scalars(select(DigitalFile.master_path)), *db_session.scalars(select(DigitalFile.preview_path))]
+    assert slugs and not [v for v in slugs if v and "demo" in v.lower()]
+    assert paths and not [v for v in paths if v and "demo" in v.lower()]
+    assert db_session.scalar(select(News.id).where(News.slug == "news-catalog-guide")) is not None
+
+
 def test_files_follow_document_access(db_session: Session, storage: Path) -> None:
     run(db_session, storage)
     rows = db_session.execute(

@@ -80,3 +80,30 @@ def test_named_check_constraints_exist_in_db(test_db_url: str) -> None:
         if isinstance(constraint, CheckConstraint) and constraint.name
     }
     assert expected <= set(db_checks)
+
+
+def test_slug_migration_renames_demo_slugs_and_paths(test_db_url: str) -> None:
+    """0011 turns demo-* slugs and seed/demo storage paths into neutral ones (and back on downgrade)."""
+    config = alembic_config(test_db_url)
+    command.downgrade(config, "0010")
+    engine = create_engine(test_db_url)
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("INSERT INTO news (id, slug, title) VALUES (gen_random_uuid(), 'news-demo-x', '{}')"))
+            conn.execute(text(
+                "INSERT INTO funds (id, slug, number, title, type, translation_status) "
+                "VALUES (gen_random_uuid(), 'demo-fund-x', 'MIG-X', '{}', 'organization', '{}')"
+            ))
+        command.upgrade(config, "0011")
+        with engine.connect() as conn:
+            assert conn.execute(text("SELECT slug FROM news WHERE slug LIKE '%-x' AND slug LIKE 'news-%'")).scalars().all() == ["news-x"]
+            assert conn.execute(text("SELECT slug FROM funds WHERE number = 'MIG-X'")).scalar() == "fund-x"
+        command.downgrade(config, "0010")
+        with engine.connect() as conn:
+            assert conn.execute(text("SELECT slug FROM funds WHERE number = 'MIG-X'")).scalar() == "demo-fund-x"
+        with engine.begin() as conn:
+            conn.execute(text("DELETE FROM news WHERE slug = 'news-demo-x'"))
+            conn.execute(text("DELETE FROM funds WHERE number = 'MIG-X'"))
+    finally:
+        engine.dispose()
+        command.upgrade(config, "head")
