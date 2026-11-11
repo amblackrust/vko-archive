@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t("title"), alternates: localizedAlternates(locale, "/legal") };
 }
 
-/** Нормативные акты из каталога (опубликованные) и перечень из ТЗ, который в каталог ещё не загружен. */
+/** Опубликованные нормативные акты из БД, включая перечень §8 ТЗ. */
 export default async function LegalPage({
   params,
   searchParams,
@@ -44,7 +44,6 @@ export default async function LegalPage({
   } catch {
     unavailable = true;
   }
-  const reference = t.raw("reference.items") as string[];
 
   return (
     <>
@@ -74,20 +73,11 @@ export default async function LegalPage({
           </section>
         )}
 
-        <section aria-labelledby="legal-reference" className="space-y-3 rounded-lg border bg-surface-muted p-5">
-          <h2 id="legal-reference" className="text-xl font-semibold">{t("reference.title")}</h2>
-          <p className="text-sm text-muted-foreground">{t("reference.intro")}</p>
-          <ul className="list-disc space-y-2 pl-5 text-sm">
-            {reference.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <p className="text-sm">
-            <a href="https://adilet.zan.kz" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              {t("adiletLink")}
-            </a>
-          </p>
-        </section>
+        <p className="text-sm">
+          <a href="https://adilet.zan.kz" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            {t("adiletLink")}
+          </a>
+        </p>
       </div>
     </>
   );

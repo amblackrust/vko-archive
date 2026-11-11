@@ -24,17 +24,5 @@
     "noFile": "No file published",
     "adilet": "Open on adilet.zan.kz"
   },
-  "adiletLink": "Go to Adilet (adilet.zan.kz)",
-  "reference": {
-    "title": "Acts from the terms of reference not yet in the catalogue",
-    "intro": "Legal acts listed in the supplement to the terms of reference for applicability checks. Compare the text and status with the official publication before deployment.",
-    "items": [
-      "Law of the Republic of Kazakhstan «On the National Archival Fund and Archives» of 22.12.1998 No. 326-I",
-      "Rules for the completion, storage, accounting and use of documents of the National Archival Fund (order of 09.08.2023 No. 215)",
-      "Rules for providing public services in archival affairs (order of 29.05.2020 No. 159)",
-      "Law of the Republic of Kazakhstan «On Personal Data and Its Protection» of 21.05.2013 No. 94-V",
-      "Unified requirements in the field of ICT and information security (Government resolution of 20.12.2016 No. 832)",
-      "Requirements for the content of internet resources of state bodies (order of 31.03.2025 No. 124-NK), where applicable"
-    ]
-  }
+  "adiletLink": "Go to Adilet (adilet.zan.kz)"
 }

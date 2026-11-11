@@ -281,6 +281,52 @@ def seed_resolution_142(session, report, refresh, storage_dir):
         act.file_id = stored.id
 
 
+# Перечень НПА из §8 дополнения к ТЗ: (slug, номер, дата, названия ru/kk/en). Файлов нет, статус не проверялся
+# по Әділет, поэтому нет и adilet_url; kk/en — машинный перевод (translation_status=machine).
+TZ_LEGAL_ACTS = [
+    ("tz8-law-326", "326-I", date(1998, 12, 22),
+     "Закон Республики Казахстан «О Национальном архивном фонде и архивах»",
+     "«Ұлттық архив қоры және архивтер туралы» Қазақстан Республикасының Заңы",
+     "Law of the Republic of Kazakhstan «On the National Archival Fund and Archives»"),
+    ("tz8-order-215", "215", date(2023, 8, 9),
+     "Правила комплектования, хранения, учёта и использования документов Национального архивного фонда (приказ)",
+     "Ұлттық архив қорының құжаттарын комплектеу, сақтау, есепке алу және пайдалану қағидалары (бұйрық)",
+     "Rules for the completion, storage, accounting and use of documents of the National Archival Fund (order)"),
+    ("tz8-order-159", "159", date(2020, 5, 29),
+     "Правила оказания государственных услуг в области архивного дела (приказ)",
+     "Архив ісі саласында мемлекеттік қызметтер көрсету қағидалары (бұйрық)",
+     "Rules for providing public services in archival affairs (order)"),
+    ("tz8-law-94", "94-V", date(2013, 5, 21),
+     "Закон Республики Казахстан «О персональных данных и их защите»",
+     "«Дербес деректер және оларды қорғау туралы» Қазақстан Республикасының Заңы",
+     "Law of the Republic of Kazakhstan «On Personal Data and Its Protection»"),
+    ("tz8-resolution-832", "832", date(2016, 12, 20),
+     "Единые требования в области ИКТ и обеспечения информационной безопасности (постановление Правительства РК)",
+     "АКТ саласындағы және ақпараттық қауіпсіздікті қамтамасыз етудегі бірыңғай талаптар (ҚР Үкіметінің қаулысы)",
+     "Unified requirements in the field of ICT and information security (Government resolution)"),
+    ("tz8-order-124", "124-НҚ", date(2025, 3, 31),
+     "Требования к содержанию интернет-ресурсов государственных органов (приказ), в применимой части",
+     "Мемлекеттік органдардың интернет-ресурстарының мазмұнына қойылатын талаптар (бұйрық), қолданылатын бөлігінде",
+     "Requirements for the content of internet resources of state bodies (order), where applicable"),
+]
+
+
+def seed_tz_legal_acts(session, report, refresh):
+    for slug, number, act_date, ru, kk, en in TZ_LEGAL_ACTS:
+        upsert(
+            session, report, LegalAct, {"slug": slug},
+            {
+                "title": i18n(ru=ru, kk=kk, en=en),
+                "number": number,
+                "date": act_date,
+                "status": LegalActStatus.ACTIVE,
+                "workflow_status": PUBLISHED,
+                "translation_status": {"ru": "verified", "kk": "machine", "en": "machine"},
+            },
+            refresh,
+        )
+
+
 # Order of the four headings in Фонды.docx.
 FUND_CATEGORY_TYPES = ["newspaper", "organization", "party", "personal"]
 
@@ -311,4 +357,5 @@ def seed_info(session: Session, report: Report, storage_dir: Path, refresh: bool
     seed_memorial_dates(session, report, refresh)
     seed_compliance(session, report, refresh, storage_dir)
     seed_resolution_142(session, report, refresh, storage_dir)
+    seed_tz_legal_acts(session, report, refresh)
     seed_fund_categories(session, report, refresh)
