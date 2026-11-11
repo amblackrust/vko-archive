@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, Query, Response
 
 from app.deps import ClientIp, CurrentUser, DbSession
 from app.models.enums import AuditResult
-from app.repositories.audit import AuditFilter
 from app.schemas.audit import AuditEntry, AuditPage
 from app.services import audit
+from app.services.audit import AuditFilter
 
 router = APIRouter(prefix="/audit", tags=["admin: audit"])
 

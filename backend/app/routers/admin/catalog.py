@@ -5,8 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Query, Response, status
 
 from app.deps import ClientIp, CurrentUser, DbSession
 from app.models.enums import WorkflowStatus
-from app.repositories import admin_catalog as repo
-from app.schemas.admin_common import ListItem, ListPage, ObjectOut
+from app.schemas.admin_common import ListPage, ObjectOut
 from app.services import admin_catalog as service
 from app.services import indexing
 
@@ -30,19 +29,9 @@ def list_objects(
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> ListPage:
-    rows, total = service.search(
+    return service.list_page(
         session, user, kind, q=q, parent_id=parent_id, status=workflow_status, page=page, page_size=page_size, ip=ip
     )
-    items = [
-        ListItem(
-            id=obj.id, kind=kind, number=repo.number_of(kind, obj), title=obj.title,
-            workflow_status=obj.workflow_status.value, version=obj.version, updated_at=obj.updated_at,
-            parent_id=getattr(obj, "fund_id", None) or getattr(obj, "inventory_id", None) or getattr(obj, "case_id", None),
-            children=children, extra={"is_demo": obj.is_demo},
-        )
-        for obj, children in rows
-    ]
-    return ListPage(items=items, total=total, page=page, page_size=page_size)
 
 
 @router.post("/{kind}", response_model=ObjectOut, status_code=status.HTTP_201_CREATED)
