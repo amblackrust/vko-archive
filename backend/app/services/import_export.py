@@ -6,6 +6,10 @@ an existing draft is updated only when something changed (re-importing the same 
 no-op), any other existing document is skipped. Imported documents are never published:
 workflow_status=draft, description_status=needs_review, file_access=needs_review.
 
+Missing funds, inventories and cases named by a row's fund/inventory/case numbers are created
+as drafts (the preview lists what will be created); it needs `catalog.create` in the target
+branch, like creating them by hand.
+
 Every row is authorized separately (catalog.import, with the branch the row lands in; an
 update additionally needs catalog.edit on the existing document). Each row is written in
 its own savepoint, so a failing row does not break the others; with `atomic` any error
@@ -33,8 +37,8 @@ from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.models import Case, Document, WorkflowHistory
-from app.models.enums import AuditResult, DescriptionStatus, FileAccess, WorkflowStatus
+from app.models import Case, Document, Fund, Inventory, WorkflowHistory
+from app.models.enums import AuditResult, DescriptionStatus, FileAccess, FundType, WorkflowStatus
 from app.repositories import import_export as repo
 from app.repositories import workflow as workflow_repo
 from app.services import audit, workflow
@@ -49,6 +53,7 @@ MAX_ROWS = 5000
 MAX_COLUMNS = 60
 MAX_CELL_CHARS = 10_000
 MAX_TITLE_CHARS = 1000
+MAX_NUMBER_CHARS = 64  # fund / inventory / case number column size
 # XLSX (zip) limits
 MAX_ZIP_ENTRIES = 300
 MAX_UNCOMPRESSED_BYTES = 60 * 1024 * 1024
@@ -315,6 +320,8 @@ class RowPlan:
     values: dict[str, Any] = field(default_factory=dict)
     document: Document | None = None
     case: Case | None = None
+    # Hierarchy levels this row creates, outermost first: subset of ("fund", "inventory", "case").
+    new_levels: tuple[str, ...] = ()
     object_id: uuid.UUID | None = None
 
     def error(self, field_name: str | None, code: str) -> None:
@@ -442,6 +449,60 @@ def _changed(document: Document, values: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in values.items() if getattr(document, key) != value}
 
 
+def _locate_case(
+    session: Session, branch_id: uuid.UUID | None, fund_number: str, inventory_number: str, case_number: str
+) -> tuple[Case | None, tuple[str, ...]]:
+    """The case, or None and the levels (outermost first) that do not exist yet."""
+    case = repo.find_case(session, branch_id, fund_number, inventory_number, case_number)
+    if case is not None:
+        return case, ()
+    fund = repo.find_fund(session, branch_id, fund_number)
+    if fund is None:
+        return None, ("fund", "inventory", "case")
+    if repo.find_inventory(session, fund.id, inventory_number) is None:
+        return None, ("inventory", "case")
+    return None, ("case",)
+
+
+def _new_node(session: Session, user: AuthUser, node: Fund | Inventory | Case, kind: str) -> None:
+    node.workflow_status = WorkflowStatus.DRAFT
+    node.created_by = user.id
+    node.is_demo = False
+    session.add(node)
+    session.flush()
+    workflow_repo.add_history(
+        session,
+        WorkflowHistory(
+            object_type=kind, object_id=node.id, from_status=None, to_status=WorkflowStatus.DRAFT.value,
+            user_id=user.id, comment="import", version=node.version, snapshot=workflow.snapshot(node),
+        ),
+    )
+
+
+def _ensure_case(session: Session, user: AuthUser, plan: RowPlan, branch_id: uuid.UUID | None) -> Case:
+    """Creates the missing fund / inventory / case of the row as drafts (titles are placeholders
+    for the archivist to edit; nothing is published)."""
+    fund_number, inventory_number, case_number = (plan.raw[name] for name in HIERARCHY_FIELDS)
+    fund = repo.find_fund(session, branch_id, fund_number)
+    if fund is None:
+        fund = Fund(
+            number=fund_number, title={"ru": f"Фонд № {fund_number}"}, type=FundType.ORGANIZATION, branch_id=branch_id,
+            translation_status={"ru": "verified", "kk": "missing", "en": "missing"},
+        )
+        _new_node(session, user, fund, "fund")
+    inventory = repo.find_inventory(session, fund.id, inventory_number)
+    if inventory is None:
+        inventory = Inventory(fund_id=fund.id, number=inventory_number, title={}, translation_status={})
+        _new_node(session, user, inventory, "inventory")
+        inventory.fund = fund
+    case = repo.find_case(session, branch_id, fund_number, inventory_number, case_number)
+    if case is None:
+        case = Case(inventory_id=inventory.id, number=case_number, title={}, translation_status={})
+        _new_node(session, user, case, "case")
+        case.inventory = inventory
+    return case
+
+
 def _plan(
     session: Session, user: AuthUser, table: Table, mapping: dict[int, str], branch_id: uuid.UUID | None
 ) -> list[RowPlan]:
@@ -458,18 +519,20 @@ def _plan(
                 plan.error("archive_code", "duplicate_in_file")
             seen.add(plan.archive_code)
     existing = repo.documents_by_codes(session, sorted(seen))
-    cases: dict[tuple[str, str, str], Case | None] = {}
+    cases: dict[tuple[str, str, str], tuple[Case | None, tuple[str, ...]]] = {}
     for plan in plans:
         key = tuple(plan.raw.get(name, "") for name in HIERARCHY_FIELDS)
         if any(key):
             if not all(key):
                 plan.error("case_number", "hierarchy_incomplete")
+            elif any(len(part) > MAX_NUMBER_CHARS for part in key):
+                plan.error("case_number", "too_long")
             else:
                 if key not in cases:
-                    cases[key] = repo.find_case(session, branch_id, *key)
-                plan.case = cases[key]
-                if plan.case is None:
-                    plan.error("case_number", "hierarchy_not_found")
+                    cases[key] = _locate_case(session, branch_id, *key)
+                plan.case, plan.new_levels = cases[key]
+                if plan.new_levels and not authorize(user, "catalog.create", BranchTarget(branch_id)):
+                    plan.error("case_number", "forbidden_create_hierarchy")
         row_branch = plan.case.inventory.fund.branch_id if plan.case is not None else branch_id
         if not authorize(user, "catalog.import", BranchTarget(row_branch)):
             plan.error(None, "forbidden_branch")
@@ -504,13 +567,29 @@ class ImportReport:
     rows: list[RowPlan]
     applied: bool
     counts: dict[str, int]
+    # Funds / inventories / cases that the valid rows create (applied: were created).
+    hierarchy: dict[str, int] = field(default_factory=dict)
+
+
+def _hierarchy_counts(plans: list[RowPlan]) -> dict[str, int]:
+    created: dict[str, set[tuple[str, ...]]] = {"fund": set(), "inventory": set(), "case": set()}
+    for plan in plans:
+        if plan.action == "error":
+            continue
+        numbers = tuple(plan.raw[name] for name in HIERARCHY_FIELDS) if plan.new_levels else ()
+        for level in plan.new_levels:
+            created[level].add(numbers[: ("fund", "inventory", "case").index(level) + 1])
+    return {level: len(keys) for level, keys in created.items()}
 
 
 def _report(table: Table, mapping: dict[int, str], plans: list[RowPlan], applied: bool) -> ImportReport:
     counts = {key: 0 for key in ("create", "update", "unchanged", "skip", "error")}
     for plan in plans:
         counts[plan.action] += 1
-    return ImportReport(headers=table.headers, mapping=mapping, rows=plans, applied=applied, counts=counts)
+    return ImportReport(
+        headers=table.headers, mapping=mapping, rows=plans, applied=applied, counts=counts,
+        hierarchy=_hierarchy_counts(plans),
+    )
 
 
 def _target_branch(session: Session, user: AuthUser, branch_id: uuid.UUID | None, *, ip: str | None) -> uuid.UUID | None:
@@ -590,6 +669,9 @@ def apply(
                 continue
             try:
                 with session.begin_nested():
+                    if plan.new_levels:
+                        plan.case = _ensure_case(session, user, plan, branch_id)
+                        plan.values["case_id"] = plan.case.id
                     if plan.action == "create":
                         plan.object_id = _create(session, user, plan, branch_id).id
                     else:
@@ -610,6 +692,8 @@ def apply(
             if plan.action == "create":
                 plan.object_id = None  # rolled back
     report = _report(table, clean_mapping, plans, applied)
+    if not applied:
+        report.hierarchy = dict.fromkeys(report.hierarchy, 0)
     audit.record(
         session,
         action_type="catalog.import",

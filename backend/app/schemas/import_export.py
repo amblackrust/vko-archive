@@ -18,6 +18,7 @@ class ImportRow(BaseModel):
     errors: list[RowError]
     values: dict[str, str]  # mapped cells as read from the file
     object_id: uuid.UUID | None
+    creates: list[str]  # hierarchy levels this row creates: fund, inventory, case
 
 
 class ImportReportOut(BaseModel):
@@ -28,6 +29,8 @@ class ImportReportOut(BaseModel):
     fields: list[str]
     applied: bool
     counts: dict[str, int]
+    # funds / inventories / cases that the valid rows create (applied: were created)
+    hierarchy: dict[str, int]
     rows: list[ImportRow]
 
 

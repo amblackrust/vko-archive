@@ -90,6 +90,7 @@ OPS: list[Op] = [
     Op("DELETE", "/exhibits/{exhibit}", ("content.delete",)),
     Op("GET", "/translations", ("catalog.view",)),  # default object_type=document
     Op("GET", "/translations/document/{doc}", ("catalog.view",)),
+    Op("POST", "/translations/text", ("settings.edit",), {"text": "Привет", "source_lang": "ru", "target_lang": "kk"}),
     Op("POST", "/translations/document/{doc}/machine", ("catalog.edit", "ai.use"), {"source_lang": "ru", "target_lang": "kk", "version": 1}),
     Op("POST", "/translations/document/{doc}/verify", ("catalog.edit",), {"lang": "kk", "version": 1}),
     # branches

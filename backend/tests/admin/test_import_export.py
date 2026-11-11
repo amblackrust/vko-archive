@@ -14,7 +14,7 @@ from sqlalchemy import Engine, delete, select
 from sqlalchemy.orm import Session
 
 from app.main import app
-from app.models import AuditLog, Document, WorkflowHistory
+from app.models import AuditLog, Case, Document, Fund, Inventory, WorkflowHistory
 from app.models.enums import FileAccess, RoleCode, WorkflowStatus
 from app.services import import_export
 from app.services.errors import InvalidInput
@@ -38,6 +38,14 @@ def _cleanup_imported(engine: Engine, factory, api) -> Iterator[None]:
         if ids:
             session.execute(delete(WorkflowHistory).where(WorkflowHistory.object_id.in_(ids)))
             session.execute(delete(Document).where(Document.id.in_(ids)))
+        # Funds, inventories and cases that imports created (the history marks them).
+        for kind, model in (("case", Case), ("inventory", Inventory), ("fund", Fund)):
+            created = list(session.scalars(
+                select(WorkflowHistory.object_id).where(WorkflowHistory.object_type == kind, WorkflowHistory.comment == "import")
+            ))
+            if created:
+                session.execute(delete(model).where(model.id.in_(created)))
+                session.execute(delete(WorkflowHistory).where(WorkflowHistory.object_id.in_(created)))
         session.commit()
 
 
@@ -107,9 +115,11 @@ def test_preview_maps_columns_validates_and_writes_nothing(factory, engine, code
     assert codes[4] == {"invalid_date"}
     assert codes[5] == {"date_range", "unknown_doc_type"}
     assert codes[6] == {"duplicate_in_file"}
-    assert codes[7] == {"hierarchy_not_found"}
+    assert codes[7] == set() and rows[7]["action"] == "create" and rows[7]["creates"] == ["fund", "inventory", "case"]
+    assert rows[2]["creates"] == []
     assert codes[8] == {"hierarchy_incomplete"}
-    assert body["counts"] == {"create": 1, "update": 0, "unchanged": 0, "skip": 0, "error": 6}
+    assert body["counts"] == {"create": 2, "update": 0, "unchanged": 0, "skip": 0, "error": 5}
+    assert body["hierarchy"] == {"fund": 1, "inventory": 1, "case": 1}
     assert docs(engine, code) == []
 
 
@@ -173,7 +183,7 @@ def test_branch_scoped_archivist_imports_only_into_own_branch(factory, engine, c
     other_fund, _, _ = factory.catalog(other)
     foreign = factory.document(None, archive_code=f"{code}-foreign", branch_id=other.id)
     client = client_for(factory, RoleCode.ARCHIVIST, branch_id=own.id)
-    # Hierarchy is resolved inside the archivist's own branch: another branch's fund is not found.
+    # Hierarchy is resolved inside the archivist's own branch: another branch's fund number is a new fund here.
     data = csv_bytes([
         ["archive_code", "title_ru", "fund_number", "inventory_number", "case_number"],
         [f"{code}-own", "ДЕМО", own_fund.number, "1", "1"],
@@ -185,10 +195,15 @@ def test_branch_scoped_archivist_imports_only_into_own_branch(factory, engine, c
     actions = {row["archive_code"]: (row["action"], {e["code"] for e in row["errors"]}) for row in body["rows"]}
     assert actions[f"{code}-own"] == ("create", set())
     assert actions[f"{code}-loose"] == ("create", set())
-    assert actions[f"{code}-other"] == ("error", {"hierarchy_not_found"})
+    assert actions[f"{code}-other"] == ("create", set())
     assert actions[f"{code}-foreign"] == ("error", {"forbidden_existing"})
     created = {d.archive_code: d for d in docs(engine, code)}
     assert created[f"{code}-loose"].branch_id == own.id
+    with Session(engine) as session:
+        new_fund = session.scalars(select(Fund).where(Fund.number == other_fund.number, Fund.branch_id == own.id)).one()
+        assert new_fund.workflow_status == WorkflowStatus.DRAFT and new_fund.id != other_fund.id
+        other_doc = session.scalars(select(Document).where(Document.archive_code == f"{code}-other")).one()
+        assert other_doc.case.inventory.fund_id == new_fund.id
     assert created[f"{code}-foreign"].title == {"ru": "ДЕМО документ"} and foreign.id == created[f"{code}-foreign"].id
     # Explicit target branch of someone else → 403 before anything is read.
     denied = client.post("/api/admin/import/preview", content=data, params={"branch_id": str(other.id)})
@@ -305,3 +320,49 @@ def test_branch_options(factory):
     assert [b["id"] for b in archivist.get("/api/admin/import/branches").json()] == [str(own.id)]
     analyst = client_for(factory, RoleCode.ANALYST)
     assert analyst.get("/api/admin/import/branches").status_code == 403
+
+
+def test_missing_fund_inventory_and_case_are_created_as_drafts(factory, engine, code):
+    branch = factory.branch()
+    fund, _, _ = factory.catalog(branch)
+    client = client_for(factory, RoleCode.SUPER_ADMIN)
+    rows = [
+        ["archive_code", "title_ru", "fund_number", "inventory_number", "case_number"],
+        [f"{code}-1", "ДЕМО А", "IMPF-77", "1", "1"],
+        [f"{code}-2", "ДЕМО Б", "IMPF-77", "1", "2"],  # same new fund and inventory, new case
+        [f"{code}-3", "ДЕМО В", "IMPF-77", "2", "1"],  # same new fund, new inventory
+        [f"{code}-4", "ДЕМО Г", fund.number, "99", "1"],  # existing fund, new inventory
+    ]
+    target = {"branch_id": str(branch.id)}
+    preview = post(client, "preview", csv_bytes(rows), **target)
+    assert preview["hierarchy"] == {"fund": 1, "inventory": 3, "case": 4}
+    # Each row is planned against the database, so rows sharing a new parent all list it.
+    assert [r["creates"] for r in preview["rows"]] == [["fund", "inventory", "case"]] * 3 + [["inventory", "case"]]
+    with Session(engine) as session:
+        assert session.scalars(select(Fund).where(Fund.number == "IMPF-77")).first() is None  # preview writes nothing
+
+    applied = post(client, "apply", csv_bytes(rows), **target)
+    assert applied["applied"] is True and applied["counts"]["create"] == 4
+    assert applied["hierarchy"] == {"fund": 1, "inventory": 3, "case": 4}
+    with Session(engine) as session:
+        new_fund = session.scalars(select(Fund).where(Fund.number == "IMPF-77", Fund.branch_id == branch.id)).one()
+        assert new_fund.workflow_status == WorkflowStatus.DRAFT and new_fund.title == {"ru": "Фонд № IMPF-77"}
+        assert sorted(i.number for i in new_fund.inventories) == ["1", "2"]
+        history = session.scalars(select(WorkflowHistory).where(WorkflowHistory.object_id == new_fund.id)).all()
+        assert [h.comment for h in history] == ["import"]
+        placed = {d.archive_code: d for d in session.scalars(select(Document).where(Document.archive_code.like(f"{code}-%")))}
+        assert placed[f"{code}-2"].case.number == "2" and placed[f"{code}-2"].case.inventory.fund_id == new_fund.id
+        assert placed[f"{code}-4"].case.inventory.fund_id == fund.id and placed[f"{code}-4"].branch_id == branch.id
+    again = post(client, "apply", csv_bytes(rows), **target)
+    assert again["counts"]["unchanged"] == 4 and again["hierarchy"] == {"fund": 0, "inventory": 0, "case": 0}
+
+
+def test_hierarchy_creation_needs_the_create_right(factory, engine, code, monkeypatch):
+    branch = factory.branch()
+    client = client_for(factory, RoleCode.SUPER_ADMIN)
+    real = import_export.authorize
+    monkeypatch.setattr(import_export, "authorize", lambda user, action, *a: False if action == "catalog.create" else real(user, action, *a))
+    data = csv_bytes([["archive_code", "title_ru", "fund_number", "inventory_number", "case_number"], [f"{code}-1", "ДЕМО", "IMPF-88", "1", "1"]])
+    body = post(client, "apply", data, branch_id=str(branch.id))
+    assert body["rows"][0]["action"] == "error" and body["rows"][0]["errors"][0]["code"] == "forbidden_create_hierarchy"
+    assert docs(engine, code) == []

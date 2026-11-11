@@ -37,6 +37,16 @@ def find_case(
     return session.scalars(stmt).one_or_none()
 
 
+def find_fund(session: Session, branch_id: uuid.UUID | None, fund_number: str) -> Fund | None:
+    stmt = select(Fund).where(Fund.number == fund_number, Fund.branch_id.is_not_distinct_from(branch_id))
+    return session.scalars(stmt).one_or_none()
+
+
+def find_inventory(session: Session, fund_id: uuid.UUID, inventory_number: str) -> Inventory | None:
+    stmt = select(Inventory).where(Inventory.fund_id == fund_id, Inventory.number == inventory_number)
+    return session.scalars(stmt).one_or_none()
+
+
 def get_branch(session: Session, branch_id: uuid.UUID) -> Branch | None:
     return session.get(Branch, branch_id)
 
