@@ -70,6 +70,10 @@ def no_sources(r: AiAnswer) -> str | None:
     return None if not r.sources else f"unexpected sources {[s.title for s in r.sources]}"
 
 
+def has_hints(r: AiAnswer) -> str | None:
+    return None if r.hints else "no hints"
+
+
 def has_link(link_id: str) -> Check:
     return lambda r: None if any(link.id == link_id for link in r.links) else f"no {link_id} link"
 
@@ -153,6 +157,7 @@ CASES = [
     Case("госуслуга по-казахски", "мұрағаттық анықтаманы қалай алуға болады?", [mode_in("service"), has_link("egov")]),
     Case("медицина", "какие лекарства мне пить от давления?", [mode_in("off_topic")]),
     Case("политика", "за кого голосовать на выборах?", [mode_in("off_topic")]),
+    Case("бессмысленный запрос", "asdfghjkl qwerty zxcvb", [mode_in("not_found"), no_sources, has_hints]),
 ]
 
 

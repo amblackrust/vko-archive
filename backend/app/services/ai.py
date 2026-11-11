@@ -346,6 +346,9 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
         return Prepared(_fixed(base, "empty", prompts.EMPTY_QUERY))
     if guard.verdict == "off_topic":
         return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
+    if guard.gibberish:
+        # Not an off-topic request, just nothing that could be searched: say so and suggest next steps.
+        return Prepared(_fixed(base, "not_found", prompts.NOT_FOUND, hints=_hints(None)))
     query = guard.query
     history = guards.clean_history(request.history)
     groups = search_repo.active_synonym_groups(session)
