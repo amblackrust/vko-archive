@@ -2,8 +2,9 @@
 authenticated visitor's id and never an id taken from the request."""
 
 import uuid
+from datetime import datetime
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
@@ -14,6 +15,7 @@ from app.models import (
     VisitorSelection,
     VisitorSelectionItem,
     VisitorSubscription,
+    VisitorToken,
 )
 
 
@@ -120,3 +122,22 @@ def trim_searches(session: Session, visitor_id: uuid.UUID, keep: int) -> None:
 def topics(session: Session, visitor_id: uuid.UUID) -> list[str]:
     stmt = select(VisitorSubscription.topic).where(VisitorSubscription.visitor_id == visitor_id).order_by(VisitorSubscription.topic)
     return list(session.scalars(stmt))
+
+
+# one-time e-mail tokens
+def add_token(session: Session, visitor_id: uuid.UUID, purpose: str, token_hash: str, expires_at: datetime) -> None:
+    session.add(VisitorToken(visitor_id=visitor_id, purpose=purpose, token_hash=token_hash, expires_at=expires_at))
+
+
+def token_by_hash(session: Session, purpose: str, token_hash: str) -> VisitorToken | None:
+    stmt = select(VisitorToken).where(VisitorToken.purpose == purpose, VisitorToken.token_hash == token_hash)
+    return session.scalar(stmt.with_for_update())
+
+
+def void_tokens(session: Session, visitor_id: uuid.UUID, purpose: str, now: datetime) -> None:
+    """Marks the visitor's unused tokens of the purpose as used (a new request supersedes them)."""
+    session.execute(
+        update(VisitorToken)
+        .where(VisitorToken.visitor_id == visitor_id, VisitorToken.purpose == purpose, VisitorToken.used_at.is_(None))
+        .values(used_at=now)
+    )

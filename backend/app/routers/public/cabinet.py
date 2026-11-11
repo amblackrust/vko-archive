@@ -5,12 +5,17 @@ are not accepted anywhere else."""
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response, status
 
 from app.config import Settings
 from app.deps import AppSettings, ClientIp, DbSession
 from app.models import Visitor
 from app.schemas.cabinet import (
+    Accepted,
+    EmailConfirm,
+    EmailResend,
+    PasswordResetConfirm,
+    PasswordResetRequest,
     ChangePasswordRequest,
     FavoriteItem,
     FavoriteRef,
@@ -31,6 +36,7 @@ from app.schemas.cabinet import (
 from app.security import CSRF_HEADER
 from app.services import cabinet as cabinet_service
 from app.services import visitor_auth as auth_service
+from app.services import visitor_tokens
 from app.services.visitor_auth import VISITOR_COOKIE, VISITOR_CSRF_COOKIE, VisitorSession
 
 router = APIRouter(prefix="/cabinet", tags=["cabinet"])
@@ -62,7 +68,8 @@ CurrentSession = Annotated[VisitorSession, Depends(_session)]
 
 
 def _me(auth: VisitorSession) -> VisitorMe:
-    return VisitorMe(id=auth.visitor.id, email=auth.visitor.email, display_name=auth.visitor.display_name, csrf_token=auth.csrf)
+    return VisitorMe(id=auth.visitor.id, email=auth.visitor.email, display_name=auth.visitor.display_name,
+                     email_confirmed=auth.visitor.email_confirmed_at is not None, csrf_token=auth.csrf)
 
 
 def _visitor(auth: CurrentSession) -> Visitor:
@@ -73,8 +80,11 @@ CurrentVisitor = Annotated[Visitor, Depends(_visitor)]
 
 
 @router.post("/auth/register", response_model=VisitorMe, status_code=status.HTTP_201_CREATED)
-def register(body: RegisterRequest, response: Response, session: DbSession, settings: AppSettings, ip: ClientIp) -> VisitorMe:
+def register(
+    body: RegisterRequest, response: Response, background: BackgroundTasks, session: DbSession, settings: AppSettings, ip: ClientIp
+) -> VisitorMe:
     auth = auth_service.register(session, settings, body.email, body.password, body.display_name, ip=ip)
+    visitor_tokens.send_confirmation(session, settings, auth.visitor, body.lang, background.add_task)
     _set_cookies(response, settings, auth)
     return _me(auth)
 
@@ -84,6 +94,36 @@ def login(body: LoginRequest, response: Response, session: DbSession, settings: 
     auth = auth_service.login(session, settings, body.email, body.password, ip=ip)
     _set_cookies(response, settings, auth)
     return _me(auth)
+
+
+@router.post("/auth/password-reset/request", response_model=Accepted, status_code=status.HTTP_202_ACCEPTED)
+def password_reset_request(
+    body: PasswordResetRequest, background: BackgroundTasks, session: DbSession, settings: AppSettings, ip: ClientIp
+) -> Accepted:
+    """Same answer whether or not the e-mail is registered (the mail is sent only if it is)."""
+    visitor_tokens.request_password_reset(session, settings, body.email, body.lang, ip=ip, enqueue=background.add_task)
+    return Accepted()
+
+
+@router.post("/auth/password-reset/confirm", status_code=status.HTTP_204_NO_CONTENT)
+def password_reset_confirm(body: PasswordResetConfirm, session: DbSession, ip: ClientIp) -> Response:
+    """Sets a new password by the one-time token; every session of the visitor signs out."""
+    visitor_tokens.confirm_password_reset(session, body.token, body.new_password, ip=ip)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/auth/email/confirm", status_code=status.HTTP_204_NO_CONTENT)
+def email_confirm(body: EmailConfirm, session: DbSession, ip: ClientIp) -> Response:
+    visitor_tokens.confirm_email(session, body.token, ip=ip)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/auth/email/resend", response_model=Accepted, status_code=status.HTTP_202_ACCEPTED)
+def email_resend(
+    body: EmailResend, visitor: CurrentVisitor, background: BackgroundTasks, session: DbSession, settings: AppSettings
+) -> Accepted:
+    visitor_tokens.resend_confirmation(session, settings, visitor, body.lang, background.add_task)
+    return Accepted()
 
 
 @router.post("/auth/logout", status_code=status.HTTP_204_NO_CONTENT)

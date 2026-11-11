@@ -52,6 +52,16 @@ class Settings(BaseSettings):
     login_max_attempts: int = 5
     login_lock_minutes: int = 15
 
+    # Public origin of the site, the base of links in e-mails (reset / confirmation).
+    frontend_url: str = "http://localhost:3000"
+    # Outgoing mail (STARTTLS). Without smtp_host nothing is sent and nothing fails.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: SecretStr | None = None
+    smtp_from: str = ""
+    smtp_timeout_seconds: float = 10.0
+
     @field_validator("cors_origins")
     @classmethod
     def _check_cors_origins(cls, value: list[str]) -> list[str]:

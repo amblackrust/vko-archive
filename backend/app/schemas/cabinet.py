@@ -18,6 +18,7 @@ class RegisterRequest(BaseModel):
     email: str = Field(min_length=3, max_length=320)
     password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
     display_name: str = Field(default="", max_length=100)
+    lang: Lang = "ru"  # language of the confirmation mail
 
 
 class LoginRequest(BaseModel):
@@ -30,9 +31,32 @@ class ChangePasswordRequest(BaseModel):
     new_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
 
 
+class PasswordResetRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=320)
+    lang: Lang = "ru"  # language of the mail
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str = Field(min_length=1, max_length=200)
+    new_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
+
+
+class EmailConfirm(BaseModel):
+    token: str = Field(min_length=1, max_length=200)
+
+
+class EmailResend(BaseModel):
+    lang: Lang = "ru"
+
+
+class Accepted(BaseModel):
+    status: Literal["accepted"] = "accepted"
+
+
 class VisitorMe(BaseModel):
     id: uuid.UUID
     email: str
+    email_confirmed: bool
     display_name: str
     csrf_token: str  # echo in X-CSRF-Token on POST/PUT/DELETE
 
