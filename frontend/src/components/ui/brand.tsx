@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * Знаки соцсетей и карточки внешних ресурсов. Знаки нарисованы здесь же (в lucide брендовых иконок нет):
- * цветная плашка сети и белый глиф. Для государственных порталов — плашка с названием, без копирования их логотипов.
+ * цветная плашка сети и белый глиф. У eGov.kz и e-Otinish — официальные знаки с их сайтов (public/img/brands),
+ * у остальных порталов — плашка с названием.
  */
 const networks = {
   instagram: {
@@ -79,10 +80,10 @@ export function SocialCard({ network, name, handle, href }: { network: string; n
   );
 }
 
-/** Государственные порталы: адрес, короткая подпись на плашке и её цвет. Названия и описания — common.services.<id>. */
+/** Государственные порталы: адрес, официальный знак (`logo`) либо короткая подпись на цветной плашке. Названия и описания — common.services.<id>. */
 export const govServices = {
-  egov: { href: "https://egov.kz", domain: "egov.kz", mark: "eGov", tile: "bg-[#0b8f5a]" },
-  eotinish: { href: "https://eotinish.kz", domain: "eotinish.kz", mark: "eO", tile: "bg-[#1565c0]" },
+  egov: { href: "https://egov.kz", domain: "egov.kz", mark: "eGov", tile: "", logo: "/img/brands/egov.svg" },
+  eotinish: { href: "https://eotinish.kz", domain: "eotinish.kz", mark: "eO", tile: "", logo: "/img/brands/eotinish.svg" },
   adilet: { href: "https://adilet.zan.kz", domain: "adilet.zan.kz", mark: "Ә", tile: "bg-[#8a5a00]" },
   govkz: { href: "https://www.gov.kz", domain: "gov.kz", mark: "gov", tile: "bg-[#0c5bb5]" },
   akorda: { href: "https://www.akorda.kz", domain: "akorda.kz", mark: "A", tile: "bg-[#0e7c9b]" },
@@ -100,7 +101,15 @@ export function GovServiceCard({ id, href, compact }: { id: GovService; href?: s
   const service = govServices[id];
   return (
     <a href={href ?? service.href} target="_blank" rel="noopener noreferrer" className="card lift group flex h-full items-start gap-4 p-5">
-      <span className={cn("grid size-12 shrink-0 place-items-center rounded-xl text-sm font-bold tracking-tight text-white", service.tile)} aria-hidden>{service.mark}</span>
+      {"logo" in service ? (
+        // Официальный знак портала на белой плашке: он тёмный и на тёмной теме иначе не читается.
+        <span className="grid h-12 w-16 shrink-0 place-items-center rounded-xl border bg-white p-2.5" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element -- небольшой статичный SVG из public/ */}
+          <img src={service.logo} alt="" className="max-h-full max-w-full" />
+        </span>
+      ) : (
+        <span className={cn("grid h-12 w-16 shrink-0 place-items-center rounded-xl text-sm font-bold tracking-tight text-white", service.tile)} aria-hidden>{service.mark}</span>
+      )}
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline gap-2">
           <span className="font-semibold group-hover:text-primary">{t(`services.${id}.name`)}</span>
