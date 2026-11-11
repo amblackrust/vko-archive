@@ -22,8 +22,8 @@ def visitor_by_email(session: Session, email: str, *, for_update: bool = False) 
     return session.scalar(stmt.with_for_update() if for_update else stmt)
 
 
-def visitor_by_id(session: Session, visitor_id: uuid.UUID) -> Visitor | None:
-    return session.get(Visitor, visitor_id)
+def visitor_by_id(session: Session, visitor_id: uuid.UUID, *, for_update: bool = False) -> Visitor | None:
+    return session.get(Visitor, visitor_id, with_for_update=for_update)
 
 
 # favorites

@@ -25,6 +25,11 @@ class LoginRequest(BaseModel):
     password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
 
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
+    new_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
+
+
 class VisitorMe(BaseModel):
     id: uuid.UUID
     email: str

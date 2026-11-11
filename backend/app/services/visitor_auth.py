@@ -166,3 +166,35 @@ def logout(session: Session, visitor: Visitor) -> None:
     """Revokes every session token of the visitor issued so far (all devices)."""
     visitor.session_version += 1
     session.commit()
+
+
+def change_password(
+    session: Session, settings: Settings, auth: VisitorSession, current_password: str, new_password: str
+) -> VisitorSession:
+    """Verifies the current password (shares the login failure counter, so a stolen session cannot
+    brute-force it), stores the new one and bumps `session_version`: every other session signs out.
+    The caller gets a fresh session for this device."""
+    now = datetime.now(UTC)
+    visitor = repo.visitor_by_id(session, auth.visitor.id, for_update=True)
+    if visitor is None:
+        raise NotAuthenticated()
+    password_ok = security.verify_password(visitor.password_hash, current_password)
+    if visitor.locked_until is not None and visitor.locked_until > now:
+        session.rollback()
+        raise InvalidCredentials()
+    if not password_ok:
+        visitor.failed_logins += 1
+        if visitor.failed_logins >= settings.login_max_attempts:
+            visitor.failed_logins = 0
+            visitor.locked_until = now + timedelta(minutes=settings.login_lock_minutes)
+        session.commit()
+        raise InvalidCredentials()
+    validate_new_password(new_password)
+    if new_password == current_password:
+        raise InvalidInput("password_unchanged")
+    visitor.password_hash = security.hash_password(new_password)
+    visitor.password_changed_at = now
+    visitor.failed_logins = 0
+    visitor.session_version += 1
+    session.commit()
+    return _issue(settings, visitor, security.new_csrf_token(), now)

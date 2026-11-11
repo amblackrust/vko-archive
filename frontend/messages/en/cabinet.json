@@ -72,5 +72,15 @@
     "news": "News and events",
     "exhibitions": "New online exhibitions",
     "demo": "DEMO: notification delivery is not connected; a subscription only remembers your interest."
+  },
+  "password": {
+    "title": "Change password",
+    "current": "Current password",
+    "new": "New password",
+    "submit": "Change password",
+    "note": "Other devices will have to sign in again. Reset by e-mail is unavailable: mail delivery is not connected.",
+    "done": "Password changed. Other sessions were signed out.",
+    "wrongCurrent": "The current password is wrong. After 5 failed attempts sign-in is blocked for 15 minutes.",
+    "unchanged": "The new password must differ from the current one."
   }
 }

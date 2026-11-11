@@ -105,3 +105,39 @@ def test_logout_revokes_the_token_on_the_server(api: TestClient) -> None:
     api.cookies.clear()
     api.cookies.set("vko_visitor", stolen)
     assert api.get("/api/cabinet/me").status_code == 401
+
+
+def test_change_password_signs_out_other_sessions_and_keeps_this_one(api: TestClient, second_client: TestClient) -> None:
+    email = new_email()
+    register(api, email)
+    second_client.post(f"{AUTH}/login", json={"email": email, "password": PASSWORD})
+    new_password = "Another-Cabinet-Pass-2"
+    response = api.post(f"{AUTH}/password", json={"current_password": PASSWORD, "new_password": new_password})
+    assert response.status_code == 200
+    api.headers[CSRF_HEADER] = response.json()["csrf_token"]
+    assert api.get("/api/cabinet/me").status_code == 200
+    assert second_client.get("/api/cabinet/me").status_code == 401
+    assert second_client.post(f"{AUTH}/login", json={"email": email, "password": PASSWORD}).status_code == 401
+    assert second_client.post(f"{AUTH}/login", json={"email": email, "password": new_password}).status_code == 200
+
+
+def test_change_password_validates_current_new_and_csrf(api: TestClient) -> None:
+    register(api)
+    url = f"{AUTH}/password"
+    assert api.post(url, json={"current_password": "wrong-password-1", "new_password": "Another-Cabinet-Pass-2"}).status_code == 401
+    assert api.post(url, json={"current_password": PASSWORD, "new_password": "short"}).status_code == 422
+    assert api.post(url, json={"current_password": PASSWORD, "new_password": PASSWORD}).status_code == 422
+    token = api.headers.pop(CSRF_HEADER)
+    assert api.post(url, json={"current_password": PASSWORD, "new_password": "Another-Cabinet-Pass-2"}).status_code == 403
+    api.headers[CSRF_HEADER] = token
+
+
+def test_change_password_wrong_current_locks_account_after_limit(api: TestClient, second_client: TestClient) -> None:
+    email = new_email()
+    register(api, email)
+    codes = [
+        api.post(f"{AUTH}/password", json={"current_password": "wrong-password-1", "new_password": "Another-Cabinet-Pass-2"}).status_code
+        for _ in range(7)
+    ]
+    assert set(codes) == {401}
+    assert second_client.post(f"{AUTH}/login", json={"email": email, "password": PASSWORD}).status_code == 401

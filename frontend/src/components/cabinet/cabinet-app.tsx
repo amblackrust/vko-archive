@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cabinetFetch, fetchMe, type VisitorMe } from "./api";
 import { AuthForms } from "./auth-forms";
 import { FavoritesPanel } from "./favorites-panel";
+import { PasswordPanel } from "./password-panel";
 import { SearchesPanel } from "./searches-panel";
 import { SelectionsPanel } from "./selections-panel";
 import { SubscriptionsPanel } from "./subscriptions-panel";
@@ -59,6 +60,7 @@ export function CabinetApp() {
       <SelectionsPanel />
       <SearchesPanel />
       <SubscriptionsPanel />
+      <PasswordPanel />
     </div>
   );
 }
