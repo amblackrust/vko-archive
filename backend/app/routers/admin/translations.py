@@ -12,6 +12,8 @@ from app.schemas.translations import (
     Lang,
     MachineTranslateRequest,
     Status,
+    TextTranslateOut,
+    TextTranslateRequest,
     TranslationDetail,
     TranslationItem,
     TranslationPage,
@@ -67,6 +69,20 @@ def list_translations(
 @router.get("/{object_type}/{object_id}", response_model=TranslationDetail)
 def get_translation(object_type: str, object_id: uuid.UUID, user: CurrentUser, session: DbSession, ip: ClientIp) -> TranslationDetail:
     return _detail(translations.get(session, user, object_type, object_id, ip=ip))
+
+
+@router.post("/text", response_model=TextTranslateOut, responses={503: {"model": AiUnavailableOut}})
+def translate_text(
+    body: TextTranslateRequest, user: CurrentUser, session: DbSession, settings: AppSettings, ip: ClientIp
+) -> TextTranslateOut | JSONResponse:
+    """Stateless draft translation of one string (site settings forms); nothing is stored."""
+    try:
+        text = translations.translate_text(
+            session, user, settings, body.text, source=body.source_lang, target=body.target_lang, ip=ip
+        )
+    except translations.TranslationUnavailable as exc:
+        return _unavailable(exc)
+    return TextTranslateOut(text=text)
 
 
 @router.post(
