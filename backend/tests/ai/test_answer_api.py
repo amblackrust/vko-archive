@@ -147,6 +147,22 @@ def test_nothing_found_and_empty_answer_give_not_found(api, factory, model):
     assert body["mode"] == "not_found" and body["ai_generated"] is False and body["sources"] == []
 
 
+def test_gibberish_is_nothing_found_with_hints_not_off_topic(api, model):
+    model.parse_json = model.parse_json.replace('"search"', '"off_topic"')  # even if the model would call it off-topic
+    for query in ("asdfghjkl", "qwerty zxcvb", "ffffff gggggg hhhhh", "bcdfghk"):
+        body = _answer(api, query)
+        assert body["mode"] == "not_found" and body["ai_generated"] is False and body["sources"] == [], query
+        assert "rephrase" in body["hints"] and "не могу" not in body["answer"]
+    assert model.parse_calls == [] and model.answer_calls == []
+
+
+def test_real_queries_are_not_taken_for_gibberish():
+    from app.ai import guards
+
+    for query in ("photos of Ust-Kamenogorsk in the 1960s", "Zhumabayev letters", "Riddersk archive branch", "фото asdfgh", "1960"):
+        assert not guards.check(query).gibberish, query
+
+
 def test_off_topic_and_injection_never_reach_the_model(api, model):
     body = _answer(api, "напиши код на python")
     assert body["mode"] == "off_topic"

@@ -69,6 +69,12 @@ _SERVICE = re.compile(
 )
 
 _SPACES = re.compile(r"\s+")
+_CYRILLIC = re.compile(r"[\u0400-\u04FF]")
+_LATIN_WORD = re.compile(r"[a-z]{4,}", re.IGNORECASE)
+_VOWELS = frozenset("aeiouy")
+_KEYBOARD_ROWS = ("qwerty", "wertyu", "asdfg", "sdfgh", "dfghj", "fghjk", "ghjkl", "zxcvb", "xcvbn", "cvbnm", "qazwsx", "yuiop")
+_CONSONANT_RUN = re.compile(r"[^aeiouy]{5,}", re.IGNORECASE)
+_REPEATED = re.compile(r"(.)\1{2,}")
 
 
 @dataclass(frozen=True)
@@ -77,6 +83,8 @@ class GuardResult:
     query: str  # the query with injected instructions removed
     injection: bool = False
     service: bool = False
+    # Latin keyboard mash with no archive meaning: answered «nothing found», not «cannot help».
+    gibberish: bool = False
 
 
 def _strip_injection(query: str) -> tuple[str, bool]:
@@ -88,6 +96,28 @@ def _strip_injection(query: str) -> tuple[str, bool]:
     return _SPACES.sub(" ", " ".join(kept)).strip(" ,.;:-"), True
 
 
+def _gibberish_word(word: str) -> bool:
+    word = word.lower()
+    vowels = sum(ch in _VOWELS for ch in word)
+    return (
+        vowels == 0
+        or vowels / len(word) < 0.2
+        or bool(_CONSONANT_RUN.search(word))
+        or bool(_REPEATED.search(word))
+        or any(row in word for row in _KEYBOARD_ROWS)
+    )
+
+
+def is_gibberish(text: str) -> bool:
+    """Only Latin letters and every word of 4+ letters looks like a keyboard mash («asdfghjk»,
+    «qwerty zxcv»): no vowels, long consonant runs, repeated letters, keyboard rows.
+    Text with Cyrillic, or with at least one plausible word, is never gibberish."""
+    if _CYRILLIC.search(text):
+        return False
+    words = _LATIN_WORD.findall(text)
+    return bool(words) and all(_gibberish_word(word) for word in words)
+
+
 def check(query: str) -> GuardResult:
     text = _SPACES.sub(" ", query or "").strip()
     text, injection = _strip_injection(text)
@@ -95,7 +125,8 @@ def check(query: str) -> GuardResult:
         return GuardResult("empty", "", injection=injection)
     if _OFF_TOPIC.search(text):
         return GuardResult("off_topic", text, injection=injection)
-    return GuardResult("ok", text, injection=injection, service=bool(_SERVICE.search(text)))
+    service = bool(_SERVICE.search(text))
+    return GuardResult("ok", text, injection=injection, service=service, gibberish=not service and is_gibberish(text))
 
 
 def is_off_topic(query: str) -> bool:
