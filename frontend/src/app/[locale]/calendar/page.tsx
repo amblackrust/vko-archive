@@ -74,7 +74,7 @@ export default async function CalendarPage({
           </ul>
         )}
 
-        <CalendarWidget locale={locale} />
+        <CalendarWidget />
       </div>
     </>
   );

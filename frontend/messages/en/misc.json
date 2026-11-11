@@ -20,7 +20,9 @@
     "empty": "There are no memorable dates for the selected period.",
     "range": "The calendar covers the years 2022–2026.",
     "widgetTitle": "Calendar and weather",
-    "widgetWeather": "Weather will be connected through an external service. It is not available yet."
+    "widgetWeather": "Weather will be connected through an external service. It is not available yet.",
+    "widgetNone": "No upcoming memorable dates this month.",
+    "widgetAll": "Full calendar of memorable dates"
   },
   "symbols": {
     "title": "State symbols of the Republic of Kazakhstan",
@@ -40,14 +42,16 @@
     "servicesTitle": "Site services",
     "converter": "Latin script converter",
     "converterText": "External tool. A separate translation service is not developed on this site.",
-    "rating": "Website rating",
-    "ratingPending": "Placeholder for a rating. It will appear once the client confirms its purpose and data reliability.",
     "stats": "Site statistics",
-    "statsPending": "Public aggregates (page views and visitors) are being connected. Personal data is not disclosed.",
     "poll": "Poll",
     "pollPending": "The poll is not connected yet. A poll is not an official request.",
     "usefulTitle": "Useful links",
-    "pollOpen": "Take the survey"
+    "pollOpen": "Take the survey",
+    "counts": {
+      "documents": "documents",
+      "funds": "funds",
+      "exhibitions": "exhibitions"
+    }
   },
   "seo": {
     "description": "State Archive of the East Kazakhstan region: documents, funds, branches, history and reference information."

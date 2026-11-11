@@ -4,12 +4,12 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
-// Тот же маркер, что на публичной карте: картинки Leaflet по умолчанию ломаются в бандлере.
+// Тот же маркер, что на публичной карте (область нажатия 24 px, WCAG 2.5.8): картинки Leaflet по умолчанию ломаются в бандлере.
 const icon = L.divIcon({
   className: "",
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-  html: '<span style="display:block;width:18px;height:18px;border-radius:50%;border:3px solid var(--primary-foreground);background:var(--accent);box-shadow:0 0 0 1px var(--primary)"></span>',
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  html: '<span style="display:flex;width:24px;height:24px;align-items:center;justify-content:center"><span style="display:block;width:18px;height:18px;border-radius:50%;border:3px solid var(--primary-foreground);background:var(--accent);box-shadow:0 0 0 1px var(--primary)"></span></span>',
 });
 
 function ClickHandler({ onPick }: { onPick: (lat: number, lng: number) => void }) {

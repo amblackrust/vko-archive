@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ExternalLinkItem } from "@/components/misc/external-link";
+import { fetchSiteCounts } from "@/components/misc/api";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { fetchSiteSettings } from "@/lib/api/site-settings";
 import { localizedAlternates } from "@/lib/seo";
@@ -25,6 +26,8 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
   const settings = await fetchSiteSettings(locale);
   const usefulLinks = settings?.useful_links ?? [];
   const survey = settings?.survey;
+  const counts = await fetchSiteCounts();
+  const countItems = (["documents", "funds", "exhibitions"] as const).filter((key) => counts[key] !== null);
   return (
     <>
       <Breadcrumbs items={[{ label: t("title") }]} />
@@ -60,26 +63,35 @@ export default async function LinksPage({ params }: { params: Promise<{ locale: 
             <ExternalLinkItem label={t("converter")} />
           </ul>
           <p className="text-sm text-muted-foreground">{t("converterText")}</p>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {(["rating", "stats", "poll"] as const).map((key) => (
-              <div key={key} className="space-y-2 rounded-lg border bg-surface p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-medium">{t(key)}</h3>
-                </div>
-                {key === "poll" && survey?.enabled ? (
-                  <>
-                    <p className="text-sm">{survey.question}</p>
-                    {survey.url && (
-                      <a href={survey.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline">
-                        {t("pollOpen")}
-                      </a>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-sm text-muted-foreground">{t(`${key}Pending`)}</p>
-                )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            {countItems.length > 0 && (
+              <div className="space-y-2 rounded-lg border bg-surface p-4">
+                <h3 className="font-medium">{t("stats")}</h3>
+                <dl className="grid grid-cols-3 gap-2">
+                  {countItems.map((key) => (
+                    <div key={key}>
+                      <dd className="text-2xl font-bold tabular-nums">{counts[key]}</dd>
+                      <dt className="text-sm text-muted-foreground">{t(`counts.${key}`)}</dt>
+                    </div>
+                  ))}
+                </dl>
               </div>
-            ))}
+            )}
+            <div className="space-y-2 rounded-lg border bg-surface p-4">
+              <h3 className="font-medium">{t("poll")}</h3>
+              {survey?.enabled ? (
+                <>
+                  <p className="text-sm">{survey.question}</p>
+                  {survey.url && (
+                    <a href={survey.url} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline">
+                      {t("pollOpen")}
+                    </a>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">{t("pollPending")}</p>
+              )}
+            </div>
           </div>
         </section>
       </div>

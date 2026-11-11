@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { CalendarWidget } from "@/components/misc/calendar-widget";
 import { Link } from "@/lib/i18n/navigation";
 import { useSiteSettings } from "./site-settings";
@@ -13,7 +13,6 @@ const govLinks = [
 
 export function Footer() {
   const t = useTranslations("layout");
-  const locale = useLocale();
   const year = new Date().getFullYear();
   const settings = useSiteSettings();
   const usefulLinks = settings?.useful_links ?? [];
@@ -60,7 +59,7 @@ export function Footer() {
       </div>
       {settings?.widgets.calendar_weather !== false && (
         <div className="container-page pb-8">
-          <CalendarWidget locale={locale} />
+          <CalendarWidget />
         </div>
       )}
       <div className="border-t">
