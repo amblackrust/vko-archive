@@ -8,7 +8,7 @@
 ```mermaid
 flowchart LR
     subgraph Browser["Браузер"]
-        UI["Next.js 15 (App Router)<br/>kk / ru / en, темы"]
+        UI["Браузер<br/>Next.js 15, :3000"]
     end
     subgraph Backend["backend (FastAPI, :8000)"]
         RP["routers/public"]
@@ -35,8 +35,8 @@ flowchart LR
     RP -->|"GET /api/files/{id}"| SV
 ```
 
-Frontend ходит в API двумя путями: из браузера (клиент `src/lib/api/client.ts`) и с сервера Next.js при рендеринге
-(тот же адрес `NEXT_PUBLIC_API_URL`). Сервер Next.js не имеет собственной бизнес-логики и не работает с БД.
+Frontend — `frontend/` (Next.js 15, TypeScript, Tailwind CSS 4, next-intl, next-themes, Leaflet; дизайн — [DESIGN.md](DESIGN.md)). Backend не зависит от него:
+контракт — `/openapi.json` (типы клиента: `npm run api:types`), см. раздел 8.
 
 ## 2. Слои backend
 
@@ -225,8 +225,7 @@ flowchart TD
 - Кеш: публичные — `ETag`/304 (304 отдаётся только после проверки прав); по правам сотрудника — `private, no-store`,
   поэтому закрытие файла действует сразу (п. 41).
 - Новые файлы к живому документу грузятся как `needs_review` и не ставят `has_digital_copy` (п. 76).
-- Next.js отдаёт картинки через `next/image` только с origin API и путём `/api/files/**`; оптимизатор запрашивает файл
-  как аноним, поэтому закрытый файл не попадёт в его кеш (п. 87).
+- Если клиент проксирует или оптимизирует картинки, он запрашивает `/api/files/**` как аноним, поэтому закрытый файл не попадёт в его кеш (п. 87).
 
 ## 7. ИИ (локально, Ollama)
 
@@ -257,21 +256,18 @@ flowchart TD
 
 ИИ не принимает и не оформляет заявки, заказы и справки: ответы — информация, а не архивная справка (метка в UI).
 
-## 8. Фронтенд
+## 8. Контракт для клиента
 
-- **Маршрутизация.** Next.js 15 App Router; все страницы под `src/app/[locale]/`. Языки `kk`, `ru`, `en`, по умолчанию `ru`
-  (`src/lib/i18n/routing.ts`). `src/middleware.ts` (next-intl) выбирает локаль; служебные пути и файлы не перехватываются.
-- **Строки интерфейса.** Только словари `messages/{kk,ru,en}.json` через next-intl. Паритет ключей трёх языков проверен
-  (см. [DATA_SOURCES.md](DATA_SOURCES.md)). Перевод kk/en — машинный, нужна вычитка.
-- **Темы.** `next-themes` (`src/components/layout/theme-provider.tsx`); цвета — CSS-переменные в `src/app/globals.css`,
-  тёмная тема переопределяет их.
-- **Данные.** Публичные настройки сайта (`/api/site-settings`) читаются один раз в `[locale]/layout` с
-  `revalidate` 60 с и раздаются через контекст; при сбое API действуют значения по умолчанию (п. 88).
-- **Редактор текста.** Tiptap в админке; HTML санитизируется на сервере (`clean_html`, `nh3`) и экранируется React.
-- **Карта.** Leaflet с тайлами OpenStreetMap; сбой тайлов не ломает страницу. Маршруты открываются ссылками на
-  2GIS, Google Maps и Яндекс, без ключей.
-- **Безопасность заголовков.** CSP в `next.config.ts`: `script-src 'self' 'unsafe-inline'` (App Router требует инлайн-скрипты
-  гидратации; `'unsafe-eval'` только в dev), `frame-ancestors 'none'`, `form-action 'self'` (п. 82).
+Frontend опирается на следующие свойства backend.
+
+- **Один origin.** Cookie сессий (`vko_session` сотрудника, `vko_visitor` посетителя) — `HttpOnly`, `SameSite=Strict`; браузер должен
+  обращаться к `/api` того же origin (прокси) либо origin клиента обязан быть в `CORS_ORIGINS`.
+- **CSRF.** Значение читается из cookie `vko_csrf` / `vko_visitor_csrf` и отправляется в заголовке `X-CSRF-Token` на POST/PUT/PATCH/DELETE.
+  Опросы, не продлевающие сессию, помечаются заголовком `X-Background: 1`.
+- **Язык.** Публичные эндпоинты принимают `lang=kk|ru|en` (по умолчанию `ru`); отсутствующий перевод возвращается на запасном языке с полем `*_lang`.
+- **Файлы.** Только `GET /api/files/{id}`; доступ решает сервер, любой отказ — 404.
+- **HTML.** Текст из CMS санитизируется на сервере (`clean_html`, `nh3`); ответ ИИ — plain text, `[Sn]` и ссылки строит сервер.
+- **Письма кабинета** ведут на `{FRONTEND_URL}/{lang}/cabinet/reset-password?token=…` и `…/confirm-email?token=…` — страницы есть в `frontend/src/app/[locale]/(site)/cabinet/`.
 
 ## 9. Модель данных
 
@@ -303,8 +299,6 @@ erDiagram
 ## 10. Тесты и сборка
 
 - `backend/tests/` — pytest на реальной PostgreSQL; тестовая база (`TEST_DATABASE_URL`) пересоздаётся каждой сессией (п. 12).
-- `frontend/e2e/` — Playwright: `npm run e2e` поднимает отдельный стенд (API :8201, web :3201, база `vko_archive_e2e`)
-  и гасит его после прогона (см. `docs/handoff/B25.md`).
 - `Makefile` — `make dev`, `make env`, `make migrate`, `make test`, `make backup`.
 
 ## 11. Ограничения прототипа
@@ -315,4 +309,4 @@ erDiagram
 - OCR демо-файлов — имитация (текст страницы = текст скана); реальный Tesseract работает для загруженных сотрудником файлов (п. 96).
 - PDF открывается файлом, pdf.js не встроен (см. OPEN_ISSUES).
 
-Полный список — в [OPEN_ISSUES.md](OPEN_ISSUES.md), статус по ТЗ — в [READINESS.md](../READINESS.md).
+Полный список — в [OPEN_ISSUES.md](OPEN_ISSUES.md).
