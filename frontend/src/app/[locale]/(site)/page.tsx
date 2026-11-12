@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { api, type Schema } from "@/lib/api/client";
 import { HeroSearch } from "@/components/home/hero-search";
 import { Strip } from "@/components/home/strip";
+import { StartTasks } from "@/components/home/start-tasks";
 import { SectionHead } from "@/components/home/section-head";
 import { HomeBranches } from "@/components/home/home-branches";
 import { Stamp, type StampTone } from "@/components/ui/stamp";
@@ -67,14 +68,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      <section className="pb-6 pt-12 md:pt-16">
+      <section className="pb-4 pt-8 md:pt-12">
         <div className="wrap">
-          <h1 className="max-w-[15ch] text-[clamp(2.75rem,7.2vw,6rem)]">{t("title")}</h1>
-          <div className="mt-8 max-w-[68rem] md:mt-10">
-            <HeroSearch examples={t.raw("examples") as string[]} />
+          <h1 className="max-w-[18ch] text-[clamp(2.25rem,5.2vw,4.5rem)]">{t("title")}</h1>
+          <div className="mt-6 max-w-[68rem] md:mt-8">
+            <HeroSearch placeholders={t.raw("placeholders") as string[]} />
           </div>
+          <StartTasks />
         </div>
-        <div className="mt-16 md:mt-[4.5rem]">
+        <div className="mt-12 md:mt-[4.5rem]">
           <Strip label={t("strip")} prevLabel={t("stripPrev")} nextLabel={t("stripNext")}>
             {shelf}
           </Strip>

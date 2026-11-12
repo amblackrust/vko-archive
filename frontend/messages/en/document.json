@@ -1,4 +1,15 @@
 {
+  "cite": {
+    "button": "How to cite",
+    "copy": "Copy",
+    "copied": "Copied",
+    "hint": "For research papers and requests to the archive",
+    "fund": "F.",
+    "inventory": "Inv.",
+    "case": "File",
+    "sheets": "ff.",
+    "join": ", "
+  },
   "fields": {
     "code": "Shelf mark",
     "fund": "Fund",

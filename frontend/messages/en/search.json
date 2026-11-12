@@ -1,4 +1,9 @@
 {
+  "voice": {
+    "mic": "Voice input",
+    "speak": "Read aloud",
+    "stopSpeak": "Stop reading"
+  },
   "title": "Search",
   "placeholder": "What are you looking for?",
   "button": "Search",

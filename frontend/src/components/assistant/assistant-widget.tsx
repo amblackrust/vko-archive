@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useAiStream } from "@/lib/ai-stream";
 import { SourceChips } from "./source-chips";
 import { IconButton } from "@/components/ui/icon-button";
+import { MicButton, SpeakButton } from "@/components/ui/voice-buttons";
 import { SPRING } from "@/lib/motion";
 import type { Schema } from "@/lib/api/client";
 
@@ -213,6 +214,7 @@ export function AssistantWidget() {
                 <div key={i} className="min-w-0">
                   <div>
                     <p className="whitespace-pre-line leading-relaxed">{body(x.text)}</p>
+                    <SpeakButton text={x.text} label={t("voice.speak")} stopLabel={t("voice.stopSpeak")} />
                     <SourceChips sources={x.result?.sources ?? []} active={flash} />
                     {x.result?.links?.length ? (
                       <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -248,6 +250,14 @@ export function AssistantWidget() {
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(q); } }}
                 placeholder={t("placeholder")}
                 className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-3 py-2 outline-none placeholder:text-ink-3"
+              />
+              <MicButton
+                label={t("voice.mic")}
+                onText={(text, final) => {
+                  setQ(text);
+                  if (final) ask(text);
+                }}
+                className="shrink-0"
               />
               {busy ? (
                 <button type="button" onClick={stop} aria-label={t("stop")} className="grid size-10 shrink-0 place-items-center rounded-xl bg-mount-2"><Square size={14} aria-hidden /></button>

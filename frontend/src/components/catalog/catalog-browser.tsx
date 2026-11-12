@@ -116,7 +116,7 @@ function ColumnList({ level, rows, selected, onChoose, wide }: { level: Level; r
             type="button"
             onClick={() => onChoose(r.id)}
             onKeyDown={(e) => move(e, i)}
-            className={clsx("group relative flex w-full items-start gap-3 rounded-2xl px-4 py-3 text-left transition-[background-color,transform] duration-200 ease-(--ease-spring) active:scale-[0.99]", selected === r.id ? "bg-action text-action-ink" : "hover:bg-table-3")}
+            className={clsx("group relative flex w-full items-start gap-3 rounded-2xl px-4 py-3 text-left transition-[background-color,transform] duration-200 ease-(--ease-out) active:scale-[0.99]", selected === r.id ? "bg-action text-action-ink" : "hover:bg-table-3")}
           >
             <span className="min-w-0 flex-1">
               <span className={clsx("edge block", selected === r.id && "!text-action-ink/75")}>{r.code}</span>

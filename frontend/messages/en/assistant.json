@@ -1,4 +1,9 @@
 {
+  "voice": {
+    "mic": "Voice input",
+    "speak": "Read aloud",
+    "stopSpeak": "Stop reading"
+  },
   "title": "Archive assistant",
   "open": "Ask the assistant",
   "placeholder": "Ask about the archive",

@@ -1,14 +1,40 @@
 {
+  "start": {
+    "title": "Where to start",
+    "items": [
+      {
+        "title": "Employment certificate"
+      },
+      {
+        "title": "Organization records"
+      },
+      {
+        "title": "Family history"
+      },
+      {
+        "title": "Research"
+      },
+      {
+        "title": "Study"
+      },
+      {
+        "title": "Visit the archive"
+      }
+    ]
+  },
+  "placeholders": [
+    "For example: photos of Ust-Kamenogorsk in the 1960s",
+    "For example: lead-zinc plant",
+    "For example: order on launching the workshop",
+    "For example: employment certificate"
+  ],
+  "voice": {
+    "mic": "Voice input"
+  },
   "title": "Ask the archive in your own words",
   "searchLabel": "What are you looking for?",
   "searchPlaceholder": "For example: photos of Ust-Kamenogorsk in the 1960s",
   "searchButton": "Search",
-  "examples": [
-    "employment certificate",
-    "photos of the 1960s",
-    "lead-zinc plant",
-    "order on launching the workshop"
-  ],
   "catalog": {
     "title": "Catalog",
     "all": "Full catalog",

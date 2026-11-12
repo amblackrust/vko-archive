@@ -61,7 +61,7 @@ export default async function DocumentPage({ params }: { params: Promise<{ local
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <FavoriteButton type="document" id={doc.id} />
-            <DocActions code={doc.archive_code} />
+            <DocActions code={doc.archive_code} citation={open ? { fund: doc.fund?.number, inventory: doc.inventory?.number, case: doc.case?.number, sheets: doc.sheets_count } : undefined} />
           </div>
         </div>
       </header>

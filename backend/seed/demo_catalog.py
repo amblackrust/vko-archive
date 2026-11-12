@@ -51,9 +51,9 @@ def _png(image: Image.Image) -> bytes:
 
 def _preview(image: Image.Image) -> bytes:
     thumb = image.convert("RGB")
-    thumb.thumbnail((400, 400))
+    thumb.thumbnail((1600, 1600))
     buffer = io.BytesIO()
-    thumb.save(buffer, "JPEG", quality=70)
+    thumb.save(buffer, "JPEG", quality=88)
     return buffer.getvalue()
 
 

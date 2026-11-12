@@ -9,7 +9,7 @@ import { UserRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ThemeSwitch } from "./theme-switch";
 import { A11yPanel } from "./a11y-panel";
-import { GROUPS, PRIMARY } from "@/lib/nav";
+import { GROUPS } from "@/lib/nav";
 import { IconButton, iconButtonClass } from "@/components/ui/icon-button";
 import { SPRING_SHEET, project } from "@/lib/motion";
 
@@ -91,15 +91,6 @@ export function SectionIndex() {
                     <UserRound size={18} />
                   </Link>
                 </div>
-                <ul className="wrap flex flex-wrap gap-x-6 gap-y-1 border-t border-frame py-6 md:hidden">
-                  {PRIMARY.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href} onClick={close} className="py-1 text-ink-2">
-                        {t(`nav.primary.${item.key}`)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
                 <div
                   aria-hidden
                   onPointerDown={(e) => controls.start(e)}

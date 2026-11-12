@@ -6,10 +6,12 @@ import { Sparkles, Square } from "lucide-react";
 import { useAiStream } from "@/lib/ai-stream";
 import { AnswerText, SourceList } from "./answer-text";
 import { Button } from "@/components/ui/button";
+import { SpeakButton } from "@/components/ui/voice-buttons";
 
 /** Streamed AI summary above search results. Quiet when the model is unavailable: search keeps working. */
 export function AiSummary({ q }: { q: string }) {
   const t = useTranslations("search.ai");
+  const tv = useTranslations("search.voice");
   const locale = useLocale();
   const { state, run, stop } = useAiStream();
 
@@ -43,6 +45,7 @@ export function AiSummary({ q }: { q: string }) {
           <AnswerText text={state.text} sources={result?.sources ?? []} />
         </div>
       )}
+      {result && state.status === "done" && state.text && <SpeakButton text={state.text} label={tv("speak")} stopLabel={tv("stopSpeak")} />}
       {result && <SourceList sources={result.sources ?? []} label={t("sources")} />}
       {result?.links?.length ? (
         <ul className="mt-4 flex flex-wrap gap-2">
