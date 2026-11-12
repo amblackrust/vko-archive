@@ -1,0 +1,40 @@
+{
+  "primary": {
+    "catalog": "Каталог",
+    "exhibitions": "Выставки",
+    "memory": "Архив памяти",
+    "news": "Новости",
+    "branches": "Филиалы",
+    "help": "Справка"
+  },
+  "allSections": "Все разделы",
+  "groups": {
+    "archive": "Архив",
+    "collections": "Фонды и память",
+    "services": "Услуги",
+    "useful": "Полезное"
+  },
+  "items": {
+    "about": "Об архиве",
+    "contacts": "Контакты",
+    "compliance": "Комплаенс",
+    "legal": "Нормативные акты",
+    "catalog": "Электронный каталог",
+    "funds": "Фонды",
+    "memoryCollections": "Коллекции",
+    "persons": "Личности",
+    "timeline": "Хронология",
+    "memoryMap": "Историческая карта",
+    "exhibitions": "Онлайн-выставки",
+    "news": "Новости",
+    "stateService": "Государственная услуга",
+    "paidServices": "Платные услуги",
+    "readingRoom": "Читальный зал",
+    "faq": "Вопросы и ответы",
+    "branches": "Филиалы на карте",
+    "calendar": "Календарь памятных дат",
+    "symbols": "Государственные символы",
+    "links": "Полезные ссылки",
+    "publications": "Публикации"
+  }
+}

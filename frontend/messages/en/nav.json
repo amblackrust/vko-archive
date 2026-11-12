@@ -1,0 +1,40 @@
+{
+  "primary": {
+    "catalog": "Catalog",
+    "exhibitions": "Exhibitions",
+    "memory": "Memory archive",
+    "news": "News",
+    "branches": "Branches",
+    "help": "Help"
+  },
+  "allSections": "All sections",
+  "groups": {
+    "archive": "Archive",
+    "collections": "Funds and memory",
+    "services": "Services",
+    "useful": "Useful"
+  },
+  "items": {
+    "about": "About the archive",
+    "contacts": "Contacts",
+    "compliance": "Compliance",
+    "legal": "Legal acts",
+    "catalog": "Electronic catalog",
+    "funds": "Funds",
+    "memoryCollections": "Collections",
+    "persons": "People",
+    "timeline": "Timeline",
+    "memoryMap": "Historical map",
+    "exhibitions": "Online exhibitions",
+    "news": "News",
+    "stateService": "State service",
+    "paidServices": "Paid services",
+    "readingRoom": "Reading room",
+    "faq": "Questions and answers",
+    "branches": "Branches on the map",
+    "calendar": "Memorial dates calendar",
+    "symbols": "State symbols",
+    "links": "Useful links",
+    "publications": "Publications"
+  }
+}

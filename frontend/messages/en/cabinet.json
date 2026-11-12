@@ -1,0 +1,72 @@
+{
+  "title": "My account",
+  "login": "Sign in",
+  "register": "Register",
+  "logout": "Sign out",
+  "email": "E-mail",
+  "password": "Password",
+  "name": "Name",
+  "passwordHint": "At least 8 characters",
+  "forgot": "Forgot password?",
+  "createAccount": "Create account",
+  "haveAccount": "Already have an account",
+  "errors": {
+    "credentials": "Wrong e-mail or password",
+    "locked": "Too many attempts. Try later",
+    "generic": "Something went wrong. Try again",
+    "weak": "The password is too simple or short"
+  },
+  "tabs": {
+    "favorites": "Favorites",
+    "selections": "Collections",
+    "searches": "Searches",
+    "subscriptions": "Subscriptions",
+    "account": "Account"
+  },
+  "empty": {
+    "favorites": "Nothing yet. Press “Save” on a document, exhibition or news item",
+    "selections": "No collections",
+    "searches": "Search history is empty"
+  },
+  "remove": "Remove",
+  "openItem": "Open",
+  "selections": {
+    "new": "Collection name",
+    "create": "Create",
+    "documents": "{count} documents",
+    "noDocs": "Add documents from a document page"
+  },
+  "searches": {
+    "clear": "Clear history"
+  },
+  "subs": {
+    "news": "Archive news",
+    "exhibitions": "New exhibitions"
+  },
+  "account": {
+    "changePassword": "Change password",
+    "current": "Current password",
+    "new": "New password",
+    "changed": "Password changed",
+    "delete": "Delete account",
+    "deleteConfirm": "Delete the account and all saved items? This cannot be undone.",
+    "deleteYes": "Yes, delete"
+  },
+  "confirmEmail": {
+    "banner": "Confirm your e-mail: we sent a message",
+    "resend": "Send again",
+    "sent": "Message sent",
+    "title": "E-mail confirmation",
+    "ok": "E-mail confirmed",
+    "bad": "The link is invalid or expired"
+  },
+  "reset": {
+    "title": "Reset password",
+    "send": "Send link",
+    "sent": "If this e-mail exists, we sent a link",
+    "newTitle": "New password",
+    "save": "Save password",
+    "done": "Password changed. You can sign in now"
+  },
+  "or": "or with e-mail"
+}

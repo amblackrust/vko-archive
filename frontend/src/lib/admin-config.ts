@@ -1,0 +1,41 @@
+// Admin resources: where they live in the API and which fields their forms show.
+export type FieldType = "text" | "category" | "textarea" | "number" | "date" | "select" | "bool" | "i18n" | "i18n-area" | "rich" | "ref" | "json";
+export type Field = { name: string; type: FieldType; required?: boolean; options?: readonly string[]; ref?: "branch" | "fund" | "inventory" | "case"; wide?: boolean };
+export type Group = "catalog" | "content" | "memory" | "site";
+export type Resource = { key: string; group: Group; base: string; perm: string; fields: Field[]; objectType: string };
+
+const DOC_TYPES = ["photo", "certificate", "newspaper", "order", "decision", "letter", "protocol", "manuscript", "map", "audio", "drawing", "personal", "program", "report", "video"] as const;
+const f = (name: string, type: FieldType, extra: Partial<Field> = {}): Field => ({ name, type, ...extra });
+
+const catalog = (kind: string, fields: Field[]): Resource => ({ key: kind, group: "catalog", base: `/api/admin/catalog/${kind}`, perm: "catalog.view", objectType: kind, fields });
+const content = (kind: string, fields: Field[], group: Group = "content"): Resource => ({ key: kind, group, base: `/api/admin/${group === "memory" ? "memory" : "content"}/${kind}`, perm: "content.view", objectType: kind, fields });
+
+export const RESOURCES: Resource[] = [
+  catalog("fund", [f("number", "text", { required: true }), f("title", "i18n", { required: true }), f("type", "select", { options: ["organization", "personal", "party", "newspaper"] }), f("dates_from", "number"), f("dates_to", "number"), f("branch_id", "ref", { ref: "branch" }), f("annotation", "i18n-area"), f("is_demo", "bool")]),
+  catalog("inventory", [f("fund_id", "ref", { ref: "fund", required: true }), f("number", "text", { required: true }), f("title", "i18n", { required: true }), f("dates_text", "text"), f("dates_from", "number"), f("dates_to", "number"), f("is_demo", "bool")]),
+  catalog("case", [f("inventory_id", "ref", { ref: "inventory", required: true }), f("number", "text", { required: true }), f("title", "i18n", { required: true }), f("dates_text", "text"), f("dates_from", "number"), f("dates_to", "number"), f("sheets_count", "number"), f("is_demo", "bool")]),
+  catalog("document", [f("archive_code", "text", { required: true }), f("case_id", "ref", { ref: "case" }), f("title", "i18n", { required: true }), f("date_text", "text"), f("date_from", "date"), f("date_to", "date"), f("period", "text"), f("doc_type", "select", { options: DOC_TYPES }), f("language", "select", { options: ["ru", "kk", "en"] }), f("authors", "i18n"), f("summary", "i18n-area"), f("historical_note", "i18n-area"), f("sheets_count", "number"), f("storage_location", "text"), f("description_status", "select", { options: ["public", "do_not_publish", "needs_review"] }), f("file_access", "select", { options: ["open", "restricted", "closed", "needs_review"] }), f("access_conditions", "i18n-area"), f("branch_id", "ref", { ref: "branch" }), f("places", "json", { wide: true }), f("is_demo", "bool")]),
+  content("news", [f("slug", "text", { required: true }), f("title", "i18n", { required: true }), f("summary", "i18n-area"), f("body", "rich", { wide: true }), f("category", "select", { options: ["site", "exhibitions", "branches", "events", "memory"] }), f("published_at", "date"), f("cover_file_id", "text"), f("is_demo", "bool")]),
+  content("page", [f("key", "text", { required: true }), f("section", "category"), f("title", "i18n", { required: true }), f("body", "rich", { wide: true }), f("seo_title", "i18n"), f("seo_description", "i18n"), f("seo_keywords", "i18n"), f("position", "number")]),
+  content("faq", [f("category", "category", { required: true }), f("question", "i18n", { required: true }), f("answer", "i18n-area", { required: true }), f("position", "number")]),
+  content("legal_act", [f("slug", "text", { required: true }), f("title", "i18n", { required: true }), f("number", "text"), f("date", "date"), f("issuer", "i18n"), f("status", "select", { options: ["active", "amended", "expired"] }), f("adilet_url", "text"), f("file_id", "text"), f("actualized_at", "date")]),
+  content("price_list_item", [f("name", "i18n", { required: true }), f("unit", "i18n"), f("price", "number"), f("note", "i18n"), f("act_ref", "text"), f("legal_act_id", "text"), f("actualized_at", "date"), f("position", "number")]),
+  content("memorial_date", [f("year", "number", { required: true }), f("month", "number", { required: true }), f("day", "number"), f("event_year", "number"), f("date_text", "text"), f("text", "i18n-area", { required: true })]),
+  content("collection", [f("slug", "text", { required: true }), f("title", "i18n", { required: true }), f("theme", "category"), f("period", "text"), f("description", "i18n-area"), f("cover_file_id", "text"), f("is_demo", "bool")], "memory"),
+  content("person", [f("slug", "text", { required: true }), f("name", "i18n", { required: true }), f("birth_year", "number"), f("death_year", "number"), f("years_text", "text"), f("bio", "i18n-area"), f("photo_file_id", "text"), f("sources", "json", { wide: true }), f("is_demo", "bool")], "memory"),
+  content("historical_event", [f("slug", "text", { required: true }), f("title", "i18n", { required: true }), f("date_text", "text"), f("date_from", "date"), f("date_to", "date"), f("theme", "category"), f("description", "i18n-area"), f("place", "i18n"), f("lat", "number"), f("lng", "number"), f("sources", "json", { wide: true }), f("is_demo", "bool")], "memory"),
+  { key: "exhibition", group: "site", base: "/api/admin/exhibitions", perm: "content.view", objectType: "exhibition", fields: [f("slug", "text", { required: true }), f("title", "i18n", { required: true }), f("theme", "text"), f("period", "text"), f("intro", "i18n-area"), f("cover_file_id", "text"), f("is_demo", "bool")] },
+  { key: "branch", group: "site", base: "/api/admin/branches", perm: "branches.view", objectType: "branch", fields: [f("slug", "text", { required: true }), f("name", "i18n", { required: true }), f("short_name", "i18n"), f("type", "select", { options: ["head", "district", "city", "personnel"] }), f("address", "i18n"), f("phone", "text"), f("email", "text"), f("director", "i18n"), f("hours", "i18n"), f("description", "i18n-area"), f("funds_summary", "i18n-area"), f("lat", "number"), f("lng", "number"), f("coords_verified", "bool"), f("show_on_map", "bool"), f("position", "number")] },
+];
+
+RESOURCES.push({ key: "exhibit", group: "site", base: "/api/admin/exhibits", perm: "content.view", objectType: "exhibit", fields: [f("exhibition_id", "text", { required: true }), f("title", "i18n", { required: true }), f("caption", "i18n-area"), f("source", "i18n"), f("archive_code", "text"), f("document_id", "text"), f("media_url", "text"), f("is_demo", "bool")] });
+
+export const byKey = (key: string) => RESOURCES.find((r) => r.key === key);
+
+export const MENU: { group: "catalog" | "content" | "memory" | "site" | "system"; items: { key: string; href: string; perm: string }[] }[] = [
+  { group: "catalog", items: [...["fund", "inventory", "case", "document"].map((k) => ({ key: k, href: `/admin/r/${k}`, perm: "catalog.view" })), { key: "import", href: "/admin/import", perm: "catalog.import" }] },
+  { group: "content", items: ["news", "page", "faq", "legal_act", "price_list_item", "memorial_date"].map((k) => ({ key: k, href: `/admin/r/${k}`, perm: "content.view" })) },
+  { group: "memory", items: ["collection", "person", "historical_event"].map((k) => ({ key: k, href: `/admin/r/${k}`, perm: "content.view" })) },
+  { group: "site", items: [{ key: "exhibition", href: "/admin/r/exhibition", perm: "content.view" }, { key: "branch", href: "/admin/r/branch", perm: "branches.view" }, { key: "translations", href: "/admin/translations", perm: "content.edit" }, { key: "synonyms", href: "/admin/synonyms", perm: "settings.edit" }] },
+  { group: "system", items: [{ key: "users", href: "/admin/users", perm: "users.view" }, { key: "roles", href: "/admin/roles", perm: "roles.manage" }, { key: "audit", href: "/admin/audit", perm: "users.manage" }, { key: "analytics", href: "/admin/analytics", perm: "analytics.view" }, { key: "ai", href: "/admin/ai", perm: "ai.use" }, { key: "settings", href: "/admin/settings", perm: "settings.edit" }] },
+];

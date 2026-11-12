@@ -1,0 +1,73 @@
+{
+  "docType": {
+    "photo": "Photograph",
+    "certificate": "Certificate",
+    "newspaper": "Newspaper",
+    "order": "Order",
+    "decision": "Decision",
+    "letter": "Letter",
+    "protocol": "Minutes",
+    "manuscript": "Manuscript",
+    "map": "Map",
+    "audio": "Audio",
+    "drawing": "Drawing",
+    "personal": "Personal document",
+    "program": "Programme",
+    "report": "Report",
+    "video": "Video",
+    "other": "Other"
+  },
+  "fundType": {
+    "organization": "Organization",
+    "personal": "Personal",
+    "party": "Party",
+    "newspaper": "Newspaper"
+  },
+  "category": {
+    "historical": "Historical documents",
+    "written": "Written sources",
+    "photos": "Photographs",
+    "maps": "Maps and drawings",
+    "organizations": "Organization funds",
+    "personal": "Personal funds",
+    "audio_video": "Audio and video"
+  },
+  "access": {
+    "open": "Open",
+    "restricted": "Restricted",
+    "closed": "Closed",
+    "needs_review": "Under review"
+  },
+  "language": {
+    "ru": "Russian",
+    "kk": "Kazakh",
+    "en": "English"
+  },
+  "workflow": {
+    "draft": "Draft",
+    "review": "In review",
+    "needs_changes": "Needs changes",
+    "approved": "Approved",
+    "published": "Published",
+    "archived": "Archived"
+  },
+  "translation": {
+    "verified": "Verified",
+    "machine": "Machine",
+    "missing": "Missing",
+    "needs_review": "Needs review"
+  },
+  "sort": {
+    "relevance": "Relevance",
+    "date_asc": "Oldest first",
+    "date_desc": "Newest first",
+    "code": "By shelf mark",
+    "title": "By title"
+  },
+  "periodSuffix": "s",
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {pages}"
+  }
+}

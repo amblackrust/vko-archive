@@ -1,0 +1,54 @@
+{
+  "title": "Электронный каталог",
+  "lead": "Фонды, описи, дела и документы. Закрытые материалы показаны только описанием.",
+  "tabs": {
+    "documents": "Документы",
+    "funds": "Фонды"
+  },
+  "search": "Название, шифр, автор…",
+  "filter": {
+    "docType": "Тип",
+    "period": "Период",
+    "language": "Язык",
+    "branch": "Филиал",
+    "topic": "Тема",
+    "category": "Категория",
+    "fundType": "Тип фонда",
+    "digital": "Есть цифровая копия",
+    "fundNumber": "№ фонда",
+    "inventoryNumber": "№ описи",
+    "caseNumber": "№ дела",
+    "author": "Автор",
+    "place": "Место",
+    "keyword": "Ключевое слово",
+    "year": "Год",
+    "from": "С года",
+    "to": "По год",
+    "any": "Любой",
+    "more": "Ещё фильтры",
+    "reset": "Сбросить",
+    "apply": "Применить",
+    "sort": "Сортировка"
+  },
+  "found": "{count, plural, one {Найден # документ} few {Найдено # документа} many {Найдено # документов} other {Найдено # документа}}",
+  "empty": {
+    "title": "Документов по таким условиям нет",
+    "text": "Уберите часть фильтров или попробуйте другие слова.",
+    "removeFilter": "Убрать: {name}"
+  },
+  "fund": {
+    "title": "Фонды",
+    "inventories": "Описи",
+    "cases": "Дела",
+    "documents": "Документов",
+    "years": "Годы",
+    "annotation": "Аннотация",
+    "number": "Фонд № {n}",
+    "inventoryNumber": "Опись № {n}",
+    "caseNumber": "Дело № {n}",
+    "inventoryCount": "{count} описей",
+    "caseCount": "{count} дел",
+    "docCount": "{count} документов",
+    "sheets": "{count} л."
+  }
+}

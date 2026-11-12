@@ -1,0 +1,73 @@
+{
+  "docType": {
+    "photo": "Фотография",
+    "certificate": "Справка",
+    "newspaper": "Газета",
+    "order": "Приказ",
+    "decision": "Решение",
+    "letter": "Письмо",
+    "protocol": "Протокол",
+    "manuscript": "Рукопись",
+    "map": "Карта",
+    "audio": "Аудио",
+    "drawing": "Чертёж",
+    "personal": "Личный документ",
+    "program": "Программа",
+    "report": "Отчёт",
+    "video": "Видео",
+    "other": "Другое"
+  },
+  "fundType": {
+    "organization": "Организация",
+    "personal": "Личный фонд",
+    "party": "Партийный",
+    "newspaper": "Газетный"
+  },
+  "category": {
+    "historical": "Исторические документы",
+    "written": "Письменные источники",
+    "photos": "Фотодокументы",
+    "maps": "Карты и чертежи",
+    "organizations": "Фонды организаций",
+    "personal": "Личные фонды",
+    "audio_video": "Аудио и видео"
+  },
+  "access": {
+    "open": "Открыт",
+    "restricted": "Ограничен",
+    "closed": "Закрыт",
+    "needs_review": "На проверке"
+  },
+  "language": {
+    "ru": "Русский",
+    "kk": "Казахский",
+    "en": "Английский"
+  },
+  "workflow": {
+    "draft": "Черновик",
+    "review": "На проверке",
+    "needs_changes": "Нужна доработка",
+    "approved": "Одобрено",
+    "published": "Опубликовано",
+    "archived": "В архиве"
+  },
+  "translation": {
+    "verified": "Проверен",
+    "machine": "Машинный",
+    "missing": "Нет перевода",
+    "needs_review": "Нужна вычитка"
+  },
+  "sort": {
+    "relevance": "По релевантности",
+    "date_asc": "Старые сначала",
+    "date_desc": "Новые сначала",
+    "code": "По шифру",
+    "title": "По названию"
+  },
+  "periodSuffix": "-е",
+  "pagination": {
+    "prev": "Назад",
+    "next": "Вперёд",
+    "page": "Страница {page} из {pages}"
+  }
+}

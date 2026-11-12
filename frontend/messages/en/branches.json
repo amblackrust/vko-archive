@@ -1,0 +1,30 @@
+{
+  "title": "Branches",
+  "search": "Find a branch",
+  "head": "Head archive",
+  "type": {
+    "head": "Head archive",
+    "district": "District",
+    "city": "City",
+    "personnel": "Personnel records"
+  },
+  "address": "Address",
+  "phone": "Phone",
+  "email": "E-mail",
+  "director": "Head",
+  "hours": "Hours",
+  "funds": "Funds",
+  "route": "Get directions",
+  "approx": "Coordinates are being verified",
+  "providers": {
+    "2gis": "2GIS",
+    "google": "Google Maps",
+    "yandex": "Yandex Maps"
+  },
+  "all": "All branches",
+  "nothing": "No branches found",
+  "onMap": "On the map",
+  "back": "All branches",
+  "details": "Branch details",
+  "more": "Details"
+}

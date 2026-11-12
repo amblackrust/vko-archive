@@ -1,0 +1,60 @@
+{
+  "fields": {
+    "code": "Shelf mark",
+    "fund": "Fund",
+    "inventory": "Inventory",
+    "case": "Case",
+    "date": "Date",
+    "type": "Type",
+    "authors": "Author",
+    "places": "Places",
+    "sheets": "Sheets",
+    "language": "Language",
+    "branch": "Held at",
+    "storage": "Storage location",
+    "access": "Access",
+    "summary": "Description",
+    "note": "Historical note",
+    "tags": "Topics",
+    "conditions": "Access conditions"
+  },
+  "annotation": "About this document",
+  "annotationAi": "Prepared by AI, reviewed by staff",
+  "copyCode": "Copy shelf mark",
+  "share": "Share",
+  "linkCopied": "Link copied",
+  "favorite": "Save",
+  "favorited": "Saved",
+  "loginToSave": "Sign in to save",
+  "noCopy": "No digital copy",
+  "restricted": {
+    "title": "Files are not available",
+    "text": "The description is available, the files are not served online. Conditions are in the state service section; applications go through eGov.kz.",
+    "service": "How to get access"
+  },
+  "viewer": {
+    "label": "Document viewer",
+    "page": "Sheet {n} of {total}",
+    "prev": "Previous",
+    "next": "Next",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "fit": "Fit",
+    "fullscreen": "Fullscreen",
+    "exit": "Exit",
+    "openFile": "Open file",
+    "ocr": "Document text",
+    "noOcr": "No recognized text",
+    "loupe": "Loupe",
+    "thumbs": "Sheets"
+  },
+  "ai": {
+    "title": "Ask about this document",
+    "placeholder": "For example: when was the order signed?",
+    "send": "Ask",
+    "sheet": "sheet {n}",
+    "note": "Answers only from the document text. Reference information."
+  },
+  "related": "Similar materials",
+  "inCase": "In this case"
+}

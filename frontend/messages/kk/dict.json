@@ -1,0 +1,73 @@
+{
+  "docType": {
+    "photo": "Фотосурет",
+    "certificate": "Анықтама",
+    "newspaper": "Газет",
+    "order": "Бұйрық",
+    "decision": "Шешім",
+    "letter": "Хат",
+    "protocol": "Хаттама",
+    "manuscript": "Қолжазба",
+    "map": "Карта",
+    "audio": "Аудио",
+    "drawing": "Сызба",
+    "personal": "Жеке құжат",
+    "program": "Бағдарлама",
+    "report": "Есеп",
+    "video": "Бейне",
+    "other": "Басқа"
+  },
+  "fundType": {
+    "organization": "Ұйым",
+    "personal": "Жеке қор",
+    "party": "Партиялық",
+    "newspaper": "Газеттік"
+  },
+  "category": {
+    "historical": "Тарихи құжаттар",
+    "written": "Жазба деректер",
+    "photos": "Фотоқұжаттар",
+    "maps": "Карталар мен сызбалар",
+    "organizations": "Ұйымдар қорлары",
+    "personal": "Жеке қорлар",
+    "audio_video": "Аудио және бейне"
+  },
+  "access": {
+    "open": "Ашық",
+    "restricted": "Шектелген",
+    "closed": "Жабық",
+    "needs_review": "Тексеруде"
+  },
+  "language": {
+    "ru": "Орыс",
+    "kk": "Қазақ",
+    "en": "Ағылшын"
+  },
+  "workflow": {
+    "draft": "Жоба",
+    "review": "Тексеруде",
+    "needs_changes": "Түзету қажет",
+    "approved": "Мақұлданды",
+    "published": "Жарияланды",
+    "archived": "Мұрағатта"
+  },
+  "translation": {
+    "verified": "Тексерілген",
+    "machine": "Машиналық",
+    "missing": "Аударма жоқ",
+    "needs_review": "Тексеру керек"
+  },
+  "sort": {
+    "relevance": "Сәйкестік бойынша",
+    "date_asc": "Ескілері бірінші",
+    "date_desc": "Жаңалары бірінші",
+    "code": "Шифр бойынша",
+    "title": "Атауы бойынша"
+  },
+  "periodSuffix": "-жылдар",
+  "pagination": {
+    "prev": "Артқа",
+    "next": "Алға",
+    "page": "{page}-бет, барлығы {pages}"
+  }
+}

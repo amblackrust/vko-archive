@@ -1,0 +1,40 @@
+{
+  "primary": {
+    "catalog": "Каталог",
+    "exhibitions": "Көрмелер",
+    "memory": "Жад архиві",
+    "news": "Жаңалықтар",
+    "branches": "Филиалдар",
+    "help": "Анықтама"
+  },
+  "allSections": "Барлық бөлімдер",
+  "groups": {
+    "archive": "Архив",
+    "collections": "Қорлар және жад",
+    "services": "Қызметтер",
+    "useful": "Пайдалы"
+  },
+  "items": {
+    "about": "Архив туралы",
+    "contacts": "Байланыс",
+    "compliance": "Комплаенс",
+    "legal": "Нормативтік актілер",
+    "catalog": "Электрондық каталог",
+    "funds": "Қорлар",
+    "memoryCollections": "Топтамалар",
+    "persons": "Тұлғалар",
+    "timeline": "Хронология",
+    "memoryMap": "Тарихи карта",
+    "exhibitions": "Онлайн-көрмелер",
+    "news": "Жаңалықтар",
+    "stateService": "Мемлекеттік қызмет",
+    "paidServices": "Ақылы қызметтер",
+    "readingRoom": "Оқу залы",
+    "faq": "Сұрақ-жауап",
+    "branches": "Картадағы филиалдар",
+    "calendar": "Есте қалатын күндер күнтізбесі",
+    "symbols": "Мемлекеттік рәміздер",
+    "links": "Пайдалы сілтемелер",
+    "publications": "Жарияланымдар"
+  }
+}

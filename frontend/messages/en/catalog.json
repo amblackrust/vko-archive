@@ -1,0 +1,54 @@
+{
+  "title": "Electronic catalog",
+  "lead": "Funds, inventories, cases and documents. Closed materials show a description only.",
+  "tabs": {
+    "documents": "Documents",
+    "funds": "Funds"
+  },
+  "search": "Title, shelf mark, author…",
+  "filter": {
+    "docType": "Type",
+    "period": "Period",
+    "language": "Language",
+    "branch": "Branch",
+    "topic": "Topic",
+    "category": "Category",
+    "fundType": "Fund type",
+    "digital": "Has digital copy",
+    "fundNumber": "Fund no.",
+    "inventoryNumber": "Inventory no.",
+    "caseNumber": "Case no.",
+    "author": "Author",
+    "place": "Place",
+    "keyword": "Keyword",
+    "year": "Year",
+    "from": "From year",
+    "to": "To year",
+    "any": "Any",
+    "more": "More filters",
+    "reset": "Reset",
+    "apply": "Apply",
+    "sort": "Sort"
+  },
+  "found": "{count, plural, one {# document} other {# documents}} found",
+  "empty": {
+    "title": "No documents match",
+    "text": "Remove some filters or try different words.",
+    "removeFilter": "Remove: {name}"
+  },
+  "fund": {
+    "title": "Funds",
+    "inventories": "Inventories",
+    "cases": "Cases",
+    "documents": "Documents",
+    "years": "Years",
+    "annotation": "Summary",
+    "number": "Fund {n}",
+    "inventoryNumber": "Inventory {n}",
+    "caseNumber": "Case {n}",
+    "inventoryCount": "{count} inventories",
+    "caseCount": "{count} cases",
+    "docCount": "{count} documents",
+    "sheets": "{count} sh."
+  }
+}

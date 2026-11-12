@@ -1,0 +1,57 @@
+{
+  "siteName": "State Archive of East Kazakhstan Region",
+  "siteShort": "VKO State Archive",
+  "skipToContent": "Skip to content",
+  "search": "Search",
+  "menu": "Menu",
+  "close": "Close",
+  "back": "Back",
+  "next": "Next",
+  "more": "More",
+  "all": "All",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "open": "Open",
+  "copy": "Copy",
+  "copied": "Copied",
+  "share": "Share",
+  "language": "Language",
+  "cabinet": "Account",
+  "page": "Page",
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "a11y": {
+    "label": "Accessibility",
+    "fontSize": "Text size",
+    "contrast": "High contrast",
+    "motion": "Reduce motion",
+    "reset": "Reset"
+  },
+  "demo": "DEMO",
+  "demoHint": "Demonstration data. The material is fictional.",
+  "state": {
+    "loading": "Loading…",
+    "error": "Could not load",
+    "retry": "Retry",
+    "empty": "Nothing found",
+    "notFound": "Page not found",
+    "notFoundText": "This page does not exist or has moved.",
+    "toHome": "Home",
+    "unavailable": "Material unavailable"
+  },
+  "types": {
+    "document": "Document",
+    "fund": "Fund",
+    "page": "Page",
+    "branch": "Branch",
+    "exhibition": "Exhibition",
+    "collection": "Collection",
+    "news": "News",
+    "section": "Section"
+  }
+}

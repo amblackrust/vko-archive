@@ -1,0 +1,24 @@
+{
+  "title": "Archive assistant",
+  "open": "Ask the assistant",
+  "placeholder": "Ask about the archive",
+  "send": "Send",
+  "stop": "Stop",
+  "hello": "How can I help?",
+  "note": "Reference information, not an official certificate.",
+  "sources": "Sources",
+  "clear": "Clear",
+  "suggest": [
+    "What is on this page?",
+    "How do I get an archive certificate?",
+    "Where is the Ridder branch?"
+  ],
+  "unavailable": "The assistant is temporarily unavailable. Use search.",
+  "limit": "Too many requests. Wait a minute.",
+  "short": "Assistant",
+  "chats": "Chat history",
+  "newChat": "New chat",
+  "noChats": "No saved chats yet",
+  "untitled": "Untitled",
+  "deleteChat": "Delete chat"
+}

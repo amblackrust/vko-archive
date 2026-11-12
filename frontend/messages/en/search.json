@@ -1,0 +1,29 @@
+{
+  "title": "Search",
+  "placeholder": "What are you looking for?",
+  "button": "Search",
+  "results": "{count, plural, one {# result} other {# results}}",
+  "forQuery": "for “{q}”",
+  "all": "All",
+  "recognized": "Recognized",
+  "apply": "Refine search",
+  "clear": "Clear filters",
+  "filters": {
+    "docType": "Document type",
+    "period": "Period",
+    "branch": "Branch"
+  },
+  "empty": {
+    "title": "Nothing found",
+    "text": "Try different words or remove filters. You can also ask the assistant at the bottom right.",
+    "similar": "Similar materials"
+  },
+  "ai": {
+    "label": "AI summary",
+    "note": "Reference information, not an official archive certificate. Check the sources.",
+    "sources": "Sources",
+    "unavailable": "AI is temporarily unavailable. Search works as usual.",
+    "limit": "Too many requests. Wait a minute.",
+    "stop": "Stop"
+  }
+}

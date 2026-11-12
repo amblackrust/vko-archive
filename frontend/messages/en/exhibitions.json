@@ -1,0 +1,19 @@
+{
+  "title": "Online exhibitions",
+  "lead": "Collections of documents and photographs by theme.",
+  "themes": {
+    "education": "Education",
+    "industry": "Industry",
+    "ust-kamenogorsk": "Ust-Kamenogorsk",
+    "all": "All themes"
+  },
+  "exhibits": "{count, plural, one {# exhibit} other {# exhibits}}",
+  "open": "Open exhibition",
+  "source": "Source",
+  "toDocument": "To the document",
+  "video": "Video",
+  "prev": "Previous exhibit",
+  "next": "Next exhibit",
+  "empty": "No exhibitions on this theme yet",
+  "related": "Similar materials"
+}

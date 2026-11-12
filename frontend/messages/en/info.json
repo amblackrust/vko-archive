@@ -1,0 +1,169 @@
+{
+  "about": {
+    "title": "About the archive",
+    "history": "History",
+    "structure": "Structure"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "director": "Director",
+    "email": "E-mail",
+    "hours": "Opening hours",
+    "readingRoom": "Reading room",
+    "call": "Call",
+    "branches": "Branch contacts"
+  },
+  "help": {
+    "title": "Visitor help",
+    "lead": "",
+    "blocks": [
+      {
+        "title": "What this site is",
+        "text": "A reference site of the archive. Applications, orders and payments are not handled here."
+      },
+      {
+        "title": "How the catalog works",
+        "text": "Fund → inventory → case → document. A shelf mark like Ф.Д-1 Оп.1 Д.1 shows the path to a document."
+      },
+      {
+        "title": "How to search",
+        "text": "Write in plain words: the site works out the document type, place and years."
+      },
+      {
+        "title": "Access statuses",
+        "text": "“Open” — the copy can be viewed. “Restricted” and “Closed” — description only."
+      }
+    ],
+    "faq": "Questions and answers",
+    "readingRoom": "Reading room"
+  },
+  "faq": {
+    "title": "Questions and answers",
+    "empty": "No questions yet",
+    "search": "Find a question",
+    "categories": {
+      "access": "Access to documents",
+      "branches": "Branches",
+      "catalog": "Catalogue and search",
+      "memory": "Memory archive",
+      "site": "About the site"
+    }
+  },
+  "readingRoom": {
+    "title": "Reading room",
+    "hours": "Opening hours",
+    "address": "Where it is",
+    "text": "Work with cases in the reading room happens during opening hours. Booking, ordering cases and filing applications through the site are not provided. The reading room rules will be published once approved by the archive.",
+    "contact": "You can confirm the schedule by phoning the reception."
+  },
+  "state": {
+    "title": "State service",
+    "lead": "Reference information. Applications are not filed on this site: they are made on eGov.kz.",
+    "docs": "Legal basis",
+    "items": [
+      {
+        "title": "Law of the Republic of Kazakhstan “On State Services”",
+        "url": "https://adilet.zan.kz/rus/docs/Z1300000088"
+      },
+      {
+        "title": "Rules for providing state services in archival affairs (order of 29.05.2020 No. 159)",
+        "url": "https://adilet.zan.kz"
+      }
+    ],
+    "steps": "How to apply",
+    "stepList": [
+      "Choose the service on eGov.kz or e-Otinish.",
+      "Prepare the details: full name, period, organization, shelf mark if known.",
+      "File the application on the portal. The portal sets the deadline and result."
+    ],
+    "reports": "Reports on services provided and conditions are published by the archive once approved.",
+    "egov": "Open eGov.kz",
+    "eotinish": "Open e-Otinish"
+  },
+  "paid": {
+    "title": "Paid services",
+    "lead": "Reference information. Ordering and payment are not available on this site.",
+    "doc": "Decree of the East Kazakhstan akimat No. 142 approving the price list of goods (works, services) sold by state archives.",
+    "price": "For the current price list and payment procedure, call the archive."
+  },
+  "legal": {
+    "title": "Legal acts",
+    "search": "Find an act",
+    "number": "No.",
+    "date": "Date",
+    "issuer": "Issuer",
+    "status": "Status",
+    "source": "Source",
+    "file": "File",
+    "empty": "No acts found",
+    "statuses": {
+      "active": "In force",
+      "expired": "No longer in force",
+      "draft": "Draft"
+    }
+  },
+  "compliance": {
+    "title": "Compliance service",
+    "officer": "Compliance officer",
+    "docs": "Documents"
+  },
+  "publications": {
+    "title": "Publications and photo gallery",
+    "text": "Document collections, essays and photographs of the archive. The section is being filled: materials will appear after approval.",
+    "photos": "Photos of the region"
+  },
+  "calendar": {
+    "title": "Memorial dates",
+    "year": "Year",
+    "empty": "No memorial dates this month",
+    "noDay": "Date without a day"
+  },
+  "symbols": {
+    "title": "State symbols",
+    "text": "The flag, coat of arms and anthem of the Republic of Kazakhstan. Materials are on official resources.",
+    "open": "Official resource"
+  },
+  "links": {
+    "title": "Useful links",
+    "items": [
+      {
+        "title": "Official site of the President of Kazakhstan",
+        "url": "https://www.akorda.kz"
+      },
+      {
+        "title": "Akimat of East Kazakhstan Region",
+        "url": "https://www.gov.kz/memleket/entities/vko-akimat"
+      },
+      {
+        "title": "E-government portal eGov.kz",
+        "url": "https://egov.kz"
+      },
+      {
+        "title": "Unified appeals system e-Otinish",
+        "url": "https://eotinish.kz"
+      },
+      {
+        "title": "“Adilet” information system",
+        "url": "https://adilet.zan.kz"
+      }
+    ],
+    "note": "Links open official external resources."
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "blocks": [
+      {
+        "title": "What we keep",
+        "text": "For the account — your e-mail, name and the materials you saved. Search queries are recorded without a name or IP address and are used to improve search."
+      },
+      {
+        "title": "AI",
+        "text": "The assistant runs on the archive's local model. Your questions are not sent to third-party services."
+      },
+      {
+        "title": "Your rights",
+        "text": "You can delete your account and saved data in the account at any time."
+      }
+    ]
+  }
+}

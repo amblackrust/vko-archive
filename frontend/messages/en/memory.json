@@ -1,0 +1,49 @@
+{
+  "title": "Memory archive",
+  "lead": "The region's history in documents, people and dates.",
+  "doors": {
+    "collections": {
+      "name": "Collections",
+      "text": "Thematic sets of documents"
+    },
+    "persons": {
+      "name": "People",
+      "text": "People of the region and their traces in the archive"
+    },
+    "timeline": {
+      "name": "Timeline",
+      "text": "Events by year"
+    },
+    "map": {
+      "name": "Map",
+      "text": "Events on the map of the region"
+    }
+  },
+  "documents": "Documents",
+  "items": "{count, plural, one {# item} other {# items}}",
+  "persons": {
+    "search": "Find a person",
+    "empty": "No one found",
+    "sources": "Sources",
+    "bio": "Biography"
+  },
+  "timelineFilter": {
+    "all": "All themes",
+    "people": "People",
+    "institutions": "Institutions"
+  },
+  "year": "Year",
+  "place": "Place",
+  "sourcesLabel": "Sources",
+  "noDate": "No date",
+  "selectPoint": "Pick a point on the map",
+  "mapNote": "Coordinates are approximate",
+  "dragHint": "Drag or scroll sideways",
+  "prev": "Earlier",
+  "next": "Later",
+  "jump": "Jump to year",
+  "openDocument": "Open document",
+  "findInArchive": "Find in archive",
+  "more": "Details",
+  "back": "Back to map"
+}

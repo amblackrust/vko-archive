@@ -1,0 +1,242 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* Design tokens. World: a stamp album stock page. Day = white page, night = black stock page.
+   Colors come from stamp inks: Prussian blue acts, vermilion postmarks, ochre and sage mark topics. */
+:root {
+  --paper: oklch(99% 0.003 90);
+  --mount: oklch(96.4% 0.005 90);
+  --mount-2: oklch(93% 0.007 90);
+  --frame: oklch(86% 0.008 90);
+  --frame-strong: oklch(68% 0.012 260);
+  --ink: oklch(21% 0.03 262);
+  --ink-2: oklch(38% 0.025 262);
+  --ink-3: oklch(50% 0.02 262);
+  --action: oklch(41% 0.12 258);
+  --action-ink: oklch(98.5% 0.005 90);
+  --action-soft: oklch(94% 0.03 258);
+  --postmark: oklch(55% 0.19 33);
+  --ochre: oklch(70% 0.13 80);
+  --sage: oklch(52% 0.08 160);
+  --ok: oklch(45% 0.1 155);
+  --bad: oklch(52% 0.2 28);
+  --focus: oklch(55% 0.17 258);
+  --glass: oklch(99% 0.003 90 / 0.7);
+  --lift: 0 1px 1px oklch(21% 0.03 262 / 0.08), 0 10px 24px -8px oklch(21% 0.03 262 / 0.22);
+  --lift-high: 0 2px 3px oklch(21% 0.03 262 / 0.1), 0 28px 50px -14px oklch(21% 0.03 262 / 0.34);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: oklch(14.5% 0.012 262);
+  --mount: oklch(19% 0.014 262);
+  --mount-2: oklch(24% 0.016 262);
+  --frame: oklch(30% 0.016 262);
+  --frame-strong: oklch(52% 0.02 262);
+  --ink: oklch(95% 0.006 90);
+  --ink-2: oklch(82% 0.01 90);
+  --ink-3: oklch(70% 0.014 262);
+  --action: oklch(77% 0.11 250);
+  --action-ink: oklch(16% 0.02 262);
+  --action-soft: oklch(28% 0.05 255);
+  --postmark: oklch(70% 0.17 33);
+  --ochre: oklch(78% 0.13 85);
+  --sage: oklch(74% 0.1 160);
+  --ok: oklch(76% 0.11 155);
+  --bad: oklch(72% 0.16 28);
+  --focus: oklch(78% 0.12 250);
+  --glass: oklch(14.5% 0.012 262 / 0.7);
+  --lift: 0 1px 1px oklch(0% 0 0 / 0.4), 0 10px 24px -8px oklch(0% 0 0 / 0.6);
+  --lift-high: 0 2px 3px oklch(0% 0 0 / 0.5), 0 28px 50px -14px oklch(0% 0 0 / 0.8);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-mount: var(--mount);
+  --color-mount-2: var(--mount-2);
+  --color-frame: var(--frame);
+  --color-frame-strong: var(--frame-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-action: var(--action);
+  --color-action-ink: var(--action-ink);
+  --color-action-soft: var(--action-soft);
+  --color-postmark: var(--postmark);
+  --color-ochre: var(--ochre);
+  --color-sage: var(--sage);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --font-display: "Geologica", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Geologica", ui-rounded, system-ui, sans-serif;
+  --shadow-lift: var(--lift);
+  --shadow-lift-high: var(--lift-high);
+}
+
+:root {
+  --gutter: clamp(16px, 2.8vw, 48px);
+  --header-h: 60px;
+  /* Springs rendered as CSS for non-gesture motion: quick start, soft landing. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: linear(0, 0.3 6%, 0.66 12.5%, 0.89 19%, 1.03 26%, 1.07 32%, 1.06 39%, 1.02 48%, 0.995 58%, 1 75%, 1);
+  font-size: calc(100% * var(--ui-scale, 1));
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    /* SHRP 0 = softest corners of the face. */
+    font-variation-settings: "SHRP" 0;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+  body { min-height: 100dvh; line-height: 1.55; text-rendering: optimizeLegibility; }
+
+  /* Tracking follows size: large type tightens, small type stays open. */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    text-wrap: balance;
+    font-optical-sizing: auto;
+  }
+  h3, h4 { letter-spacing: -0.02em; line-height: 1.15; font-weight: 700; }
+  p { text-wrap: pretty; }
+  a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+  ::selection { background: var(--action); color: var(--action-ink); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+  input, textarea, select { caret-color: var(--action); accent-color: var(--action); }
+  * { scrollbar-width: thin; scrollbar-color: var(--frame-strong) transparent; }
+}
+
+@layer components {
+  .font-display { font-weight: 700; letter-spacing: -0.03em; }
+  .wrap { width: 100%; max-width: 1920px; margin-inline: auto; padding-inline: var(--gutter); }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* Translucent glassine layer: content scrolls under it. Solid when transparency is reduced. */
+  .glassine {
+    background: var(--glass);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+  }
+
+  .skip-link {
+    position: fixed; left: var(--gutter); top: 8px; z-index: 100; transform: translateY(-200%);
+    background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 999px;
+  }
+  .skip-link:focus { transform: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glassine { background: var(--paper); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  :root { --frame: oklch(60% 0.01 90); --ink-3: oklch(35% 0.02 262); }
+  [data-theme="dark"] { --frame: oklch(62% 0.015 262); --ink-3: oklch(86% 0.01 90); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+[data-motion="reduce"] *, [data-motion="reduce"] *::before, [data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+}
+
+/* In-site high contrast switch. */
+[data-contrast="high"] { --ink: oklch(8% 0.02 262); --ink-2: oklch(16% 0.02 262); --ink-3: oklch(28% 0.02 262); --frame: oklch(52% 0.015 262); --action: oklch(33% 0.15 258); }
+[data-contrast="high"][data-theme="dark"] { --ink: oklch(100% 0 0); --ink-2: oklch(97% 0 0); --ink-3: oklch(90% 0 0); --frame: oklch(70% 0.02 262); --action: oklch(84% 0.12 250); }
+
+/* Theme change: the new theme opens as a circle from the toggle (View Transitions). */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0)); animation: theme-reveal 0.7s var(--ease-out) forwards; }
+@keyframes theme-reveal { to { clip-path: circle(150vmax at var(--vt-x, 50%) var(--vt-y, 0)); } }
+
+/* Leaflet markers */
+.map-pin { display: block; width: 16px; height: 16px; margin: 3px; border-radius: 50%; background: var(--action); box-shadow: 0 0 0 2.5px var(--paper), 0 2px 6px oklch(0% 0 0 / 0.4); transition: transform 0.3s var(--ease-spring); }
+.map-pin--head { width: 20px; height: 20px; margin: 1px; background: var(--postmark); }
+.map-pin-active .map-pin, .leaflet-marker-icon:hover .map-pin { transform: scale(1.5); }
+.leaflet-container { font-family: var(--font-sans); background: var(--mount); }
+.leaflet-popup-content-wrapper { border-radius: 20px; background: var(--paper); color: var(--ink); box-shadow: var(--lift-high); }
+.leaflet-popup-tip { background: var(--paper); }
+.leaflet-popup-content a { color: var(--action); }
+.map-popup .leaflet-popup-content { margin: 16px 18px; line-height: 1.4; }
+.map-popup .leaflet-popup-content p { margin: 0; }
+.map-popup a.leaflet-popup-close-button { top: 8px; right: 8px; width: 28px; height: 28px; font-size: 22px; line-height: 26px; color: var(--ink-3); }
+.map-popup { animation: pop-in 0.25s var(--ease-out); }
+@keyframes pop-in { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
+[data-theme="dark"] .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.82) contrast(0.9) saturate(0.7); }
+
+/* Popovers materialize from their trigger: scale and blur arrive together. */
+@keyframes materialize-in { from { opacity: 0; transform: scale(0.94); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes materialize-out { from { opacity: 1; } to { opacity: 0; transform: scale(0.97); filter: blur(4px); } }
+.pop { transform-origin: var(--radix-popover-content-transform-origin, 50% 0); }
+.pop[data-state="open"] { animation: materialize-in 0.34s var(--ease-out); }
+.pop[data-state="closed"] { animation: materialize-out 0.14s ease-in; }
+
+/* Leaflet panes use z-index up to 1000; contain them so the header stays on top. */
+.leaflet-container { isolation: isolate; z-index: 0; }
+
+/* Token aliases used by shared page components. */
+:root {
+  --table: var(--paper); --table-2: var(--mount); --table-3: var(--mount-2); --panel: var(--paper);
+  --line: var(--frame); --line-strong: var(--frame-strong);
+  --sleeve: oklch(24% 0.05 262); --sleeve-2: oklch(31% 0.06 262);
+  --edge: var(--ochre); --edge-text: var(--ink-3); --grease: var(--postmark);
+  --ok-soft: oklch(94% 0.04 155); --warn: oklch(55% 0.13 70); --warn-soft: oklch(95% 0.05 85); --bad-soft: oklch(95% 0.03 28);
+}
+[data-theme="dark"] {
+  --sleeve: oklch(11% 0.02 262); --sleeve-2: oklch(19% 0.02 262);
+  --ok-soft: oklch(27% 0.045 155); --warn: oklch(80% 0.12 80); --warn-soft: oklch(29% 0.05 80); --bad-soft: oklch(28% 0.05 28);
+}
+@theme inline {
+  --color-table: var(--table); --color-table-2: var(--table-2); --color-table-3: var(--table-3); --color-panel: var(--panel);
+  --color-line: var(--line); --color-line-strong: var(--line-strong);
+  --color-sleeve: var(--sleeve); --color-sleeve-2: var(--sleeve-2);
+  --color-edge: var(--edge); --color-edge-text: var(--edge-text); --color-grease: var(--grease);
+  --color-ok-soft: var(--ok-soft); --color-warn: var(--warn); --color-warn-soft: var(--warn-soft); --color-bad-soft: var(--bad-soft);
+}
+
+@layer components {
+  .edge { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .code { font-weight: 600; letter-spacing: 0; }
+  .glass { background: var(--glass); backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%); }
+  .field {
+    width: 100%; min-height: 2.75rem; border-radius: 0.875rem; border: 1px solid var(--frame-strong);
+    background: var(--paper); color: var(--ink); padding: 0.5rem 0.875rem; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field::placeholder { color: var(--ink-3); }
+  .field:hover { border-color: var(--ink-3); }
+  .field:focus { outline: none; border-color: var(--action); box-shadow: 0 0 0 3px color-mix(in oklab, var(--action) 25%, transparent); }
+  .field[aria-invalid="true"] { border-color: var(--bad); }
+  select.field { appearance: none; padding-right: 2.25rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23888' stroke-width='1.6'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.875rem center; }
+  textarea.field { padding-top: 0.625rem; line-height: 1.5; }
+  .label { display: block; margin-bottom: 0.375rem; font-size: 0.875rem; color: var(--ink-2); }
+  .prose { max-width: 70ch; font-size: 1.0625rem; line-height: 1.7; color: var(--ink); }
+  .prose > * + * { margin-top: 1.1em; }
+  .prose h2 { font-size: 1.75rem; margin-top: 1.8em; }
+  .prose h3 { font-size: 1.3rem; margin-top: 1.5em; }
+  .prose a { color: var(--action); text-decoration: underline; }
+  .prose ul, .prose ol { padding-left: 1.4em; }
+  .prose ul { list-style: disc; } .prose ol { list-style: decimal; }
+  .prose li + li { margin-top: 0.35em; }
+  .prose blockquote { background: var(--mount-2); border-radius: 14px; padding: 0.9em 1.2em; color: var(--ink-2); }
+  .prose img { border-radius: 12px; max-width: 100%; height: auto; }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+  .prose th, .prose td { border-bottom: 1px solid var(--frame); padding: 0.5em 0.75em; text-align: left; }
+}
+
+/* The assistant panel pushes the page aside on wide screens. */
+body { padding-right: var(--chat-w, 0px); transition: padding-right 0.45s var(--ease-out); }
+
+/* Page entrance: the new screen rises in; its first blocks follow one after another. */
+@keyframes page-in { from { opacity: 0; transform: translateY(16px); filter: blur(5px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.page-enter { animation: page-in 0.6s var(--ease-out) both; }
+.page-enter > *:nth-child(2) { animation: rise 0.7s 0.06s var(--ease-out) both; }
+.page-enter > *:nth-child(3) { animation: rise 0.75s 0.12s var(--ease-out) both; }
+.page-enter > *:nth-child(4) { animation: rise 0.8s 0.18s var(--ease-out) both; }
+.enter-slow { animation: rise 0.9s 0.1s var(--ease-out) both; }

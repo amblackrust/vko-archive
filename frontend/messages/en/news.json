@@ -1,0 +1,19 @@
+{
+  "title": "News",
+  "search": "Search news",
+  "categories": {
+    "all": "All",
+    "site": "Site",
+    "exhibitions": "Exhibitions",
+    "branches": "Branches",
+    "events": "Events",
+    "memory": "Memory"
+  },
+  "sort": {
+    "new": "Newest first",
+    "old": "Oldest first"
+  },
+  "empty": "No news found",
+  "related": "Read also",
+  "back": "All news"
+}

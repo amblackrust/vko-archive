@@ -1,0 +1,64 @@
+{
+  "title": "Ask the archive in your own words",
+  "searchLabel": "What are you looking for?",
+  "searchPlaceholder": "For example: photos of Ust-Kamenogorsk in the 1960s",
+  "searchButton": "Search",
+  "examples": [
+    "employment certificate",
+    "photos of the 1960s",
+    "lead-zinc plant",
+    "order on launching the workshop"
+  ],
+  "catalog": {
+    "title": "Catalog",
+    "all": "Full catalog",
+    "categories": {
+      "historical": "Historical documents",
+      "written": "Written sources",
+      "photos": "Photographs",
+      "maps": "Maps and drawings",
+      "organizations": "Organization funds",
+      "personal": "Personal funds",
+      "audio_video": "Audio and video"
+    }
+  },
+  "exhibitions": {
+    "title": "Exhibitions",
+    "all": "All exhibitions",
+    "items": "{count} exhibits"
+  },
+  "today": {
+    "title": "This month in history",
+    "all": "Calendar of dates",
+    "empty": "No memorial dates this month"
+  },
+  "branches": {
+    "title": "Branches",
+    "all": "All branches",
+    "count": "{count} branches",
+    "head": "Head archive"
+  },
+  "news": {
+    "title": "News",
+    "all": "All news"
+  },
+  "help": {
+    "title": "Need a certificate?",
+    "text": "Applications go through eGov.kz. This site does not accept requests.",
+    "egov": "Open eGov.kz",
+    "guide": "How to get a certificate"
+  },
+  "places": {
+    "ustkam": "Ust-Kamenogorsk",
+    "altai": "Altai",
+    "irtysh": "Irtysh",
+    "markakol": "Markakol",
+    "katon": "Katon-Karagay",
+    "zhangyskol": "Zhangyskol"
+  },
+  "strip": "Exhibitions and places of the region",
+  "stripPrev": "Previous",
+  "stripNext": "Next",
+  "collections": "Collections",
+  "items": "{count, plural, one {# document} other {# documents}}"
+}
