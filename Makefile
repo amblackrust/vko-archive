@@ -1,30 +1,41 @@
 BACKEND_VENV := backend/.venv
 PY := $(BACKEND_VENV)/bin/python
 
-.PHONY: dev env db-up db-down backup backend-install migrate backend-dev frontend-install frontend-dev test
+.PHONY: up down dev env db-up db-down backup backend-install migrate backend-dev frontend-install frontend-dev test
 
-## One command: env files, database, deps, migrations, then backend + frontend in parallel.
+## One command: env files, database, deps, migrations, then backend.
 dev: env db-up backend-install migrate
-	$(MAKE) -j2 backend-dev frontend-dev
+	$(MAKE) backend-dev
 
-## Create .env files from the examples (only if missing) with a random DB password.
-## Existing files are never overwritten; fails if one still has the example password.
+## Create .env files from the examples (only if missing): random database password and JWT secret.
+## The demo accounts get the documented password Demo-Pass-2026!. Existing files are never overwritten.
 env:
 	@if [ ! -f .env ]; then \
 		pw=$$(python3 -c 'import secrets; print(secrets.token_hex(24))') && \
-		sed "s/^POSTGRES_PASSWORD=change_me$$/POSTGRES_PASSWORD=$$pw/" .env.example > .env && \
-		echo "created .env with a random POSTGRES_PASSWORD"; \
+		jwt=$$(python3 -c 'import secrets; print(secrets.token_hex(32))') && \
+		sed -e "s/^POSTGRES_PASSWORD=change_me$$/POSTGRES_PASSWORD=$$pw/" \
+			-e "s/^JWT_SECRET=change_me_jwt_secret$$/JWT_SECRET=$$jwt/" \
+			-e "s/^DEMO_PASSWORD=change_me_demo_password$$/DEMO_PASSWORD=Demo-Pass-2026!/" \
+			.env.example > .env && \
+		echo "created .env (random POSTGRES_PASSWORD and JWT_SECRET, demo password Demo-Pass-2026!)"; \
 	fi
 	@if [ ! -f backend/.env ]; then \
 		pw=$$(sed -n 's/^POSTGRES_PASSWORD=//p' .env) && \
-		jwt=$$(python3 -c 'import secrets; print(secrets.token_hex(32))') && \
+		jwt=$$(sed -n 's/^JWT_SECRET=//p' .env) && \
 		sed -e "s/:change_me@/:$$pw@/" -e "s/^JWT_SECRET=change_me_jwt_secret$$/JWT_SECRET=$$jwt/" \
 			backend/.env.example > backend/.env && \
-		echo "created backend/.env (password taken from .env, random JWT_SECRET)"; \
+		echo "created backend/.env (same database password and JWT secret)"; \
 	fi
 	@if grep -q change_me .env backend/.env; then \
-		echo "error: .env or backend/.env still uses the example password change_me" >&2; exit 1; \
+		echo "error: .env or backend/.env still uses a change_me placeholder" >&2; exit 1; \
 	fi
+
+## Whole stack in containers: database, Ollama with the models, API (migrations + demo data), site on :3000.
+up: env
+	docker compose up --build
+
+down:
+	docker compose down
 
 db-up:
 	docker compose up -d --wait db
@@ -56,7 +67,7 @@ frontend-install:
 	cd frontend && npm install
 
 frontend-dev:
-	cd frontend && npm install && npm run dev
+	cd frontend && npm run dev
 
 test:
 	cd backend && .venv/bin/pytest -q

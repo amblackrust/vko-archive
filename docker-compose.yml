@@ -1,3 +1,6 @@
+# Whole demo stack: PostgreSQL (pgvector), Ollama with the models, the API and the site.
+#   cp .env.example .env   (set the passwords)   ->   docker compose up --build
+# GPU for Ollama (optional):  docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -18,5 +21,71 @@ services:
       timeout: 5s
       retries: 20
 
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - vko_ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+
+  # One-shot: downloads the chat model and the embedding model into the volume (several GB, first start only).
+  ollama-models:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["sh", "-c", "ollama pull ${OLLAMA_MODEL:-qwen3.5:9b-q4_K_M} && ollama pull ${OLLAMA_EMBED_MODEL:-bge-m3}"]
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-vko}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vko_archive}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env (see .env.example)}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.5:9b-q4_K_M}
+      OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-bge-m3}
+      CORS_ORIGINS: '["http://localhost:3000"]'
+      FRONTEND_URL: http://localhost:3000
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+    volumes:
+      - vko_storage:/app/backend/storage
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  frontend:
+    build:
+      context: frontend
+      args:
+        BACKEND_URL: http://backend:8000
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
 volumes:
   vko_pgdata:
+  vko_ollama:
+  vko_storage:
