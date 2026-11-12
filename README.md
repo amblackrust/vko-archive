@@ -199,13 +199,10 @@ Backend-only settings (`backend/.env.example`): `OLLAMA_URL`, `OLLAMA_FALLBACK_M
 
 </details>
 
-## Deliverables & Links
+## Documentation
 
 | Item | Link |
 |---|---|
-| Live demo | <!-- TODO: live demo URL --> _TBD_ |
-| Demo video / pitch | <!-- TODO: video URL --> _TBD_ |
-| Presentation | <!-- TODO: presentation URL --> _TBD_ |
 | Demo script | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
 | Data sources and image licences | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) |
 

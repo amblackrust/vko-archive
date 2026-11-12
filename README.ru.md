@@ -199,13 +199,10 @@ make test                                          # тесты backend
 
 </details>
 
-## Материалы и ссылки
+## Документация
 
 | Что | Ссылка |
 |---|---|
-| Демо онлайн | <!-- TODO: live demo URL --> _TBD_ |
-| Видео / питч | <!-- TODO: video URL --> _TBD_ |
-| Презентация | <!-- TODO: presentation URL --> _TBD_ |
 | Сценарий демо | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
 | Источники данных и лицензии изображений | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) |
 
