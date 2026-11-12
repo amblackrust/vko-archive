@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { siteUrl } from "@/lib/seo";
 import { Providers } from "@/components/providers";
 import "../globals.css";
 
@@ -13,7 +14,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "common" });
-  return { title: { default: t("siteName"), template: `%s · ${t("siteShort")}` } };
+  return { metadataBase: new URL(siteUrl()), title: { default: t("siteName"), template: `%s — ${t("siteShort")}` } };
 }
 
 // Applies the visitor's accessibility choices before first paint.

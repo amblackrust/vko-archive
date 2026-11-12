@@ -77,9 +77,11 @@ services:
       context: frontend
       args:
         BACKEND_URL: http://backend:8000
+        FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     restart: unless-stopped
     environment:
       BACKEND_URL: http://backend:8000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
     depends_on:
       - backend
     ports:

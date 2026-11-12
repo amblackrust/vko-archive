@@ -1,4 +1,5 @@
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { api, type Schema } from "@/lib/api/client";
 import { Link } from "@/i18n/navigation";
 import { PageHead } from "@/components/ui/page-head";
@@ -11,6 +12,12 @@ import clsx from "clsx";
 
 type SP = Record<string, string | string[] | undefined>;
 const FILTER_KEYS = ["q", "title", "fund_number", "inventory_number", "case_number", "period", "year", "date_from", "date_to", "author", "topic", "place", "keyword", "doc_type", "branch_id", "category", "fund_type", "language", "has_digital_copy"];
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "catalog" });
+  return pageMeta({ locale, path: "/catalog", title: t("title"), description: t("lead") });
+}
 
 export default async function CatalogPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<SP> }) {
   const { locale } = await params;

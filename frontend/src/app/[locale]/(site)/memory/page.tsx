@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { PageHead } from "@/components/ui/page-head";
@@ -10,6 +11,12 @@ const DOORS = [
   { key: "timeline", href: "/memory/timeline", photo: "/photos/memory-timeline.webp" },
   { key: "map", href: "/memory/map", photo: "/photos/memory-map.webp" },
 ] as const;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "memory" });
+  return pageMeta({ locale, path: "/memory", title: t("title"), description: t("lead") });
+}
 
 export default async function MemoryPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

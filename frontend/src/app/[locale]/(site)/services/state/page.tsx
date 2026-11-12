@@ -1,8 +1,15 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { ArrowUpRight } from "lucide-react";
 import { PageHead } from "@/components/ui/page-head";
 import { LinkRows } from "@/components/ui/link-rows";
 import { buttonClass } from "@/components/ui/button";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "info.state" });
+  return pageMeta({ locale, path: "/services/state", title: t("title"), description: t("lead") });
+}
 
 export default async function StateServicePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

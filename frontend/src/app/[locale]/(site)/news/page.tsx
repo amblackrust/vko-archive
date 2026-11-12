@@ -1,4 +1,5 @@
 import { getFormatter, getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { Search } from "lucide-react";
 import clsx from "clsx";
 import { api, type Schema } from "@/lib/api/client";
@@ -9,6 +10,12 @@ import { Pagination } from "@/components/ui/pagination";
 
 type SP = { category?: string; q?: string; sort?: string; page?: string };
 const CATS = ["site", "exhibitions", "branches", "events", "memory"];
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [t, c] = await Promise.all([getTranslations({ locale, namespace: "news" }), getTranslations({ locale, namespace: "common" })]);
+  return pageMeta({ locale, path: "/news", title: t("title"), description: c("siteName") });
+}
 
 export default async function NewsPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<SP> }) {
   const { locale } = await params;

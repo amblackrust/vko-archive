@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { pageMeta } from "@/lib/seo";
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { ApiError, api, type Schema } from "@/lib/api/client";
 import { Link } from "@/i18n/navigation";
@@ -8,6 +9,12 @@ import { DragScroll } from "@/components/ui/drag-scroll";
 import { ExhibitWall } from "@/components/exhibition/exhibit-wall";
 import { DocActions } from "@/components/document/doc-actions";
 import { toneBg } from "@/lib/tones";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  const ex = await api.get<Schema["ExhibitionDetail"]>(`/api/exhibitions/${slug}`, { query: { lang: locale } }).catch(() => null);
+  return ex ? pageMeta({ locale, path: `/exhibitions/${slug}`, title: ex.title, description: ex.intro }) : {};
+}
 
 export default async function ExhibitionPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;

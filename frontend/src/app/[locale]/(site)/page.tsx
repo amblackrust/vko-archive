@@ -1,4 +1,5 @@
 import { getFormatter, getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { api, type Schema } from "@/lib/api/client";
@@ -15,6 +16,12 @@ const TONES: StampTone[] = ["action", "ochre", "postmark", "sage"];
 // Photo stamps are landscape, ink stamps portrait: one baseline, varied widths.
 const PHOTO = "h-[20rem] w-[27rem] md:h-[24rem] md:w-[33rem]";
 const INK = "h-[20rem] w-[15rem] md:h-[24rem] md:w-[17.5rem]";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [c, t] = await Promise.all([getTranslations({ locale, namespace: "common" }), getTranslations({ locale, namespace: "home" })]);
+  return pageMeta({ locale, path: "", title: c("siteName"), description: t("title"), absolute: true });
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { pageMeta } from "@/lib/seo";
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import { ApiError, api, type Schema } from "@/lib/api/client";
@@ -6,6 +7,12 @@ import { Breadcrumbs } from "@/components/ui/page-head";
 import { Badge } from "@/components/ui/badge";
 import { buttonClass } from "@/components/ui/button";
 import { PointMap } from "@/components/branches/point-map";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  const b = await api.get<Schema["BranchItem"]>(`/api/branches/${slug}`, { query: { lang: locale } }).catch(() => null);
+  return b ? pageMeta({ locale, path: `/branches/${slug}`, title: b.name, description: b.description ?? b.address }) : {};
+}
 
 export default async function BranchPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;

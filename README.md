@@ -225,7 +225,7 @@ Backend-only settings (`backend/.env.example`): `OLLAMA_URL`, `OLLAMA_FALLBACK_M
 | [docs/DESIGN.md](docs/DESIGN.md) | Design system rules |
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources and image licences |
 | [docs/OPEN_ISSUES.md](docs/OPEN_ISSUES.md) | Known gaps and next steps |
-| [READINESS.md](READINESS.md) | Readiness of every module: implemented, partial, simulated, next stage |
+| [docs/READINESS.md](docs/READINESS.md) | Readiness of every module: implemented, partial, simulated, next stage |
 | [docs/MIGRATION.md](docs/MIGRATION.md) | Plan for migrating data from the old site e-arhiv.vko.gov.kz |
 
 ## License

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { pageMeta } from "@/lib/seo";
 import { getFormatter, getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { ApiError, api, type Schema } from "@/lib/api/client";
 import { Link } from "@/i18n/navigation";
@@ -7,6 +8,12 @@ import { Prose } from "@/components/ui/prose";
 import { Media } from "@/components/ui/media";
 import { DocActions } from "@/components/document/doc-actions";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  const n = await api.get<Schema["NewsDetail"]>(`/api/news/${slug}`, { query: { lang: locale } }).catch(() => null);
+  return n ? pageMeta({ locale, path: `/news/${slug}`, title: n.title, description: n.summary }) : {};
+}
 
 export default async function NewsItemPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;

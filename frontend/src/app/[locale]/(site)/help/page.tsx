@@ -1,7 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { PageHead } from "@/components/ui/page-head";
 import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui/button";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [t, c] = await Promise.all([getTranslations({ locale, namespace: "info.help" }), getTranslations({ locale, namespace: "common" })]);
+  return pageMeta({ locale, path: "/help", title: t("title"), description: c("siteName") });
+}
 
 export default async function HelpPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

@@ -226,7 +226,7 @@ make test                                          # тесты backend
 | [docs/DESIGN.md](docs/DESIGN.md) | Правила дизайн-системы |
 | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Источники данных и лицензии изображений |
 | [docs/OPEN_ISSUES.md](docs/OPEN_ISSUES.md) | Известные пробелы и следующие шаги |
-| [READINESS.md](READINESS.md) | Готовность каждого модуля: реализовано, частично, имитация, следующий этап |
+| [docs/READINESS.md](docs/READINESS.md) | Готовность каждого модуля: реализовано, частично, имитация, следующий этап |
 | [docs/MIGRATION.md](docs/MIGRATION.md) | План миграции данных со старого сайта e-arhiv.vko.gov.kz |
 
 ## Лицензия

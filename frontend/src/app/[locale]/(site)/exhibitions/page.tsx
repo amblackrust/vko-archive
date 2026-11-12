@@ -1,4 +1,5 @@
 import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { ArrowUpRight } from "lucide-react";
 import clsx from "clsx";
 import { api, type Schema } from "@/lib/api/client";
@@ -6,6 +7,12 @@ import { Link } from "@/i18n/navigation";
 import { PageHead } from "@/components/ui/page-head";
 import { EmptyState } from "@/components/ui/empty-state";
 import { toneBg } from "@/lib/tones";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "exhibitions" });
+  return pageMeta({ locale, path: "/exhibitions", title: t("title"), description: t("lead") });
+}
 
 export default async function ExhibitionsPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ theme?: string }> }) {
   const { locale } = await params;
