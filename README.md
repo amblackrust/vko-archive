@@ -17,10 +17,10 @@
   <img src="https://img.shields.io/badge/DOCKER-COMPOSE-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose">
 </p>
 
-<!-- Status badges (CI, release, license) are omitted: the repository has no workflows, releases or LICENSE file. -->
+<!-- Status badges (CI, release) are omitted: the repository has no workflows or releases. -->
 
 <p align="center">
-  <a href="#architecture-deep-dive">Architecture</a> · <a href="#setup--deployment">Quick start</a> · <a href="docs/">Documentation</a> · <a href="docs/DEPLOYMENT.md">Why local Docker</a>
+  <a href="#architecture-deep-dive">Architecture</a> · <a href="#setup--deployment">Quick start</a> · <a href="docs/">Documentation</a> · <a href="docs/DEPLOYMENT.md">Why local Docker</a> · <a href="LICENSE">MIT</a>
   <br>
   English · <a href="README.ru.md">Русский</a>
 </p>
@@ -29,14 +29,29 @@
 
 ## Executive Summary
 
-A new public website and staff admin for the State Archive of East Kazakhstan Region (Code Masters 9.0 hackathon). One electronic
+A new public website and staff admin for the State Archive of East Kazakhstan Region. One electronic
 catalog (funds, inventories, cases, documents with a scan viewer), search in Kazakh, Russian and English, an online-exhibitions and
 "memory archive" section (collections, persons, timeline, historical map), a branch map and an AI assistant that answers only from
-what it finds on the site.
+what it finds on the site. The home page starts from the visitor's task (task chips, rotating example queries), search and the
+assistant accept voice input and can read answers aloud, and an open document card offers a ready archival reference ("How to cite").
 
 The hard part is access. A closed document is never served by a card, a file URL, the API or an AI answer: the server decides on every
 path, and the search index holds only public objects. Every material is published through a role-based approval workflow. The site is
 information-only: there are no application forms, orders or payments, only links to eGov.kz and e-Otinish.
+
+**Architecture we are ready to stand behind.** We built this as a system that can go live, not as a demo. Routers stay thin, the rules live
+in services, and a single `authorize(user, action, object)` stands in front of every read and write, so a closed document cannot slip out
+through a forgotten route. Search, vectors and access rules sit in one PostgreSQL. Roles, an approval workflow, an audit log, migrations and
+719 backend tests are there from day one. We run the whole stack, language model included, in local Docker rather than in a Firebase-style
+cloud on purpose: Kazakhstan's personal data law (No. 94-V) calls for such data to be stored in a database located in the country, and a
+vendor cloud would have forced us to rewrite the data and auth layers. Here the system moves to any server in Kazakhstan with three volumes
+and one `.env` file. The reasoning and its sources are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+**Designed for the person at the screen.** Visitors rarely know what a "fond" or an "inventory" is, but they always know their task. So the
+home page starts with a question: ask in your own words, type it or say it into the microphone, or pick a task under "Where to start".
+Answers arrive in Kazakh, Russian or English with sources you can open, the scan viewer is one click away, and an open document gives a ready
+archival reference for a paper or a request. Read-aloud, theme and motion settings and a calm interface (hairline lists, one blue for
+actions) are there for a simple reason: an archive should be easy to use for everyone, not only for those who know how it is organised.
 
 ## Technical Stack
 
@@ -201,12 +216,18 @@ Backend-only settings (`backend/.env.example`): `OLLAMA_URL`, `OLLAMA_FALLBACK_M
 
 ## Documentation
 
-| Item | Link |
+| Document | Contents |
 |---|---|
-| Demo script | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
-| Data sources and image licences | [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layers, data model, API contract |
+| [docs/AI.md](docs/AI.md) | Models, assistant pipeline, guards, how to install the model |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Why local Docker instead of a cloud platform |
+| [docs/DECISIONS.md](docs/DECISIONS.md) | Numbered engineering decisions |
+| [docs/DESIGN.md](docs/DESIGN.md) | Design system rules |
+| [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) | Data sources and image licences |
+| [docs/OPEN_ISSUES.md](docs/OPEN_ISSUES.md) | Known gaps and next steps |
+| [READINESS.md](READINESS.md) | Readiness of every module: implemented, partial, simulated, next stage |
+| [docs/MIGRATION.md](docs/MIGRATION.md) | Plan for migrating data from the old site e-arhiv.vko.gov.kz |
 
 ## License
 
-<!-- TODO: add a LICENSE file and name it here --> _TBD_: the repository has no LICENSE file. Images from Wikimedia Commons keep their own licences
-(see `backend/seed/assets/credits.json`).
+MIT, see [LICENSE](LICENSE). Images from Wikimedia Commons keep their own licences (see `backend/seed/assets/credits.json`).
