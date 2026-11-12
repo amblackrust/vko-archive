@@ -74,7 +74,7 @@ DOC_TYPE_LABELS: dict[str, dict[str, str]] = {
     "program": {"ru": "программа", "kk": "бағдарлама", "en": "program"},
 }
 
-# PLAN.md §1 «Поиск»: mandatory toponyms/terms. Seeded only into an empty table, then
+# the project plan §1 «Поиск»: mandatory toponyms/terms. Seeded only into an empty table, then
 # edited in the admin panel (T6.x).
 DEFAULT_SYNONYMS: list[list[str]] = [
     ["Усть-Каменогорск", "Өскемен", "Оскемен", "Ust-Kamenogorsk", "Oskemen"],
@@ -371,7 +371,7 @@ def ensure_default_synonyms(session: Session) -> int:
     if search_repo.all_synonym_term_sets(session):
         return 0
     for terms in DEFAULT_SYNONYMS:
-        search_repo.add_synonym_group(session, terms, note="default (PLAN.md §1)")
+        search_repo.add_synonym_group(session, terms, note="default (the project plan §1)")
     return len(DEFAULT_SYNONYMS)
 
 

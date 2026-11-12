@@ -1,0 +1,3262 @@
+{
+ "branch|0bb317309d016964": {
+  "address": {
+   "en": "East Kazakhstan Region, Shemonakhinsky District, Shemonakha City, Zhukova Street, Building 2, Plot 4",
+   "kk": "ВКО, Шемонаихин ауданы, г. Шемонаиха Жуков көшесі, 2-ғимарат, н.п.4"
+  },
+  "director": {
+   "en": "Kusataev Nurzhan Telmanovich",
+   "kk": "Кусатаев Нуржан Тельманұлы"
+  },
+  "name": {
+   "en": "Shemonakhinsky District Branch",
+   "kk": "Шемонаихин аудандық филиал"
+  },
+  "short_name": {
+   "en": "Shemonakhinsky",
+   "kk": "Шемонаихин"
+  }
+ },
+ "branch|2cbc3bf78b518e4a": {
+  "address": {
+   "en": "VCO, Glybockovsky district, p. Glybockoe, ul. Pirogova, 6",
+   "kk": "ШЫҚ, Глубoковский ауданы, т. Глубокое, Пирогова көшесі, 6"
+  },
+  "director": {
+   "en": "Töleu Baqdaulet Ibrahymuly",
+   "kk": "Төлеу Бақдәулет Ибрахымұлы"
+  },
+  "name": {
+   "en": "Glybockovsky District Branch",
+   "kk": "Глубоковский аудандық филиал"
+  },
+  "short_name": {
+   "en": "Glybockovsky",
+   "kk": "Глубоковский"
+  }
+ },
+ "branch|4f01baa1f5bae67d": {
+  "address": {
+   "en": "East Kazakhstan Region, Kurchum District, Kurchum village, Barak Batyr Street, 25",
+   "kk": "ШЫҚ, Құртұм ауданы, Құртұм ауылы, Б. Барақ көшесі, 25"
+  },
+  "director": {
+   "en": "Kabdualieva Sandugas Altaevna",
+   "kk": "Кабдуалиева Сандугаш Алтаевна"
+  },
+  "name": {
+   "en": "Kurchum District Branch",
+   "kk": "Құртұм аудандық филиал"
+  },
+  "short_name": {
+   "en": "Kurchum",
+   "kk": "Құртұм"
+  }
+ },
+ "branch|57ae840beda2d32b": {
+  "address": {
+   "en": "East Kazakhstan Region, Ulan District, Kasyma Kaisenov Settlement, Z. Akhmetova Street 5, bldg. 5",
+   "kk": "ШЫҚ, Улан ауданы, Қасыма Кайсенұлы ауылдық маңы, З.Ахметова көшесі 5, н.п.5"
+  },
+  "director": {
+   "en": "Abdrasulin Aslan Oralovich",
+   "kk": "Абдрасулин Аслан Оралұлы"
+  },
+  "name": {
+   "en": "Ulan District Branch",
+   "kk": "Улан аудандық филиал"
+  },
+  "short_name": {
+   "en": "Ulan",
+   "kk": "Улан"
+  }
+ },
+ "branch|64e017cc67348984": {
+  "address": {
+   "en": "East Kazakhstan Region, Samar District, Samara village, Gorokhova Street, 58",
+   "kk": "ШЫҚА, Самар ауданы, с. Самар, Горохова көшесі, 58"
+  },
+  "director": {
+   "en": "Babataev Aidar Shamilievich",
+   "kk": "Бабатаев Айдар Шамилевич"
+  },
+  "name": {
+   "en": "Samar District Branch",
+   "kk": "Самар ауданы филиалы"
+  },
+  "short_name": {
+   "en": "Samar",
+   "kk": "Самар"
+  }
+ },
+ "branch|683f2a0ee1fb7222": {
+  "address": {
+   "en": "East Kazakhstan Region, Tarbagatay District, Akzhar village, Dauletbay Street, 45",
+   "kk": "ШЫҚ, Тарбағатай ауданы, Ақжар ауылы, Даулетбай көшесі, 45"
+  },
+  "director": {
+   "en": "Zherekbayev Bauyrzhan Seitkazynovich",
+   "kk": "Жүрекбаев Бауыржан Сейтказиұлы"
+  },
+  "name": {
+   "en": "Tarbagatay District Branch",
+   "kk": "Тарбағатай аудандық филиал"
+  },
+  "short_name": {
+   "en": "Tarbagatay",
+   "kk": "Тарбағатай"
+  }
+ },
+ "branch|69252ee708e8f763": {
+  "address": {
+   "en": "Republic of Kazakhstan, 070000, Ust-Kamenogorsk, Beibishilik Street, 26/1 (Golovkova, 26/1)",
+   "kk": "Қазақстан Республикасы, 070000, Усть-Каменогорск қаласы, Бейбітшілік көшесі, 26/1 (Головкова, 26/1)"
+  },
+  "director": {
+   "en": "Zhaparov Askar Kenzhebayevich",
+   "kk": "Жапаров Аскар Кенжебаевич"
+  },
+  "hours": {
+   "en": "Mon–Fri 8.00–17.00; reading room Mon–Fri 9.00–16.00",
+   "kk": "Дүйсенбі-Жұма 8.00–17.00; оқу залы Дүйсенбі-Жұма 9.00–16.00"
+  },
+  "name": {
+   "en": "State Archive of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысының мемлекеттік архиві"
+  },
+  "short_name": {
+   "en": "Head Archive",
+   "kk": "Басты архив"
+  }
+ },
+ "branch|6a81bf1109530b7e": {
+  "address": {
+   "en": "East Kazakhstan Region, Ridder city, Ch. Ualikhanov street, 44",
+   "kk": "ШЫҚ, Риддер қ., Ч.Уалиханов көш., 44"
+  },
+  "director": {
+   "en": "Sarsembinova Shynar Zhasulanovna",
+   "kk": "Сарсембинова Шынар Жасулановна"
+  },
+  "name": {
+   "en": "Ridder City Branch",
+   "kk": "Риддер қалалық бөлімшесі"
+  },
+  "short_name": {
+   "en": "Ridder",
+   "kk": "Риддер"
+  }
+ },
+ "branch|6f204724ac542786": {
+  "address": {
+   "en": "East Kazakhstan Region, Zaysan District, village of Zaysan, D.A. Konaev Street, 52",
+   "kk": "ШЫҚ, Зайсан ауданы, Зайсан ауылы, Д.А. Конаев көшесі, 52"
+  },
+  "director": {
+   "en": "Kozlov Viktor Nikolaevich",
+   "kk": "Козлов Виктор Николаевич"
+  },
+  "name": {
+   "en": "Zaysan District Branch",
+   "kk": "Зайсан аудандық филиал"
+  },
+  "short_name": {
+   "en": "Zaysan",
+   "kk": "Зайсан"
+  }
+ },
+ "branch|7c374425022aba08": {
+  "address": {
+   "en": "East Kazakhstan Region, Marqakol District, Marqakol village, Khrakhmalya street, 67",
+   "kk": "ШЫҚ, Марқакөл ауданы, Маркаколь ауылы, Крахмаля көшесі, 67"
+  },
+  "director": {
+   "en": "Samagulov Samat Nurlybekovich",
+   "kk": "Смагулов Самат Нұрлыбекович"
+  },
+  "name": {
+   "en": "Branch of Marqakol District",
+   "kk": "Бөлімшесі Марқакөл ауданы"
+  },
+  "short_name": {
+   "en": "Marqakol",
+   "kk": "Маркаколь"
+  }
+ },
+ "branch|7f504ec364971192": {
+  "address": {
+   "en": "East Kazakhstan Region, Katun-Karagaysky District, Katun-Karagay village, Zhampeisova Street, 19/1",
+   "kk": "ШЫҚ, Қатонқарғай ауданы, Қатонқарғай ауылы, Жампеисов көшесі, 19/1"
+  },
+  "director": {
+   "en": "Ziyasheva Asel Tleukhanovna",
+   "kk": "Зияшева Асель Тлеухановна"
+  },
+  "name": {
+   "en": "Katun-Karagaysky District Branch",
+   "kk": "Қатонқарғай аудандық филиал"
+  },
+  "short_name": {
+   "en": "Katun-Karagaysky",
+   "kk": "Қатонқарғай"
+  }
+ },
+ "branch|7fe62ed4dd1417b6": {
+  "address": {
+   "en": "East Kazakhstan Region, Ulyken-Naryn District, village Ulyken Naryn, Ogneva Street, 40",
+   "kk": "ШЫҚ, Үлкен-Нарын ауданы, Улкен Нарын ауылы, Огнева көшесі, 40"
+  },
+  "director": {
+   "en": "Ozenov Baurzhan Fayzolovich",
+   "kk": "Оженов Бауржан Файзоллинович"
+  },
+  "name": {
+   "en": "Branch of the Ulyken-Naryn District",
+   "kk": "Филиал ауданы Үлкен – Нарын"
+  },
+  "short_name": {
+   "en": "Ulyken-Naryn",
+   "kk": "Үлкен-Нарын"
+  }
+ },
+ "branch|bd44523036ddf096": {
+  "address": {
+   "en": "East Kazakhstan Region, Ust-Kamenogorsk, Potanina Street, 12/2",
+   "kk": "ВКО, г. Усть-Каменогорск, ул. Потанина, 12/2"
+  },
+  "director": {
+   "en": "Bisenova Gulsim Aldabergenovna",
+   "kk": "Бисенова Гулсим Алдабергеновна"
+  },
+  "name": {
+   "en": "Ust-Kamenogorsk City Branch for Personnel",
+   "kk": "Усть-Каменогорский қалалық жеке құрам бөлімі"
+  },
+  "short_name": {
+   "en": "Ust-Kamenogorsk (for personnel)",
+   "kk": "Усть-Каменогорск (жеке құрам бойынша)"
+  }
+ },
+ "branch|dd649c0f3376d600": {
+  "address": {
+   "en": "East Kazakhstan Region, Altai District, M. Gorky Street, 33",
+   "kk": "ШЫҚ, Алтай ауданы, М. Горький көшесі, 33"
+  },
+  "director": {
+   "en": "Seylkhanov Sabyrbek Kakenovich",
+   "kk": "Сейлханов Сабырбек Какенович"
+  },
+  "name": {
+   "en": "Branch of the Altai District",
+   "kk": "Алтай ауданы филиалы"
+  },
+  "short_name": {
+   "en": "Altai",
+   "kk": "Алтай"
+  }
+ },
+ "case|21b7eefd968f17dc": {
+  "title": {
+   "en": "Correspondence on Education 1960s",
+   "kk": "Білім беру бойынша хаттама 1960 жылдар"
+  }
+ },
+ "case|2435e99b5d103c24": {
+  "title": {
+   "en": "Leninogorsk, 1950s–1960s",
+   "kk": "Лениногорск, 1950–1960-е"
+  }
+ },
+ "case|3324af516b13ade6": {
+  "title": {
+   "en": "Director's orders for 1952",
+   "kk": "Директордың 1952 жылға арналған бұйрықтары"
+  }
+ },
+ "case|35da0987e8e2b17d": {
+  "title": {
+   "en": "Protocols of the Trade Union Committee 1961–1963",
+   "kk": "Профком протоколдары 1961–1963"
+  }
+ },
+ "case|52ebfb9104340da4": {
+  "title": {
+   "en": "Shop drawings",
+   "kk": "Цехтердің сызбалары"
+  }
+ },
+ "case|552e665cb4566090": {
+  "title": {
+   "en": "Bureau Protocols of 1942",
+   "kk": "Бюро протоколдары 1942 жыл"
+  }
+ },
+ "case|5a09b7e3a66e7918": {
+  "title": {
+   "en": "Pedagogical activity",
+   "kk": "Педагогикалық қызмет"
+  }
+ },
+ "case|66fd1523dccd6f04": {
+  "title": {
+   "en": "Photos and correspondence",
+   "kk": "Суреттер және хат алмасу"
+  }
+ },
+ "case|70c1b2e8098c663c": {
+  "title": {
+   "en": "Binding for 1955",
+   "kk": "1955 жылға арналған тіркеу"
+  }
+ },
+ "case|863ae5948de6764f": {
+  "title": {
+   "en": "Memories of Veterans",
+   "kk": "Естелері ветерандардың"
+  }
+ },
+ "case|9408ee6c572f5dc2": {
+  "title": {
+   "en": "Photo album \"Construction of the combine\"",
+   "kk": "Фотоальбом «Комбинаттың құрылысы»"
+  }
+ },
+ "case|97f9729d8df552c5": {
+  "title": {
+   "en": "Binding for 1985",
+   "kk": "1985 жылға арналған тігіс"
+  }
+ },
+ "case|b03424892707b844": {
+  "title": {
+   "en": "Director's orders for 1958",
+   "kk": "Директордың 1958 жылға арналған бұйрықтары"
+  }
+ },
+ "case|b104dc4c3947f1cc": {
+  "title": {
+   "en": "Maps and plans of the city",
+   "kk": "Қала карталары мен жоспарлары"
+  }
+ },
+ "case|cb9bda89c86dd49b": {
+  "title": {
+   "en": "Correspondence and materials 1943–1945",
+   "kk": "Корреспонденция және материалдар 1943–1945 жылдары"
+  }
+ },
+ "case|d848eae024ebc3f7": {
+  "title": {
+   "en": "Resolutions of the Executive Committee of 1950",
+   "kk": "Іс-шаралар туралы шешімдер (1950 жыл)"
+  }
+ },
+ "case|e6aa63de67a36554": {
+  "title": {
+   "en": "Binding for 1975",
+   "kk": "1975 жылға арналған қаттау"
+  }
+ },
+ "case|efaba9dbb0688af0": {
+  "title": {
+   "en": "Local History Materials",
+   "kk": "Өңір тағдыры материалдары"
+  }
+ },
+ "case|fd0cbb0e0eebb6fe": {
+  "title": {
+   "en": "Labor Activity",
+   "kk": "Еңбек қызметі"
+  }
+ },
+ "collection|3ae3467bd262d325": {
+  "description": {
+   "en": "Documents on the construction and operation of the plant workshops, photographs and memoirs.",
+   "kk": "Құрылыс және кәсіпорын цехтары туралы құжаттар, суреттер мен естеліктер."
+  },
+  "title": {
+   "en": "Lead-zinc complex: workshops and people",
+   "kk": "Қорғасын-мырыштық кешен: цехтар мен адамдар"
+  }
+ },
+ "collection|b877cb7fe38bfb24": {
+  "description": {
+   "en": "School documents and materials on teachers' work.",
+   "kk": "Мектептік құжаттар мен мұғалімдердің жұмысы туралы материалдар."
+  },
+  "title": {
+   "en": "Education in the region",
+   "kk": "Білім беру аймақта"
+  }
+ },
+ "collection|dec168a75496cb4f": {
+  "description": {
+   "en": "Collection of documents on the city: decisions of the city council, plans, photographs and newspapers.",
+   "kk": "Қала туралы құжаттар жинағы: қалалық кеңес шешімдері, жоспарлар, суреттер мен газеттер."
+  },
+  "title": {
+   "en": "Ust-Kamenogorsk in documents of the 1950s–1960s",
+   "kk": "Усть-Каменогорск құжаттарда 1950–1960 жылдары"
+  }
+ },
+ "document|022e2ba8b8e62c98": {
+  "authors": {
+   "en": "A.B. Karimova",
+   "kk": "Қарымов А.Б."
+  },
+  "summary": {
+   "en": "Lesson plan on the native region with homework.",
+   "kk": "Үй тапсырмасымен бірге өткізілетін жергілікті сабақтың конспектісі."
+  },
+  "title": {
+   "en": "Lesson Plan \"Our City and Its History\"",
+   "kk": "Сабақтың конспектісі «Біздің қала және оның тарихы»"
+  }
+ },
+ "document|1135bb0a25ace181": {
+  "summary": {
+   "en": "Students on an excursion. Placeholder generated.",
+   "kk": "Оқушылар экскурсияда. Генерацияланған плацебо."
+  },
+  "title": {
+   "en": "Photo of the local history circle",
+   "kk": "Сурет жергілікті танымалдық тобының"
+  }
+ },
+ "document|1bc751f160d71399": {
+  "access_conditions": {
+   "en": "Access by written permission.",
+   "kk": "Жазбаша рұқсатпен қолжетімді."
+  },
+  "authors": {
+   "en": "Committee Bureau",
+   "kk": "Обком бюросы"
+  },
+  "summary": {
+   "en": "Collection of warm items and food supplies for the front.",
+   "kk": "Фронтқа жылы киімдер мен тағамдар жинау."
+  },
+  "title": {
+   "en": "Protocol on Aid to the Front",
+   "kk": "Протокол туралы шешім - фронтқа көмек көрсету"
+  }
+ },
+ "document|22e743f469596173": {
+  "summary": {
+   "en": "Placeholder poster. Generated image.",
+   "kk": "Плакат-заглушка. Сгенерированное изображение."
+  },
+  "title": {
+   "en": "Agitational poster \"Everything for the Front\"",
+   "kk": "Агитациялық плакат «Барлығы фронт үшін»"
+  }
+ },
+ "document|238bb641a64d3382": {
+  "authors": {
+   "en": "Editorial Board",
+   "kk": "Редакция"
+  },
+  "summary": {
+   "en": "Issue on preparations for May holidays.",
+   "kk": "Майлық мерекеге дайындық туралы нөмір."
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 54, 1955",
+   "kk": "Журнал «Шығыс жұмысшысы» № 54, 1955"
+  }
+ },
+ "document|264aa7696eec2048": {
+  "authors": {
+   "en": "Department of Public Education",
+   "kk": "Халық білімі бөлімі"
+  },
+  "summary": {
+   "en": "On preparing schools for the new school year.",
+   "kk": "Жаңа оқу жылына мектептерді дайындау туралы."
+  },
+  "title": {
+   "en": "Letter from the district department of public education",
+   "kk": "Хатта районы халық білімі бөлімінің"
+  }
+ },
+ "document|2670c51ec6cb70da": {
+  "access_conditions": {
+   "en": "Not for publication.",
+   "kk": "Жариялауға арналмаған."
+  },
+  "authors": {
+   "en": "Ivanov I.I.",
+   "kk": "Иванов И.И."
+  },
+  "summary": {
+   "en": "Diary entries; not published.",
+   "kk": "Күнделік жазбалары; жарияланбайды."
+  },
+  "title": {
+   "en": "Ivanov I.I. Diary",
+   "kk": "Иванов И.И. күнделігі"
+  }
+ },
+ "document|26d32b3ca1506d6e": {
+  "summary": {
+   "en": "Equipment layout plan. Placeholder drawing.",
+   "kk": "Жабдықтарды орналастыру жоспары. Шартты сурет-орынбасар."
+  },
+  "title": {
+   "en": "Drawing: plan of the enrichment workshop",
+   "kk": "Сурет: байыту цехінің жоспары"
+  }
+ },
+ "document|2b93df9267e6b4b7": {
+  "authors": {
+   "en": "Director of the combine",
+   "kk": "Комбинат директоры"
+  },
+  "summary": {
+   "en": "Rewarding a team of construction workers for early equipment installation.",
+   "kk": "Жабдықтарды алдын ала орнату үшін құрылысшылар бригадасын марапаттау."
+  },
+  "title": {
+   "en": "Order on rewarding the workshop construction workers",
+   "kk": "Бұйрық: цех құрылысшыларын марапаттау туралы"
+  }
+ },
+ "document|32f364f1bbc08c62": {
+  "authors": {
+   "en": "School No. 1",
+   "kk": "№ 1 мектеп"
+  },
+  "summary": {
+   "en": "Service record of a teacher.",
+   "kk": "Мұғалімнің қызметтік сипаттамасы."
+  },
+  "title": {
+   "en": "Teacher Characteristic of Karimova A.B.",
+   "kk": "Мұғалім Каринова А.Б.-тың сипаттамасы"
+  }
+ },
+ "document|361d7ba989c26ca4": {
+  "authors": {
+   "en": "Architecture Department",
+   "kk": "Архитектура бөлімі"
+  },
+  "summary": {
+   "en": "Schematic city plan with main streets. Generated placeholder.",
+   "kk": "Негізгі көшелері бар қалаға арналған шартты жоспар. Генерацияланған плацебо."
+  },
+  "title": {
+   "en": "Map: plan of Ust-Kamenogorsk",
+   "kk": "Карта: Усть-Каменогорск жоспары"
+  }
+ },
+ "document|377b07ae1628a842": {
+  "authors": {
+   "en": "Personnel Department of the Combine",
+   "kk": "Комбинаттың кадр бөлімі"
+  },
+  "summary": {
+   "en": "Reference on the work of the smelting workshop master; the issue date is indicated in the text.",
+   "kk": "Өткір цех шеберінің жұмысы туралы ақпарат; берілген күн мәтінде көрсетілген."
+  },
+  "title": {
+   "en": "Reference on the work of Ivanov I.I.",
+   "kk": "Іванов И.И.-ның жұмысы туралы ақпарат"
+  }
+ },
+ "document|493077ef5f0d293a": {
+  "authors": {
+   "en": "Leninogorsk City Council",
+   "kk": "Лениногорск қаласының халық депутаттары кеңесі"
+  },
+  "summary": {
+   "en": "Assignment of names to new streets in the mining settlement.",
+   "kk": "Кен орны ауылының жаңа көшелеріне атау беру."
+  },
+  "title": {
+   "en": "Decision on the naming of streets in Leninogorsk",
+   "kk": "Көше аталу туралы шешім (Лениногорск қаласы)"
+  }
+ },
+ "document|50365619be08be70": {
+  "authors": {
+   "en": "Trade Union Committee of the Combine",
+   "kk": "Комбинаттың кәсіподақ комитеті"
+  },
+  "summary": {
+   "en": "Discussion of semi-annual results, brigade competition.",
+   "kk": "Жартыжылдықтың қорытындысын талқылау, бригадалар арасындағы жарыс."
+  },
+  "title": {
+   "en": "Protocol No. 9 of the Workers' Meeting",
+   "kk": "№ 9-шы жұмысшылар жиналысының хаттамасы"
+  }
+ },
+ "document|553813e5acf74697": {
+  "summary": {
+   "en": "Workers on the first shift at the console. Placeholder generated.",
+   "kk": "Пульт алдында тұрған бірінші смена қызметкерлері. Генерацияланған жергілікті белгі."
+  },
+  "title": {
+   "en": "Photo: first shift of the workshop",
+   "kk": "Сурет: цехтің бірінші сменасы"
+  }
+ },
+ "document|5e1db93223ffb07a": {
+  "access_conditions": {
+   "en": "Access by written permission from the head of the reading room.",
+   "kk": "Оқу залының меңгерушісінің жазбаша рұқсатымен қолжетімді."
+  },
+  "authors": {
+   "en": "Trade Union of the Combine",
+   "kk": "Комбинаттың профкомы"
+  },
+  "summary": {
+   "en": "Allocation of vacation vouchers and housing; the list of those on the waiting list is not published.",
+   "kk": "Жолдамалар мен үйлерді бөлу; кезектегілер тізімі жарияланбайды."
+  },
+  "title": {
+   "en": "Protocol No. 5 of the Trade Union Meeting",
+   "kk": "Протокол № 5 отырысы профкомның"
+  }
+ },
+ "document|66415cdda1a5d955": {
+  "authors": {
+   "en": "Director of the combine",
+   "kk": "Комбинат директоры"
+  },
+  "summary": {
+   "en": "Construction of a two-story residential house for plant employees.",
+   "kk": "Цех қызметкерлеріне арналған екі қабатты тұрғын үйді салу."
+  },
+  "title": {
+   "en": "Order on the construction of a residential house for workers",
+   "kk": "Бұйрық: жұмысшыларға арналған тұрғын үй салу туралы"
+  }
+ },
+ "document|67ba786420e28bd3": {
+  "access_conditions": {
+   "en": "Document on the personal staff, access closed.",
+   "kk": "Жеке құрам бойынша құжат, қолжетімсіз."
+  },
+  "authors": {
+   "en": "Personnel Department",
+   "kk": "Жеке құрам бөлімі"
+  },
+  "summary": {
+   "en": "Order on the personal staff; contains information about private individuals.",
+   "kk": "Жеке құрам бойынша бұйрық; жеке тұлғалар туралы мәліметтерді қамтиды."
+  },
+  "title": {
+   "en": "Order on transferring employees to other workshops",
+   "kk": "Бұйрық: қызметкерлерді басқа цехтарға ауыстыру туралы"
+  }
+ },
+ "document|692e52ebffc061b1": {
+  "authors": {
+   "en": "Lenino gorodok City Council",
+   "kk": "Лениногорск қаласының әкімшілігі"
+  },
+  "summary": {
+   "en": "Population by districts of the city.",
+   "kk": "Қала аудандары бойынша халық саны."
+  },
+  "title": {
+   "en": "Information on the population of Lenino gorodok",
+   "kk": "Лениногорск халқы туралы ақпарат"
+  }
+ },
+ "document|6bf5b70848a3a4e8": {
+  "authors": {
+   "en": "Editorial Board",
+   "kk": "Бас редакция"
+  },
+  "summary": {
+   "en": "The issue awaits description verification and access conditions.",
+   "kk": "Номер сипаттамасы мен қолжетімділік шарттарын тексеруді күтеді."
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 5, 1985",
+   "kk": "«Шығыс жұмысшысы» газеті № 5, 1985"
+  }
+ },
+ "document|7778a21329d5d646": {
+  "authors": {
+   "en": "Editorial Board",
+   "kk": "Редакция"
+  },
+  "summary": {
+   "en": "Issue on the achievements of the combine and the opening of a school.",
+   "kk": "Комбинаттың жетістіктері мен мектеп ашылуы туралы нөмір."
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 12, 1955",
+   "kk": "Журнал «Шығыс жұмыскері» № 12, 1955"
+  }
+ },
+ "document|804bcd620c0ee6f3": {
+  "authors": {
+   "en": "A.B. Karimova",
+   "kk": "Қарымов А.Б."
+  },
+  "summary": {
+   "en": "An essay about the cultural life of the city in the 1950s.",
+   "kk": "1950-жылдардағы қаланың мәдени өмірі туралы очерк."
+  },
+  "title": {
+   "en": "Manuscript of the essay \"Music on the Bank of the Irtysh\"",
+   "kk": "Қолжазба очерк «Иртыш жағасындағы музыка»"
+  }
+ },
+ "document|90c200df7e0bff00": {
+  "authors": {
+   "en": "Editorial Board",
+   "kk": "Редакция"
+  },
+  "summary": {
+   "en": "Issue on the cultural life of the city: amateur festival.",
+   "kk": "Қала мәдени өмірі туралы нөмір: өз бетінше әрекет етушілердің фестивалі."
+  },
+  "title": {
+   "en": "The newspaper \"Eastern Worker\" No. 80, 1975",
+   "kk": "Журнал «Шығыс қызметкері» № 80, 1975"
+  }
+ },
+ "document|94b661acdf3deea6": {
+  "access_conditions": {
+   "en": "Access for relatives and upon written request.",
+   "kk": "Туыстарға және жазбаша сұраныс бойынша қолжетімді."
+  },
+  "authors": {
+   "en": "Ivanov I.I.",
+   "kk": "Иванов И.И."
+  },
+  "summary": {
+   "en": "Copy of the certificate; issued under access conditions.",
+   "kk": "Куәтетме көшірмесі; қолжетімділік шарттары бойынша беріледі."
+  },
+  "title": {
+   "en": "Veteran of Labor Certificate Ivanov I.I.",
+   "kk": "Еңбек ветеранының куәттемесі Иванов И.И."
+  }
+ },
+ "document|9663c407fe69f60d": {
+  "authors": {
+   "en": "Executive Board",
+   "kk": "Қала әкімдігі"
+  },
+  "summary": {
+   "en": "Allocation of land and funds for the construction of a school.",
+   "kk": "Мектеп салу үшін жер учаскесі мен қаржы бөлу."
+  },
+  "title": {
+   "en": "Decision on the construction of a school",
+   "kk": "Мектеп салу туралы шешім"
+  }
+ },
+ "document|9690b24565eb4014": {
+  "authors": {
+   "en": "Architecture Department",
+   "kk": "Архитектура бөлімі"
+  },
+  "summary": {
+   "en": "Scheme of microdistrict development. Placeholder generated.",
+   "kk": "Микрорайондардың құрылыс схемасы. Генерацияланған заглушка."
+  },
+  "title": {
+   "en": "Map: microdistrict scheme",
+   "kk": "Карта: жобалар схемасы"
+  }
+ },
+ "document|96b2f3081aa53386": {
+  "authors": {
+   "en": "Director of the combine",
+   "kk": "Комбинат директоры"
+  },
+  "summary": {
+   "en": "Order on the commissioning of a new enrichment workshop and appointment of responsible persons.",
+   "kk": "Жаңа байыту цехын іске қосу және жауапты тұлғаларды тағайындау туралы бұйрық."
+  },
+  "title": {
+   "en": "Order No. 31 on the commissioning of the enrichment workshop",
+   "kk": "Бұйрық № 31 байыту цехін іске қосу туралы"
+  }
+ },
+ "document|97e95e69b311f3a4": {
+  "summary": {
+   "en": "Photo of the certificate. Generated placeholder.",
+   "kk": "Грамотаның суреті. Генерацияланған жергілікті бейне."
+  },
+  "title": {
+   "en": "Certificate of Honor for Karimova A.B.",
+   "kk": "Құрметті грамота Қаримова А.Б."
+  }
+ },
+ "document|99990156dd12a459": {
+  "authors": {
+   "en": "Editorial Board",
+   "kk": "Мұқалат"
+  },
+  "summary": {
+   "en": "Issue for the 30th Anniversary of Victory: materials about veterans.",
+   "kk": "Жеңістің 30 жылдығына арналған нөмір: ветерандар туралы материалдар."
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 33, 1975",
+   "kk": "«Шығыс жұмысшысы» газеті, № 33, 1975"
+  }
+ },
+ "document|9d6f71c4fa9777af": {
+  "summary": {
+   "en": "Scheme of ventilation ducts. Placeholder drawing.",
+   "kk": "Желдету каналдарының схемасы. Шартты сурет-бос орын."
+  },
+  "title": {
+   "en": "Drawing: workshop ventilation scheme",
+   "kk": "Сурет: цехтің желдету жүйесінің схемасы"
+  }
+ },
+ "document|a2dd8cdf2fb00d51": {
+  "authors": {
+   "en": "Director of the Combine",
+   "kk": "Комбинат директоры"
+  },
+  "summary": {
+   "en": "Safety measures and training for workers.",
+   "kk": "Қауіпсіздік техникасы бойынша шаралар және жұмысшыларды оқыту."
+  },
+  "title": {
+   "en": "Order on Labor Protection in Workshops",
+   "kk": "Бұйрық зауыт цехтарындағы еңбек қауіпсіздігін қорғау туралы"
+  }
+ },
+ "document|ac7b91fc5f0111c9": {
+  "summary": {
+   "en": "Program for the holiday concert.",
+   "kk": "Күнделік концерт бағдарламасы."
+  },
+  "title": {
+   "en": "School Concert Program",
+   "kk": "Мектептік концерт бағдарламасы"
+  }
+ },
+ "document|ae8957caa78ec844": {
+  "summary": {
+   "en": "Shaft-head building. Generated placeholder.",
+   "kk": "Жер үсті ғимараты. Генерацияланған плацебо."
+  },
+  "title": {
+   "en": "Photo: Shaft-head building of the mine",
+   "kk": "Сурет: кен орнының жер үсті ғимараты"
+  }
+ },
+ "document|b1688383f2b40e6d": {
+  "authors": {
+   "en": "Committee Bureau",
+   "kk": "Обком бюросы"
+  },
+  "summary": {
+   "en": "Reference on award lists; description is pending verification.",
+   "kk": "Марапаттау тізімдері туралы түсініктеме; сипаттаманы тексеру күтілуде."
+  },
+  "title": {
+   "en": "Reference on Award Materials",
+   "kk": "Түсініктемелер туралы ақпарат"
+  }
+ },
+ "document|b3d1623afd46158d": {
+  "summary": {
+   "en": "Installation crew at a steel frame. Placeholder generated.",
+   "kk": "Стальды раманың алдында монтажшылар бригадасы. Генерацияланған плацебо."
+  },
+  "title": {
+   "en": "Photo: Equipment installation in the workshop",
+   "kk": "Сурет: цехте жабдықтарды орнату"
+  }
+ },
+ "document|b7b18950d4014506": {
+  "access_conditions": {
+   "en": "Publication only with the copyright holder's consent.",
+   "kk": "Нұсқаушының келісімімен ғана жариялау."
+  },
+  "summary": {
+   "en": "Family photo placeholder. Generated image.",
+   "kk": "Отбасылық сурет-орынбосар. Генерацияланған бейне."
+  },
+  "title": {
+   "en": "Photo of the Ivanov family",
+   "kk": "Ивановтар отбасының суреті"
+  }
+ },
+ "document|c4869149b723e433": {
+  "authors": {
+   "en": "City Executive Committee",
+   "kk": "Қала атқару комитеті"
+  },
+  "summary": {
+   "en": "Greening, sidewalk repair, and lighting of central streets.",
+   "kk": "Жасыл желекті өсіру, тротуарларды жөндеу және орталық көшелерді жарықтандыру."
+  },
+  "title": {
+   "en": "Resolution No. 77 on the Improvement of Central Streets",
+   "kk": "Шешім № 77 орталық көшелерді жайластыру туралы"
+  }
+ },
+ "document|c96766824b195ab9": {
+  "summary": {
+   "en": "Audio recording from the archive collection.",
+   "kk": "Архивтық жинақтағы дыбыс жазбасы."
+  },
+  "title": {
+   "en": "Audio recording: memoirs of a veteran of the combine",
+   "kk": "Аудиожазба: ескертулер кенетаның ветераны"
+  }
+ },
+ "document|cb79638ace9cdfa7": {
+  "summary": {
+   "en": "General view of the construction site. Placeholder generated.",
+   "kk": "Құрылыс алаңының жалпы көрінісі. Генерацияланған плацебо."
+  },
+  "title": {
+   "en": "Photo: General view of the site",
+   "kk": "Сурет: аумақтың жалпы көрінісі"
+  }
+ },
+ "document|cddae9218ba79daa": {
+  "access_conditions": {
+   "en": "Closed for publication and release.",
+   "kk": "Жариялауға және беруге жабық."
+  },
+  "authors": {
+   "en": "Committee Bureau",
+   "kk": "Обком бюросы"
+  },
+  "summary": {
+   "en": "Service protocol; information not for publication.",
+   "kk": "Қызметтік хаттама; жариялауға арналмайтын мәліметтер."
+  },
+  "title": {
+   "en": "Protocol on Mobilization of Resources",
+   "kk": "Ресурстарды мобилизациялау туралы хаттама"
+  }
+ },
+ "document|da62578b163d1a90": {
+  "access_conditions": {
+   "en": "Personal correspondence, closed.",
+   "kk": "Жеке хат алмасу, жабық."
+  },
+  "authors": {
+   "en": "Ivanov I.I.",
+   "kk": "Иванов И.И."
+  },
+  "summary": {
+   "en": "Personal correspondence; access closed.",
+   "kk": "Жеке хат алмасу; қолжетімсіз."
+  },
+  "title": {
+   "en": "Letter from Ivanov I.I. to his wife",
+   "kk": "Хаттама Иванов И.И. әйеліне"
+  }
+ },
+ "document|dd01f9d7b0d0cf32": {
+  "access_conditions": {
+   "en": "Viewing in the reading room upon request.",
+   "kk": "Оқу залында өтініш бойынша қарау."
+  },
+  "summary": {
+   "en": "Placeholder video recording: file not available, only description provided.",
+   "kk": "Видеожазба-заглушка: файл жоқ, жазба тек сипатталған."
+  },
+  "title": {
+   "en": "Video recording: meeting of veterans",
+   "kk": "Видеожазба: кездесу ветерандар"
+  }
+ },
+ "document|ec7fd63ce0035a17": {
+  "authors": {
+   "en": "Department of People's Education",
+   "kk": "Халық білімі бөлімі"
+  },
+  "summary": {
+   "en": "Number of schools, teachers and students; need for repairs.",
+   "kk": "Мектептер, мұғалімдер және оқушылар саны; жөндеуге қажеттілік."
+  },
+  "title": {
+   "en": "Report on the State of Schools in the City",
+   "kk": "Мектептердің қалыпты жағдайы туралы есеп"
+  }
+ },
+ "document|f0d84956e6a1dde8": {
+  "summary": {
+   "en": "Placeholder audio recording (silence, 1 s); description pending verification.",
+   "kk": "Аудиожазбаның жергілікті бұйрығы (тыныштық, 1 с); сипаттама тексеруді күтеді."
+  },
+  "title": {
+   "en": "Audio recording: residents' stories about the city",
+   "kk": "Аудиожазба: тұрғындардың қала туралы әңгімелері"
+  }
+ },
+ "document|fb2e7a66a785e4ef": {
+  "authors": {
+   "en": "Private Smirnov S.S.",
+   "kk": "Жеке бастық Смирнов С.С."
+  },
+  "summary": {
+   "en": "Letter from a soldier to his fellow villagers; published as an example.",
+   "kk": "Жерлесіне жазған хат; мысал ретінде жарияланады."
+  },
+  "title": {
+   "en": "Letter from the front to the workshop collective",
+   "kk": "Хаттап фронттан цех жинағына"
+  }
+ },
+ "document|fba3a6d5cec52558": {
+  "authors": {
+   "en": "Department of People's Education",
+   "kk": "Халық білімі бөлімі"
+  },
+  "summary": {
+   "en": "Statement on the purchase of educational materials; description verification required.",
+   "kk": "Оқу құралдарын сатып алу бойынша есеп; сипаттаманы тексеру қажет."
+  },
+  "title": {
+   "en": "Statement on Educational Materials",
+   "kk": "Түрлі оқу құралдары туралы есеп"
+  }
+ },
+ "document|fde993aa2acb3749": {
+  "access_conditions": {
+   "en": "Personal data, closed.",
+   "kk": "Жеке деректер, жабық."
+  },
+  "authors": {
+   "en": "Ivanov I.I.",
+   "kk": "Иванов И.И."
+  },
+  "summary": {
+   "en": "Personal data; access restricted.",
+   "kk": "Жеке деректер; қолжетімсіз."
+  },
+  "title": {
+   "en": "Copy of Ivanov I.I.'s work record book",
+   "kk": "Еңбек кітапшасының көшірмесі Иванов И.И."
+  }
+ },
+ "exhibition|afbcb7ffaf17bb53": {
+  "intro": {
+   "en": "Exhibition on documents about the city of the 1950s–1960s.",
+   "kk": "Қала туралы құжаттарға негізделген көрме (1950–1960 жылдар)."
+  },
+  "title": {
+   "en": "Ust-Kamenogorsk: the city's history in archival documents",
+   "kk": "Өскемен: қала тарихы архив құжаттарында"
+  }
+ },
+ "exhibition|cc132dabf2709a21": {
+  "intro": {
+   "en": "Exhibition on school documents and materials about teachers.",
+   "kk": "Мектептік құжаттар мен мұғалімдер туралы материалдарға арналған көрме."
+  },
+  "title": {
+   "en": "History of education in the region",
+   "kk": "Өңірдегі білім беру тарихы"
+  }
+ },
+ "exhibition|d424d35c75cb2b2c": {
+  "intro": {
+   "en": "Exhibition on documents regarding the construction and operation of the plant workshops of the combine.",
+   "kk": "Құжаттарға негізделген көрме: кешеннің цехтарын салу және жұмыс істеу туралы"
+  },
+  "title": {
+   "en": "Industrial development of East Kazakhstan",
+   "kk": "Шығыс Қазақстанның өнеркәсіптік дамуы"
+  }
+ },
+ "exhibit|0474acb9c400cd64": {
+  "caption": {
+   "en": "Schematic plan of the city with main streets. Placeholder generated.",
+   "kk": "Негізгі көшелері бар қалаға арналған шартты жоспар. Генерацияланған плацебо."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.2 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-2 Оп.1 Д.2 №1"
+  },
+  "title": {
+   "en": "Map: plan of Ust-Kamenogorsk",
+   "kk": "Карта: Усть-Каменогорск жоспары"
+  }
+ },
+ "exhibit|06fa4f9d67e25282": {
+  "caption": {
+   "en": "Issue on the workers' achievements of the combine and the opening of the school.",
+   "kk": "Комбинаттың жетістіктері мен мектеп ашылуы туралы сандық."
+  },
+  "source": {
+   "en": "Document, archive code F.D-4 Op.1 D.1 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-4 Оп.1 Д.1 №1"
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 12, 1955",
+   "kk": "Газета «Шығыс қызметкері» № 12, 1955"
+  }
+ },
+ "exhibit|1cf270ef09f3d9be": {
+  "caption": {
+   "en": "Workers at the control panel of the first shift. Placeholder generated.",
+   "kk": "Бірінші сменаның жұмысшылары пульт алдында. Генерацияланған плацебо."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.2 D.1 No.3",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.2 Д.1 №3"
+  },
+  "title": {
+   "en": "Photo: first shift of the workshop",
+   "kk": "Сурет: цехтің бірінші смена"
+  }
+ },
+ "exhibit|2df7686db36ebadf": {
+  "caption": {
+   "en": "Construction of a two-story residential house for plant employees.",
+   "kk": "Цех қызметкерлеріне арналған екі қабатты тұрғын үйді салу."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.1 D.2 No.1",
+   "kk": "Құжат, архивтық шифр Ф.Д-1 Оп.1 Д.2 №1"
+  },
+  "title": {
+   "en": "Order on the construction of a residential house for workers",
+   "kk": "Бұйрық: жұмысшыларға арналған тұрғын үй салу туралы"
+  }
+ },
+ "exhibit|3ee4f8dfdfc14898": {
+  "caption": {
+   "en": "Microdistrict development scheme. Placeholder generated.",
+   "kk": "Микрорайондардың құрылыс схемасы. Генерацияланған плацебо."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.2 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-2 Оп.1 Д.2 №2"
+  },
+  "title": {
+   "en": "Map: microdistrict scheme",
+   "kk": "Карта: микрорайондардың жоспары"
+  }
+ },
+ "exhibit|4a18c8fdb8c59675": {
+  "caption": {
+   "en": "Installation crew at a steel frame. Placeholder generated.",
+   "kk": "Бригада монтажниктер стальной рама алдында. Генерацияланған placeholder."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.2 D.1 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.2 Д.1 №1"
+  },
+  "title": {
+   "en": "Photo: Equipment installation in the workshop",
+   "kk": "Сурет: цехте жабдықтарды орнату"
+  }
+ },
+ "exhibit|66ef7431a5c8116e": {
+  "caption": {
+   "en": "Lesson plan on the native region with homework.",
+   "kk": "Үй тапсырмасы бар туған жер сабағының жоспары."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.1 No.3",
+   "kk": "Құжат, архивтік шифр Ф.Д-6 Оп.1 Д.1 №3"
+  },
+  "title": {
+   "en": "Lesson Plan: 'Our City and Its History'",
+   "kk": "Сабақ жоспары «Біздің қала және оның тарихы»"
+  }
+ },
+ "exhibit|6c077001d34b6397": {
+  "caption": {
+   "en": "On preparing schools for the new academic year.",
+   "kk": "Мектептерді жаңа оқу жылына дайындау туралы."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.3 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-2 Оп.1 Д.3 №1"
+  },
+  "title": {
+   "en": "Letter from the district department of public education",
+   "kk": "Хатта районы халық білімі бөлімінің"
+  }
+ },
+ "exhibit|75dbee2cc772d9ac": {
+  "caption": {
+   "en": "Rewarding the construction crew for early equipment installation.",
+   "kk": "Жабдықтарды алдын ала орнату үшін құрылысшылар бригадасына сыйлық беру."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.1 D.1 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.1 Д.1 №2"
+  },
+  "title": {
+   "en": "Order on rewarding the workshop construction workers",
+   "kk": "Бұйрық: цех құрылысшыларын марапаттау туралы"
+  }
+ },
+ "exhibit|76f5167ddae95e5c": {
+  "caption": {
+   "en": "Order on the commissioning of the new enrichment workshop and appointment of responsible persons.",
+   "kk": "Жаңа байыту цехын іске қосу және жауапты тұлғаларды тағайындау туралы бұйрық."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.1 D.1 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.1 Д.1 №1"
+  },
+  "title": {
+   "en": "Order No. 31 on the commissioning of the enrichment workshop",
+   "kk": "31-ші бұйрық: байыту цехын іске қосу туралы"
+  }
+ },
+ "exhibit|8343c8c67798b10f": {
+  "caption": {
+   "en": "General view of the construction site. Placeholder generated.",
+   "kk": "Құрылыс алаңының жалпы көрінісі. Генерацияланған плацебо."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.2 D.1 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.2 Д.1 №2"
+  },
+  "title": {
+   "en": "Photo: General view of the site",
+   "kk": "Сурет: аумақтың жалпы көрінісі"
+  }
+ },
+ "exhibit|ad7f8746bf8891fb": {
+  "caption": {
+   "en": "Allocation of land and funds for the construction of a school.",
+   "kk": "Мектеп салу үшін жер учаскесі мен қаржы бөлу."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.1 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-2 Оп.1 Д.1 №2"
+  },
+  "title": {
+   "en": "Decision on the construction of a school",
+   "kk": "Мектеп салу туралы шешім"
+  }
+ },
+ "exhibit|b6072cd7b99e1727": {
+  "caption": {
+   "en": "Program of the festive concert.",
+   "kk": "Байрамдық концерттің бағдарламасы."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.2 No.3",
+   "kk": "Құжат, архивтік шифр Ф.Д-6 Оп.1 Д.2 №3"
+  },
+  "title": {
+   "en": "School Concert Program",
+   "kk": "Мектептік концерт бағдарламасы"
+  }
+ },
+ "exhibit|b6d2eca77cfb7039": {
+  "caption": {
+   "en": "Service record of a teacher.",
+   "kk": "Қызметтік сипаттама мұғалімнің."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.1 No.1",
+   "kk": "Документ, архивный шифр Ф.Д-6 Оп.1 Д.1 №1"
+  },
+  "title": {
+   "en": "Teacher Characteristic of Karimova A.B.",
+   "kk": "Мұғалім Каримова А.Б.-ның сипаттамасы"
+  }
+ },
+ "exhibit|b7804afd85be2f4a": {
+  "caption": {
+   "en": "Discussion of the half-year results, brigade competition.",
+   "kk": "Жартыжылдықтың қорытындысын талқылау, бригадалар арасындағы бәсеке."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.1 D.3 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.1 Д.3 №2"
+  },
+  "title": {
+   "en": "Protocol No. 9 of the Workers' Meeting",
+   "kk": "Жұмысшылар жиналысының № 9 хаттамасы"
+  }
+ },
+ "exhibit|c060a846dc8c6f9b": {
+  "caption": {
+   "en": "An essay about the cultural life of the city in the 1950s.",
+   "kk": "1950 жылдардағы қаланың мәдени өмірі туралы очерк."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.2 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-6 Оп.1 Д.2 №1"
+  },
+  "title": {
+   "en": "Manuscript of the essay \"Music on the Bank of the Irtysh\"",
+   "kk": "Қолжазба очерк «Иртыш жағасындағы музыка»"
+  }
+ },
+ "exhibit|d1503bb5afce429d": {
+  "caption": {
+   "en": "Issue on preparations for May holidays.",
+   "kk": "Майлық мерекеге дайындыққа арналған нөмір."
+  },
+  "source": {
+   "en": "Document, archive code F.D-4 Op.1 D.1 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-4 Оп.1 Д.1 №2"
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper No. 54, 1955",
+   "kk": "Газета «Шығыс қызметкері» № 54, 1955"
+  }
+ },
+ "exhibit|d2917698059a4ce9": {
+  "caption": {
+   "en": "Safety measures and worker training.",
+   "kk": "Қауіпсіздік техникасы бойынша шаралар және жұмысшыларды оқыту."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.1 D.2 No.2",
+   "kk": "Құжат, архивтық шифр Ф.Д-1 Оп.1 Д.2 №2"
+  },
+  "title": {
+   "en": "Order on Labor Protection in Workshops",
+   "kk": "Еңбек қауіпсіздігін сақтау туралы бұйрық"
+  }
+ },
+ "exhibit|dfb6b8158c5c6e2a": {
+  "caption": {
+   "en": "Photo of the certificate. Placeholder generated.",
+   "kk": "Грамотаның суреті. Генерацияланған плацебо."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.1 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-6 Оп.1 Д.1 №2"
+  },
+  "title": {
+   "en": "Honorary Certificate of Karimova A.B.",
+   "kk": "Құрметті грамота Каримова А.Б."
+  }
+ },
+ "exhibit|e0c120355ac618b4": {
+  "caption": {
+   "en": "Greening, sidewalk repair, and lighting of central streets.",
+   "kk": "Жасыл желекті өсіру, тротуарларды жөндеу және орталық көшелерді жарықтандыру."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.1 No.1",
+   "kk": "Құжат, архивтық шифр Ф.Д-2 Оп.1 Д.1 №1"
+  },
+  "title": {
+   "en": "Resolution No. 77 on the Improvement of Central Streets",
+   "kk": "Шешім № 77 орталық көшелерді жайластыру туралы"
+  }
+ },
+ "exhibit|ec9140f1e2270044": {
+  "caption": {
+   "en": "Equipment layout plan. Placeholder drawing.",
+   "kk": "Жабдықтарды орналастыру жоспары. Шартты сурет-заглушка."
+  },
+  "source": {
+   "en": "Document, archive code F.D-1 Op.2 D.2 No.1",
+   "kk": "Құжат, архивтік шифр Ф.Д-1 Оп.2 Д.2 №1"
+  },
+  "title": {
+   "en": "Drawing: plan of the enrichment workshop",
+   "kk": "Сурет: байыту цехінің жоспары"
+  }
+ },
+ "exhibit|f711663b826539ed": {
+  "caption": {
+   "en": "Schoolchildren on an excursion. Placeholder generated.",
+   "kk": "Оқушылар экскурсияда. Генерацияланған жергілікті белгі."
+  },
+  "source": {
+   "en": "Document, archive code F.D-6 Op.1 D.2 No.2",
+   "kk": "Құжат, архивтік шифр Ф.Д-6 Оп.1 Д.2 №2"
+  },
+  "title": {
+   "en": "Photo of the Local History Circle",
+   "kk": "Фотография краеведтік топ"
+  }
+ },
+ "exhibit|fae1b800e356beec": {
+  "caption": {
+   "en": "Number of schools, teachers, and students; need for repairs.",
+   "kk": "Мектептер, мұғалімдер және оқушылар саны; жөндеуге қажеттілік."
+  },
+  "source": {
+   "en": "Document, archive code F.D-2 Op.1 D.3 No.2",
+   "kk": "Құжат, архивтық шифр Ф.Д-2 Оп.1 Д.3 №2"
+  },
+  "title": {
+   "en": "Report on the State of City Schools",
+   "kk": "Мектептердің қалыптау туралы есеп"
+  }
+ },
+ "faq|0cdc79e4c41cc87c": {
+  "answer": {
+   "en": "Closed and restricted materials are not published on the website. Please inquire about access procedures at the archive.",
+   "kk": "Жабық және шектелген материалдар сайтта жарияланбайды. Қолжетімділік тәртібін архивте нақтылаңыз."
+  },
+  "question": {
+   "en": "Where to obtain closed documents?",
+   "kk": "Қайда жабық құжаттарды алуға болады?"
+  }
+ },
+ "faq|39eacc874ea404ca": {
+  "answer": {
+   "en": "Yes, if the image is available for viewing. Materials with restricted access are not displayed on the website.",
+   "kk": "Иә, егер сурет қарауға қолжетімді болса. Сайтта шектеулі қолжетімділікке ие материалдар көрсетілмейді."
+  },
+  "question": {
+   "en": "Can the image of an exhibit be enlarged?",
+   "kk": "Көргізмелік заттың суретін үлкейтуге бола ма?"
+  }
+ },
+ "faq|3b458bc1641d96d8": {
+  "answer": {
+   "en": "A section with regional historical materials: collections, biographical notes and chronology. Materials are accompanied by sources.",
+   "kk": "Аймақтың тарихи материалдар бөлімі: жинақтар, биографиялық шолулар және хронология. Материалдар дереккөздермен қамтамасыз етілген."
+  },
+  "question": {
+   "en": "What is the \"Memory Archive\"?",
+   "kk": "«Естелік мұрағаты» деген не?"
+  }
+ },
+ "faq|4d5b4987e786a1ff": {
+  "answer": {
+   "en": "Addresses, phone numbers and operating hours are listed in the \"Contacts\" section and in branch cards.",
+   "kk": "Мекенжайлар, телефон нөмірлері және жұмыс уақыты «Байланыс» бөлімінде және филиалдардың картасында көрсетілген."
+  },
+  "question": {
+   "en": "Where to find the archive's current contacts?",
+   "kk": "Қайдан ағымдағы архив байланыс деректерін табуға болады?"
+  }
+ },
+ "faq|595e1d6926188467": {
+  "answer": {
+   "en": "Enter words into the search line or open the catalog and use filters: fund, period, document type, topic. Only published descriptions are shown in the results.",
+   "kk": "Іздеу жолына сөздерді енгізіңіз немесе каталогты ашып, сүзгілерді қолданыңыз: қор, кезең, құжат түрі, тақырып. Нәтижеде тек жарияланған сипаттамалар көрсетіледі."
+  },
+  "question": {
+   "en": "How to find a document in the electronic catalog?",
+   "kk": "Электронды қорда құжатты қалай табуға болады?"
+  }
+ },
+ "faq|7d7c6415802e0010": {
+  "answer": {
+   "en": "No. Archive requests, applications, and orders are not processed on the website. Please contact the archive using the contacts from the 'Contacts' section.",
+   "kk": "Жоқ. Веб-сайтта архивтік сұраныстар, өтініштер және тапсырыстар ресімделмейді. «Байланыс» бөлімінен көрсетілген байланыс ақпараты бойынша архивке жүгініңіз."
+  },
+  "question": {
+   "en": "Can I order a document copy on the website?",
+   "kk": "Құжаттың көшірмесін веб-сайт арқылы тапсыруға бола ма?"
+  }
+ },
+ "faq|7e070fe3d28aa3e3": {
+  "answer": {
+   "en": "The map works without geolocation: select a branch from the list. Text address and links to external maps are always available.",
+   "kk": "Карта геолокациясыз жұмыс істейді: тізімнен филиалды таңдаңыз. Мәтіндік мекенжай және сыртқы карталарға сілтемелер әрқашан қолжетімді."
+  },
+  "question": {
+   "en": "What to do if geolocation is disabled?",
+   "kk": "Негеологияция өшірілгенде не істеу керек?"
+  }
+ },
+ "faq|87ae9345f868124e": {
+  "answer": {
+   "en": "The address, phone number and e-mail of the branch are listed in its card. Coordinates on the map are approximate; unless otherwise indicated, please clarify the route by phone.",
+   "kk": "Филиалдың мекенжайы, телефоны және электронды поштасы оның картасында көрсетілген. Картадағы координаттар шамамен берілген, егер басқа нұсқа көрсетілмесе, бағдарламаны телефон арқылы нақтылаңыз."
+  },
+  "question": {
+   "en": "How to find the contact details of a branch?",
+   "kk": "Қалай байланыс ақпаратын білу керек?"
+  }
+ },
+ "faq|a0cd8168f959a909": {
+  "answer": {
+   "en": "No. The website is informational only: submitting applications, placing orders, registering appeals, and making payments are not provided on it.",
+   "kk": "Жоқ. Сайт ақпараттық сипатта болып табылады: осы жерде өтініштер, тапсырыстар, шағымдарды тіркеу және төлемдер көзделмеген."
+  },
+  "question": {
+   "en": "Can an application be submitted or services paid for on the website?",
+   "kk": "Сайттан өтініш беруге немесе қызметтерді төлеуге бола ма?"
+  }
+ },
+ "faq|a403fb223c7716b9": {
+  "answer": {
+   "en": "The address of the main archive is listed in the 'Contacts' section, branch addresses are in the 'Branches' section and on the map.",
+   "kk": "Басты архивтің мекенжайы «Контакты» бөлімінде, филиалдардың мекенжайлары — «Филиалы» бөлімінде және картада көрсетілген."
+  },
+  "question": {
+   "en": "Where is the archive located?",
+   "kk": "Архив қай жерде орналасқан?"
+  }
+ },
+ "faq|a94566913dd24519": {
+  "answer": {
+   "en": "The file is provided only when both the document and the file itself are allowed. The check is performed on the server, not by hiding buttons.",
+   "kk": "Файл тек құжат пен өзі файл рұқсат етілген жағдайда беріледі. Тексеру серверде жүзеге асады, түймелерді жасыру арқылы емес."
+  },
+  "question": {
+   "en": "Why is the document file not opening?",
+   "kk": "Неліктен құжат файлы ашылып тұрған жоқ?"
+  }
+ },
+ "faq|aa33b0f36bae1eb6": {
+  "answer": {
+   "en": "The text is available in the original language; a verified translation is not yet available. The website interface is available in Kazakh, Russian, and English.",
+   "kk": "Мәтін бастапқы тілде қолжетімді, тексерілген аудармасы әзір емес. Сайттың интерфейсі қазақ, орыс және ағылшын тілдерінде қолжетімді."
+  },
+  "question": {
+   "en": "What does \"translation is missing\" mean?",
+   "kk": "Нема переводі деген не білдіреді?"
+  }
+ },
+ "faq|ab9e7322686891a4": {
+  "answer": {
+   "en": "The dates are taken from the Archive's Calendar of Commemorative Dates. Dating that is not confirmed by a source is marked separately.",
+   "kk": "Күндер архивтің Еске түсіру күндері календарынан алынған. Дерекпен расталмаған даттар жеке белгіленген."
+  },
+  "question": {
+   "en": "Where do the dates in the chronology come from?",
+   "kk": "Хронологиядағы күндер қайдан алынды?"
+  }
+ },
+ "faq|ce0634c46b672a38": {
+  "answer": {
+   "en": "Head archive: Mon–Fri 8.00–17.00. Reading room: Mon–Fri 9.00–16.00.",
+   "kk": "Басты архив: Дүсенбе-Жұма 8.00–17.00. Оқу залы: Дүсенбе-Жұма 9.00–16.00."
+  },
+  "question": {
+   "en": "What are the working hours?",
+   "kk": "Қалай жұмыс істейді?"
+  }
+ },
+ "faq|d75498538c843837": {
+  "answer": {
+   "en": "The assistant's answers are generated automatically and include links to sources. For a legally significant certificate, please contact the archive.",
+   "kk": "Қосымшаның жауаптары автоматты түрде құрылады және олар көздерге сілтемелерді қамтиды. Заңды маңыздығы бар куәлік алу үшін архивке жүгініңіз."
+  },
+  "question": {
+   "en": "Can you trust the answers of the AI assistant?",
+   "kk": "AI-қосымшаның жауаптарына сенуге бола ма?"
+  }
+ },
+ "faq|d7ac0631f6d18e11": {
+  "answer": {
+   "en": "A cipher is a designation of a storage unit: fund number, inventory list, file and document number. For example, «Ф.Д-1 Оп.1 Д.1 №1» is an example of a cipher.",
+   "kk": "Шифр – сақтау бірлігін белгілеу: қор нөмірі, тізім, іс және құжат. Мысалы, «Ф.Д-1 Оп.1 Д.1 №1» – шифрдың үлгісі."
+  },
+  "question": {
+   "en": "What is an archival cipher?",
+   "kk": "Архивтық шифр дегеніміз не?"
+  }
+ },
+ "faq|d9671ec49d65f69a": {
+  "answer": {
+   "en": "\"Open\" - a copy is available for viewing. \"Restricted\" and \"Closed\" - no copy is provided on the website. \"Requires verification\" - the right to publish has not yet been confirmed, and the copy cannot be opened.",
+   "kk": "\"Ашылған\" - көшірме қарау үшін қолжетімді. \"Шектелген\" және \"Жабық\" - сайтта көшірме таратылмайды. \"Тексеруді талап етеді\" - жариялау құқығы әлі расталмаған, көшірме ашылмайды."
+  },
+  "question": {
+   "en": "What do the file access statuses mean?",
+   "kk": "Файлдарға қол жеткізу статусы не білдіреді?"
+  }
+ },
+ "faq|e1d151efce862e07": {
+  "answer": {
+   "en": "Fund - a collection of documents from a single source: an organization or individual. Inventory - a list of files within a fund. File - a group of documents united by a common characteristic.",
+   "kk": "Қор – бір дереккөздің (ұйымның немесе тұлғаның) құжаттарының жиынтығы. Іс – қордың ішіндегі істер тізімі. Іс – ортақ белгі бойынша біріктірілген құжаттар тобы."
+  },
+  "question": {
+   "en": "What do fund, inventory, and file mean?",
+   "kk": "Қор, іс және істің құрамы дегеніміз не?"
+  }
+ },
+ "faq|e4aef6c72eff0d5e": {
+  "answer": {
+   "en": "Open the 'Online Exhibitions' section, select an exhibition and an exhibit. The caption and source are indicated in the exhibit card.",
+   "kk": "«Онлайн-көрмелер» бөлімін ашыңыз, көрмені және экспонатты таңдаңыз. Экспонат картасында жазу мен дереккөз көрсетілген."
+  },
+  "question": {
+   "en": "How to open an online exhibition?",
+   "kk": "Қалай онлайн-көрме ашамын?"
+  }
+ },
+ "faq|e51ef211a59d47be": {
+  "answer": {
+   "en": "Check the spelling, try other words, or remove filters. The search takes into account common variations of names.",
+   "kk": "Жазылуын тексеріңіз, басқа сөздерді көріңіз немесе сүзгілерді алып тастаңыз. Іздеу атаулардың жиі кездесетін жазылу нұсқаларын ескереді."
+  },
+  "question": {
+   "en": "Why did the search find nothing?",
+   "kk": "Неге нәрсені таппадым?"
+  }
+ },
+ "fund|015eec24a9c619a7": {
+  "annotation": {
+   "en": "Personal fund; the person and all his documents are fictional.",
+   "kk": "Жеке қор; адам және оның барлық құжаттары ойлап табылған."
+  },
+  "title": {
+   "en": "Personal Fund of Ivanov I.I., master metallurgist",
+   "kk": "Жеке қор Иванов И.И., металлург шеберінің"
+  }
+ },
+ "fund|0631e4ae7870702b": {
+  "annotation": {
+   "en": "Fund: orders, protocols, photographs and drawings of the enterprise.",
+   "kk": "Қор: кәсіпорынның бұйрықтары, хаттамалары, суреттер мен сызбалары."
+  },
+  "title": {
+   "en": "Ust-Kamenogorsk Lead-Zinc Combine",
+   "kk": "Усть-Каменогорский свинцово-цинковый комбинат"
+  }
+ },
+ "fund|18a77a26e3ec98b8": {
+  "annotation": {
+   "en": "Personal fund of a teacher; the person and documents are fictional.",
+   "kk": "Мұғалімнің жеке қоры; адам мен құжаттар ойлап табылған."
+  },
+  "title": {
+   "en": "Personal Fund of Karimova A.B., teacher and local historian",
+   "kk": "Жеке қоры Қаримова А.Б., мұғалім және жергілікті зерттеуші"
+  }
+ },
+ "fund|5c76391909547232": {
+  "annotation": {
+   "en": "Binding of the regional newspaper. ny.",
+   "kk": "Областы газетінің байланысы."
+  },
+  "title": {
+   "en": "Eastern Worker Newspaper",
+   "kk": "Журнал «Шығыс қызметкері»"
+  }
+ },
+ "fund|73ef1395bb16e709": {
+  "annotation": {
+   "en": "Party fund of the war years.",
+   "kk": "Сібірлік партиялық қордың соғыс жылдарына арналған бөлігі."
+  },
+  "title": {
+   "en": "East Kazakhstan Regional Committee of the Party",
+   "kk": "Шығыс Қазақстан облыстық партиялық комитеті"
+  }
+ },
+ "fund|8332144c7f904146": {
+  "annotation": {
+   "en": "Fund of city resolutions, maps and census on educational formation.",
+   "kk": "Қала шешімдерінің, карталардың және санақ деректерінің қоры."
+  },
+  "title": {
+   "en": "Executive Committee of the Ust-Kamenogorsk City Council",
+   "kk": "Орындаушылық комитет Усть-Каменогорск қалалық кеңесінің"
+  }
+ },
+ "historical_event|02f08642fa4d5487": {
+  "title": {
+   "en": "105 years (1921) since the first elections to local councils of workers', peasants' and soldiers' deputies in Zaysan District",
+   "kk": "Зайсан уезіндегі жергілікті Кеңеске жұмысшылардың, шаруа және қызыл әскер депутаттардың бірінші сайлауына 105 жыл(1921)"
+  }
+ },
+ "historical_event|091b09e80b230435": {
+  "place": {
+   "en": "Zryanovsk",
+   "kk": "Зыряновск қ."
+  },
+  "title": {
+   "en": "Place of historical event",
+   "kk": "Тарихи оқиғаның орны"
+  }
+ },
+ "historical_event|18a5285d65873d1f": {
+  "title": {
+   "en": "115th anniversary of the birth of Hero of the Soviet Union Fyodor Dementievich Turov",
+   "kk": "Кеңес Одағының Батыры Федор Дементьевич Туровтың туғанына 115 жыл (1910 ж.)"
+  }
+ },
+ "historical_event|1a63864b60ff9dd0": {
+  "title": {
+   "en": "130 years (1896-1971) since the birth of Yefim Nikolaevich Permitin, a writer and native of Eastern Kazakhstan",
+   "kk": "Шығыс Қазақстанның тумасы, жазушы Ефим Николаевич Пермитиннің дүниеге келгеніне 130 жыл (1896-1917)"
+  }
+ },
+ "historical_event|1b20a02cd3a6d0d5": {
+  "title": {
+   "en": "95 years (1931-2009) since the birth of Nikolai Vladimirovich Alekseenko, Honorary Citizen of Ust-Kamenogorsk, scientist, local historian",
+   "kk": "Ғалым, өлкетанушы, Өскемен қ. Құрметті азаматы Николай Владимирович Алексеенконың дүниеге келгеніне 95 жыл(1931-2009)"
+  }
+ },
+ "historical_event|1d19b2926d9826c8": {
+  "title": {
+   "en": "115 years (1910) since the birth of Moisey Faitelievich Keilin, head of PJSC \"Altaienergo\", Honored Energy Worker of the Kazakh SSR",
+   "kk": "Қазақ КСР еңбек сіңірген энергетик, «Алтайэнергия» басқарушы Кейлин Моисей Файтелеевичтің туғанына 115 жыл (1910 ж.)"
+  }
+ },
+ "historical_event|1e3d8f60879cc14b": {
+  "title": {
+   "en": "90 years (1935) since the birth of Viktor Stepanovich Aksenov, Candidate of Geological and Mineralogical Sciences, geochemist, poet, and educator. Author of 132 scientific works on geology, geochemistry, and ecology",
+   "kk": "Геология-минералогия ғылымдарының кандидаты, геология, геохимия және экология бойынша 132 ғылыми жұмыстың авторы, геохимик, ақын, педагог Виктор Степанович Аксеновтың туғанына 90 жыл (1935)."
+  }
+ },
+ "historical_event|2acf04657c636eb8": {
+  "title": {
+   "en": "110 years (1915) since the birth of Belosludov Boris Alekseevich, zoologist and researcher of Kazakhstan's fauna.",
+   "kk": "Зоолог, Қазақстан фаунасын зерттеуші Борис Алексеевич Белослюдовтың туғанына 110 жыл (1915ж.)."
+  }
+ },
+ "historical_event|3fc93f844f6fb89d": {
+  "title": {
+   "en": "185 years (1841-1913) since the birth of Evgeny Petrovich Michaelis, a political exile, scholar, local historian, and friend of Abai",
+   "kk": "Абайдың досы, ғалым, өлкетанушы, саяси жер аударылушы Евгений Петрович Михаэлистің дүниеге келгеніне 185 жыл(1841-1913)"
+  }
+ },
+ "historical_event|4fb33c4f71979101": {
+  "title": {
+   "en": "115 years (1911-1985) since the birth of Ivan Georgievich Makeev, journalist and local historian",
+   "kk": "Журналист, өлкетанушы Иван Георгиевич Макеевтің дүниеге келгеніне 115 жыл(1911-1985)"
+  }
+ },
+ "historical_event|598f67a23cb1a87a": {
+  "title": {
+   "en": "125 (1901-1989) years since the birth of Semen Nikolaevich Gerasimov, a local historian, scientist, and writer",
+   "kk": "Өлкетанушы, ғалым, жазушы Семен Николаевич Герасимовтың дүниеге келгеніне 125 жыл(1901-1989)"
+  }
+ },
+ "historical_event|6307b3de3d3aab76": {
+  "place": {
+   "en": "Zhyranovsk city",
+   "kk": "Зыряновск қ."
+  },
+  "title": {
+   "en": "105 years since the opening of the 1st Bukhtarma Soviet Congress in Zhyranovsk city (1921)",
+   "kk": "Зырян қаласында І Бұқтырма Кеңес сьезінің ашылуына 105 жыл(1921)"
+  }
+ },
+ "historical_event|6a9389ce13b4cbe3": {
+  "description": {
+   "en": "Object. The actual mine is not marked.",
+   "kk": "Объект. Нақты кен орны белгіленбейді."
+  },
+  "place": {
+   "en": "Ridder city",
+   "kk": "Риддер қ."
+  },
+  "title": {
+   "en": "Rudnik",
+   "kk": "Кен орны"
+  }
+ },
+ "historical_event|6ee9c0f34507d3bb": {
+  "title": {
+   "en": "115 years (1911) since the birth of Semen Mikhailovich Anisimov, a poet",
+   "kk": "Ақын Семен Михайлович Анисимовтың дүниеге келгеніне 115 жыл (1911)"
+  }
+ },
+ "historical_event|78c628fe81bc1299": {
+  "description": {
+   "en": "The building about which documents in the collection tell.",
+   "kk": "Ұжым құрамдас бөлімшелерінің құжаттарында айтылған ғимарат."
+  },
+  "place": {
+   "en": "Ust-Kamenogorsk",
+   "kk": "Ұш-Кемегорск қ."
+  },
+  "title": {
+   "en": "City Council Building",
+   "kk": "Қала әкімшілігі ғимараты"
+  }
+ },
+ "historical_event|7e072a5225226e21": {
+  "title": {
+   "en": "105 years (1921) since the opening of the II Conference of Professional Unions in the Ust-Kamenogorsk District",
+   "kk": "Өскемен уезінде Кәсіби Одақтардың II конференциясының ашылуына 105 жыл(1921)"
+  }
+ },
+ "historical_event|7ea0e3d18e7797be": {
+  "title": {
+   "en": "95 years since the birth of Sakabaev Kokei, journalist, member of the Writers' Union of Kazakhstan",
+   "kk": "Қазақстан Жазушылар одағының мүшесі, журналист Сақабаев Көкейдің туғанына 95 жыл (1930),"
+  }
+ },
+ "historical_event|8a47eb491c6aa755": {
+  "title": {
+   "en": "120 years (1906-1970) since the birth of Ivan Vasilyevich Berdus, Honored Energy Worker of the Kazakh SSR, Director of the Leninogorsk Cascade of Hydroelectric Power Stations",
+   "kk": "Қазақ СРО еңбегі сіңген энергетигі, Лениногорск суэлектрстанция каскадының директоры Ивана Васильевич Бердустың дүниеге келгеніне 120 жыл (1906-1970)"
+  }
+ },
+ "historical_event|8f58b72fd46c6b46": {
+  "place": {
+   "en": "Ust-Kamenogorsk",
+   "kk": "Қазақстан Республикасының Ұлттық архиві"
+  },
+  "title": {
+   "en": "305 years (1720) since the founding of Ust-Kamenogorsk",
+   "kk": "Өскемен қаласының құрылғанына 305 жыл (1720 ж.)."
+  }
+ },
+ "historical_event|9084db9cfea01c52": {
+  "title": {
+   "en": "135 years (1891-1977) since the birth of Alexander Melentievich Volkov, a scientist and children's writer",
+   "kk": "Ғалым, балалар жазушысы Александр Мелентьевич Волковтың дүниеге келгеніне 135 жыл(1891-1977)"
+  }
+ },
+ "historical_event|a5e95148d622673e": {
+  "title": {
+   "en": "115 years since the birth of Hero of the Soviet Union Ivan Iosifovich Varepa",
+   "kk": "Кеңес Одағының Батыры Вареп Иван Иосифовичтың туғанына 115 жыл (1910)"
+  }
+ },
+ "historical_event|ab72f6148d58e76b": {
+  "description": {
+   "en": "Heritage object. Does not denote a real monument.",
+   "kk": "Мұрағат объектісі. Нақты ескерткішті көрсетпейді."
+  },
+  "place": {
+   "en": "Semey",
+   "kk": "Семей қаласы"
+  },
+  "title": {
+   "en": "Commemorative sign",
+   "kk": "Есте меңгеру белгісі"
+  }
+ },
+ "historical_event|b1b8925475ab7f3c": {
+  "title": {
+   "en": "105 years (1920) since the birth of Albert Genrikhovich Volts, Dean of the General Engineering Faculty of the Ust-Kamenogorsk Pedagogical Institute, Honored Worker of Education of the Kazakh SSR.",
+   "kk": "Өскемен педагогикалық институтының жалпы техникалық факультетінің деканы, Қазақ КСР халық ағарту ісінің үздігі Альберт Генрихович Фольцтың туғанына 105 жыл (1920)."
+  }
+ },
+ "historical_event|b5db5d75d57e6688": {
+  "description": {
+   "en": "Workshop from documents about the plant.",
+   "kk": "Кешен туралы құжаттардан алынған цех."
+  },
+  "place": {
+   "en": "Ust-Kamenogorsk",
+   "kk": "г. Усть-Каменогорск"
+  },
+  "title": {
+   "en": "Lead-Zinc Plant Workshop",
+   "kk": "Қорғасын-мырыштық кешеннің цехы"
+  }
+ },
+ "historical_event|b9ac414c6eb14ab1": {
+  "title": {
+   "en": "135 years (1891-1968) since the birth of Nikandr Alexandrovich Petrovsky, a local historian and compiler of the dictionary 'Russian Personal Names'",
+   "kk": "Өлкетанушы, «Русские личные имена» сөздігін құрастырушы Никандр Александрович Петровскидің дүниеге келгеніне 135 жыл(1891-1968)"
+  }
+ },
+ "historical_event|bf60cf1739dc0b30": {
+  "title": {
+   "en": "150 years (1876-1919) since the birth of regional studies researcher Alexander Nikitich Sedelnikov of Rudny Altai",
+   "kk": "Рудный Алтайдың өлкетанушы-зерттеушісі Алескандр Никитич Седельниковтың дүниеге келгеніне 150 жыл (1876-1919)"
+  }
+ },
+ "historical_event|bfe09c41ea7b5b0d": {
+  "title": {
+   "en": "100 years (1925) since the birth of Petrov Vasily Ignatievich, associate professor, candidate of historical sciences, dean of the history faculty of the Ust-Kamenogorsk Pedagogical Institute.",
+   "kk": "Өскемен педагогикалық институтының тарих факультетінің деканы, тарих ғылымдарының кандидаты, доцент Петров Василий Игнатьевичтің туғанына 100 жыл (1925)."
+  }
+ },
+ "historical_event|c5133a51f9b9508e": {
+  "title": {
+   "en": "180 years (1845) since the birth of the poet and enlightener Abai Kunanbaev",
+   "kk": "Ақын-ағартушы Абай Құнанбаевтың туғанына 180 жыл (1845ж.)"
+  }
+ },
+ "historical_event|c722eb862a10ea97": {
+  "place": {
+   "en": "Ridder",
+   "kk": "Риддер қаласы"
+  },
+  "title": {
+   "en": "95 years since the founding of the newspaper \"Ridder Rabochiy\" (currently the newspaper of JSC \"Leninogorskaya Pravda\")",
+   "kk": "«Риддерский рабочий» газетінің құрылғанына 95 жыл (1931) (қазіргі уақытта «Лениногркая правда» ЖШС газеті)"
+  }
+ },
+ "historical_event|c79ea101e8c5dab2": {
+  "title": {
+   "en": "130 (1896) years since the establishment of the East Kazakhstan Regional Library named after A.S. Pushkin",
+   "kk": "А.С.Пушкин атындағы Шығыс Қазақстан облыстық кітапханасының негізі қаланғанына 130 жыл(1896)"
+  }
+ },
+ "historical_event|cc2ec5b34d4700c2": {
+  "title": {
+   "en": "165 years (1861-1924) since the birth of Altai researcher Vasily Vasilievich Sapozhnikov",
+   "kk": "Алтай зерттеушісі Василий Васильевич Сапожниковтың дүниеге келгеніне 165 жыл (1861-1924)"
+  }
+ },
+ "historical_event|cee409dedb9a5d69": {
+  "title": {
+   "en": "105 years (1920) since the birth of Pankrat'eva Elena Dmitrievna, a scientific employee of the fruit and vegetable experimental field, a regional studies specialist",
+   "kk": "Жеміс-көкөніс тәжірибе алаңының ғылыми қызметкері, өлкетанушы Елена Дмитриевна Панкратьеваның туғанына 105 жыл (1920)"
+  }
+ },
+ "historical_event|d2d6fe4677fcdcd9": {
+  "title": {
+   "en": "135 years (1890) since the birth of Vasily Andreevich Khakhlov, professor at Tomsk State University, ornithologist 180 years (1845) since the birth of Andrei Stepanovich Khakhlov, local historian, corresponding member of the West Siberian Department of the Russian Geographical Society",
+   "kk": "Томск мемлекеттік университетінің профессоры, орнитолог Виталий Андреевич Хахловтың туғанына 135 жыл (1890 ж.) Өлкетанушы, орыс географиялық қоғамының Батыс-Сібір бөлімінің мүшесі Хахлов Андрей Степановичтің туғанына 180 жыл (1845 ж.)"
+  }
+ },
+ "historical_event|d70aae4bdff656e4": {
+  "title": {
+   "en": "100 years (1925) since the birth of Kotov Ivan Ivanovich, a worker at the Ust-Kamenogorsk Lead-Zinc Combine, Laureate of the Lenin Prize.",
+   "kk": "Өскемен қорғасын-мырыш комбинатының жұмысшысы, Лениндік сыйлықтың лауреаты Иван Иванович Котовтың туғанына 100 жыл (1925)."
+  }
+ },
+ "historical_event|e2630c5abfb60013": {
+  "description": {
+   "en": "School from education documents.",
+   "kk": "Білім туралы құжаттардан алынған мектеп."
+  },
+  "place": {
+   "en": "Ust-Kamenogorsk",
+   "kk": "Усть-Каменогорск қ."
+  },
+  "title": {
+   "en": "School No. 1",
+   "kk": "№ 1 мектеп"
+  }
+ },
+ "historical_event|f57aa32c5f5f1d48": {
+  "title": {
+   "en": "105 years since the opening of the first Kazakh primary school in Ust-Kamenogorsk (1920)",
+   "kk": "Өскемен қаласында тұңғыш қазақ бастауыш мектебінің ашылғанына 105 жыл (1920 ж.)"
+  }
+ },
+ "inventory|003cbbebd04ac622": {
+  "title": {
+   "en": "Inventory 1. Pedagogy and Local History",
+   "kk": "Тізім 1. Педагогика және жергілікті тарих"
+  }
+ },
+ "inventory|4d55f6be38e98e88": {
+  "title": {
+   "en": "Inventory 1. Decisions, maps, education",
+   "kk": "Тізілім 1. Шешімдер, карталар, білім"
+  }
+ },
+ "inventory|5b22ecddae8bd641": {
+  "title": {
+   "en": "Inventory 2. Photodocuments, drawings, audio and video",
+   "kk": "Тізім 2. Фотожазбалар, сызбалар, дыбыс және бейне"
+  }
+ },
+ "inventory|60e2c5ef0243bde0": {
+  "title": {
+   "en": "Inventory 1. Bindings",
+   "kk": "Тізім 1. Түйіндемелер"
+  }
+ },
+ "inventory|9144ed8f39f5e03d": {
+  "title": {
+   "en": "Inventory 2. Leninogorsk City Council",
+   "kk": "Тізім 2. Лениногор қалалық кеңесі"
+  }
+ },
+ "inventory|a7dc023c998ef07e": {
+  "title": {
+   "en": "Inventory 1. Protocols and correspondence of the war years",
+   "kk": "Тізім 1. Соғыс жылдарындағы хат-хабарлар мен келіссөздер"
+  }
+ },
+ "inventory|bf100a416d1083c0": {
+  "title": {
+   "en": "Inventory 1. Orders and minutes",
+   "kk": "Тізім 1. Бұйрықтар және хаттама"
+  }
+ },
+ "inventory|ef019ec73cf44bbf": {
+  "title": {
+   "en": "Inventory 1. Personal Documents",
+   "kk": "Тізім 1. Жеке құжаттар"
+  }
+ },
+ "legal_act|16bd0c842b0c3b42": {
+  "title": {
+   "en": "Law of the Republic of Kazakhstan «On Personal Data and Its Protection»",
+   "kk": "«Дербес деректер және оларды қорғау туралы» Қазақстан Республикасының Заңы"
+  }
+ },
+ "legal_act|28ed7aad8ff66c54": {
+  "title": {
+   "en": "Law of the Republic of Kazakhstan «On the National Archival Fund and Archives»",
+   "kk": "«Ұлттық архив қоры және архивтер туралы» Қазақстан Республикасының Заңы"
+  }
+ },
+ "legal_act|2d7c5644f6799cc5": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "МММ «Шығыс Қазақстан облыстық мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "Notice on the Conduct of an Internal Analysis of Corruption Risks",
+   "kk": "Сыбайлас жемқорлық тәуекелдеріне ішкі талдау жүргізу туралы"
+  }
+ },
+ "legal_act|306e2d95ff8e0ba6": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "Мемлекеттік мекеме «Шығыс Қазақстан облысының Мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "List of positions subject to corruption risks",
+   "kk": "Сыбайлас жемқорлық тәуекеліне бейім лауазымдардың тізбесі"
+  }
+ },
+ "legal_act|372e16d3c92109dc": {
+  "issuer": {
+   "en": "Akimat of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысының әкімдігі"
+  },
+  "title": {
+   "en": "On Some Issues of the Archive Institutions of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысының архив мекемелерінің кейбір мәселелері туралы"
+  }
+ },
+ "legal_act|4f382550f616803a": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "ММ «Шығыс Қазақстан облыстық мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "Information on the implementation of internal analysis of corruption risks",
+   "kk": "Сыбайлас жемқорлық тәуекеліне ішкі талдауды орындау туралы ақпарат"
+  }
+ },
+ "legal_act|6e52259b523448b4": {
+  "title": {
+   "en": "Unified requirements in the field of ICT and information security (Government resolution)",
+   "kk": "АКТ саласындағы және ақпараттық қауіпсіздікті қамтамасыз етудегі бірыңғай талаптар (ҚР Үкіметінің қаулысы)"
+  }
+ },
+ "legal_act|7105c878e0598939": {
+  "title": {
+   "en": "Rules for providing public services in archival affairs (order)",
+   "kk": "Архив ісі саласында мемлекеттік қызметтер көрсету қағидалары (бұйрық)"
+  }
+ },
+ "legal_act|85ba00bdd75ae7f8": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "МММ «Шығыс Қазақстан облыстық мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "Analytical report on the results of the internal analysis of corruption risks (2026)",
+   "kk": "Сыбайлас жемқорлық тәуекелдеріне ішкі талдау нәтижелері бойынша аналитикалық анықтама (2026)"
+  }
+ },
+ "legal_act|a0f517a05674cf8b": {
+  "title": {
+   "en": "Rules for the completion, storage, accounting and use of documents of the National Archival Fund (order)",
+   "kk": "Ұлттық архив қорының құжаттарын комплектеу, сақтау, есепке алу және пайдалану қағидалары (бұйрық)"
+  }
+ },
+ "legal_act|b8cb401341a81d3c": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "МММ «Шығыс Қазақстан облыстық мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "Regulations on the Anti-Corruption Compliance Service",
+   "kk": "Сыбайлас жемқорлыққа қарсы комплаенс қызметі туралы ереже"
+  }
+ },
+ "legal_act|c5b805662ca2f08e": {
+  "issuer": {
+   "en": "State Enterprise \"East Kazakhstan Regional State Archive\"",
+   "kk": "МММ «Шығыс Қазақстан облысының мемлекеттік архиві»"
+  },
+  "title": {
+   "en": "Plan of measures to eliminate the causes and conditions of corruption offenses",
+   "kk": "Сыбайлас жемқорлық тәуекелдерін жою жөніндегі іс-шаралар жоспары"
+  }
+ },
+ "legal_act|ecb5c8a83cde4c56": {
+  "title": {
+   "en": "Requirements for the content of internet resources of state bodies (order), where applicable",
+   "kk": "Мемлекеттік органдардың интернет-ресурстарының мазмұнына қойылатын талаптар (бұйрық), қолданылатын бөлігінде"
+  }
+ },
+ "memorial_date|02078af6255194ec": {
+  "text": {
+   "en": "100 years (1924) since the birth of Hero of the Soviet Union Vladimir Aleksandrovich Kolesnikov",
+   "kk": "Кеңес Одағының Батыры Владимир Александрович Колесниковтың туғанына 100 жыл (1924 ж.)"
+  }
+ },
+ "memorial_date|02f46c91a9e70464": {
+  "text": {
+   "en": "105 years (1919-1998) since the birth of Kseniya Ivanovna Popova, Candidate of Geological Sciences, climatologist",
+   "kk": "География ғылымдарының кандидаты, климатолог Ксения Ивановна Попованың туғанына 105 жыл (1919-1998 ж.)"
+  }
+ },
+ "memorial_date|049fe5f330eea4de": {
+  "text": {
+   "en": "95 years since the commissioning of the Kharizovskaya HPP",
+   "kk": "Хариузов су электр станциясының іске қосылғанына 95 жыл"
+  }
+ },
+ "memorial_date|054fc8d962e43711": {
+  "text": {
+   "en": "95 years since the issuance of the first product by the Ridder Lead Plant (now Ridder Metallurgical Complex, LLC \"KazZinc\")",
+   "kk": "Риддер қорғасын зауытының (қазіргі «Казцинк» ЖШС-нің Риддер металлургиялық кешені) алғашқы өндірісіне 95 жыл"
+  }
+ },
+ "memorial_date|07d92cc0ed5cb062": {
+  "text": {
+   "en": "70th anniversary of the opening of the Ust-Kamenogorsk Music College",
+   "kk": "Өскемен музыкалық училищесінің ашылғанына 70 жыл"
+  }
+ },
+ "memorial_date|0a29f747a168fa9e": {
+  "text": {
+   "en": "70 years since the commissioning of the Ust-Kamenogorsk Titanomagnesium Combine (1965)",
+   "kk": "Өскемен титан-магний зауытының іске қосылғанына 70 жыл (1965 ж.)"
+  }
+ },
+ "memorial_date|0d57d1e0471547cc": {
+  "text": {
+   "en": "110 years since the birth of Ilya Sergeyevich Zyryanov, a local historian",
+   "kk": "Өлкетанушы Илья Сергеевич Зыряновтың туғанына 110 жыл"
+  }
+ },
+ "memorial_date|0f5a909798716215": {
+  "text": {
+   "en": "115 years since the opening of Golova's private printing house in Ust-Kamenogorsk",
+   "kk": "Өскеменде Горловтың жеке баспаханасының ашылғанына 115 жыл"
+  }
+ },
+ "memorial_date|10d5e81bfe383f41": {
+  "text": {
+   "en": "75 years since the first sheet of cathodic zinc was produced at the Ust-Kamenogorsk Lead-Zinc Combine",
+   "kk": "Өскемен қорғасын-мырыш зауытында катодты мырыштың алғашқы бетінің шығарылғанына 75 жыл"
+  }
+ },
+ "memorial_date|121503ada59a2cb1": {
+  "text": {
+   "en": "85 years (1941) since the establishment of the newspaper \"Ilyich Path\" of the Tavrichesky (now Ulansky) district of the East Kazakhstan region",
+   "kk": "Шығыс Қазақстан облысы Таврия аудандық (қазір Ұлан) «Путь Ильича» атты газетінің құрылғанына 85 жыл (1941)"
+  }
+ },
+ "memorial_date|1271b6710d51bc54": {
+  "text": {
+   "en": "100 years since the birth of Uvaliev Yumash Karimovich, Honorary Professor and Honorary Rector of VKGU",
+   "kk": "Құрметті профессор және ШҚМУ –тің құрметті ректоры Увалиев Юмаш Кәрімұлының туғанына 100 жыл."
+  }
+ },
+ "memorial_date|12afedddfd221983": {
+  "text": {
+   "en": "90 years (1935) since the birth of Viktor Stepanovich Aksenov, Candidate of Geological and Mineralogical Sciences, geochemist, poet, and educator. Author of 132 scientific works on geology, geochemistry, and ecology",
+   "kk": "Геология-минералогия ғылымдарының кандидаты, геология, геохимия және экология бойынша 132 ғылыми жұмыстың авторы, геохимик, ақын, педагог Виктор Степанович Аксеновтың туғанына 90 жыл (1935)."
+  }
+ },
+ "memorial_date|14b204e5c218e1a2": {
+  "text": {
+   "en": "70th anniversary of the establishment of the Ust-Kamenogorsk Pedagogical Institute (now S. Amanzholov East Kazakhstan State University)",
+   "kk": "Өскемен педагогикалық институтының (қазіргі С. Аманжолов атындағы Шығыс Қазақстан мемлекеттік университеті) құрылғанына 70 жыл."
+  }
+ },
+ "memorial_date|15939f394b5b963b": {
+  "text": {
+   "en": "135 years since the birth of a native of Semipalatinsk, regional studies researcher, folklorist, ethnographer, and museum specialist Alexey Nikolaevich Belosludov (1887-1939)",
+   "kk": "Семей қаласының тумасы, өлкетанушы-зерттеуші, фольклоршы, этнограф, музей қызметкері Алексей Николаевич Белослюдовтың (1887-1939) туғанына 135 жыл."
+  }
+ },
+ "memorial_date|16f36460f951fccd": {
+  "text": {
+   "en": "105 years since the birth of Hero of the Soviet Union Tulegen Toktarov",
+   "kk": "Кеңес Одағының Батыры Төлеген Тоқтаровтың туғанына 105 жыл"
+  }
+ },
+ "memorial_date|170ce2e6285fa4a5": {
+  "text": {
+   "en": "70th anniversary of the commissioning of the lead plant of the Ust-Kamenogorsk Lead-Zinc Combine and the issuance of the first product",
+   "kk": "Өскемен қорғасын-мырыш комбинатының қорғасын зауытының іске қосылғанына және алғашқы өнім шығарылғанына 70 жыл"
+  }
+ },
+ "memorial_date|17270324bae333c9": {
+  "text": {
+   "en": "105 years since the birth of Krygin Vasily Semenovich, a veteran of the Great Patriotic War and Honored Teacher of the Kazakh SSR",
+   "kk": "Ұлы Отан соғысының ардагері, Қазақ КСР-нің еңбек сіңірген мұғалімі Василий Семенович Кригиннің туғанына 105 жыл."
+  }
+ },
+ "memorial_date|1a1f9aae477198c0": {
+  "text": {
+   "en": "85th anniversary of the tragic death of poet Pavel Vasilyev, a native of Zaisan city, East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысы, Зайсан қаласының тумасы, ақын Павел Васильевтің қайғылы қазасына 85 жыл."
+  }
+ },
+ "memorial_date|1ad05134f67ec471": {
+  "text": {
+   "en": "80 years since the establishment of a children's music school in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласындағы балалар музыка мектебінің ұйымдастырылғанына 80 жыл"
+  }
+ },
+ "memorial_date|1ae6e528104ecfb8": {
+  "text": {
+   "en": "95 years (1929) since the founding of the newspaper \"Gornyak v sorazovani\" (LLC \"Leninogorskaya Pravda\")",
+   "kk": "«Горняк в соревновании» газетінің құрылғанына 95 жыл (1929) («Лениногорская правда» ЖШС)"
+  }
+ },
+ "memorial_date|1b17a9e320db98ae": {
+  "text": {
+   "en": "105 years since the birth of Mikhail Ivanovich Chistyakov, poet, Honorary Citizen of Ust-Kamenogorsk",
+   "kk": "Ақын, Өскемен қаласының Құрметті азаматы Михаил Иванович Чистяковтың туғанына 105 жыл."
+  }
+ },
+ "memorial_date|1cd53db1b6862233": {
+  "text": {
+   "en": "105 years (1921) since the opening of the 1st Bukhtarma Soviet Congress in Zryanovsk",
+   "kk": "Зырян қаласында І Бұқтырма Кеңес сьезінің ашылуына 105 жыл(1921)"
+  }
+ },
+ "memorial_date|220aac249d37d1f5": {
+  "text": {
+   "en": "185 years (1839-1888) since the birth of Nikolai Mikhailovich Przhevalsky, a great traveler",
+   "kk": "Ұлы саяхатшы Николай Михайлович Пржевальскийдің туғанына 185 жыл (1839-1888)"
+  }
+ },
+ "memorial_date|237a4b685dfc34f2": {
+  "text": {
+   "en": "125 years since the birth of Mikhail Nikolaevich Gorokhov, photo correspondent and local historian",
+   "kk": "Фототілші, өлкетанушы Михаил Николаевич Гороховтың туғанына 125 жыл"
+  }
+ },
+ "memorial_date|249eb6f86bdc12ce": {
+  "text": {
+   "en": "75th anniversary of the establishment of the design institute \"Kazgipromet\" (formerly \"Altaygipromet\")",
+   "kk": "«Казгипроцветмет» жобалау институтының (бұрынғы «Алтайгипроцветмент») құрылғанына 75 жыл"
+  }
+ },
+ "memorial_date|253d0260ab75aac5": {
+  "text": {
+   "en": "150 years (1876-1919) since the birth of Altai studies researcher Rudny Altai Alexander Nikitich Sedelnikov",
+   "kk": "Рудный Алтайдың өлкетанушы-зерттеушісі Алескандр Никитич Седельниковтың дүниеге келгеніне 150 жыл (1876-1919)"
+  }
+ },
+ "memorial_date|268b3fea4fcf177c": {
+  "text": {
+   "en": "110 years (1914-2006) since the birth of Alexander Konstantinovich Protosanov, Honorary Citizen of Ust-Kamenogorsk",
+   "kk": "Өскемен қаласының Құрметті азаматы Александр Константинович Протозановтың туғанына 110 жыл (1914-2006 ж.)"
+  }
+ },
+ "memorial_date|26f7e8213ec38b5e": {
+  "text": {
+   "en": "120 years (1906-1970) since the birth of Ivan Vasilyevich Berdus, Honored Energy Worker of the Kazakh SSR, Director of the Leninogorsk Cascade of Hydroelectric Power Stations",
+   "kk": "Қазақ СРО еңбегі сіңген энергетигі, Лениногорск суэлектрстанция каскадының директоры Ивана Васильевич Бердустың дүниеге келгеніне 120 жыл (1906-1970)"
+  }
+ },
+ "memorial_date|270289d239b3c723": {
+  "text": {
+   "en": "100 years since the establishment of the Ust-Kamenogorsk Oil Extraction Plant named after Krasin",
+   "kk": "Красин атындағы Өскемен май экстракция зауытының құрылғанына 100 жыл."
+  }
+ },
+ "memorial_date|27fff7f947c8c546": {
+  "text": {
+   "en": "105 years (1919) since the birth of Hero of the Soviet Union Georgy Timofeyevich Rizhov",
+   "kk": "Кеңес Одағының Батыры Георгий Тимофеевич Рыжовтың туғанына 105 жыл (1919 ж.)"
+  }
+ },
+ "memorial_date|2847012ff34dc1e7": {
+  "text": {
+   "en": "100 years since the issue of the first issue of the literary and artistic journal \"Altai Hunter\"",
+   "kk": "«Охотник Алтая» әдеби-көркем журналының алғашқы санының шыққанына 100 жыл."
+  }
+ },
+ "memorial_date|2a7fe4a4d36ad1ef": {
+  "text": {
+   "en": "105 years (1921) since the opening of the II Conference of Professional Unions in the Ust-Kamenogorsk district",
+   "kk": "Өскемен уезінде Кәсіби Одақтардың II конференциясының ашылуына 105 жыл(1921)"
+  }
+ },
+ "memorial_date|2d98b12ada7ae853": {
+  "text": {
+   "en": "75 years since the inclusion in operation of Ust-Kamenogorsk TPP",
+   "kk": "Өскемен жылу электр орталығының қолданысқа енгізілгеніне 75 жыл"
+  }
+ },
+ "memorial_date|2e1cc29a6cce2d61": {
+  "text": {
+   "en": "90 years (1935) since the opening of the medical college",
+   "kk": "Медицина училищесінің ашылғанына 90 жыл (1935)."
+  }
+ },
+ "memorial_date|2e7e006928144593": {
+  "text": {
+   "en": "95 years (12.09.1929-23.12.1999) since the birth of Alexander Alexandrovich Dolgikh, head of the Department of Physical Education at the Ust-Kamenogorsk Pedagogical Institute, All-Union category fencer judge, Republican category weightlifting judge, vice-president of the Weightlifting and Armwrestling Federation of the Republic of Kazakhstan.",
+   "kk": "Өскемен педагогикалық институтының дене шынықтыру факультетінің кафедра меңгерушісі, семсерлесуден Бүкілодақтық санаттағы төреші, гір көтеруден республикалық санаттағы төреші, Қазақстан Республикасының күрес және гір көтеру федерациясының вице-президенті Александр Александрович Долгихтің туғанына 95 жыл (12.09.1929 - 23.12.1999)"
+  }
+ },
+ "memorial_date|307718eec089995e": {
+  "text": {
+   "en": "95 years (1931) since the establishment of the Ridder newspaper \"Zhomyshi\"",
+   "kk": "Риддер «Жұмысшы» газетінің құрылғанына 95 жыл(1931)"
+  }
+ },
+ "memorial_date|314e8c7d63da82b5": {
+  "text": {
+   "en": "105 years (1919) since the birth of Hero of the Soviet Union Trofim Mikhailovich Klimenko",
+   "kk": "Кеңес Одағының Батыры Трофим Михайлович Клименконың туғанына 105 жыл (1919 ж.)"
+  }
+ },
+ "memorial_date|31da5ad2237a6ca4": {
+  "text": {
+   "en": "140 years since the birth of Grebenshchikov Georgy Dmitrievich, a Russian writer, native of Shemonakhinsky District of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысы Шемонаиха ауданының тумасы, орыс жазушысы Георгий Дмитриевич Гребенщиковтың туғанына 140 жыл."
+  }
+ },
+ "memorial_date|320928fe7cf7cc00": {
+  "text": {
+   "en": "35 years (1991) since the closure of the Semipalatinsk Nuclear Test Site",
+   "kk": "Семей ядролық полигонының жабылуына 35 жыл(1991)"
+  }
+ },
+ "memorial_date|331a3ca08e13b004": {
+  "text": {
+   "en": "120 years since the opening of the People's House - center of cultural life in Ust-Kamenogorsk",
+   "kk": "Қаланың мәдени өмірінің орталығы – Өскемен қаласындағы Халық үйінің ашылғанына 120 жыл"
+  }
+ },
+ "memorial_date|342d4d850811631e": {
+  "text": {
+   "en": "115 (1910) on the birthday of Hero of the Soviet Union Fyodor Dementievich Turov",
+   "kk": "Кеңес Одағының Батыры Федор Дементьевич Туровтың туғанына 115 жыл (1910 ж.)"
+  }
+ },
+ "memorial_date|347863902e0f8e4c": {
+  "text": {
+   "en": "90 years since the commissioning of the Ust-Kamenogorsk Brewery",
+   "kk": "Өскемен сыра зауытының іске қосылғанына 90 жыл"
+  }
+ },
+ "memorial_date|36a8747e7f0853e5": {
+  "text": {
+   "en": "85 years (1940) since the establishment of the State Archive of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысының мемлекеттік архивінің құрылғанына 85 жыл (1940)."
+  }
+ },
+ "memorial_date|378cffdf4e5a8d61": {
+  "text": {
+   "en": "95 years since the birth of Ivanov Anatoly Stepanovich, a writer and author of the novels \"Eternal Call\", \"Shadows Disappear at Dusk\"",
+   "kk": "Жазушы «Вечный зов», «Тени исчезают в полдень» романдарының авторы Анатолий Степанович Ивановтың туғанына 95 жыл."
+  }
+ },
+ "memorial_date|383d57c020329adc": {
+  "text": {
+   "en": "95 years since the establishment of Shemonakhinsky District",
+   "kk": "Шемонаиха ауданының құрылғанына 95 жыл"
+  }
+ },
+ "memorial_date|3af1a64e3e13add2": {
+  "text": {
+   "en": "105 years (1920) since the birth of Pankrat'eva Elena Dmitrievna, a research associate of the fruit and vegetable experimental field and regional studies specialist",
+   "kk": "Жеміс-көкөніс тәжірибе алаңының ғылыми қызметкері, өлкетанушы Елена Дмитриевна Панкратьеваның туғанына 105 жыл (1920)"
+  }
+ },
+ "memorial_date|3b05c2fde3e7fb95": {
+  "text": {
+   "en": "80 years (1945) since the birth of Bitibayeva Kanipa Omargaliky, Laureate of the State Prize of the USSR, Knight of the Order of Honor, Honored Teacher of the Republic of Kazakhstan.",
+   "kk": "КСРО Мемлекеттік сыйлығының лауреаты, «Құрмет» орденінің кавалері, Қазақстан Республикасының еңбек сіңірген мұғалімі Бітібаева Қанипа Омарғалиқызының туғанына 80 жыл (1945)."
+  }
+ },
+ "memorial_date|3b9f9babc6835093": {
+  "text": {
+   "en": "110 years (1915) since the birth of Belosludov Boris Alekseevich, a zoologist and researcher of Kazakhstan's fauna.",
+   "kk": "Зоолог, Қазақстан фаунасын зерттеуші Борис Алексеевич Белослюдовтың туғанына 110 жыл (1915ж.)."
+  }
+ },
+ "memorial_date|3c5c76ba8f633055": {
+  "text": {
+   "en": "80 years since the opening of the Ust-Kamenogorsk College of Economics and Finance",
+   "kk": "Өскемен экономика және қаржы колледжінің ашылғанына 80 жыл"
+  }
+ },
+ "memorial_date|3d255c6bc16aae0d": {
+  "text": {
+   "en": "135 years (1891-1968) since the birth of Nikandr Alexandrovich Petrovsky, a local historian and compiler of the dictionary \"Russian Personal Names\"",
+   "kk": "Өлкетанушы, «Русские личные имена» сөздігін құрастырушы Никандр Александрович Петровскидің дүниеге келгеніне 135 жыл(1891-1968)"
+  }
+ },
+ "memorial_date|42c8d920ac1cda03": {
+  "text": {
+   "en": "135 years (1890) since the birth of Vasily Andreevich Khakhlov, professor at Tomsk State University, ornithologist 180 years (1845) since the birth of Andrei Stepanovich Khakhlov, local historian, corresponding member of the West Siberian Department of the Russian Geographical Society",
+   "kk": "Томск мемлекеттік университетінің профессоры, орнитолог Виталий Андреевич Хахловтың туғанына 135 жыл (1890 ж.) Өлкетанушы, орыс географиялық қоғамының Батыс-Сібір бөлімінің мүшесі Хахлов Андрей Степановичтің туғанына 180 жыл (1845 ж.)"
+  }
+ },
+ "memorial_date|45ebd53e44488ffc": {
+  "text": {
+   "en": "165 years since the birth of Shakarim Kudaiberdiev, poet, philosopher, thinker",
+   "kk": "Ақын, философ, ойшыл Шәкәрім Құдайбердиевтің туғанына 165 жыл"
+  }
+ },
+ "memorial_date|4668fac196393850": {
+  "text": {
+   "en": "85 years since the opening of a fungal hospital in Ust-Kamenogorsk (now a dermatovenereological dispensary)",
+   "kk": "Өскеменде саңырауқұлақ ауруханасының (қазіргі тері-венерологиялық диспансер) ашылғанына 85 жыл."
+  }
+ },
+ "memorial_date|4866335cad8af91a": {
+  "text": {
+   "en": "110 years (1914-1958) since the birth of Ivan Afanasyevich Kryuchkov, Honored Artist of the Kazakh SSR",
+   "kk": "Қазақ КСР-нің еңбек сіңірген әртісі Иван Афанасьевич Крючковтың туғанына 110 жыл (1914-1958)."
+  }
+ },
+ "memorial_date|49b8f1ee52187320": {
+  "text": {
+   "en": "85 years since the death of Konshin Nikolai Yakovlevich, a prominent local historian and researcher of the Steppe Region, one of the founders of the Semipalatinsk Subdepartment of the West Siberian Department of the Russian Geographical Society",
+   "kk": "Көрнекті өлкетанушы, дала өлкесін зерттеуші, Орыс географиялық қоғамының Батыс Сібір бөлімінің Семей бөлімшесін құрушылардың бірі Николай Яковлевич Коншиннің қайтыс болғанына 85 жыл."
+  }
+ },
+ "memorial_date|49e522cff6ccd918": {
+  "text": {
+   "en": "90th anniversary of the birth of the former director of the Jambyl Home for Children, an outstanding figure in Kazakhstan's education, Honorary Citizen of Ust-Kamenogorsk, Valiaxmet Nurakhmetovich Baideldinov (1932)",
+   "kk": "Жамбыл атындағы мектеп-интернатының директоры, Қазақстан ағарту ісінің үздігі, Өскемен қаласының құрметті азаматы Валиахмет Нұрахметұлы Байдельдиновтің туғанына 90 жыл (1932)."
+  }
+ },
+ "memorial_date|4bba2ed8e387f76f": {
+  "text": {
+   "en": "85th anniversary of the birth of a native of Ulan district, journalist and poet Turgazy Nukaev (1937-2001)",
+   "kk": "Ұлан ауданының тумасы, журналист, ақын Тұрғазы Нұқаевтың туғанына 85 жыл. (1937-2001)"
+  }
+ },
+ "memorial_date|4df8441b12eb85d0": {
+  "text": {
+   "en": "115 years (1911-1985) since the birth of Ivan Georgievich Makeev, journalist and local historian",
+   "kk": "Журналист, өлкетанушы Иван Георгиевич Макеевтің дүниеге келгеніне 115 жыл(1911-1985)"
+  }
+ },
+ "memorial_date|4e32fba0e7bb7d23": {
+  "text": {
+   "en": "85 years (1940) since the birth of Vladlen Meierovich Shuster, journalist, Deputy Chief Editor of the newspaper \"Rudny Altai\"",
+   "kk": "«Рудный Алтай» газетінің бас редакторының орынбасары, журналист Владлен Мейерович Шустердің туғанына 85 жыл (1940)."
+  }
+ },
+ "memorial_date|4e75ee1542934438": {
+  "text": {
+   "en": "70 years (1946) since the commissioning of the first stage of a semi-automatic telephone exchange for 600 subscribers in Ust-Kamenogorsk",
+   "kk": "Өскеменде 600 абонентке бірінші кезектегі жартылай автоматты телефон станциясын іске қосылуына 80 жыл (1946)"
+  }
+ },
+ "memorial_date|4f978f52915be15c": {
+  "text": {
+   "en": "85 years (1940) since the birth of Vitaly Seryozhovich Fedorov, Candidate of Historical Sciences, Associate Professor, Dean of the History Faculty of the Ust-Kamenogorsk Pedagogical Institute, local historian.",
+   "kk": "Тарих ғылымдарының кандидаты, Өскемен педагогикалық институтының тарих факультетінің деканы, доцент, өлкетанушы Виталий Сергеевич Федоровтың туғанына 85 жыл (1940)."
+  }
+ },
+ "memorial_date|50484c67dc04d071": {
+  "text": {
+   "en": "80th anniversary of the birth of a public figure, Honorary Citizen of Ust-Kamenogorsk, Zamsy Kydylshanovich Kyrkybaev (1942)",
+   "kk": "Қоғам қайраткері, Өскемен қаласының Құрметті азаматы Зәмза Қыдылшанұлы Қырықбаевтың туғанына 80 жыл (1942)"
+  }
+ },
+ "memorial_date|52453ab2a38a30ac": {
+  "text": {
+   "en": "105 years (1920) since the birth of Albert Genrikhovich Volts, Dean of the General Engineering Faculty of the Ust-Kamenogorsk Pedagogical Institute, an outstanding figure in public education of the Kazakh SSR.",
+   "kk": "Өскемен педагогикалық институтының жалпы техникалық факультетінің деканы, Қазақ КСР халық ағарту ісінің үздігі Альберт Генрихович Фольцтың туғанына 105 жыл (1920)."
+  }
+ },
+ "memorial_date|5421c8da97c6206f": {
+  "text": {
+   "en": "100 years since the birth of writer Nikolai Andreevich Gorbachev",
+   "kk": "Жазушы Николай Андреевич Горбачевтің туғанына 100 жыл"
+  }
+ },
+ "memorial_date|57702f890fd15622": {
+  "text": {
+   "en": "105 years (1919) since the birth of Hero of the Soviet Union Boris Timofeyevich Pavlov",
+   "kk": "Кеңес Одағының Батыры Борис Тимофеевич Павловтың туғанына 105 жыл (1919 ж.)"
+  }
+ },
+ "memorial_date|5967c7aaa855d4ef": {
+  "text": {
+   "en": "65 years (1961) since the transformation of p.Shemonakh into a city",
+   "kk": "Шемонаиха кенті қалаға өзгеруіне 65 жыл (1961)"
+  }
+ },
+ "memorial_date|5c2b336e93282578": {
+  "text": {
+   "en": "305 years (1720) since the founding of Ust-Kamenogorsk",
+   "kk": "Өскемен қаласының құрылғанына 305 жыл (1720 ж.)."
+  }
+ },
+ "memorial_date|5dfcdf78a89224e5": {
+  "text": {
+   "en": "35 years (1991) since Kazakhstan gained its Independence",
+   "kk": "Қазақстан Республикасының Тәуелсіздігіне 35 жыл(1991)"
+  }
+ },
+ "memorial_date|5e772d1aeda1f4e6": {
+  "text": {
+   "en": "155 years (1869) since the founding of Zaisan city",
+   "kk": "Зайсан қаласының құрылғанына 155 жыл (1869)."
+  }
+ },
+ "memorial_date|62575d032de7c65d": {
+  "text": {
+   "en": "115 years (1911) since the birth of Semen Mikhailovich Anisimov, a poet",
+   "kk": "Ақын Семен Михайлович Анисимовтың дүниеге келгеніне 115 жыл (1911)"
+  }
+ },
+ "memorial_date|6447f7b7341e0cf6": {
+  "text": {
+   "en": "25 years (2000) since the commissioning of the new bridge across the Irtysh River",
+   "kk": "Ертіс өзені арқылы өтетін жаңа көпірдің пайдалануға берілгеніне 25 жыл (2000 ж.)."
+  }
+ },
+ "memorial_date|6506ec42ecbca7c6": {
+  "text": {
+   "en": "90th anniversary of the birth of a Kazakhstani public figure, metallurgist, professor at the Department of Chemistry, Metallurgy and Mineral Processing of D. Serikbaev KBTU, Knight of the Order of People's Hero, Honorary Citizen of Ust-Kamenogorsk, Akhat Salemkhatovich Kulenov (1932-2007)",
+   "kk": "Қазақ қоғам қайраткері, металлург, Д.Серікбаев атындағы ШҚМТУ химия, металлургия және кен байыту кафедрасының профессоры, «Халық Қаһарманы» орденінің кавалері, Өскемен қаласының Құрметті азаматы Ахат Сәлемхатұлы Куленовтің туғанына 90 жыл (1932-2007)"
+  }
+ },
+ "memorial_date|674821ae12f6ce01": {
+  "text": {
+   "en": "95 years since the birth of Trunov Alexey Nikolaevich, the first dean of the Physical Education Faculty of VKGU",
+   "kk": "ШҚМУ-тің дене шынықтыру факультетінің бірінші деканы Алексей Николаевич Труновтың туғанына 95 жыл"
+  }
+ },
+ "memorial_date|67d8715750bbd968": {
+  "text": {
+   "en": "65 years since the start of broadcasts by the Ust-Kamenogorsk TV Center",
+   "kk": "Өскемен телеорталығының хабар тарата бастағанына 65 жыл"
+  }
+ },
+ "memorial_date|68f82e2c789b936e": {
+  "text": {
+   "en": "75 years (1950) since the birth of Zhangozin Zhan Sap Chingisovich, director and chief editor of the Ulan newspaper \"Ұлан таңы\", \"Ulan zori\" [Ulan Dawn], member of the Union of Journalists of the USSR, honorary citizen of the Ulan district",
+   "kk": "«Ұлан таңы» - «Ұланские зори» газеттерінің директоры, бас редакторы, КСРО Журналистер одағының мүшесі, Ұлан ауданының құрметті азаматы Жанғозин Жансап Шыңғысұлының туғанына 75 жыл (1950 ж.)"
+  }
+ },
+ "memorial_date|6b2c987f713f8d10": {
+  "text": {
+   "en": "115 years since the birth of Pavel Nikolaevich Kuznetsov (1909-1967), a writer and translator of Zhambyl, native of Eastern Kazakhstan",
+   "kk": "Шығыс Қазақстанның тумасы, аудармашы (Жамбылды аударған), жазушы Павел Николаевич Кузнецовтың туғанына 115 жыл (1909-1967)"
+  }
+ },
+ "memorial_date|6d2038464fe09af9": {
+  "text": {
+   "en": "165 years (1861-1924) since the birth of Altai researcher Vasily Vasilievich Sapozhnikov",
+   "kk": "Алтай зерттеушісі Василий Васильевич Сапожниковтың дүниеге келгеніне 165 жыл (1861-1924)"
+  }
+ },
+ "memorial_date|6d5019b283ea69a6": {
+  "text": {
+   "en": "100 years (1925) since the birth of Kotov Ivan Ivanovich, a worker of the Ust-Kamenogorsk Lead-Zinc Combine, Laureate of the Lenin Prize.",
+   "kk": "Өскемен қорғасын-мырыш комбинатының жұмысшысы, Лениндік сыйлықтың лауреаты Иван Иванович Котовтың туғанына 100 жыл (1925)."
+  }
+ },
+ "memorial_date|6e95af8e5ccfebb7": {
+  "text": {
+   "en": "85 years since the commissioning of the Ulbinsk Hydroelectric Power Station – the first energy facility on the Rudny Altai",
+   "kk": "Рудный Алтайдағы алғашқы энергетикалық станса – Үлбі су электр станциясының іске қосылғанына 85 жыл"
+  }
+ },
+ "memorial_date|7061265f1b7540a8": {
+  "text": {
+   "en": "100 years (1925) since the birth of Petrov Vasily Ignatievich, associate professor, candidate of historical sciences, dean of the history faculty of the Ust-Kamenogorsk Pedagogical Institute.",
+   "kk": "Өскемен педагогикалық институтының тарих факультетінің деканы, тарих ғылымдарының кандидаты, доцент Петров Василий Игнатьевичтің туғанына 100 жыл (1925)."
+  }
+ },
+ "memorial_date|71effd7f2cd66915": {
+  "text": {
+   "en": "125 years (1901) since the opening of the Mariinsky girls' school in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласында Мария қыздар училищесінің ашылуына 125 жыл(1901)"
+  }
+ },
+ "memorial_date|73a367f5492118aa": {
+  "text": {
+   "en": "25th anniversary of the unification of the East Kazakhstan and Semipalatinsk oblasts into the East Kazakhstan oblast with its center in Ust-Kamenogorsk city (1997)",
+   "kk": "Шығыс Қазақстан және Семей облыстарының орталығы Өскемен қаласында болатын Шығыс Қазақстанға біріктірілгеніне 25 жыл (1997 ж.)"
+  }
+ },
+ "memorial_date|75af6bbd6d7ef1ad": {
+  "text": {
+   "en": "115 years (r.22.11.1909-) since the birth of Alexander Andreevich Afanasyev, a member of the literary association \"Zveno Altaya\", a member of the Union of Journalists of the USSR, and a participant in the Great Patriotic War.",
+   "kk": "«Звено Алтая» әдеби бірлестігінің мүшесі, КСРО Журналистер одағының мүшесі, Ұлы Отан соғысына қатысушы Александр Андреевич Афанасьевтің туғанына 115 жыл (22.11.1909 )."
+  }
+ },
+ "memorial_date|7670b3a36e989955": {
+  "text": {
+   "en": "65 years (1960) since the launch of the first unit of the Bukhtarma HPP",
+   "kk": "Бұқтырма СЭС алғашқы агрегатының іске қосылғанына 65 жыл (1960)"
+  }
+ },
+ "memorial_date|76d3aa0042f01ac5": {
+  "text": {
+   "en": "185 years since the birth of Evgeny Petrovich Michaelis (1841-1913), a political exile, scholar, local historian, and friend of Abai",
+   "kk": "Абайдың досы, ғалым, өлкетанушы, саяси жер аударылушы Евгений Петрович Михаэлистің дүниеге келгеніне 185 жыл(1841-1913)"
+  }
+ },
+ "memorial_date|770926b99d8cc573": {
+  "text": {
+   "en": "105 years since the first issue of the newspaper \"Bolshevik Altai\" (\"Rudny Altay\") was published",
+   "kk": "«Большевик Алтая» («Рудный Алтай») газеттерінің алғашқы санының шыққанына 105 жыл"
+  }
+ },
+ "memorial_date|7854c54a1ac4ca44": {
+  "text": {
+   "en": "70 years ago Ust-Kamenogorsk HPP supplied the first electricity",
+   "kk": "Осыдан 70 жыл бұрын Өскемен су электр станциясы өзінің алғашқы тоғын берді"
+  }
+ },
+ "memorial_date|786a1b67569d56fd": {
+  "text": {
+   "en": "125 years since the birth of Mukhtar Omarkhonovich Auezov, a writer and author of the novel 'The Path of Abai'",
+   "kk": "Жазушы, «Абай жолы» романының авторы Мұхтар Омарханұлы Әуезовтің туғанына 125 жыл."
+  }
+ },
+ "memorial_date|787e960ad0e40eb1": {
+  "text": {
+   "en": "145 years (1881) since the opening of a parish school in Zaysan",
+   "kk": "Зайсан қаласында шіркеу училищесінің ашылғанына 145 жыл(1881)"
+  }
+ },
+ "memorial_date|788c06c5062f2fb4": {
+  "text": {
+   "en": "120th anniversary of the opening of the Narym rural school in the Ust-Kamenogorsk district",
+   "kk": "Өскемен округінде Нарым ауылы мектебінің ашылғанына 120 жыл"
+  }
+ },
+ "memorial_date|7b7fce8247ba73aa": {
+  "text": {
+   "en": "30 years (1995) since the commissioning of the first phase of the diagnostic center",
+   "kk": "Диагностикалық орталықтың алғашқы кезегін пайдалануға берілгеніне 30 жыл (1995 ж.)."
+  }
+ },
+ "memorial_date|7bcc42220cd89e03": {
+  "text": {
+   "en": "70 years (1954) since the opening of the mine named \"24th Congress of the CPSU\" (Zryanovsk Metallurgical Complex)",
+   "kk": "«КПСС XXIV съезді» атындағы шахтаның ашылғанына 70 жыл (1954 ж.) (Зырян металлургия комбинаты)"
+  }
+ },
+ "memorial_date|81217eec3037528f": {
+  "text": {
+   "en": "125 years since the birth of Cherepanov Dmitry Feofanovich, a writer from Shemonakhinsky District of the East Kazakhstan Region",
+   "kk": "Шығыс Қазақстан облысының Шемонаиха ауданының тумасы, жазушы Дмитрий Феофанович Черепановтың туғанына 125 жыл(1897)"
+  }
+ },
+ "memorial_date|821826f545119039": {
+  "text": {
+   "en": "55 years since the commissioning of the wide-format cinema \"Jubileyny\" in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласында кең форматты «Юбилейный» кинотеатрының пайдалануға берілгеніне 55 жыл"
+  }
+ },
+ "memorial_date|83f016a7438e9b9d": {
+  "text": {
+   "en": "115 years (1909-1937) since the birth of poet Pavel Nikolaevich Vasilyev",
+   "kk": "Ақын Павел Николаевич Васильевтің туғанына 115 жыл (1909-1937)"
+  }
+ },
+ "memorial_date|855e0515a2a811e6": {
+  "text": {
+   "en": "125 years (1899-1964) since the birth of Kanish Imanovich Satpaev, academician",
+   "kk": "Академик Қаныш Имантайұлы Сәтпаевтың туғанына 125 жыл (1899-1964)."
+  }
+ },
+ "memorial_date|863ed306c06381d6": {
+  "text": {
+   "en": "105 years since the birth of writer Kasym Kaysenov",
+   "kk": "Жазушы Қасым Қайсеновтің туғанына 105 жыл"
+  }
+ },
+ "memorial_date|864af96bf9bf56ff": {
+  "text": {
+   "en": "105 years since the first issue of the newspaper \"Druzhba Naroda\" in the city of Ust-Kamenogorsk (1917)",
+   "kk": "Өскемен қаласында алғаш рет «Друг народа» газетінің шыққанына 105 жыл (1917 ж.)"
+  }
+ },
+ "memorial_date|87da27b1a8a1140a": {
+  "text": {
+   "en": "95 years (1931-2009) since the birth of Nikolai Vladimirovich Alekseenko, Honorary Citizen of Ust-Kamenogorsk, scientist, local historian",
+   "kk": "Ғалым, өлкетанушы, Өскемен қ. Құрметті азаматы Николай Владимирович Алексеенконың дүниеге келгеніне 95 жыл(1931-2009)"
+  }
+ },
+ "memorial_date|89013b277dd8820e": {
+  "text": {
+   "en": "70th anniversary of the construction of the Bukhtarma HPP dam",
+   "kk": "Бұқтырма СЭС бөгетінің салынуына 70 жыл"
+  }
+ },
+ "memorial_date|8db89a3bc4ade4bd": {
+  "text": {
+   "en": "110 years since the birth of Viktor Ivanovich Krasinsky-Krupennikov, Honored Artist of the Kazakh SSR",
+   "kk": "Қазақ КСР-нің еңбек сіңірген әртісі Виктор Иванович Красинский-Крупенниковтың туғанына 110 жыл."
+  }
+ },
+ "memorial_date|8e5b62a0beb5bba5": {
+  "text": {
+   "en": "115 years since the birth of Kagarmanova Mugira Mukhamedjanovna, the oldest resident of Ust-Kamenogorsk",
+   "kk": "Ең қарт тұрғын Қағарманова Мугира Мұхамеджанқызының туғанына 115 жыл Өскемен қаласы."
+  }
+ },
+ "memorial_date|8f17d1492d25ee24": {
+  "text": {
+   "en": "105 years since the opening of the Zhambyl Theatre in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласындағы Жамбыл Театрының ашылғанына 105 жыл."
+  }
+ },
+ "memorial_date|8f6f41edade87860": {
+  "text": {
+   "en": "105 years since the opening of the first Kazakh primary school in Ust-Kamenogorsk (1920)",
+   "kk": "Өскемен қаласында тұңғыш қазақ бастауыш мектебінің ашылғанына 105 жыл (1920 ж.)"
+  }
+ },
+ "memorial_date|9063ee4d4af9f73b": {
+  "text": {
+   "en": "135 years since the birth of Harlamov Prokofiy Grigoryevich, an enlightener and local historian",
+   "kk": "Ағартушы, өлкетанушы Прокофий Григорьевич Харламовтың туғанына 135 жыл"
+  }
+ },
+ "memorial_date|9266feb4893366eb": {
+  "text": {
+   "en": "70th anniversary of the commissioning of the single-chamber lock of the Ust-Kamenogorsk HPP",
+   "kk": "Өскемен су электр станциясының бір камералы шлюз іске қосылғанына 70 жыл"
+  }
+ },
+ "memorial_date|939e65fbb7d84bb0": {
+  "text": {
+   "en": "95 years (1931) since the establishment of the Zyryanovsky District newspaper \"For Collectivization\"",
+   "kk": "Зырян аудандық «За коллективизацию» газетінің құрылғанына 95 жыл(1931)"
+  }
+ },
+ "memorial_date|93f8e00201071f75": {
+  "text": {
+   "en": "125 years since the birth of Rahvalov Nikolai Semenovich, a local historian and biographer of P.P. Bazhov",
+   "kk": "Өлкетанушы, биограф Николай Семенович Рахваловтың туғанына 125 жыл."
+  }
+ },
+ "memorial_date|9828112fe828eaea": {
+  "text": {
+   "en": "65 years (1961) since the establishment of the historical and local studies museum in Riddere",
+   "kk": "Риддер қ. тарихи-өлкетану мұражайының құрылғанына 65 жыл(1961)"
+  }
+ },
+ "memorial_date|9b9f231c4761500e": {
+  "text": {
+   "en": "115 years since the birth of Dzyuba Maksim Kuzmich, secretary of the party committee of the Ust-Kamenogorsk HPP",
+   "kk": "Өскемен су электр станциясының партия комитетінің хатшысы Максим Кузьмич Дзюбаның туғанына 115 жыл."
+  }
+ },
+ "memorial_date|9da6b82a06dd13f2": {
+  "text": {
+   "en": "70th anniversary of the founding of Silverinsk",
+   "kk": "Серебрянск қаласының құрылғанына 70 жыл"
+  }
+ },
+ "memorial_date|9ecdb5d61aabe336": {
+  "text": {
+   "en": "130 years (1894-1972) since the birth of Venyukt Andreevich Khakhlov, a geologist",
+   "kk": "Геолог Венедикт Андреевич Хахловтың туғанына 130 жыл (1894-1972)"
+  }
+ },
+ "memorial_date|9ef03c3b54aad34b": {
+  "text": {
+   "en": "125th anniversary of the birth of Semen Nikolaevich Gerasimov (1901-1989), a local historian, scientist, and writer",
+   "kk": "Өлкетанушы, ғалым, жазушы Семен Николаевич Герасимовтың дүниеге келгеніне 125 жыл(1901-1989)"
+  }
+ },
+ "memorial_date|a6e81970c6de79ce": {
+  "text": {
+   "en": "155 years since the birth of Dmitry Gordeevich Pankrat'ev, gardener and local historian",
+   "kk": "Бағбан, өлкетанушы Дмитрий Гордеевич Панкратьевтің туғанына 155 жыл."
+  }
+ },
+ "memorial_date|ab2c6bbff267b694": {
+  "text": {
+   "en": "95 years since the commissioning of the first radio station in Ust-Kamenogorsk",
+   "kk": "Өскемендегі алғашқы радио орталығының пайдалануға берілгеніне 95 жыл"
+  }
+ },
+ "memorial_date|ad96e98cd83150cd": {
+  "text": {
+   "en": "95 years (1929-2011) since the birth of Eltai Katpanovich Turlybaev, an outstanding figure in popular education of the Kazakh SSR and a writer-historian",
+   "kk": "Қазақ КСР халық ағарту ісінің үздігі, жазушы-өлкетанушы Елтай Қатпанұлы Тұрлыбаевтың туғанына 95 жыл (1929-2011 ж.)"
+  }
+ },
+ "memorial_date|af9d2af6c0597335": {
+  "text": {
+   "en": "120 years since the birth of the oldest geologist of Rudny Altai, Pavel Petrovich Burov (1902-1944)",
+   "kk": "Рудный Алтайдың ең қарт геологы Павел Петрович Буровтың (1902-1944) туғанына 120 жыл"
+  }
+ },
+ "memorial_date|b2ef72d91bad4f46": {
+  "text": {
+   "en": "55 years (1969) since the opening of the Palace of Sports in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласындағы Спорт сарайының ашылғанына 55 жыл (1969)."
+  }
+ },
+ "memorial_date|b449909153bf8d45": {
+  "text": {
+   "en": "115 years since the birth of Yakovlev Nikolai Nikiforovich, Doctor of Historical Sciences, Professor, organizer of the State Public Historical Library of the RSFSR",
+   "kk": "Тарих ғылымдарының докторы, профессор, РФ Мемлекеттік көпшілік тарихи кітапханасының ұйымдастырушысы Николай Никифорович Яковлевтің туғанына 115 жыл."
+  }
+ },
+ "memorial_date|b65cefc46d23f326": {
+  "text": {
+   "en": "30 years (1995) since the establishment of the Little Assembly of the Peoples of Eastern Kazakhstan",
+   "kk": "Шығыс Қазақстан халықтарының кіші ассамблеясының құрылғанына 30 жыл (1995 ж.)."
+  }
+ },
+ "memorial_date|b73fbfc7164b955d": {
+  "text": {
+   "en": "180 years (1845) since the birth of the poet and enlightener Abai Kunanbaev",
+   "kk": "Ақын-ағартушы Абай Құнанбаевтың туғанына 180 жыл (1845ж.)"
+  }
+ },
+ "memorial_date|b76852bbf135159c": {
+  "text": {
+   "en": "145 years (1879-1950) since the birth of the famous writer Pavel Petrovich Bazhov",
+   "kk": "Белгілі жазушы Павел Петрович Бажовтың туғанына 145 жыл (1879-1950)"
+  }
+ },
+ "memorial_date|b7e9a6455dd966ae": {
+  "text": {
+   "en": "160 years since the birth of Obuchev Vladimir Afanasyevich, researcher of Altai",
+   "kk": "Алтай зерттеушісі Владимир Афанасьевич Обручевтің туғанына 160 жыл"
+  }
+ },
+ "memorial_date|b98f7549cb95291f": {
+  "text": {
+   "en": "100 years since the birth of a public figure, participant in the Great Patriotic War, Honorary Citizen of Ust-Kamenogorsk Oralbek Baisembayevich Maldybaev (1922-2010)",
+   "kk": "Қоғам қайраткері, Ұлы Отан соғысының қатысушысы, Өскемен қаласының Құрметті азаматы Оралбек Бейсембайұлы Малдыбаевтың туғанына 100 жыл. (1922-2010)"
+  }
+ },
+ "memorial_date|bb22243322041dce": {
+  "text": {
+   "en": "90 years (1935) since the establishment of the fire protection service in Ust-Kamenogorsk",
+   "kk": "Өскемен қаласында өрт күзетінің құрылғанына 90 жыл (1935)"
+  }
+ },
+ "memorial_date|bd2561b6dc85285d": {
+  "text": {
+   "en": "70 years since the start of construction of the Bukhtarma HPP",
+   "kk": "Бұқтырма су электр станциясының құрылысының басталғанына 70 жыл"
+  }
+ },
+ "memorial_date|bf93d1e69f83c805": {
+  "text": {
+   "en": "85 years (1939) since the birth of Boris Vasilyevich Shcherbakov, Honorary Citizen of Ust-Kamenogorsk, nature-writer",
+   "kk": "Өскемен қаласының Құрметті азаматы, табиғаттанушы-жазушы Борис Васильевич Щербаковтың туғанына 85 жыл (1939)."
+  }
+ },
+ "memorial_date|c26c0d1eb8bc25bf": {
+  "text": {
+   "en": "95 years (1931) since the founding of the newspaper \"Ridder Rabochiy\" (currently the newspaper of JSC \"Leninogorskaya Pravda\")",
+   "kk": "«Риддерский рабочий» газетінің құрылғанына 95 жыл (1931) (қазіргі уақытта «Лениногркая правда» ЖШС газеті)"
+  }
+ },
+ "memorial_date|c50a81e5aa7ac1f7": {
+  "text": {
+   "en": "100 years since the birth of Krasinaya-Krupennikova Ekaterina Innokentievna, actress of the Zhambyl Theatre",
+   "kk": "Жамбыл театрының актрисасы Екатерина Иннокентьевна Красинская-Крупенникованың туғанына 100 жыл."
+  }
+ },
+ "memorial_date|c5e9360feda00659": {
+  "text": {
+   "en": "85 years since the opening of railway traffic on the 'Rubtsovka-Ridder' line",
+   "kk": "«Рубцовка-Риддер» темір жолының ашылғанына 85 жыл"
+  }
+ },
+ "memorial_date|c6da8cb910a262e7": {
+  "text": {
+   "en": "120 years (1904-1984) since the birth of Fyodor Mikhailovich Karbushev, a poet-songwriter and member of the Union of Journalists of the USSR",
+   "kk": "Ақын-жазушы, КСРО Журналистер одағының мүшесі Федор Михайлович Карбушевтың туғанына 120 жыл (1904-1984)."
+  }
+ },
+ "memorial_date|c946fad24ce5e560": {
+  "text": {
+   "en": "65 years since the establishment of D. Serikbaev East Kazakhstan State Technical University.",
+   "kk": "Д.Серікбаев атындағы Шығыс Қазақстан мемлекеттік техникалық университетінің құрылғанына 65 жыл."
+  }
+ },
+ "memorial_date|caf2f0c14117e9b5": {
+  "text": {
+   "en": "125 years (1899-1943) since the birth of Nikolai Dmitrievich Pankratyev, beekeeper, local historian, representative of the Pankratyev family",
+   "kk": "Омарташы, өлкетанушы, Панкратьевтер әулетінің өкілі Николай Дмитриевич Панкратьевтің туғанына 125 жыл (1899-1943)"
+  }
+ },
+ "memorial_date|cb16b0334181b603": {
+  "text": {
+   "en": "90 years (1934-1991) since the birth of Stanislav Evgenievich Chernykh, an archivist, local historian, and writer",
+   "kk": "Архивист, өлкетанушы, жазушы Станислав Евгеньевич Черныхтың туғанына 90 жыл (1934-1991 ж.)"
+  }
+ },
+ "memorial_date|cd6a34f7d1cfae3b": {
+  "text": {
+   "en": "80 years (1945) since the birth of Pussep Gennady Nikolaevich, director of the public fund \"Honorary Citizens of Ust-Kamenogorsk\" \"My City\", member of the Union of Journalists of Kazakhstan and the Association of Creative Intelligence of VCO, member of the Union of Writers of Russia.",
+   "kk": "Өскемен қаласының \"Менің қалам\" құрметті азаматтары қоғамдық қорының директоры, Қазақстан Журналистер Одағының және ШҚО шығармашылық интеллектуалдық қауымдастығының мүшесі, Ресей Жазушылар одағының мүшесі Пуссеп Геннадий Николаевичтің туғанына 80 жыл (1945)."
+  }
+ },
+ "memorial_date|d110e3441d000810": {
+  "text": {
+   "en": "60 years (1966) since the establishment of Markakol district newspaper \"Mayak\"",
+   "kk": "Марқакөл аудандық «Маяк» газетінің шыққан күніне 60 жыл(1966)"
+  }
+ },
+ "memorial_date|d130522e21c3b24a": {
+  "text": {
+   "en": "135 years (1891-1977) since the birth of Alexander Melentievich Volkov, a scientist and children's writer",
+   "kk": "Ғалым, балалар жазушысы Александр Мелентьевич Волковтың дүниеге келгеніне 135 жыл(1891-1977)"
+  }
+ },
+ "memorial_date|d254827f54d57efb": {
+  "text": {
+   "en": "105 years since the birth of Hero of the Soviet Union Andrey Vasilyevich Sumin (1919-1986)",
+   "kk": "Кеңес Одағының Батыры Андрей Васильевич Суминнің туғанына 105 жыл (1919-1986)"
+  }
+ },
+ "memorial_date|d8d72d915d8bd65a": {
+  "text": {
+   "en": "155 years since the birth of gardener-Michurinist, beekeeper, and local historian Dmitry Gordeevich Pankratyev (1867-1956)",
+   "kk": "Мичуриндік бағбан, омарташы, өлкетанушы Дмитрий Гордеевич Панкратьевтің туғанына 155 жыл (1867-1956)"
+  }
+ },
+ "memorial_date|d9aa75b61fe89ed0": {
+  "text": {
+   "en": "105 years (1921) since the first elections to local councils of workers', peasants' and soldiers' deputies in Zaysan district",
+   "kk": "Зайсан уезіндегі жергілікті Кеңеске жұмысшылардың, шаруа және қызыл әскер депутаттардың бірінші сайлауына 105 жыл(1921)"
+  }
+ },
+ "memorial_date|da398fe1e3decd30": {
+  "text": {
+   "en": "115 years (1910) since the birth of Kailin Moisey Faitelievich, head of PJSC \"Altaienergo\", Honored Energy Worker of the Kazakh SSR",
+   "kk": "Қазақ КСР еңбек сіңірген энергетик, «Алтайэнергия» басқарушы Кейлин Моисей Файтелеевичтің туғанына 115 жыл (1910 ж.)"
+  }
+ },
+ "memorial_date|db3d542c78ef5d87": {
+  "text": {
+   "en": "115 years (1910) since the birth of Hero of the Soviet Union Ivan Iosifovich Varepa",
+   "kk": "Кеңес Одағының Батыры Вареп Иван Иосифовичтың туғанына 115 жыл (1910)"
+  }
+ },
+ "memorial_date|dcb8de5ca4563068": {
+  "text": {
+   "en": "120 years since the birth of Ivan Vasilyevich Kuritsyn, first secretary of the Ridder City Committee of the Communist Party of Kazakhstan",
+   "kk": "Қазақстан Компартиясы Риддер қалалық комитетінің бірінші хатшысы Иван Васильевич Курицынның туғанына 120 жыл."
+  }
+ },
+ "memorial_date|dd32d0aeb9b9aa97": {
+  "text": {
+   "en": "85 years (1941) since the renaming of Ridder to Leninogorsk",
+   "kk": "Риддер қ. Лениногорск қ. қайта аталуына 85 жыл (1941)"
+  }
+ },
+ "memorial_date|dd747908488b0480": {
+  "text": {
+   "en": "150 years since the birth and 90 years since the death of Kazakhstani regional studies scholar Boris Georgievich Gerashimov",
+   "kk": "Қазақстандық өлкетанушы, ғалым Борис Георгиевич Герасимовтің туғанына 150 жыл және қайтыс болғанына 90 жыл"
+  }
+ },
+ "memorial_date|dd7ea4892c271e10": {
+  "text": {
+   "en": "120th anniversary of the opening of the first village school in Zaysan District",
+   "kk": "Зайсан ауданындағы алғашқы ауыл мектебінің ашылғанына 120 жыл"
+  }
+ },
+ "memorial_date|de36f1df0e8be16f": {
+  "text": {
+   "en": "80th anniversary of the birth of Oralhan Bokeyev, poet and prose writer",
+   "kk": "Ақын, жазушы, драматург, журналист Оралхан Бөкеевтің туғанына 80 жыл."
+  }
+ },
+ "memorial_date|df1e6af070749c8e": {
+  "text": {
+   "en": "110 years (1914-1974) since the birth of Hero of the Soviet Union Alexander Anfinogenovich Burnashov",
+   "kk": "Кеңес Одағының Батыры Александр Анфиногенович Бурнашовтың туғанына 110 жыл (1914-1974 ж.)"
+  }
+ },
+ "memorial_date|df6d1d6f043a3c46": {
+  "text": {
+   "en": "115 years (1909-1944) since the birth of Hero of the Soviet Union Timofey Sergeevich Verbitsky",
+   "kk": "Кеңес Одағының Батыры Тимофей Сергеевич Вербицкийдің туғанына 115 жыл (1909-1944)"
+  }
+ },
+ "memorial_date|df8a176d3b6e979d": {
+  "text": {
+   "en": "90th anniversary of the formation of the East Kazakhstan Region with its center in Semipalatinsk (1932)",
+   "kk": "Орталығы Семей қаласы Шығыс Қазақстан облысының құрылғанына 90 жыл (1932)"
+  }
+ },
+ "memorial_date|e064067d8ee0dbc8": {
+  "text": {
+   "en": "85 years since the birth of Musin Mengali Shaimardanovich, Honored Journalist of the Republic of Kazakhstan, participant of the Great Patriotic War",
+   "kk": "Қазақстан Республикасының құрметті журналисті, Ұлы Отан соғысына қатысушы Мусин Меңғали Шаймарданұлының туғанына 85 жыл."
+  }
+ },
+ "memorial_date|e0ea21e0a654cb87": {
+  "text": {
+   "en": "95 years since the establishment of Samara District",
+   "kk": "Самар облысының құрылғанына 95 жыл"
+  }
+ },
+ "memorial_date|e3636ade133559c4": {
+  "text": {
+   "en": "85 years (1941) since the transformation of Zryanovsk settlement into a city",
+   "kk": "Зыряновск кенті қалаға өзгеруіне 85 жыл (1941)"
+  }
+ },
+ "memorial_date|e4f2120ea1e5c937": {
+  "text": {
+   "en": "120th anniversary of the birth of Amanzholov Sarsen, a Turkologist scholar",
+   "kk": "түрколог-ғалым, қазақ тіл білімінің негізін салушы Аманжолов Сәрсеннің туғанына 120 жыл"
+  }
+ },
+ "memorial_date|e6adb9f02db1dfd5": {
+  "text": {
+   "en": "55 years ago, the experienced workshop of the Ust-Kamenogorsk Titan-Magnesium Combine produced its first product - titanium tetrachloride",
+   "kk": "55 жыл бұрын Өскемен титан-магний комбинатының тәжірибелік цехы өзінің алғашқы өнімі – төрт хлорлы титанды шығарды."
+  }
+ },
+ "memorial_date|e8cc2e869f7983ff": {
+  "text": {
+   "en": "75 years (1949) beginning of the activities of the Scientific and Metallurgical Institute of the Academy of Sciences of Kazakhstan in Ust-Kamenogorsk (Altai Geological and Ecological Institute)",
+   "kk": "Өскемен қаласындағы ғылыми-зерттеу және Қазақстанның АН металлургия институтының қызметінің басталуына (Алтай геологиялық-экологиялық институты) 75 жыл (1949 ж.)"
+  }
+ },
+ "memorial_date|ea96a255bfa25833": {
+  "text": {
+   "en": "240 years (1786) since the founding of Ridder city",
+   "kk": "Риддер қ. құрылуына 240 жыл (1786)"
+  }
+ },
+ "memorial_date|f016138cf39ebd11": {
+  "text": {
+   "en": "60 years (1966) since the establishment of the Ulan district newspaper \"Orken - Blossom\"",
+   "kk": "Ұлан аудандық «Өркен- Расцвет» газетінің құрылғанына 60 жыл(1966)"
+  }
+ },
+ "memorial_date|f4d6ab17e3bcce5d": {
+  "text": {
+   "en": "80 years (1940) since the birth of Kurdyakov Evgeny Vasilievich, poet, writer, member of the Union of Writers of the USSR, corresponding member of the Petrov Academy of Sciences and Arts",
+   "kk": "Ақын, жазушы, КСРО Жазушылар одағының мүшесі, Петров ғылым және өнер академиясының корреспондент-мүшесі Евгений Васильевич Курдаковтың туғанына 80 жыл (1940)."
+  }
+ },
+ "memorial_date|f57e5db6bde86f13": {
+  "text": {
+   "en": "85 years ago, a converter began operating at the Irtysh Copper-Gold Plant in p. Gлубokoe, and the first tons of copper were produced.",
+   "kk": "Осыдан 85 жыл бұрын Глубокое ауылындағы Ертіс мыс-алтын комбинатында конвертер іске қосылып, алғашқы тонна мыс алынды."
+  }
+ },
+ "memorial_date|f66e77dc098f01a3": {
+  "text": {
+   "en": "100 years (1924-1989) since the birth of Alexey Ivanovich Chernov, Hero of the Soviet Union, Honorary Citizen of Ust-Kamenogorsk",
+   "kk": "Кеңес Одағының батыры, Өскемен қаласының құрметті азаматы Алексей Иванович Черновтың туғанына 100 жыл (1924-1989)."
+  }
+ },
+ "memorial_date|f6855e39f537825c": {
+  "text": {
+   "en": "65 years since the establishment of the East Kazakhstan Regional Geological Association",
+   "kk": "Шығыс Қазақстан облыстық геологиялық бірлестігінің құрылғанына 65 жыл"
+  }
+ },
+ "memorial_date|f694383f5aa11212": {
+  "text": {
+   "en": "95 years (1930) since the birth of Sakabaev Kokei, journalist, member of the Union of Writers of Kazakhstan",
+   "kk": "Қазақстан Жазушылар одағының мүшесі, журналист Сақабаев Көкейдің туғанына 95 жыл (1930),"
+  }
+ },
+ "memorial_date|f6ec3c78ba56284d": {
+  "text": {
+   "en": "90 years (1935) since the birth of Grigoryants Eduard Mikhailovich, Honored Trainer of the Kazakh SSR",
+   "kk": "Қазақ КСР еңбек сіңірген жаттықтырушы Эдуард Михайлович Григорьянцтың туғанына 90 жыл (1935 ж.)"
+  }
+ },
+ "memorial_date|f9f5ffe68606aed9": {
+  "text": {
+   "en": "130 years (1896-1971) since the birth of Yefim Nikolaevich Permitin, a writer and native of Eastern Kazakhstan",
+   "kk": "Шығыс Қазақстанның тумасы, жазушы Ефим Николаевич Пермитиннің дүниеге келгеніне 130 жыл (1896-1917)"
+  }
+ },
+ "memorial_date|fa48b0ebf6442174": {
+  "text": {
+   "en": "120 years since the establishment of the Semipalatinsk Subdepartment of the Russian Geographical Society",
+   "kk": "Семей қаласының бөлімшесінің Орыс географиялық қоғамының құрылғанына 120 жыл"
+  }
+ },
+ "memorial_date|ffa33eb527f5102b": {
+  "text": {
+   "en": "130 (1896) years since the establishment of the East Kazakhstan Regional Library named after A.S. Pushkin",
+   "kk": "А.С.Пушкин атындағы Шығыс Қазақстан облыстық кітапханасының негізі қаланғанына 130 жыл(1896)"
+  }
+ },
+ "news|12163cbd0c884ee6": {
+  "body": {
+   "en": "<p>The exhibition tells about schools and teachers using the materials.</p>",
+   "kk": "<p>Көрме мектептер мен мұғалімдер туралы материалдар негізінде хабарлайды.</p>"
+  },
+  "summary": {
+   "en": "Exhibition on school documents.",
+   "kk": "Мектептік құжаттарға арналған көрме."
+  },
+  "title": {
+   "en": "Online exhibition \"History of Education in the Region\"",
+   "kk": "Онлайн-экспозиция «Тарихтың аймақтағы білім беру тарихы»"
+  }
+ },
+ "news|2e0e545af5acefdb": {
+  "body": {
+   "en": "<p>The exhibition introduces documents from the 1950–1960s about Ust-Kamenogorsk. Each exhibit is accompanied by a signature and an archive code.</p>",
+   "kk": "<p>Көрме 1950–1960-жылдарға арналған Усть-Каменогорск қаласы туралы құжаттармен таныстырады. Әрбір экспонатқа архивтік шифр мен жазу сәйкес келеді.</p>"
+  },
+  "summary": {
+   "en": "The exhibition is composed of documents.",
+   "kk": "Көрме құжаттардан тұрады."
+  },
+  "title": {
+   "en": "Online exhibition \"Ust-Kamenogorsk: the history of the city in archival documents\" is open",
+   "kk": "Ауық онлайн-көрмелер «Усть-Каменогорск: қаланың тарихы архивтік құжаттарда» ашылды"
+  }
+ },
+ "news|3f78d98cb65140ce": {
+  "body": {
+   "en": "<p>The guide describes search, filters by fund and period, and file access statuses.</p>",
+   "kk": "<p>Нұсқаулықта фонды мен кезең бойынша іздеу, сүзгілер және файлдарға қолжетімділік статустары туралы айтылған.</p>"
+  },
+  "summary": {
+   "en": "Search, filters and access statuses — in the site guide.",
+   "kk": "Іздеу, сүзгілер және файлдарға қолжетімділік статусы — сайт нұсқаулығында."
+  },
+  "title": {
+   "en": "How to use the electronic catalog",
+   "kk": "Электрондық каталогты қалай пайдалану керек"
+  }
+ },
+ "news|74c714d05d17b22d": {
+  "body": {
+   "en": "<p>The Calendar of Commemorative Dates for 2026 is available in the \"Memory Archive\" section.</p>",
+   "kk": "<p>2026 жылға арналған ескерту күндерінің календары «Есерткіш архиві» бөлімінде қолжетімді.</p>"
+  },
+  "summary": {
+   "en": "The calendar includes dates related to the history of the region.",
+   "kk": "Календарь тарихи аймаққа қатысты күндерді қамтиды."
+  },
+  "title": {
+   "en": "Calendar of Commemorative Dates for 2026 Published",
+   "kk": "2026 жылға арналған Ескерту күндері календары жарияланды"
+  }
+ },
+ "news|9e60784f073cbdf2": {
+  "body": {
+   "en": "<p>Branches are marked on the map. Coordinates are currently approximate; please check the branch card and call for exact addresses and routes.</p>",
+   "kk": "<p>Картада филиалдар белгіленген. Координаттар әзірше жуықтау, нақты мекенжайлар мен жолдарын филиал картасында және телефон арқылы сұраңыз.</p>"
+  },
+  "summary": {
+   "en": "Branch coordinates are approximate and require clarification.",
+   "kk": "Филиалдар координаттары жуықтау және нақтылауды қажет етеді."
+  },
+  "title": {
+   "en": "Branch map updated",
+   "kk": "Филиалдар картасы жаңартылды"
+  }
+ },
+ "news|c7f420f7d5cfd1d1": {
+  "body": {
+   "en": "<p>The collection includes school documents and materials on the work of teachers.</p>",
+   "kk": "<p>Жинаққа мұғалімдердің жұмысы туралы мектептік құжаттар мен материалдар енгізілді.</p>"
+  },
+  "summary": {
+   "en": "Collection of school documents.",
+   "kk": "Мектептік құжаттардың жинағы."
+  },
+  "title": {
+   "en": "New collection \"Education in the region\"",
+   "kk": "Жаңа жинақ «Аймақтағы білім беру»"
+  }
+ },
+ "news|fe2e2f877fbde776": {
+  "body": {
+   "en": "<p>The exhibition displays orders, plans, and photographs of the plant's workshops.</p>",
+   "kk": "<p>Көрме кешеннің цехтары туралы бұйрықтар, жоспарлар және суреттерді көрсетеді.</p>"
+  },
+  "summary": {
+   "en": "Exhibits — documents about the plant's workshops.",
+   "kk": "Экспонаттар – кешеннің цехтары туралы құжаттар."
+  },
+  "title": {
+   "en": "Online Exhibition \"Industrial Development of Eastern Kazakhstan\"",
+   "kk": "Онлайн-экспозиция «Өндірістік даму Шығыс Қазақстанда»"
+  }
+ },
+ "page|20f9d9878b4e5fab": {
+  "body": {
+   "en": "<p>Address: Republic of Kazakhstan, 070000, Ust-Kamenogorsk, Beibishilik Street, 26/1 (Golovkova, 26/1)</p><ul><li>Director: 8 (7232) 25-13-22</li><li>Deputy Director: 8 (7232) 57-00-15</li><li>Reception: 8 (7232) 25-59-76</li><li>HR Inspector: 8 (7232) 25-26-60</li><li>Accounting: 8 (7232) 70-31-06</li></ul><p>E-mail: arhiv-ukg@yandex.kz</p><p>Working hours: Monday-Friday 8.00 – 17.00</p><p>Reading Room hours: Monday-Friday 9.00-16.00</p>",
+   "kk": "<p>Мекенжай: Қазақстан Республикасы, 070000, Усть-Каменогорск қаласы, Бейбітшілік көшесі, 26/1 (Головкова, 26/1)</p><ul><li>Директор: 8 (7232) 25-13-22</li><li>Орынбасары: 8 (7232) 57-00-15</li><li>Қабылдау бөлмесі: 8 (7232) 25-59-76</li><li>Жеке құрам инспекторы: 8 (7232) 25-26-60</li><li>Бухгалтерия: 8 (7232) 70-31-06</li></ul><p>E-mail: arhiv-ukg@yandex.kz</p><p>Жұмыс уақыты: дүйсенбі-жұма 8.00 – 17.00</p><p>Оқу залының жұмыс уақыты: дүйсенбі-жұма 9.00-16.00</p>"
+  },
+  "title": {
+   "en": "Contacts",
+   "kk": "Байланыстар"
+  }
+ },
+ "page|2eee4a46f2aff97a": {
+  "body": {
+   "en": "<h2>Management</h2><ul><li>Director: Zhaparov Askar Kenzhebayevich (8 (7232) 25-13-22, ak.zhaparov@akimvko.gov.kz)</li><li>Deputy Director: Kostina Elena Valeryevna (8 (7232) 57-00-15, e.kostina@akimvko.gov.kz)</li><li>Chief Archivist: Baelova Almira Tugelbayevna (8(7232) 25-43-10, a.baelova@akimvko.gov.kz)</li></ul><h2>Department of Financial and Personnel Work</h2><ul><li>Chief Accountant: Kalieva Madina Samatovna (8 (7232) 70-31-06)</li><li>Personnel Inspector: Uvalzhanova Kulmira Ospanovna (8 (7232) 25-26-60, k.uvalzhanova@akimvko.gov.kz)</li></ul><h2>Department of Administrative and Economic Affairs</h2><ul><li>Specialist for AHC: Mutagaliyev Askat Kumargaliyevich</li></ul><h2>Department of Document Preservation and State Accounting</h2><ul><li>Department Head: Baelova Almira Tugelbayevna (8(7232) 25-43-10, a.baelova@akimvko.gov.kz)</li></ul><h2>Department of Archival Fund Assembly and Control over Departmental Archives</h2><ul><li>Department Head: Sarsembaeva Galia Erkenovna (8 (7232) 25-46-98, g.sarsembaeva@akimvko.gov.kz)</li></ul><h2>Department of Reference Apparatus, Publications and Scientific Use of Documents</h2><ul><li>Department Head: Shustova Tatiana Vladimirovna (8 (7232) 25-59-76, t.shustova@akimvko.gov.kz)</li></ul><h2>Department of Information Technologies</h2><ul><li>Department Head: Bekniyazkyzy Zhanguyl (8 (7232) 25-01-85, zh.bekniazkyzy@akimvko.gov.kz)</li></ul><h2>Department of Document Value Assessment</h2><ul><li>Department Head: Rahimbayeva Akmaral Toktamysovna (8(7232) 70-27-14, arhivvko_ekspertiza@yandex.kz)</li></ul>",
+   "kk": "<h2>Жетекшілік</h2><ul><li>Директор: Жапаров Аскар Кенжебаевич (8 (7232) 25-13-22, ak.zhaparov@akimvko.gov.kz)</li><li>Орынбасары: Костина Елена Валерьевна (8 (7232) 57-00-15, e.kostina@akimvko.gov.kz)</li><li>Қорлардың бас қорғаушысы: Баелова Альмира Тугельбаевна (8(7232) 25-43-10, a.baelova@akimvko.gov.kz)</li></ul><h2>Мамандық және кадрлық жұмыс бөлімі</h2><ul><li>Бас бухгалтер: Калиева Мадина Саматовна (8 (7232) 70-31-06)</li><li>Кадрлар бойынша инспектор: Увальжанова Кульмира Оспановна (8 (7232) 25-26-60, k.uvalzhanova@akimvko.gov.kz)</li></ul><h2>Әкімшілік-мүліктік бөлім</h2><ul><li>АХЧ маманы: Мутагалиев Аскат Кумаргалиевич</li></ul><h2>Құжаттарды сақтау және мемлекеттік есепке алу бөлімі</h2><ul><li>Бөлім басшысы: Баелова Альмира Тугельбаевна (8(7232) 25-43-10, a.baelova@akimvko.gov.kz)</li></ul><h2>Ведомстволық архивтерді толықтыру және бақылау бөлімі</h2><ul><li>Бөлім басшысы: Сарсембаева Галия Еркеновна (8 (7232) 25-46-98, g.sarsembaeva@akimvko.gov.kz)</li></ul><h2>Ғылыми-ақпараттық құралдар, жариялау және құжаттардың ғылыми пайдалану бөлімі</h2><ul><li>Бөлім басшысы: Шустова Татьяна Владимировна (8 (7232) 25-59-76, t.shustova@akimvko.gov.kz)</li></ul><h2>Ақпараттық технологиялар бөлімі</h2><ul><li>Бөлім басшысы: Бекниязқызы Жангуль (8 (7232) 25-01-85, zh.bekniazkyzy@akimvko.gov.kz)</li></ul><h2>Құжаттардың құндылығын бағалау бөлімі</h2><ul><li>Бөлім басшысы: Рахимбаева Акмарал Токтамысовна (8(7232) 70-27-14, arhivvko_ekspertiza@yandex.kz)</li></ul>"
+  },
+  "title": {
+   "en": "Management and Structure",
+   "kk": "Жетекшілік және құрылым"
+  }
+ },
+ "page|91c5a400f4743dc5": {
+  "body": {
+   "en": "<p>Compliance Officer: Eshengeldiev Tyrek Molbolovich</p><p>The State Archive of the East Kazakhstan Region, a state-owned enterprise under the Digitalization and Archives Department of the East Kazakhstan Region, in order to prevent corruption offenses, identify conditions and causes contributing to the commission of corruption offenses in organizational-management and main activities, begins conducting an internal analysis of corruption risks starting from September 11, 2026.</p><p>on the implementation of the internal analysis of corruption risks</p><p>The State Archive of the East Kazakhstan Region, a state-owned enterprise under the Digitalization and Archives Department of the East Kazakhstan Region (hereinafter – the Institution), has conducted an internal analysis of corruption risks, based on which an analytical report has been prepared.</p><p>In addition, within the framework of the conducted analysis, a list of positions exposed to corruption risks has been compiled, and a Plan of Measures for eliminating the causes and conditions contributing to the commission of corruption offenses identified as a result of the internal analysis of corruption risks in the Institution has been developed and approved.</p><p>The aforementioned documents have been posted on the information website \"State Archive of the East Kazakhstan Region and its branches\".</p><p>In order to implement the Plan of Measures and ensure compliance with anti-corruption legislation in the field of state procurement, responsible persons for organizing and conducting state procurement have been appointed (order dated October 21, 2026, No. 123).</p><p>In addition, in order to strengthen control over compliance with established requirements when providing paid services, responsible persons for organizing and providing paid services have been appointed by order dated October 21, 2026, No. 124.</p><p>In order to prevent and avoid the emergence of conflicts of interest upon hiring, an order dated October 22, 2026, No. 125 \"On the work of the personnel department\" has been approved.</p><p>Thus, the Institution is taking necessary organizational and preventive measures to eliminate identified corruption risks, prevent corruption offenses, and ensure compliance with anti-corruption legislation requirements.</p>",
+   "kk": "<p>Комплаенс-офицер: Ешенгельдиев Тырек Молболович</p><p>Шығыс Қазақстан облысы цифрландыру және архивтер басқармасының «Шығыс Қазақстан облысының мемлекеттік архиві» КММ сыбайлас жемқорлық құқық бұзушылықтардың жолын кесу, ұйымдық - басқарушылық және негізгі қызметте сыбайлас жемқорлық құқық бұзушылықтар жасауға ықпал ететін жағдайлар мен себептерді анықтау мақсатында 2026 жылғы 11 қыркүйектен бастап сыбайлас жемқорлық тәуекелдеріне ішкі талдау жүргізуді бастайды.</p><p>Шығыс Қазақстан облысы цифрландыру және архивтер басқармасының «Шығыс Қазақстан облысының мемлекеттік архиві» коммуналдық мемлекеттік мекемесі (бұдан әрі – Мекеме) сыбайлас жемқорлық тәуекелдеріне ішкі талдау жүргізді, оның нәтижелері бойынша талдау анықтамасы дайындалды.</p><p>Сонымен қатар, жүргізілген талдау шеңберінде сыбайлас жемқорлық тәуекелдеріне бейім лауазымдардың тізбесі жасалды, сондай-ақ Мекемедегі сыбайлас жемқорлық тәуекелдеріне ішкі талдау нәтижелері бойынша анықталған сыбайлас жемқорлық құқық бұзушылықтарды жасауға ықпал ететін себептер мен жағдайларды жою жөніндегі іс-шаралар жоспары әзірленіп, бекітілді.</p><p>Аталған құжаттар «ШҚО мемлекеттік архиві және оның филиалдары» ақпараттық сайтында орналастырылған.</p><p>Іс-шаралар жоспарын іске асыру және мемлекеттік сатып алу саласындағы сыбайлас жемқорлыққа қарсы заңнама талаптарының сақталуын қамтамасыз ету мақсатында мемлекеттік сатып алуды ұйымдастыру мен өткізуге жауапты тұлғалар тағайындалды (2026 жылғы 21 қазандағы № 123 бұйрық).</p><p>Бұдан бөлек, ақылы қызметтерді көрсету кезінде белгіленген талаптардың сақталуын бақылауды күшейту мақсатында 2026 жылғы 21 қазандағы № 124 бұйрықпен ақылы қызметтерді ұйымдастыру мен көрстуге жауапты тұлғалар тағайындалды.</p><p>Жұмысқа қабылдау кезінде мүдделер қақтығысының туындауының алдын алу және оған жол бермеу мақсатында 2026 жылғы 22 қазандағы № 125 «Кадр қызметінің жұмысы туралы» бұйрық бекітілді.</p><p>Осылайша, Мекеме анықталған сыбайлас жемқорлық тәуекелдерін жою, сыбайлас жемқорлық құқық бұзушылықтардың алдын алу және сыбайлас жемқорлыққа қарсы заңнама талаптарының сақталуын қамтамасыз ету бойынша қажетті ұйымдастырушылық және профилактикалық шараларды қабылдауда.</p>"
+  },
+  "title": {
+   "en": "Compliance Service / Anti-Corruption",
+   "kk": "Комплаенс қызметі / Сыбайлас жемқорлыққа қарсы іс-қимыл"
+  }
+ },
+ "person|2107da74c8079e86": {
+  "bio": {
+   "en": "95 years (1931-2009) since the birth of Nikolai Vladimirovich Alexeenko, Honorary Citizen of Ust-Kamenogorsk, scientist, local historian. Detailed biography will be added after verification with the source.",
+   "kk": "95 жыл (1931-2009) Николас Владимирович Алексеенконың туған күнінен бастап, Усть-Каменогорск қаласының құрметті азаматы, ғалым, жер тарихы зерттеушісі. Дереккөздерді тексеруден кейін толық биография қосылады."
+  },
+  "name": {
+   "en": "Alexeenko Nikolai Vladimirovich",
+   "kk": "Алексеенко Николай Владимирович"
+  }
+ },
+ "person|4176476b93964149": {
+  "bio": {
+   "en": "130 years since the birth of Yefim Nikolaevich Permitin, a writer from Eastern Kazakhstan. A detailed biography will be added after verification with the source.",
+   "kk": "130 жыл (1896-1971) Ефим Николаевич Пермитиннің туған күніне арналған. Шығармашылық, Шығыс Қазақстан облысынан шыққан жазушы. Дереккөздерді тексеруден кейін толықтырылған өмірбаян қосылады."
+  },
+  "name": {
+   "en": "Permitin Yefim Nikolaevich",
+   "kk": "Пермитин Ефим Николаевич"
+  }
+ },
+ "person|a3117739b457d62b": {
+  "bio": {
+   "en": "120 years since the birth of Ivan Vasilievich Berdus, a Honored Energy Specialist of the Kazakh SSR and director of the Leninogorsk cascade of hydroelectric power stations. A detailed biography will be added after verification with the source.",
+   "kk": "120 жыл (1906-1970) аралығында туған Иван Васильевич Бердустың, Қазақ КСР-інің құрметті энергетигі және Лениногорск су электр станциясы каскадының директоры болуы. Толық биография дереккөздерді тексеруден кейін қосылады."
+  },
+  "name": {
+   "en": "Berdus Ivan Vasilievich",
+   "kk": "Бердус Иван Васильевич"
+  }
+ },
+ "person|d5870753f3eb5c09": {
+  "bio": {
+   "en": "150 years (1876-1919) since the birth of the regional studies researcher Alexander Nikitich Sedelnikov from Rudny Altai. Detailed biography will be added after verification with the source.",
+   "kk": "150 жыл (1876-1919) бұрын Рудный Алтай аймағының зерттеушісі, жергілікті тарихшысы Александр Никитич Седельниковтың туған күніне арналған. Толық өмірбаян дереккөздерді тексергеннен кейін қосылады."
+  },
+  "name": {
+   "en": "Sedelnikov Alexander Nikitich",
+   "kk": "Седельников Александр Никитич"
+  }
+ },
+ "person|ec71f0a94c959f4c": {
+  "bio": {
+   "en": "125th (1901-1989) anniversary of the birth of Semyon Nikolaevich Gerasimov, a local historian, scientist, and writer. A detailed biography will be added after verification with the source.",
+   "kk": "125 (1901-1989) жылдағы Семен Николаевич Герасимовтың туған күніне арналған, краевед, ғалым, жазушы. Дереккөздерді тексеруден кейін толық биография қосылады."
+  },
+  "name": {
+   "en": "Gerasimov Semyon Nikolaevich",
+   "kk": "Герасимов Семён Николаевич"
+  }
+ }
+}

@@ -1,4 +1,4 @@
-"""initial schema: extensions vector + pg_trgm and all models of PLAN.md §2
+"""initial schema: extensions vector + pg_trgm and all models of the project plan §2
 
 Revision ID: 0001
 Revises: 

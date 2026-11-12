@@ -23,7 +23,7 @@ from app.models import (
     Tag,
     WorkflowStatus,
 )
-from seed.common import Report, attach_file, i18n, translation_status, upsert
+from seed.common import Report, asset_stem, attach_file, i18n, translation_status, upsert
 from seed.demo_data import FUNDS, TAGS, Doc
 
 PUBLISHED = WorkflowStatus.PUBLISHED
@@ -95,6 +95,11 @@ def silent_wav() -> bytes:
     return buffer.getvalue()
 
 
+def has_asset(code: str) -> bool:
+    """A real image for this document exists in seed/assets: it replaces the generated pages (see seed/media.py)."""
+    return (Path(__file__).parent / "assets" / "documents" / f"{asset_stem(code)}.jpg").exists()
+
+
 def _store_files(session, report, storage_dir, doc: Doc, document: Document, base: str, refresh: bool) -> None:
     access = FileAccess(doc.access)
     common = {"owner_type": "document", "owner_id": document.id, "access": access, "is_demo": True,
@@ -102,7 +107,7 @@ def _store_files(session, report, storage_dir, doc: Doc, document: Document, bas
     if doc.kind == "audio":
         attach_file(session, report, storage_dir, position=0, name=f"catalog/{base}.wav", data=silent_wav(),
                     mime="audio/wav", caption=i18n(ru=doc.title), **common)  # fmt: skip
-    elif doc.kind in ("scan", "photo"):
+    elif doc.kind in ("scan", "photo") and not has_asset(document.archive_code):
         pages = doc.pages or (f"{doc.title}\n\n{doc.summary}",)
         for number, text in enumerate(pages, 1):
             image = photo(doc.title) if doc.kind == "photo" else scan_page(text, number, len(pages))
@@ -114,7 +119,7 @@ def _store_files(session, report, storage_dir, doc: Doc, document: Document, bas
                 session, report, storage_dir, position=number - 1, name=f"catalog/{base}-{number}.png",
                 data=_png(image), mime="image/png", pages=1, preview_path=preview_name,
                 caption=i18n(ru=f"{doc.title}, л. {number}"),
-                # The OCR text is the page text itself: simulated OCR, labelled as such in the handoff.
+                # The OCR text is the page text itself: simulated OCR, labelled as such in docs/DATA_SOURCES.md.
                 ocr_text=text if doc.pages else None,
                 ocr_status=OcrStatus.DONE if doc.pages else OcrStatus.NONE,
                 **common,

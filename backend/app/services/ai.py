@@ -1,6 +1,6 @@
 """Public AI assistant: smart-search parse and the RAG answer (T4.2, T4.4, T4.7).
 
-Flow (PLAN.md §4.1):
+Flow (the project plan §4.1):
     guard (off-topic / injection / service) → query parser → public hybrid search
     → top 8 → [nothing?] «not found» (no LLM) → [only restricted documents?] «restricted»
     (no LLM) → LLM answer over the context → post-check → answer + server-built cards.
@@ -15,7 +15,9 @@ access conditions. If Ollama or the model is unavailable the result has
 
 import json
 import logging
+import re
 import urllib.parse
+from datetime import date
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import Any
@@ -27,6 +29,7 @@ from app.ai.ollama_client import OllamaUnavailable
 from app.config import Settings
 from app.models import Branch, Document, Fund
 from app.models.enums import FileAccess
+from app.repositories import catalog as catalog_repo
 from app.repositories import search as search_repo
 from app.schemas.ai import (
     AiAnswer,
@@ -39,6 +42,7 @@ from app.schemas.ai import (
     ParsedQuery,
     RouteLink,
 )
+from app.schemas.catalog import CatalogFilters
 from app.schemas.search import SearchFilters, SearchItem
 from app.services import search as search_service
 from app.services import rate_limit, search_log
@@ -59,6 +63,12 @@ TYPE_WORDS = {
     "collection": {"ru": "коллекция", "kk": "коллекция", "en": "collection"},
     "news": {"ru": "новость", "kk": "жаңалық", "en": "news"},
     "section": {"ru": "раздел сайта", "kk": "сайт бөлімі", "en": "site section"},
+}
+
+BROWSE_TITLE = {
+    "ru": "Каталог: все найденные документы ({total})",
+    "kk": "Каталог: барлық табылған құжаттар ({total})",
+    "en": "Catalogue: all documents found ({total})",
 }
 
 ACCESS_WORDS = {
@@ -126,15 +136,26 @@ def _decades(parsed: ParsedQuery) -> list[str]:
     return [f"{decade}s" for decade in range(period.from_ // 10 * 10, period.to + 1, 10)]
 
 
+# Words that describe the request itself, not what is searched: they would match nothing.
+_GENERIC = re.compile(
+    r"^(?:файл\w*|документ\w*|материал\w*|бумаг\w*|все|всё|всех|весь|найд\w*|покаж\w*|есть|что|год\w*|за|данн\w*|информац\w*|"
+    r"хочу|нужн\w*|мне|пожалуйста|список|перечень|дай\w*|скин\w*|ищи|искать|поиск\w*|архив\w*|"
+    r"files?|documents?|materials?|all|find|show|list|please|year|years|"
+    r"құжат\w*|файл\w*|барлық|тап\w*|көрсет\w*|жыл\w*)$",
+    re.IGNORECASE,
+)
+
+
 def build_filters(parsed: ParsedQuery, text: str, synonym_groups: list[list[str]] | None = None) -> AppliedFilters:
     """Search parameters from the parsed query. Places/persons/topics/keywords become the
     full-text query (synonyms are expanded by the search); types and period — filters.
     A fallback parse searches the query text as is."""
-    terms = parsed.places + parsed.persons + parsed.topics + parsed.keywords
+    terms = [t for t in parsed.places + parsed.persons + parsed.topics + parsed.keywords if not _GENERIC.match(t.strip())]
     if parsed.intent == "branch" and parsed.places:
         # «где филиал в Риддере и как доехать»: the place picks the branch; the rest is noise.
         terms = parsed.places
-    q = " ".join(terms) if parsed.source == "llm" and terms else text
+    # With only filters left («все файлы за 1960 год») the text query stays empty: the catalog is browsed by the filters.
+    q = " ".join(terms) if parsed.source == "llm" else text
     labels = {p: query_parser.place_label(p, parsed.lang, synonym_groups or []) for p in parsed.places}
     return AppliedFilters(
         q=q,
@@ -265,6 +286,35 @@ def _section_item(ref: str, key: str, lang: str) -> rag.ContextItem:
     return rag.ContextItem(source, rag.field_line(TYPE_WORDS["section"][lang], title, note))
 
 
+def _browse(session: Session, filters: AppliedFilters, lang: str) -> tuple[int, list[SearchItem], str]:
+    """Documents by the filters alone (year / years / type), when the query names nothing to search for.
+    Returns the total, the first documents and a catalog link with the same filters."""
+    period = filters.period_range
+    query: dict[str, str] = {}
+    catalog = CatalogFilters(lang=lang, doc_type=filters.doc_type, sort="date_asc", per_page=rag.MAX_ITEMS)
+    if period and period.from_ is not None and period.to is not None:
+        if period.from_ == period.to:
+            catalog.year = period.from_
+            query["year"] = str(period.from_)
+        else:
+            catalog.date_from, catalog.date_to = date(period.from_, 1, 1), date(period.to, 12, 31)
+            query["date_from"], query["date_to"] = f"{period.from_}-01-01", f"{period.to}-12-31"
+    if filters.doc_type:
+        query["doc_type"] = ",".join(filters.doc_type)
+    total, rows, _ = catalog_repo.search_documents(session, catalog)
+    hits = []
+    for row in rows:
+        document = row[0]
+        title = _i18n(document.title, lang)
+        hits.append(
+            SearchItem(type="document", id=document.id, title=title, lang=lang, snippet="", score=0.0, matched=[],
+                       href=f"/catalog/documents/{document.id}")
+        )
+    link = "/catalog?" + "&".join(f"{k}={urllib.parse.quote(v)}" for k, v in query.items()) if query else "/catalog"
+    search_log.log_search(session, query="", lang=lang, source="ai", results_count=total)
+    return total, hits, link
+
+
 def _top_hits(session: Session, settings: Settings, filters: AppliedFilters, lang: str) -> list[SearchItem]:
     response = search_service.search(
         session,
@@ -299,6 +349,39 @@ class Prepared:
     not_found_hints: list[str] | None = None
     # «No such information» answers of the model (document mode): turned into the fixed text.
     no_answer_texts: dict[str, str] | None = None
+    # Chat replies are looser than cited answers.
+    temperature: float | None = None
+
+
+CHAT_TEMPERATURE = 0.6
+_PAGE_QUESTION = re.compile(
+    r"эт(?:а|ой|у|ой|ом)\s+(?:страниц|раздел)|на\s+экране|где\s+я\b|что\s+(?:здесь|тут)\b|что\s+это\s+за\s+(?:страниц|раздел|сайт)|"
+    r"расскаж\w*\s+(?:о|про)\s+эт\w+|this\s+(?:page|section)|where\s+am\s+i|what(?:'s|\s+is)\s+(?:here|this)|бұл\s+(?:бет|бөлім)|осы\s+(?:бет|бөлім)",
+    re.IGNORECASE,
+)
+
+
+def _page_text(request: AiRequest) -> str:
+    page = request.page
+    return prompts.page_block(page.path, " ".join(page.title.split()), " ".join(page.text.split())) if page else ""
+
+
+def _chat(base: dict[str, Any], request: AiRequest, query: str, history: list[tuple[str, str]], note: str = "") -> Prepared:
+    """A free chat reply (no sources): smalltalk, questions about the open page, polite refusals, «nothing found»."""
+    messages = [
+        {"role": "system", "content": prompts.chat_system_prompt(base["lang"])},
+        {"role": "user", "content": prompts.chat_message(query, history, _page_text(request), note)},
+    ]
+    result = AiAnswer(**base, mode="answer", ai_generated=True, label=prompts.AI_LABEL[base["lang"]], answer="")
+    return Prepared(result, rag.Context(), messages, temperature=CHAT_TEMPERATURE)
+
+
+NOTE_OFF_TOPIC = "ЗАМЕТКА СЕРВЕРА: просьба не относится к архиву и сайту. Откажи мягко, по-дружески, и предложи, чем поможешь.\n\n"
+NOTE_UNCLEAR = "ЗАМЕТКА СЕРВЕРА: сообщение непонятно. Переспроси по-дружески и приведи пример вопроса про архив.\n\n"
+NOTE_NOTHING = (
+    "ЗАМЕТКА СЕРВЕРА: поиск по открытым материалам архива ничего не нашёл по этому сообщению. Если это просто разговор или вопрос "
+    "о сайте — ответь по существу. Если человек искал материал — скажи, что не нашёл, и предложи другие слова, период или раздел.\n\n"
+)
 
 
 def _fixed(base: dict[str, Any], mode: str, texts: dict[str, str], **extra: Any) -> AiAnswer:
@@ -344,13 +427,18 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
     }
     if guard.verdict == "empty":
         return Prepared(_fixed(base, "empty", prompts.EMPTY_QUERY))
-    if guard.verdict == "off_topic":
-        return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
-    if guard.gibberish:
-        # Not an off-topic request, just nothing that could be searched: say so and suggest next steps.
-        return Prepared(_fixed(base, "not_found", prompts.NOT_FOUND, hints=_hints(None)))
     query = guard.query
     history = guards.clean_history(request.history)
+    if guard.verdict == "off_topic":
+        if not available:
+            return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
+        return _chat(base, request, query, history, NOTE_OFF_TOPIC)
+    if guard.gibberish:
+        if not available:
+            return Prepared(_fixed(base, "not_found", prompts.NOT_FOUND, hints=_hints(None)))
+        return _chat(base, request, query, history, NOTE_UNCLEAR)
+    if available and request.page and _PAGE_QUESTION.search(query):
+        return _chat(base, request, query, history)
     groups = search_repo.active_synonym_groups(session)
 
     if guard.service:
@@ -366,7 +454,7 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
     base["parsed"] = parsed
 
     if parsed.intent == "off_topic":
-        return Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
+        return _chat(base, request, query, history, NOTE_OFF_TOPIC) if available else Prepared(_fixed(base, "off_topic", prompts.OFF_TOPIC))
     if parsed.intent == "service" and not guard.service:
         # The fixed service answer only on a rule match (guards): the model also files
         # «покажи трудовую книжку» under service. Otherwise search, with the section in context.
@@ -378,11 +466,25 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
 
     filters = build_filters(parsed, query, groups)
     base["filters"] = filters
-    hits = _top_hits(session, settings, filters, lang)
+    browse_total = 0
+    browse_link = ""
+    if not filters.q.strip() and parsed.intent == "search" and (filters.period_range or filters.doc_type):
+        browse_total, hits, browse_link = _browse(session, filters, lang)
+    else:
+        hits = _top_hits(session, settings, filters, lang)
     items = [item for item in (_item(session, f"S{i}", hit, lang) for i, hit in enumerate(hits, 1)) if item]
     for number, item in enumerate(items, 1):
         item.source.ref = f"S{number}"
+    if browse_total:
+        # One more card: the catalog with the same filters, so the person can see all of them.
+        ref = f"S{len(items) + 1}"
+        title = BROWSE_TITLE[lang].format(total=browse_total)
+        source = AiSource(ref=ref, type="section", title=title, href=browse_link)
+        note = f"всего по этим условиям найдено документов: {browse_total}; выше показаны первые {len(items)}, остальные — по этой ссылке"
+        items.append(rag.ContextItem(source, rag.field_line(TYPE_WORDS["section"][lang], title, note)))
     if not items:
+        if available:
+            return _chat(base, request, query, history, NOTE_NOTHING)
         return Prepared(_fixed(base, "not_found", prompts.NOT_FOUND, hints=_hints(filters)))
 
     documents = [i for i in items if i.source.type == "document"]
@@ -399,7 +501,7 @@ def prepare(session: Session, settings: Settings, request: AiRequest) -> Prepare
         return Prepared(_fixed(base, "unavailable", prompts.UNAVAILABLE, sources=[i.source for i in items]), context)
     messages = [
         {"role": "system", "content": prompts.system_prompt(lang)},
-        {"role": "user", "content": prompts.user_message(query, context.text(), history)},
+        {"role": "user", "content": prompts.user_message(query, context.text(), history, _page_text(request))},
     ]
     result = AiAnswer(**base, mode="answer", ai_generated=True, label=prompts.AI_LABEL[lang], answer="")
     return Prepared(result, context, messages)
@@ -452,7 +554,7 @@ def stream(prepared: Prepared, settings: Settings) -> Iterator[dict[str, Any]]:
     context = prepared.context
     sanitizer = rag.StreamSanitizer(set(context.refs), context.codes)
     try:
-        for chunk in ollama_client.chat_stream(prepared.messages, settings):
+        for chunk in ollama_client.chat_stream(prepared.messages, settings, **({} if prepared.temperature is None else {"temperature": prepared.temperature})):
             for text in sanitizer.feed(chunk):
                 yield {"type": "delta", "text": text}
         for text in sanitizer.flush():

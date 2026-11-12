@@ -62,7 +62,7 @@ class TimestampMixin:
 
 
 class ContentMixin(UUIDPkMixin, TimestampMixin):
-    """Common fields of all content entities (PLAN.md §2)."""
+    """Common fields of all content entities (the project plan §2)."""
 
     slug: Mapped[str | None] = mapped_column(String(255), unique=True)
     created_by: Mapped[uuid.UUID | None] = mapped_column(

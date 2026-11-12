@@ -20,6 +20,8 @@ from app.schemas.cabinet import (
     FavoriteItem,
     FavoriteRef,
     FavoriteStatus,
+    GoogleConfig,
+    GoogleLoginRequest,
     FavoriteType,
     Lang,
     LoginRequest,
@@ -92,6 +94,18 @@ def register(
 @router.post("/auth/login", response_model=VisitorMe)
 def login(body: LoginRequest, response: Response, session: DbSession, settings: AppSettings, ip: ClientIp) -> VisitorMe:
     auth = auth_service.login(session, settings, body.email, body.password, ip=ip)
+    _set_cookies(response, settings, auth)
+    return _me(auth)
+
+
+@router.get("/auth/google/config", response_model=GoogleConfig)
+def google_config(settings: AppSettings) -> GoogleConfig:
+    return GoogleConfig(client_id=settings.google_client_id or None)
+
+
+@router.post("/auth/google", response_model=VisitorMe)
+def google_login(body: GoogleLoginRequest, response: Response, session: DbSession, settings: AppSettings, ip: ClientIp) -> VisitorMe:
+    auth = auth_service.login_google(session, settings, body.credential, ip=ip)
     _set_cookies(response, settings, auth)
     return _me(auth)
 

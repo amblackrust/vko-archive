@@ -183,7 +183,9 @@ def availability(settings: Settings) -> Availability:
     return Availability(True)
 
 
-def _payload(settings: Settings, model: str, messages: list[dict[str, str]], stream: bool, fmt: Any) -> dict[str, Any]:
+def _payload(
+    settings: Settings, model: str, messages: list[dict[str, str]], stream: bool, fmt: Any, temperature: float = TEMPERATURE
+) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": messages,
@@ -191,7 +193,7 @@ def _payload(settings: Settings, model: str, messages: list[dict[str, str]], str
         "think": False,
         "keep_alive": KEEP_ALIVE,
         "options": {
-            "temperature": TEMPERATURE,
+            "temperature": temperature,
             "num_ctx": settings.ollama_num_ctx,
             "num_predict": settings.ollama_num_predict,
         },
@@ -281,11 +283,13 @@ class _ThinkFilter:
         return rest
 
 
-def chat_stream(messages: list[dict[str, str]], settings: Settings, *, timeout: float | None = None) -> Iterator[str]:
+def chat_stream(
+    messages: list[dict[str, str]], settings: Settings, *, timeout: float | None = None, temperature: float = TEMPERATURE
+) -> Iterator[str]:
     """Text chunks as they arrive. Raises OllamaUnavailable before the first chunk if
     Ollama/model is unavailable; a failure mid-stream also raises OllamaUnavailable."""
     model = chat_model(settings)
-    payload = _payload(settings, model, messages, True, None)
+    payload = _payload(settings, model, messages, True, None, temperature)
     think = _ThinkFilter()
     # The slot is held until the stream ends or the generator is closed (client gone).
     with _generation_slot(settings):

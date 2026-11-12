@@ -95,5 +95,6 @@ def test_machine_translations_are_marked(db_session: Session, storage: Path) -> 
     assert exhibition.translation_status == {"ru": "verified", "kk": "machine", "en": "machine"}
     assert set(exhibition.title) == {"ru", "kk", "en"}
     faq = db_session.scalar(select(FAQ).where(FAQ.slug == "faq-site-1"))
-    assert faq.translation_status == {"ru": "verified", "kk": "missing", "en": "missing"}
-    assert "kk" not in faq.question and "en" not in faq.question
+    # The kk/en texts of the FAQ come from the machine translations shipped in seed/translations.json.
+    assert faq.translation_status == {"ru": "verified", "kk": "machine", "en": "machine"}
+    assert {"ru", "kk", "en"} <= set(faq.question)

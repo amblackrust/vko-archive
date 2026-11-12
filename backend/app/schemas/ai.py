@@ -69,12 +69,23 @@ class HistoryTurn(BaseModel):
         return self
 
 
+class PageContext(BaseModel):
+    """The page the visitor is looking at (path, title, visible text). Untrusted client data:
+    it only tells the assistant where the person is and what is on screen."""
+
+    path: str = Field(max_length=300)
+    title: str = Field(default="", max_length=200)
+    text: str = Field(default="", max_length=3000)
+
+
 class AiRequest(BaseModel):
     q: str = Field(max_length=500)
     # Interface language: used only when the language of the query cannot be told.
     lang: Lang | None = None
     # Last turns of the dialog (oldest first) for follow-up questions; optional.
     history: list[HistoryTurn] = Field(default_factory=list, max_length=HISTORY_MAX_TURNS)
+    # The page open in the browser; optional.
+    page: PageContext | None = None
 
     @model_validator(mode="after")
     def _limit_history(self) -> "AiRequest":

@@ -12,11 +12,13 @@
 
 import hmac
 import re
+import secrets
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import httpx
 import jwt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -128,6 +130,55 @@ def login(session: Session, settings: Settings, email: str, password: str, *, ip
     if security.password_needs_rehash(visitor.password_hash):
         visitor.password_hash = security.hash_password(password)
     session.commit()
+    return _issue(settings, visitor, security.new_csrf_token(), now)
+
+
+GOOGLE_TOKENINFO = "https://oauth2.googleapis.com/tokeninfo"
+
+
+def login_google(session: Session, settings: Settings, credential: str, *, ip: str | None) -> VisitorSession:
+    """Signs in (or registers) a visitor by a Google ID token.
+
+    Google itself validates the signature and expiry on `tokeninfo`; we check the audience (our client id)
+    and that Google verified the e-mail. A new visitor gets a random password nobody knows, so only Google
+    (or a password reset by e-mail) opens the account.
+    """
+    if not settings.google_client_id:
+        raise InvalidInput("google_not_configured")
+    _check_limit(f"visitor-login:{ip}", LOGIN_PER_MINUTE)
+    try:
+        resp = httpx.get(GOOGLE_TOKENINFO, params={"id_token": credential}, timeout=5.0)
+    except httpx.HTTPError as exc:
+        raise InvalidInput("google_unavailable") from exc
+    claims = resp.json() if resp.status_code == 200 else {}
+    email = normalize_email(str(claims.get("email", "")))
+    if (
+        claims.get("aud") != settings.google_client_id
+        or str(claims.get("email_verified")).lower() != "true"
+        or not _EMAIL.match(email)
+    ):
+        raise InvalidCredentials()
+    now = datetime.now(UTC)
+    visitor = repo.visitor_by_email(session, email, for_update=True)
+    if visitor is None:
+        visitor = Visitor(
+            email=email,
+            password_hash=security.hash_password(secrets.token_urlsafe(32)),
+            display_name=" ".join(str(claims.get("name") or email.split("@")[0]).split())[:100],
+            password_changed_at=now,
+            email_confirmed_at=now,
+        )
+        session.add(visitor)
+    elif not visitor.is_active:
+        session.rollback()
+        raise InvalidCredentials()
+    elif visitor.email_confirmed_at is None:
+        visitor.email_confirmed_at = now  # Google already verified this address
+    try:
+        session.commit()
+    except IntegrityError as exc:  # concurrent first sign-in of the same address
+        session.rollback()
+        raise Conflict("email_taken") from exc
     return _issue(settings, visitor, security.new_csrf_token(), now)
 
 

@@ -74,12 +74,8 @@ def test_demo_catalog_requirements(db_session: Session, storage: Path) -> None:
     assert fund_types.count(FundType.PERSONAL) >= 2
     assert FundType.PARTY in fund_types and FundType.NEWSPAPER in fund_types
 
-    multipage = db_session.execute(
-        select(DigitalFile.owner_id)
-        .where(DigitalFile.owner_type == "document", DigitalFile.ocr_status == OcrStatus.DONE)
-        .group_by(DigitalFile.owner_id)
-        .having(func.count() > 1)
-    ).all()
+    # Real images carry the pages' OCR text of the former generated scans, one page per form feed.
+    multipage = [t for t in db_session.scalars(select(DigitalFile.ocr_text).where(DigitalFile.owner_type == "document")) if t and "\f" in t]
     assert len(multipage) >= 3
     ivanov = next(d for d in docs if d.title["ru"].startswith("Справка о работе Иванова И.И."))
     ocr = db_session.scalars(select(DigitalFile.ocr_text).where(DigitalFile.owner_id == ivanov.id)).all()

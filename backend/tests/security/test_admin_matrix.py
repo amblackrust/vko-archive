@@ -1,4 +1,4 @@
-"""Role × endpoint matrix of the whole admin API (T7.6, PLAN.md §5).
+"""Role × endpoint matrix of the whole admin API (T7.6, the project plan §5).
 
 `OPS` lists every admin operation with the permissions it needs; a test fails if the API
 gains an operation that is not listed here. Checked for every operation: anonymous → 401,

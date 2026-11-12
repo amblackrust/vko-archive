@@ -26,6 +26,14 @@ class LoginRequest(BaseModel):
     password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
 
 
+class GoogleLoginRequest(BaseModel):
+    credential: str = Field(min_length=20, max_length=4096)  # Google ID token (JWT)
+
+
+class GoogleConfig(BaseModel):
+    client_id: str | None
+
+
 class ChangePasswordRequest(BaseModel):
     current_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)
     new_password: str = Field(min_length=1, max_length=PASSWORD_MAX_LENGTH)

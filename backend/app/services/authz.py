@@ -1,4 +1,4 @@
-"""Roles and permissions (T6.2, PLAN.md §5).
+"""Roles and permissions (T6.2, the project plan §5).
 
 Every admin endpoint goes through `authorize(user, action, obj)` (or `require()`, which
 also writes a "denied" entry to the journal and raises). Actions are "module.action"

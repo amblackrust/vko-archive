@@ -1,4 +1,4 @@
-"""Eval of the mandatory assistant answers (PLAN.md §4.4) against the live Ollama and the
+"""Eval of the mandatory assistant answers (the project plan §4.4) against the live Ollama and the
 dev database (not a pytest test: it needs the real model and the seeded catalog).
 
     cd backend && .venv/bin/python -m app.ai.eval

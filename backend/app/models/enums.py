@@ -67,7 +67,7 @@ class AuditResult(StrEnum):
 
 
 class RoleCode(StrEnum):
-    """The 7 system roles from PLAN.md §5."""
+    """The 7 system roles from the project plan §5."""
 
     SUPER_ADMIN = "super_admin"
     SITE_ADMIN = "site_admin"

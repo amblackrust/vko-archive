@@ -26,6 +26,21 @@ DEMO_DOC_CODES = {
 }
 
 
+# archive code -> the demo document definition (for the pages' text that doubles as OCR).
+DEMO_DOCS_BY_CODE = {
+    f"Ф.{fund.number} Оп.{inv.number} Д.{case.number} №{n}": doc
+    for fund in FUNDS
+    for inv in fund.inventories
+    for case in inv.cases
+    for n, doc in enumerate(case.docs, 1)
+}
+
+
+def asset_stem(code: str) -> str:
+    """ASCII file name of an asset: «Ф.Д-1 Оп.2 Д.3 №1» -> FD-1_Op2_D3_N1."""
+    return code.replace("Ф.Д-", "FD-").replace(" Оп.", "_Op").replace(" Д.", "_D").replace(" №", "_N")
+
+
 def i18n(**values: str) -> dict[str, str]:
     """Translatable value; languages that were not given are simply absent."""
     return {lang: text for lang, text in values.items() if text}
