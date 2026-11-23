@@ -8,6 +8,8 @@
 
 <p align="center"><b>Catalog, search and an AI assistant in one place: access checked on the server, a local language model, publication only through approval</b></p>
 
+<p align="center">🏆 <b>1st place · <a href="https://astanahub.com/ru/event/oskemen-hub-codemasters-hackathon-9-0/">Codemasters Hackathon 9.0</a></b></p>
+
 <p align="center">
   <img src="https://img.shields.io/badge/PYTHON-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12">
   <img src="https://img.shields.io/badge/FASTAPI-0.162.3-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI 0.162.3">
